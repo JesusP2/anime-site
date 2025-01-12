@@ -3,7 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
   "/anime/{id}/full": {
     get: operations["getAnimeFullById"];
@@ -323,12 +322,29 @@ export interface components {
      * @description User's anime list status filter options
      * @enum {string}
      */
-    user_anime_list_status_filter: "all" | "watching" | "completed" | "onhold" | "dropped" | "plantowatch";
+    user_anime_list_status_filter:
+      | "all"
+      | "watching"
+      | "completed"
+      | "onhold"
+      | "dropped"
+      | "plantowatch";
     /**
      * @description Available Anime order_by properties
      * @enum {string}
      */
-    anime_search_query_orderby: "mal_id" | "title" | "start_date" | "end_date" | "episodes" | "score" | "scored_by" | "rank" | "popularity" | "members" | "favorites";
+    anime_search_query_orderby:
+      | "mal_id"
+      | "title"
+      | "start_date"
+      | "end_date"
+      | "episodes"
+      | "score"
+      | "scored_by"
+      | "rank"
+      | "popularity"
+      | "members"
+      | "favorites";
     /**
      * @description Available Anime audience ratings<br><br><b>Ratings</b><br><ul><li>G - All Ages</li><li>PG - Children</li><li>PG-13 - Teens 13 or older</li><li>R - 17+ (violence & profanity)</li><li>R+ - Mild Nudity</li><li>Rx - Hentai</li></ul>
      * @enum {string}
@@ -343,7 +359,16 @@ export interface components {
      * @description Available Anime types
      * @enum {string}
      */
-    anime_search_query_type: "tv" | "movie" | "ova" | "special" | "ona" | "music" | "cm" | "pv" | "tv_special";
+    anime_search_query_type:
+      | "tv"
+      | "movie"
+      | "ova"
+      | "special"
+      | "ona"
+      | "music"
+      | "cm"
+      | "pv"
+      | "tv_special";
     /**
      * @description Available Character order_by properties
      * @enum {string}
@@ -353,7 +378,19 @@ export interface components {
      * @description Club Search Query Category
      * @enum {string}
      */
-    club_search_query_category: "anime" | "manga" | "actors_and_artists" | "characters" | "cities_and_neighborhoods" | "companies" | "conventions" | "games" | "japan" | "music" | "other" | "schools";
+    club_search_query_category:
+      | "anime"
+      | "manga"
+      | "actors_and_artists"
+      | "characters"
+      | "cities_and_neighborhoods"
+      | "companies"
+      | "conventions"
+      | "games"
+      | "japan"
+      | "music"
+      | "other"
+      | "schools";
     /**
      * @description Club Search Query OrderBy
      * @enum {string}
@@ -373,7 +410,11 @@ export interface components {
      * @description Filter genres by type
      * @enum {string}
      */
-    genre_query_filter: "genres" | "explicit_genres" | "themes" | "demographics";
+    genre_query_filter:
+      | "genres"
+      | "explicit_genres"
+      | "themes"
+      | "demographics";
     /**
      * @description Order by magazine data
      * @enum {string}
@@ -383,22 +424,52 @@ export interface components {
      * @description User's anime list status filter options
      * @enum {string}
      */
-    user_manga_list_status_filter: "all" | "reading" | "completed" | "onhold" | "dropped" | "plantoread";
+    user_manga_list_status_filter:
+      | "all"
+      | "reading"
+      | "completed"
+      | "onhold"
+      | "dropped"
+      | "plantoread";
     /**
      * @description Available Manga order_by properties
      * @enum {string}
      */
-    manga_search_query_orderby: "mal_id" | "title" | "start_date" | "end_date" | "chapters" | "volumes" | "score" | "scored_by" | "rank" | "popularity" | "members" | "favorites";
+    manga_search_query_orderby:
+      | "mal_id"
+      | "title"
+      | "start_date"
+      | "end_date"
+      | "chapters"
+      | "volumes"
+      | "score"
+      | "scored_by"
+      | "rank"
+      | "popularity"
+      | "members"
+      | "favorites";
     /**
      * @description Available Manga statuses
      * @enum {string}
      */
-    manga_search_query_status: "publishing" | "complete" | "hiatus" | "discontinued" | "upcoming";
+    manga_search_query_status:
+      | "publishing"
+      | "complete"
+      | "hiatus"
+      | "discontinued"
+      | "upcoming";
     /**
      * @description Available Manga types
      * @enum {string}
      */
-    manga_search_query_type: "manga" | "novel" | "lightnovel" | "oneshot" | "doujin" | "manhwa" | "manhua";
+    manga_search_query_type:
+      | "manga"
+      | "novel"
+      | "lightnovel"
+      | "oneshot"
+      | "doujin"
+      | "manhwa"
+      | "manhua";
     /**
      * @description Available People order_by properties
      * @enum {string}
@@ -430,67 +501,69 @@ export interface components {
      */
     top_reviews_type_enum: "anime" | "manga";
     /** @description Anime Episodes Resource */
-    anime_episodes: ({
-      data?: ({
-          /** @description MyAnimeList ID */
-          mal_id?: number;
-          /** @description MyAnimeList URL. This is the URL of the episode's video. If there is no video url, this will be null. */
-          url?: string | null;
-          /** @description Title */
-          title?: string;
-          /** @description Title Japanese */
-          title_japanese?: string | null;
-          /** @description title_romanji */
-          title_romanji?: string | null;
-          /** @description Episode duration in seconds */
-          duration?: number | null;
-          /** @description Aired Date ISO8601 */
-          aired?: string | null;
-          /** @description Filler episode */
-          filler?: boolean;
-          /** @description Recap episode */
-          recap?: boolean;
-          /** @description Episode discussion forum URL */
-          forum_url?: string | null;
-        })[];
-    }) & components["schemas"]["pagination"];
+    anime_episodes: {
+      data?: {
+        /** @description MyAnimeList ID */
+        mal_id?: number;
+        /** @description MyAnimeList URL. This is the URL of the episode's video. If there is no video url, this will be null. */
+        url?: string | null;
+        /** @description Title */
+        title?: string;
+        /** @description Title Japanese */
+        title_japanese?: string | null;
+        /** @description title_romanji */
+        title_romanji?: string | null;
+        /** @description Episode duration in seconds */
+        duration?: number | null;
+        /** @description Aired Date ISO8601 */
+        aired?: string | null;
+        /** @description Filler episode */
+        filler?: boolean;
+        /** @description Recap episode */
+        recap?: boolean;
+        /** @description Episode discussion forum URL */
+        forum_url?: string | null;
+      }[];
+    } & components["schemas"]["pagination"];
     /** @description Anime News Resource */
-    anime_news: components["schemas"]["pagination"] & components["schemas"]["news"];
+    anime_news: components["schemas"]["pagination"] &
+      components["schemas"]["news"];
     /** @description Anime Videos Episodes Resource */
     anime_videos_episodes: {
       data?: {
-          /** @description MyAnimeList ID or Episode Number */
-          mal_id?: number;
-          /** @description Episode Title */
-          title?: string;
-          /** @description Episode Subtitle */
-          episode?: string;
-          /** @description Episode Page URL */
-          url?: string;
-          images?: components["schemas"]["common_images"];
-        }[];
+        /** @description MyAnimeList ID or Episode Number */
+        mal_id?: number;
+        /** @description Episode Title */
+        title?: string;
+        /** @description Episode Subtitle */
+        episode?: string;
+        /** @description Episode Page URL */
+        url?: string;
+        images?: components["schemas"]["common_images"];
+      }[];
     } & components["schemas"]["pagination"];
     /** @description Character Pictures */
     character_pictures: {
-      data?: ({
-          /** @description Default JPG Image Size URL */
-          image_url?: string | null;
-          /** @description Large JPG Image Size URL */
-          large_image_url?: string | null;
-        })[];
+      data?: {
+        /** @description Default JPG Image Size URL */
+        image_url?: string | null;
+        /** @description Large JPG Image Size URL */
+        large_image_url?: string | null;
+      }[];
     };
     /** @description Club Member */
     club_member: {
       data?: {
-          /** @description User's username */
-          username?: string;
-          /** @description User URL */
-          url?: string;
-          images?: components["schemas"]["user_images"];
-        }[];
+        /** @description User's username */
+        username?: string;
+        /** @description User URL */
+        url?: string;
+        images?: components["schemas"]["user_images"];
+      }[];
     };
     /** @description Manga News Resource */
-    manga_news: components["schemas"]["pagination"] & components["schemas"]["news"];
+    manga_news: components["schemas"]["pagination"] &
+      components["schemas"]["news"];
     /** @description Manga Pictures */
     manga_pictures: {
       data?: components["schemas"]["manga_images"][];
@@ -501,7 +574,12 @@ export interface components {
     };
     /** @description Random Resources */
     random: {
-      data?: (components["schemas"]["anime"] | components["schemas"]["manga"] | components["schemas"]["character"] | components["schemas"]["person"])[];
+      data?: (
+        | components["schemas"]["anime"]
+        | components["schemas"]["manga"]
+        | components["schemas"]["character"]
+        | components["schemas"]["person"]
+      )[];
     };
     /** @description Anime resources currently airing */
     schedules: {
@@ -510,104 +588,108 @@ export interface components {
     /** @description User Results */
     users_search: {
       data?: {
-          /** @description MyAnimeList URL */
-          url?: string;
-          /** @description MyAnimeList Username */
-          username?: string;
-          images?: components["schemas"]["user_images"];
-          /** @description Last Online Date ISO8601 */
-          last_online?: string;
-        }[];
+        /** @description MyAnimeList URL */
+        url?: string;
+        /** @description MyAnimeList Username */
+        username?: string;
+        images?: components["schemas"]["user_images"];
+        /** @description Last Online Date ISO8601 */
+        last_online?: string;
+      }[];
     } & components["schemas"]["pagination"];
     /** @description List of available seasons */
     seasons: {
       data?: {
-          /** @description Year */
-          year?: number;
-          /** @description List of available seasons */
-          seasons?: string[];
-        }[];
+        /** @description Year */
+        year?: number;
+        /** @description List of available seasons */
+        seasons?: string[];
+      }[];
     };
     /** @description Anime & Manga Reviews Resource */
     reviews_collection: {
-      data?: (components["schemas"]["anime_review"] | components["schemas"]["manga_review"])[];
+      data?: (
+        | components["schemas"]["anime_review"]
+        | components["schemas"]["manga_review"]
+      )[];
     };
     /** @description User Friends */
-    user_friends: ({
+    user_friends: {
       data?: ({
-          user?: components["schemas"]["user_meta"];
-        } & {
-          /** @description Last Online Date ISO8601 format */
-          last_online?: string;
-          /** @description Friends Since Date ISO8601 format */
-          friends_since?: string;
-        })[];
-    }) & components["schemas"]["pagination"];
+        user?: components["schemas"]["user_meta"];
+      } & {
+        /** @description Last Online Date ISO8601 format */
+        last_online?: string;
+        /** @description Friends Since Date ISO8601 format */
+        friends_since?: string;
+      })[];
+    } & components["schemas"]["pagination"];
     /** @description User Clubs */
     user_clubs: {
       data?: {
-          /** @description MyAnimeList ID */
-          mal_id?: number;
-          /** @description Club Name */
-          name?: string;
-          /** @description Club URL */
-          url?: string;
-        }[];
+        /** @description MyAnimeList ID */
+        mal_id?: number;
+        /** @description Club Name */
+        name?: string;
+        /** @description Club URL */
+        url?: string;
+      }[];
     } & components["schemas"]["pagination"];
     /** @description Watch Episodes */
     watch_episodes: {
       data?: {
-          entry?: components["schemas"]["anime_meta"];
-          /** @description Recent Episodes (max 2 listed) */
-          episodes?: {
-              /** @description MyAnimeList ID */
-              mal_id?: string;
-              /** @description MyAnimeList URL */
-              url?: string;
-              /** @description Episode Title */
-              title?: string;
-              /** @description For MyAnimeList Premium Users */
-              premium?: boolean;
-            }[];
-          /** @description Region Locked Episode */
-          region_locked?: boolean;
+        entry?: components["schemas"]["anime_meta"];
+        /** @description Recent Episodes (max 2 listed) */
+        episodes?: {
+          /** @description MyAnimeList ID */
+          mal_id?: string;
+          /** @description MyAnimeList URL */
+          url?: string;
+          /** @description Episode Title */
+          title?: string;
+          /** @description For MyAnimeList Premium Users */
+          premium?: boolean;
         }[];
+        /** @description Region Locked Episode */
+        region_locked?: boolean;
+      }[];
     } & components["schemas"]["pagination"];
     /** @description Watch Promos */
-    watch_promos: components["schemas"]["pagination"] & ({
-      /** @description Promo Title */
-      title?: string;
-    } & {
-      data?: {
+    watch_promos: components["schemas"]["pagination"] &
+      ({
+        /** @description Promo Title */
+        title?: string;
+      } & {
+        data?: {
           entry?: components["schemas"]["anime_meta"];
           trailer?: components["schemas"]["trailer"][];
         }[];
-    });
+      });
     /** @description Anime Characters Resource */
     anime_characters: {
       data?: {
-          /** @description Character details */
-          character?: {
-            /** @description MyAnimeList ID */
+        /** @description Character details */
+        character?: {
+          /** @description MyAnimeList ID */
+          mal_id?: number;
+          /** @description MyAnimeList URL */
+          url?: string;
+          images?: components["schemas"]["character_images"];
+          /** @description Character Name */
+          name?: string;
+        };
+        /** @description Character's Role */
+        role?: string;
+        voice_actors?: {
+          person?: {
             mal_id?: number;
-            /** @description MyAnimeList URL */
             url?: string;
-            images?: components["schemas"]["character_images"];
-            /** @description Character Name */
+            images?: components["schemas"]["people_images"];
             name?: string;
           };
-          /** @description Character's Role */
-          role?: string;
-          voice_actors?: {
-              person?: {
-                mal_id?: number;
-                url?: string;
-                images?: components["schemas"]["people_images"];
-                name?: string;
-              };
-              language?: string;
-            }[];
+          language?: string;
         }[];
+      }[];
     };
     /** @description Anime Collection Resource */
     anime_search: {
@@ -691,7 +773,14 @@ export interface components {
        * @description Anime audience rating
        * @enum {string|null}
        */
-      rating?: "G - All Ages" | "PG - Children" | "PG-13 - Teens 13 or older" | ("R - 17+ (violence & profanity)") | "R+ - Mild Nudity" | "Rx - Hentai" | null;
+      rating?:
+        | "G - All Ages"
+        | "PG - Children"
+        | "PG-13 - Teens 13 or older"
+        | "R - 17+ (violence & profanity)"
+        | "R+ - Mild Nudity"
+        | "Rx - Hentai"
+        | null;
       /**
        * Format: float
        * @description Score
@@ -727,30 +816,30 @@ export interface components {
       themes?: components["schemas"]["mal_url"][];
       demographics?: components["schemas"]["mal_url"][];
       relations?: {
-          /** @description Relation type */
-          relation?: string;
-          entry?: components["schemas"]["mal_url"][];
-        }[];
+        /** @description Relation type */
+        relation?: string;
+        entry?: components["schemas"]["mal_url"][];
+      }[];
       theme?: {
         openings?: string[];
         endings?: string[];
       };
       external?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
       streaming?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     /** @description Anime Relations */
     anime_relations: {
       data?: {
-          /** @description Relation type */
-          relation?: string;
-          entry?: components["schemas"]["mal_url"][];
-        }[];
+        /** @description Relation type */
+        relation?: string;
+        entry?: components["schemas"]["mal_url"][];
+      }[];
     };
     /** @description Anime Resource */
     anime: {
@@ -807,7 +896,14 @@ export interface components {
        * @description Anime audience rating
        * @enum {string|null}
        */
-      rating?: "G - All Ages" | "PG - Children" | "PG-13 - Teens 13 or older" | ("R - 17+ (violence & profanity)") | "R+ - Mild Nudity" | "Rx - Hentai" | null;
+      rating?:
+        | "G - All Ages"
+        | "PG - Children"
+        | "PG-13 - Teens 13 or older"
+        | "R - 17+ (violence & profanity)"
+        | "R+ - Mild Nudity"
+        | "Rx - Hentai"
+        | null;
       /**
        * Format: float
        * @description Score
@@ -846,19 +942,19 @@ export interface components {
     /** @description Anime Staff Resource */
     anime_staff: {
       data?: {
-          /** @description Person details */
-          person?: {
-            /** @description MyAnimeList ID */
-            mal_id?: number;
-            /** @description MyAnimeList URL */
-            url?: string;
-            images?: components["schemas"]["people_images"];
-            /** @description Name */
-            name?: string;
-          };
-          /** @description Staff Positions */
-          positions?: string[];
-        }[];
+        /** @description Person details */
+        person?: {
+          /** @description MyAnimeList ID */
+          mal_id?: number;
+          /** @description MyAnimeList URL */
+          url?: string;
+          images?: components["schemas"]["people_images"];
+          /** @description Name */
+          name?: string;
+        };
+        /** @description Staff Positions */
+        positions?: string[];
+      }[];
     };
     /** @description Anime Statistics Resource */
     anime_statistics: {
@@ -876,16 +972,16 @@ export interface components {
         /** @description Total number of users who have the resource added to their lists */
         total?: number;
         scores?: {
-            /** @description Scoring value */
-            score?: number;
-            /** @description Number of votes for this score */
-            votes?: number;
-            /**
-             * Format: float
-             * @description Percentage of votes for this score
-             */
-            percentage?: number;
-          }[];
+          /** @description Scoring value */
+          score?: number;
+          /** @description Number of votes for this score */
+          votes?: number;
+          /**
+           * Format: float
+           * @description Percentage of votes for this score
+           */
+          percentage?: number;
+        }[];
       };
     };
     /** @description Anime Opening and Ending Themes */
@@ -899,39 +995,39 @@ export interface components {
     anime_videos: {
       data?: {
         promo?: {
-            /** @description Title */
-            title?: string;
-            trailer?: components["schemas"]["trailer"];
-          }[];
+          /** @description Title */
+          title?: string;
+          trailer?: components["schemas"]["trailer"];
+        }[];
         episodes?: {
-            /** @description MyAnimeList ID */
-            mal_id?: number;
-            /** @description MyAnimeList URL */
-            url?: string;
-            /** @description Title */
-            title?: string;
-            /** @description Episode */
-            episode?: string;
-            images?: components["schemas"]["common_images"];
-          }[];
-        music_videos?: ({
-            /** @description Title */
-            title?: string;
-            video?: components["schemas"]["trailer"];
-            meta?: {
-              title?: string | null;
-              author?: string | null;
-            };
-          })[];
+          /** @description MyAnimeList ID */
+          mal_id?: number;
+          /** @description MyAnimeList URL */
+          url?: string;
+          /** @description Title */
+          title?: string;
+          /** @description Episode */
+          episode?: string;
+          images?: components["schemas"]["common_images"];
+        }[];
+        music_videos?: {
+          /** @description Title */
+          title?: string;
+          video?: components["schemas"]["trailer"];
+          meta?: {
+            title?: string | null;
+            author?: string | null;
+          };
+        }[];
       };
     };
     /** @description Character casted in anime */
     character_anime: {
       data?: {
-          /** @description Character's Role */
-          role?: string;
-          anime?: components["schemas"]["anime_meta"];
-        }[];
+        /** @description Character's Role */
+        role?: string;
+        anime?: components["schemas"]["anime_meta"];
+      }[];
     };
     /** @description Characters Search Resource */
     characters_search: {
@@ -955,28 +1051,28 @@ export interface components {
       /** @description Biography */
       about?: string | null;
       anime?: {
-          /** @description Character's Role */
-          role?: string;
-          anime?: components["schemas"]["anime_meta"];
-        }[];
+        /** @description Character's Role */
+        role?: string;
+        anime?: components["schemas"]["anime_meta"];
+      }[];
       manga?: {
-          /** @description Character's Role */
-          role?: string;
-          manga?: components["schemas"]["manga_meta"];
-        }[];
+        /** @description Character's Role */
+        role?: string;
+        manga?: components["schemas"]["manga_meta"];
+      }[];
       voices?: {
-          /** @description Character's Role */
-          language?: string;
-          person?: components["schemas"]["person_meta"];
-        }[];
+        /** @description Character's Role */
+        language?: string;
+        person?: components["schemas"]["person_meta"];
+      }[];
     };
     /** @description Character casted in manga */
     character_manga: {
       data?: {
-          /** @description Character's Role */
-          role?: string;
-          manga?: components["schemas"]["manga_meta"];
-        }[];
+        /** @description Character's Role */
+        role?: string;
+        manga?: components["schemas"]["manga_meta"];
+      }[];
     };
     /** @description Character Resource */
     character: {
@@ -999,10 +1095,10 @@ export interface components {
     /** @description Character voice actors */
     character_voice_actors: {
       data?: {
-          /** @description Character's Role */
-          language?: string;
-          person?: components["schemas"]["person_meta"];
-        }[];
+        /** @description Character's Role */
+        language?: string;
+        person?: components["schemas"]["person_meta"];
+      }[];
     };
     /** @description Clubs Search Resource */
     clubs_search: {
@@ -1031,7 +1127,19 @@ export interface components {
        * @description Club Category
        * @enum {string}
        */
-      category?: ("actors & artists") | "anime" | "characters" | ("cities & neighborhoods") | "companies" | "conventions" | "games" | "japan" | "manga" | "music" | "others" | "schools";
+      category?:
+        | "actors & artists"
+        | "anime"
+        | "characters"
+        | "cities & neighborhoods"
+        | "companies"
+        | "conventions"
+        | "games"
+        | "japan"
+        | "manga"
+        | "music"
+        | "others"
+        | "schools";
       /** @description Date Created ISO8601 */
       created?: string;
       /**
@@ -1043,14 +1151,15 @@ export interface components {
     /** @description Club Staff Resource */
     club_staff: {
       data?: {
-          /** @description User URL */
-          url?: string;
-          /** @description User's username */
-          username?: string;
-        }[];
+        /** @description User URL */
+        url?: string;
+        /** @description User's username */
+        username?: string;
+      }[];
     };
     /** @description Youtube Details */
-    trailer: components["schemas"]["trailer_base"] & components["schemas"]["trailer_images"];
+    trailer: components["schemas"]["trailer_base"] &
+      components["schemas"]["trailer_images"];
     /** @description Youtube Details */
     trailer_base: {
       /** @description YouTube ID */
@@ -1314,39 +1423,39 @@ export interface components {
     /** @description External links */
     external_links: {
       data?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     /** @description Forum Resource */
     forum: {
-      data?: ({
-          /** @description MyAnimeList ID */
-          mal_id?: number;
-          /** @description MyAnimeList URL */
+      data?: {
+        /** @description MyAnimeList ID */
+        mal_id?: number;
+        /** @description MyAnimeList URL */
+        url?: string;
+        /** @description Title */
+        title?: string;
+        /** @description Post Date ISO8601 */
+        date?: string;
+        /** @description Author MyAnimeList Username */
+        author_username?: string;
+        /** @description Author Profile URL */
+        author_url?: string;
+        /** @description Comment count */
+        comments?: number;
+        /** @description Last comment details */
+        last_comment?: {
+          /** @description Last comment URL */
           url?: string;
-          /** @description Title */
-          title?: string;
-          /** @description Post Date ISO8601 */
-          date?: string;
           /** @description Author MyAnimeList Username */
           author_username?: string;
           /** @description Author Profile URL */
           author_url?: string;
-          /** @description Comment count */
-          comments?: number;
-          /** @description Last comment details */
-          last_comment?: {
-            /** @description Last comment URL */
-            url?: string;
-            /** @description Author MyAnimeList Username */
-            author_username?: string;
-            /** @description Author Profile URL */
-            author_url?: string;
-            /** @description Last comment date posted ISO8601 */
-            date?: string | null;
-          };
-        })[];
+          /** @description Last comment date posted ISO8601 */
+          date?: string | null;
+        };
+      }[];
     };
     /** @description Genres Collection Resource */
     genres: {
@@ -1381,10 +1490,10 @@ export interface components {
     /** @description Manga Characters Resource */
     manga_characters: {
       data?: {
-          character?: components["schemas"]["character_meta"];
-          /** @description Character's Role */
-          role?: string;
-        }[];
+        character?: components["schemas"]["character_meta"];
+        /** @description Character's Role */
+        role?: string;
+      }[];
     };
     /** @description Manga Search Resource */
     manga_search: {
@@ -1425,7 +1534,16 @@ export interface components {
        * @description Manga Type
        * @enum {string|null}
        */
-      type?: "Manga" | "Novel" | "Light Novel" | "One-shot" | "Doujinshi" | "Manhua" | "Manhwa" | "OEL" | null;
+      type?:
+        | "Manga"
+        | "Novel"
+        | "Light Novel"
+        | "One-shot"
+        | "Doujinshi"
+        | "Manhua"
+        | "Manhwa"
+        | "OEL"
+        | null;
       /** @description Chapter count */
       chapters?: number | null;
       /** @description Volume count */
@@ -1434,7 +1552,12 @@ export interface components {
        * @description Publishing status
        * @enum {string}
        */
-      status?: "Finished" | "Publishing" | "On Hiatus" | "Discontinued" | "Not yet published";
+      status?:
+        | "Finished"
+        | "Publishing"
+        | "On Hiatus"
+        | "Discontinued"
+        | "Not yet published";
       /** @description Publishing boolean */
       publishing?: boolean;
       published?: components["schemas"]["daterange"];
@@ -1464,14 +1587,14 @@ export interface components {
       themes?: components["schemas"]["mal_url"][];
       demographics?: components["schemas"]["mal_url"][];
       relations?: {
-          /** @description Relation type */
-          relation?: string;
-          entry?: components["schemas"]["mal_url"][];
-        }[];
+        /** @description Relation type */
+        relation?: string;
+        entry?: components["schemas"]["mal_url"][];
+      }[];
       external?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     /** @description Manga Resource */
     manga: {
@@ -1503,7 +1626,16 @@ export interface components {
        * @description Manga Type
        * @enum {string|null}
        */
-      type?: "Manga" | "Novel" | "Light Novel" | "One-shot" | "Doujinshi" | "Manhua" | "Manhwa" | "OEL" | null;
+      type?:
+        | "Manga"
+        | "Novel"
+        | "Light Novel"
+        | "One-shot"
+        | "Doujinshi"
+        | "Manhua"
+        | "Manhwa"
+        | "OEL"
+        | null;
       /** @description Chapter count */
       chapters?: number | null;
       /** @description Volume count */
@@ -1512,7 +1644,12 @@ export interface components {
        * @description Publishing status
        * @enum {string}
        */
-      status?: "Finished" | "Publishing" | "On Hiatus" | "Discontinued" | "Not yet published";
+      status?:
+        | "Finished"
+        | "Publishing"
+        | "On Hiatus"
+        | "Discontinued"
+        | "Not yet published";
       /** @description Publishing boolean */
       publishing?: boolean;
       published?: components["schemas"]["daterange"];
@@ -1558,16 +1695,16 @@ export interface components {
         /** @description Total number of users who have the resource added to their lists */
         total?: number;
         scores?: {
-            /** @description Scoring value */
-            score?: number;
-            /** @description Number of votes for this score */
-            votes?: number;
-            /**
-             * Format: float
-             * @description Percentage of votes for this score
-             */
-            percentage?: number;
-          }[];
+          /** @description Scoring value */
+          score?: number;
+          /** @description Number of votes for this score */
+          votes?: number;
+          /**
+           * Format: float
+           * @description Percentage of votes for this score
+           */
+          percentage?: number;
+        }[];
       };
     };
     /** @description More Info Resource */
@@ -1579,34 +1716,34 @@ export interface components {
     };
     news: {
       data?: {
-          /** @description MyAnimeList ID */
-          mal_id?: number;
-          /** @description MyAnimeList URL */
-          url?: string;
-          /** @description Title */
-          title?: string;
-          /** @description Post Date ISO8601 */
-          date?: string;
-          /** @description Author MyAnimeList Username */
-          author_username?: string;
-          /** @description Author Profile URL */
-          author_url?: string;
-          /** @description Forum topic URL */
-          forum_url?: string;
-          images?: components["schemas"]["common_images"];
-          /** @description Comment count */
-          comments?: number;
-          /** @description Excerpt */
-          excerpt?: string;
-        }[];
+        /** @description MyAnimeList ID */
+        mal_id?: number;
+        /** @description MyAnimeList URL */
+        url?: string;
+        /** @description Title */
+        title?: string;
+        /** @description Post Date ISO8601 */
+        date?: string;
+        /** @description Author MyAnimeList Username */
+        author_username?: string;
+        /** @description Author Profile URL */
+        author_url?: string;
+        /** @description Forum topic URL */
+        forum_url?: string;
+        images?: components["schemas"]["common_images"];
+        /** @description Comment count */
+        comments?: number;
+        /** @description Excerpt */
+        excerpt?: string;
+      }[];
     };
     /** @description Person anime staff positions */
     person_anime: {
       data?: {
-          /** @description Person's position */
-          position?: string;
-          anime?: components["schemas"]["anime_meta"];
-        }[];
+        /** @description Person's position */
+        position?: string;
+        anime?: components["schemas"]["anime_meta"];
+      }[];
     };
     /** @description People Search */
     people_search: {
@@ -1636,29 +1773,29 @@ export interface components {
       /** @description Biography */
       about?: string | null;
       anime?: {
-          /** @description Person's position */
-          position?: string;
-          anime?: components["schemas"]["anime_meta"];
-        }[];
+        /** @description Person's position */
+        position?: string;
+        anime?: components["schemas"]["anime_meta"];
+      }[];
       manga?: {
-          /** @description Person's position */
-          position?: string;
-          manga?: components["schemas"]["manga_meta"];
-        }[];
+        /** @description Person's position */
+        position?: string;
+        manga?: components["schemas"]["manga_meta"];
+      }[];
       voices?: {
-          /** @description Person's Character's role in the anime */
-          role?: string;
-          anime?: components["schemas"]["anime_meta"];
-          character?: components["schemas"]["character_meta"];
-        }[];
+        /** @description Person's Character's role in the anime */
+        role?: string;
+        anime?: components["schemas"]["anime_meta"];
+        character?: components["schemas"]["character_meta"];
+      }[];
     };
     /** @description Person's mangaography */
     person_manga: {
       data?: {
-          /** @description Person's position */
-          position?: string;
-          manga?: components["schemas"]["manga_meta"];
-        }[];
+        /** @description Person's position */
+        position?: string;
+        manga?: components["schemas"]["manga_meta"];
+      }[];
     };
     /** @description Person Resource */
     person: {
@@ -1687,23 +1824,23 @@ export interface components {
     /** @description Person's voice acting roles */
     person_voice_acting_roles: {
       data?: {
-          /** @description Person's Character's role in the anime */
-          role?: string;
-          anime?: components["schemas"]["anime_meta"];
-          character?: components["schemas"]["character_meta"];
-        }[];
+        /** @description Person's Character's role in the anime */
+        role?: string;
+        anime?: components["schemas"]["anime_meta"];
+        character?: components["schemas"]["character_meta"];
+      }[];
     };
     /** @description Pictures Resource */
     pictures: {
       data?: {
-          images?: components["schemas"]["anime_images"];
-        }[];
+        images?: components["schemas"]["anime_images"];
+      }[];
     };
     /** @description Pictures Resource */
     pictures_variants: {
       data?: {
-          images?: components["schemas"]["common_images"];
-        }[];
+        images?: components["schemas"]["common_images"];
+      }[];
     };
     /** @description Producers Collection Resource */
     producers: {
@@ -1727,9 +1864,9 @@ export interface components {
       /** @description About the Producer */
       about?: string | null;
       external?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     /** @description Producers Resource */
     producer: {
@@ -1750,24 +1887,25 @@ export interface components {
       about?: string | null;
     };
     user_about: {
-      data?: ({
-          /** @description User About. NOTE: About information is customizable by users through BBCode on MyAnimeList. This means users can add multimedia content, different text sizes, etc. Due to this freeform, Jikan returns parsed HTML. Validate on your end! */
-          about?: string | null;
-        })[];
+      data?: {
+        /** @description User About. NOTE: About information is customizable by users through BBCode on MyAnimeList. This means users can add multimedia content, different text sizes, etc. Due to this freeform, Jikan returns parsed HTML. Validate on your end! */
+        about?: string | null;
+      }[];
     };
     user_favorites: {
       /** @description Favorite Anime */
       anime?: ({
-          type?: string;
-          start_year?: number;
-        } & components["schemas"]["anime_meta"])[];
+        type?: string;
+        start_year?: number;
+      } & components["schemas"]["anime_meta"])[];
       /** @description Favorite Manga */
       manga?: ({
-          type?: string;
-          start_year?: number;
-        } & components["schemas"]["manga_meta"])[];
+        type?: string;
+        start_year?: number;
+      } & components["schemas"]["manga_meta"])[];
       /** @description Favorite Characters */
-      characters?: (components["schemas"]["character_meta"] & components["schemas"]["mal_url_2"])[];
+      characters?: (components["schemas"]["character_meta"] &
+        components["schemas"]["mal_url_2"])[];
       /** @description Favorite People */
       people?: components["schemas"]["character_meta"][];
     };
@@ -1853,9 +1991,9 @@ export interface components {
         };
       };
       external?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     user_history: {
       data?: components["schemas"]["history"][];
@@ -1872,28 +2010,28 @@ export interface components {
       data?: {
         /** @description Last updated Anime */
         anime?: ({
-            entry?: components["schemas"]["anime_meta"];
-          } & ({
-            score?: number | null;
-            status?: string;
-            episodes_seen?: number | null;
-            episodes_total?: number | null;
-            /** @description ISO8601 format */
-            date?: string;
-          }))[];
+          entry?: components["schemas"]["anime_meta"];
+        } & {
+          score?: number | null;
+          status?: string;
+          episodes_seen?: number | null;
+          episodes_total?: number | null;
+          /** @description ISO8601 format */
+          date?: string;
+        })[];
         /** @description Last updated Manga */
         manga?: ({
-            entry?: components["schemas"]["manga_meta"];
-          } & ({
-            score?: number | null;
-            status?: string;
-            chapters_read?: number | null;
-            chapters_total?: number | null;
-            volumes_read?: number | null;
-            volumes_total?: number | null;
-            /** @description ISO8601 format */
-            date?: string;
-          }))[];
+          entry?: components["schemas"]["manga_meta"];
+        } & {
+          score?: number | null;
+          status?: string;
+          chapters_read?: number | null;
+          chapters_total?: number | null;
+          volumes_read?: number | null;
+          volumes_total?: number | null;
+          /** @description ISO8601 format */
+          date?: string;
+        })[];
       };
     };
     user_profile: {
@@ -1918,109 +2056,109 @@ export interface components {
     /** @description Transform the resource into an array. */
     users_temp: {
       data?: {
-          /** @description MyAnimeList ID */
-          mal_id?: number;
-          /** @description MyAnimeList Username */
-          username?: string;
-          /** @description MyAnimeList URL */
-          url?: string;
-          /** @description Images */
-          images?: {
-            /** @description Available images in JPG */
-            jpg?: {
-              /** @description Image URL JPG (225x335) */
-              image_url?: string;
-            };
-            /** @description Available images in WEBP */
-            webp?: {
-              /** @description Image URL WEBP (225x335) */
-              image_url?: string;
-            };
+        /** @description MyAnimeList ID */
+        mal_id?: number;
+        /** @description MyAnimeList Username */
+        username?: string;
+        /** @description MyAnimeList URL */
+        url?: string;
+        /** @description Images */
+        images?: {
+          /** @description Available images in JPG */
+          jpg?: {
+            /** @description Image URL JPG (225x335) */
+            image_url?: string;
           };
-          /** @description Last Online Date ISO8601 */
-          last_online?: string;
-          /** @description User Gender */
-          gender?: string;
-          /** @description Birthday Date ISO8601 */
-          birthday?: string;
-          /** @description Location */
-          location?: string;
-          /** @description Joined Date ISO8601 */
-          joined?: string;
-          /** @description Anime Stats */
-          anime_stats?: {
-            /**
-             * Format: float
-             * @description Number of days spent watching Anime
-             */
-            days_watched?: number;
-            /**
-             * Format: float
-             * @description Mean Score
-             */
-            mean_score?: number;
-            /** @description Anime Watching */
-            watching?: number;
-            /** @description Anime Completed */
-            completed?: number;
-            /** @description Anime On-Hold */
-            on_hold?: number;
-            /** @description Anime Dropped */
-            dropped?: number;
-            /** @description Anime Planned to Watch */
-            plan_to_watch?: number;
-            /** @description Total Anime entries on User list */
-            total_entries?: number;
-            /** @description Anime re-watched */
-            rewatched?: number;
-            /** @description Number of Anime Episodes Watched */
-            episodes_watched?: number;
+          /** @description Available images in WEBP */
+          webp?: {
+            /** @description Image URL WEBP (225x335) */
+            image_url?: string;
           };
-          /** @description Manga Stats */
-          manga_stats?: {
-            /**
-             * Format: float
-             * @description Number of days spent reading Manga
-             */
-            days_read?: number;
-            /**
-             * Format: float
-             * @description Mean Score
-             */
-            mean_score?: number;
-            /** @description Manga Reading */
-            reading?: number;
-            /** @description Manga Completed */
-            completed?: number;
-            /** @description Manga On-Hold */
-            on_hold?: number;
-            /** @description Manga Dropped */
-            dropped?: number;
-            /** @description Manga Planned to Read */
-            plan_to_read?: number;
-            /** @description Total Manga entries on User list */
-            total_entries?: number;
-            /** @description Manga re-read */
-            reread?: number;
-            /** @description Number of Manga Chapters Read */
-            chapters_read?: number;
-            /** @description Number of Manga Volumes Read */
-            volumes_read?: number;
-          };
-          /** @description Favorite entries */
-          favorites?: {
-            /** @description Favorite Anime */
-            anime?: components["schemas"]["entry_meta"][];
-            /** @description Favorite Manga */
-            manga?: components["schemas"]["entry_meta"][];
-            /** @description Favorite Characters */
-            characters?: components["schemas"]["entry_meta"][];
-            /** @description Favorite People */
-            people?: components["schemas"]["entry_meta"][];
-          };
-          /** @description User About. NOTE: About information is customizable by users through BBCode on MyAnimeList. This means users can add multimedia content, different text sizes, etc. Due to this freeform, Jikan returns parsed HTML. Validate on your end! */
-          about?: string;
-        }[];
+        };
+        /** @description Last Online Date ISO8601 */
+        last_online?: string;
+        /** @description User Gender */
+        gender?: string;
+        /** @description Birthday Date ISO8601 */
+        birthday?: string;
+        /** @description Location */
+        location?: string;
+        /** @description Joined Date ISO8601 */
+        joined?: string;
+        /** @description Anime Stats */
+        anime_stats?: {
+          /**
+           * Format: float
+           * @description Number of days spent watching Anime
+           */
+          days_watched?: number;
+          /**
+           * Format: float
+           * @description Mean Score
+           */
+          mean_score?: number;
+          /** @description Anime Watching */
+          watching?: number;
+          /** @description Anime Completed */
+          completed?: number;
+          /** @description Anime On-Hold */
+          on_hold?: number;
+          /** @description Anime Dropped */
+          dropped?: number;
+          /** @description Anime Planned to Watch */
+          plan_to_watch?: number;
+          /** @description Total Anime entries on User list */
+          total_entries?: number;
+          /** @description Anime re-watched */
+          rewatched?: number;
+          /** @description Number of Anime Episodes Watched */
+          episodes_watched?: number;
+        };
+        /** @description Manga Stats */
+        manga_stats?: {
+          /**
+           * Format: float
+           * @description Number of days spent reading Manga
+           */
+          days_read?: number;
+          /**
+           * Format: float
+           * @description Mean Score
+           */
+          mean_score?: number;
+          /** @description Manga Reading */
+          reading?: number;
+          /** @description Manga Completed */
+          completed?: number;
+          /** @description Manga On-Hold */
+          on_hold?: number;
+          /** @description Manga Dropped */
+          dropped?: number;
+          /** @description Manga Planned to Read */
+          plan_to_read?: number;
+          /** @description Total Manga entries on User list */
+          total_entries?: number;
+          /** @description Manga re-read */
+          reread?: number;
+          /** @description Number of Manga Chapters Read */
+          chapters_read?: number;
+          /** @description Number of Manga Volumes Read */
+          volumes_read?: number;
+        };
+        /** @description Favorite entries */
+        favorites?: {
+          /** @description Favorite Anime */
+          anime?: components["schemas"]["entry_meta"][];
+          /** @description Favorite Manga */
+          manga?: components["schemas"]["entry_meta"][];
+          /** @description Favorite Characters */
+          characters?: components["schemas"]["entry_meta"][];
+          /** @description Favorite People */
+          people?: components["schemas"]["entry_meta"][];
+        };
+        /** @description User About. NOTE: About information is customizable by users through BBCode on MyAnimeList. This means users can add multimedia content, different text sizes, etc. Due to this freeform, Jikan returns parsed HTML. Validate on your end! */
+        about?: string;
+      }[];
     };
     user_statistics: {
       data?: {
@@ -2087,22 +2225,27 @@ export interface components {
       };
     };
     /** @description Recommendations */
-    recommendations: ({
-      data?: ({
-          /** @description MAL IDs of recommendations is both of the MAL ID's with a `-` delimiter */
-          mal_id?: string;
-          /** @description Array of 2 entries that are being recommended to each other */
-          entry?: (components["schemas"]["anime_meta"] | components["schemas"]["manga_meta"])[];
-          /** @description Recommendation context provided by the user */
-          content?: string;
-          user?: components["schemas"]["user_by_id"];
-        })[];
-    }) & components["schemas"]["pagination"];
+    recommendations: {
+      data?: {
+        /** @description MAL IDs of recommendations is both of the MAL ID's with a `-` delimiter */
+        mal_id?: string;
+        /** @description Array of 2 entries that are being recommended to each other */
+        entry?: (
+          | components["schemas"]["anime_meta"]
+          | components["schemas"]["manga_meta"]
+        )[];
+        /** @description Recommendation context provided by the user */
+        content?: string;
+        user?: components["schemas"]["user_by_id"];
+      }[];
+    } & components["schemas"]["pagination"];
     /** @description Entry Recommendations Resource */
     entry_recommendations: {
-      data?: ({
-          entry?: components["schemas"]["anime_meta"] | components["schemas"]["manga_meta"];
-        })[];
+      data?: {
+        entry?:
+          | components["schemas"]["anime_meta"]
+          | components["schemas"]["manga_meta"];
+      }[];
     };
     manga_review: {
       /** @description MyAnimeList ID */
@@ -2185,60 +2328,60 @@ export interface components {
       episodes_watched?: number;
     };
     /** @description Anime Reviews Resource */
-    anime_reviews: ({
+    anime_reviews: {
       data?: ({
-          user?: components["schemas"]["user_meta"];
-        } & components["schemas"]["anime_review"])[];
-    }) & components["schemas"]["pagination"];
+        user?: components["schemas"]["user_meta"];
+      } & components["schemas"]["anime_review"])[];
+    } & components["schemas"]["pagination"];
     /** @description Manga Reviews Resource */
-    manga_reviews: ({
+    manga_reviews: {
       data?: ({
-          user?: components["schemas"]["user_meta"];
-        } & components["schemas"]["manga_review"])[];
-    }) & components["schemas"]["pagination"];
+        user?: components["schemas"]["user_meta"];
+      } & components["schemas"]["manga_review"])[];
+    } & components["schemas"]["pagination"];
     /** @description Streaming links */
     streaming_links: {
       data?: {
-          name?: string;
-          url?: string;
-        }[];
+        name?: string;
+        url?: string;
+      }[];
     };
     /** @description Anime User Updates Resource */
-    anime_userupdates: ({
-      data?: ({
-          user?: components["schemas"]["user_meta"];
-          /** @description User Score */
-          score?: number | null;
-          /** @description User list status */
-          status?: string;
-          /** @description Number of episodes seen */
-          episodes_seen?: number | null;
-          /** @description Total number of episodes */
-          episodes_total?: number | null;
-          /** @description Last updated date ISO8601 */
-          date?: string;
-        })[];
-    }) & components["schemas"]["pagination"];
+    anime_userupdates: {
+      data?: {
+        user?: components["schemas"]["user_meta"];
+        /** @description User Score */
+        score?: number | null;
+        /** @description User list status */
+        status?: string;
+        /** @description Number of episodes seen */
+        episodes_seen?: number | null;
+        /** @description Total number of episodes */
+        episodes_total?: number | null;
+        /** @description Last updated date ISO8601 */
+        date?: string;
+      }[];
+    } & components["schemas"]["pagination"];
     /** @description Manga User Updates Resource */
-    manga_userupdates: ({
-      data?: ({
-          user?: components["schemas"]["user_meta"];
-          /** @description User Score */
-          score?: number | null;
-          /** @description User list status */
-          status?: string;
-          /** @description Number of volumes read */
-          volumes_read?: number;
-          /** @description Total number of volumes */
-          volumes_total?: number;
-          /** @description Number of chapters read */
-          chapters_read?: number;
-          /** @description Total number of chapters */
-          chapters_total?: number;
-          /** @description Last updated date ISO8601 */
-          date?: string;
-        })[];
-    }) & components["schemas"]["pagination"];
+    manga_userupdates: {
+      data?: {
+        user?: components["schemas"]["user_meta"];
+        /** @description User Score */
+        score?: number | null;
+        /** @description User list status */
+        status?: string;
+        /** @description Number of volumes read */
+        volumes_read?: number;
+        /** @description Total number of volumes */
+        volumes_total?: number;
+        /** @description Number of chapters read */
+        chapters_read?: number;
+        /** @description Total number of chapters */
+        chapters_total?: number;
+        /** @description Last updated date ISO8601 */
+        date?: string;
+      }[];
+    } & components["schemas"]["pagination"];
   };
   responses: {
     /** @description Error: Bad request. When required parameters were not supplied. */
@@ -2270,7 +2413,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
   getAnimeFullById: {
     parameters: {
       path: {
@@ -2829,7 +2971,8 @@ export interface operations {
       /** @description Returns Club Members Resource */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & components["schemas"]["club_member"];
+          "application/json": components["schemas"]["pagination"] &
+            components["schemas"]["club_member"];
         };
       };
       /** @description Error: Bad request. When required parameters were not supplied. */
@@ -3551,7 +3694,16 @@ export interface operations {
       query?: {
         page?: components["parameters"]["page"];
         /** @description Filter by day */
-        filter?: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday" | "unknown" | "other";
+        filter?:
+          | "monday"
+          | "tuesday"
+          | "wednesday"
+          | "thursday"
+          | "friday"
+          | "saturday"
+          | "sunday"
+          | "unknown"
+          | "other";
         /** @description When supplied, it will filter entries with the `Kids` Genre Demographic. When supplied as `kids=true`, it will return only Kid entries and when supplied as `kids=false`, it will filter out any Kid entries. Defaults to `false`. */
         kids?: "true" | "false";
         /** @description 'Safe For Work'. When supplied, it will filter entries with the `Hentai` Genre. When supplied as `sfw=true`, it will return only SFW entries and when supplied as `sfw=false`, it will filter out any Hentai entries. Defaults to `false`. */
@@ -4005,17 +4157,20 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            data?: ({
-              data?: (({
-                  user?: components["schemas"]["user_meta"];
-                } & {
-                  anime?: components["schemas"]["anime_meta"];
-                } & components["schemas"]["anime_review"]) | ({
-                  user?: components["schemas"]["user_meta"];
-                } & {
-                  manga?: components["schemas"]["manga_meta"];
-                } & components["schemas"]["manga_review"]))[];
-            }) & components["schemas"]["pagination"];
+            data?: {
+              data?: (
+                | ({
+                    user?: components["schemas"]["user_meta"];
+                  } & {
+                    anime?: components["schemas"]["anime_meta"];
+                  } & components["schemas"]["anime_review"])
+                | ({
+                    user?: components["schemas"]["user_meta"];
+                  } & {
+                    manga?: components["schemas"]["manga_meta"];
+                  } & components["schemas"]["manga_review"])
+              )[];
+            } & components["schemas"]["pagination"];
           };
         };
       };
@@ -4255,17 +4410,20 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            data?: ({
-              data?: (({
-                  user?: components["schemas"]["user_meta"];
-                } & {
-                  anime?: components["schemas"]["anime_meta"];
-                } & components["schemas"]["anime_review"]) | ({
-                  user?: components["schemas"]["user_meta"];
-                } & {
-                  manga?: components["schemas"]["manga_meta"];
-                } & components["schemas"]["manga_review"]))[];
-            }) & components["schemas"]["pagination"];
+            data?: {
+              data?: (
+                | ({
+                    user?: components["schemas"]["user_meta"];
+                  } & {
+                    anime?: components["schemas"]["anime_meta"];
+                  } & components["schemas"]["anime_review"])
+                | ({
+                    user?: components["schemas"]["user_meta"];
+                  } & {
+                    manga?: components["schemas"]["manga_meta"];
+                  } & components["schemas"]["manga_review"])
+              )[];
+            } & components["schemas"]["pagination"];
           };
         };
       };

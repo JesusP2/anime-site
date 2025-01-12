@@ -1,3 +1,3 @@
-import { sqliteTableCreator } from 'drizzle-orm/sqlite-core';
+import { sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
-export const sqliteTable = sqliteTableCreator((name) => `anime_${name}`)
+export const sqliteTable = sqliteTableCreator((name) => `anime_${name}`);

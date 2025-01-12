@@ -16,7 +16,7 @@ export const auth = betterAuth({
     }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        console.log('send verification otp:', email, otp, type)
+        console.log("send verification otp:", email, otp, type);
         // Implement the sendVerificationOTP method to send the OTP to the user's email address
       },
     }),

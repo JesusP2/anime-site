@@ -388,12 +388,8 @@
           "name": "anime_account_user_id_anime_user_id_fk",
           "tableFrom": "anime_account",
           "tableTo": "anime_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -482,12 +478,8 @@
           "name": "anime_passkey_user_id_anime_user_id_fk",
           "tableFrom": "anime_passkey",
           "tableTo": "anime_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -559,9 +551,7 @@
       "indexes": {
         "anime_session_token_unique": {
           "name": "anime_session_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         }
       },
@@ -570,12 +560,8 @@
           "name": "anime_session_user_id_anime_user_id_fk",
           "tableFrom": "anime_session",
           "tableTo": "anime_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -640,9 +626,7 @@
       "indexes": {
         "anime_user_email_unique": {
           "name": "anime_user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -808,16 +792,12 @@
       "indexes": {
         "anime_character_mal_id_unique": {
           "name": "anime_character_mal_id_unique",
-          "columns": [
-            "mal_id"
-          ],
+          "columns": ["mal_id"],
           "isUnique": true
         },
         "anime_character_url_unique": {
           "name": "anime_character_url_unique",
-          "columns": [
-            "url"
-          ],
+          "columns": ["url"],
           "isUnique": true
         }
       },

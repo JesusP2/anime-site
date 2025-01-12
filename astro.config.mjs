@@ -43,6 +43,5 @@ export default defineConfig({
       REDIS_PASSWORD: envField.string({ context: "server", access: "secret" }),
     },
   },
-
-  integrations: [react(), tailwind({ applyBaseStyles: false, })],
+  integrations: [react(), tailwind({ applyBaseStyles: false })],
 });

@@ -1,6 +1,6 @@
-import { createClient } from '@libsql/client';
-import { drizzle } from 'drizzle-orm/libsql';
-import * as schema from './schemas';
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
+import * as schema from "./schemas";
 // import { DATABASE_TOKEN, DATABASE_URL } from 'astro:env/server';
 
 export const client = createClient({
@@ -11,4 +11,3 @@ export const client = createClient({
 });
 export const db = drizzle(client, { schema });
 export type DBSchema = typeof schema;
-

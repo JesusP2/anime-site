@@ -1,27 +1,33 @@
-import { useForm } from '@conform-to/react';
-import { parseWithZod } from '@conform-to/zod';
+import { useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Button, buttonVariants } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useState } from "react";
-import { signinSchema } from '@/lib/schemas';
+import { signinSchema } from "@/lib/schemas";
 
 export function SigninPage() {
   const [viewPass, setViewPass] = useState(false);
   const [lastResult, setLastResult] = useState(null);
   const [form, fields] = useForm({
     lastResult,
-    shouldValidate: 'onBlur',
-    shouldRevalidate: 'onBlur',
+    shouldValidate: "onBlur",
+    shouldRevalidate: "onBlur",
     onValidate: ({ formData }) => {
       return parseWithZod(formData, { schema: signinSchema });
     },
     onSubmit: async (e, context) => {
       e.preventDefault();
-      const res = await fetch('/api/auth/signin', {
-        method: 'POST',
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
         body: context.formData,
       });
       if (!res.ok) {
@@ -31,8 +37,8 @@ export function SigninPage() {
       }
     },
     defaultValue: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
   });
   return (
@@ -49,8 +55,8 @@ export function SigninPage() {
             <a
               href="/auth/google"
               className={cn(
-                buttonVariants({ variant: 'secondary' }),
-                'w-full flex gap-x-2',
+                buttonVariants({ variant: "secondary" }),
+                "w-full flex gap-x-2",
               )}
             >
               <svg
@@ -68,8 +74,8 @@ export function SigninPage() {
             <a
               href="/auth/github"
               className={cn(
-                buttonVariants({ variant: 'secondary' }),
-                'w-full flex gap-x-2',
+                buttonVariants({ variant: "secondary" }),
+                "w-full flex gap-x-2",
               )}
             >
               <svg
@@ -117,8 +123,7 @@ export function SigninPage() {
                     type="button"
                     onClick={() => setViewPass((prev) => !prev)}
                     className="hover:text-gray-600"
-                  >
-                  </button>
+                  ></button>
                 </div>
                 <a
                   href="/auth/forgot-password"
@@ -130,7 +135,7 @@ export function SigninPage() {
               <Input
                 id="password"
                 name="password"
-                type={viewPass ? 'text' : 'password'}
+                type={viewPass ? "text" : "password"}
                 required
                 minLength={8}
               />
@@ -142,14 +147,14 @@ export function SigninPage() {
               Sign in
             </Button>
             <a
-              className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+              className={cn(buttonVariants({ variant: "default" }), "w-full")}
               href="/auth/magic-link"
             >
               Sign in with magic link
             </a>
           </section>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <a href="/auth/signup" className="underline">
               Sign up
             </a>
@@ -157,6 +162,5 @@ export function SigninPage() {
         </CardContent>
       </Card>
     </form>
-
-  )
+  );
 }
