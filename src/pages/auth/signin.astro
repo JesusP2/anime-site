@@ -1,0 +1,105 @@
+---
+import '@/styles/global.css';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
+import { labelVariants } from '@/components/ui/label';
+import { inputVariants } from '@/components/ui/input';
+import AuthLayout from '@/layout/auth.astro';
+---
+<AuthLayout>
+  <h1 slot="card-title">Sign in</h1>
+  <h1 slot="card-description">
+            Sign in to your account using one of the options below
+  </h1>
+  <Fragment slot="card-content">
+          <section class="mb-4 flex flex-col gap-y-4">
+            <a
+              href="/auth/google"
+              class={cn(
+                buttonVariants({ variant: 'secondary' }),
+                'w-full flex gap-x-2',
+              )}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="currentColor"
+                viewBox="0 0 256 256"
+              >
+                <title>google icon</title>
+                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,16a88,88,0,0,1,73.72,40H128a48.08,48.08,0,0,0-45.6,33l-23.08-40A87.89,87.89,0,0,1,128,40Zm32,88a32,32,0,1,1-32-32A32,32,0,0,1,160,128ZM40,128a87.44,87.44,0,0,1,9.56-39.86L86.43,152c.06.1.13.19.19.28A48,48,0,0,0,137.82,175l-23.1,40A88.14,88.14,0,0,1,40,128Zm92.69,87.87L169.57,152c.08-.14.14-.28.22-.42a47.88,47.88,0,0,0-6-55.58H210a88,88,0,0,1-77.29,119.87Z" />
+              </svg>
+              Sign in with Google
+            </a>
+          </section>
+          <div class="relative py-4">
+            <div class="absolute inset-0 flex items-center">
+              <span class="w-full border-t" />
+            </div>
+            <div class="relative flex justify-center text-xs uppercase">
+              <span class="bg-white px-2 text-gray-500 dark:bg-gray-950 dark:text-gray-400">
+                Or sign in with email
+              </span>
+            </div>
+          </div>
+          <section class="grid gap-4">
+            <div class="grid gap-2">
+              <label class={labelVariants()} for="username">Username</label>
+              <input
+                class={inputVariants()}
+                id="username"
+                name="username"
+                placeholder="John Doe"
+                required
+                minlength={3}
+          class=""
+              />
+              <span class="text-sm text-red-500">
+              </span>
+            </div>
+            <div class="grid gap-2">
+              <div class="flex items-center">
+                <div class="flex items-center gap-x-4">
+                  <label class={labelVariants()} for="password">Password</label>
+                  <button
+                    type="button"
+                    class="hover:text-gray-600"
+                  >
+                  </button>
+                </div>
+                <a
+                  href="/auth/forgot-password"
+                  class="ml-auto inline-block text-sm underline"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+              <input
+                class={inputVariants()}
+                id="password"
+                name="password"
+                required
+                minlength={8}
+              />
+              <span class="text-sm text-red-500">
+              </span>
+            </div>
+            <button class={buttonVariants({ variant: 'default' })} type="submit" class="w-full">
+              Sign in
+            </button>
+            <a
+              class={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+              href="/auth/magic-link"
+            >
+              Sign in with magic link
+            </a>
+          </section>
+          <div class="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <a href="/auth/signup" class="underline">
+              Sign up
+            </a>
+          </div>
+  </Fragment>
+</AuthLayout>
