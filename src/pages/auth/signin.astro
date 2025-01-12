@@ -1,101 +1,102 @@
 ---
-import '@/styles/global.css';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
-import { labelVariants } from '@/components/ui/label';
-import { inputVariants } from '@/components/ui/input';
-import AuthLayout from '@/layout/auth.astro';
+import "@/styles/global.css";
+import { actions } from "astro:actions";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { labelVariants } from "@/components/ui/label";
+import { inputVariants } from "@/components/ui/input";
+import AuthLayout from "@/layout/auth.astro";
 import { RiGoogleFill } from "@remixicon/react";
 ---
-<AuthLayout>
+
+<AuthLayout title="Sign in">
   <h1 slot="card-title">Sign in</h1>
   <h1 slot="card-description">
-      Sign in to your account using one of the options below
+    Sign in to your account using one of the options below
   </h1>
   <Fragment slot="card-content">
-   <section class="mb-4 flex flex-col gap-y-4">
-     <a
-       href="/auth/google"
-       class={cn(
-         buttonVariants({ variant: 'outline' }),
-         'w-full flex gap-x-2',
-       )}
-     >
-       <RiGoogleFill
-         className="me-3 text-[#DB4437] dark:text-white/60"
-         size={16}
-         aria-hidden="true"
-       />
-       Login with Google
-     </a>
-   </section>
-   <div class="relative py-4">
-     <div class="absolute inset-0 flex items-center">
-       <span class="w-full border-t" />
-     </div>
-     <div class="relative flex justify-center text-xs uppercase">
-       <span class="bg-white px-2 text-gray-500 dark:bg-gray-950 dark:text-gray-400">
-         Or sign in with email
-       </span>
-     </div>
-   </div>
-   <section class="grid gap-4">
-     <div class="grid gap-2">
-       <label class={labelVariants()} for="username">Username</label>
-       <input
-         class={inputVariants()}
-         id="username"
-         name="username"
-         placeholder="John Doe"
-         required
-         minlength={3}
-   class=""
-       />
-       <span class="text-sm text-red-500">
-       </span>
-     </div>
-     <div class="grid gap-2">
-       <div class="flex items-center">
-         <div class="flex items-center gap-x-4">
-           <label class={labelVariants()} for="password">Password</label>
-           <button
-             type="button"
-             class="hover:text-gray-600"
-           >
-           </button>
-         </div>
-         <a
-           href="/auth/forgot-password"
-           class="ml-auto inline-block text-sm underline"
-         >
-           Forgot your password?
-         </a>
-       </div>
-       <input
-         class={inputVariants()}
-         id="password"
-         name="password"
-         required
-         minlength={8}
-       />
-       <span class="text-sm text-red-500">
-       </span>
-     </div>
-     <button class={buttonVariants({ variant: 'default' })} type="submit" class="w-full">
-       Sign in
-     </button>
-     <a
-       class={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-       href="/auth/magic-link"
-     >
-       Sign in with magic link
-     </a>
-   </section>
-   <div class="mt-4 text-center text-sm">
-     Don&apos;t have an account?{' '}
-     <a href="/auth/signup" class="underline">
-       Sign up
-     </a>
-   </div>
+    <section class="mb-4 flex flex-col gap-y-4">
+      <a
+        href="/auth/google"
+        class={cn(
+          buttonVariants({ variant: "outline" }),
+          "w-full flex gap-x-2",
+        )}
+      >
+        <RiGoogleFill
+          className="me-3 text-[#DB4437] dark:text-white/60"
+          size={16}
+          aria-hidden="true"
+        />
+        Login with Google
+      </a>
+    </section>
+    <section class="relative py-4">
+      <div class="absolute inset-0 flex items-center">
+        <span class="w-full border-t"></span>
+      </div>
+      <div class="relative flex justify-center text-xs uppercase">
+        <span
+          class="bg-white px-2 text-gray-500 dark:bg-gray-950 dark:text-gray-400"
+        >
+          Or sign in with email
+        </span>
+      </div>
+    </section>
+    <form method="POST" action={actions.auth.signUp}>
+      <section class="grid gap-4">
+        <div class="grid gap-2">
+          <label class={labelVariants()} for="username">Username</label>
+          <input
+            transition:persist
+            class={inputVariants()}
+            id="username"
+            name="username"
+            placeholder="John Doe"
+            required
+            minlength={3}
+            class=""
+          />
+          <span class="text-sm text-red-500"> </span>
+        </div>
+        <div class="grid gap-2">
+          <div class="flex items-center">
+            <div class="flex items-center gap-x-4">
+              <label class={labelVariants()} for="password">Password</label>
+              <button type="button" class="hover:text-gray-600"> </button>
+            </div>
+            <a
+              href="/auth/forgot-password"
+              class="ml-auto inline-block text-sm underline"
+            >
+              Forgot your password?
+            </a>
+          </div>
+          <input
+            transition:persist
+            class={inputVariants()}
+            id="password"
+            name="password"
+            type="password"
+            required
+            minlength={8}
+          />
+          <span class="text-sm text-red-500"> </span>
+        </div>
+        <button class={cn(buttonVariants({ variant: "default" }), "w-full")}>
+          Sign in
+        </button>
+        <a
+          class={cn(buttonVariants({ variant: "default" }), "w-full")}
+          href="/auth/magic-link"
+        >
+          Sign in with magic link
+        </a>
+      </section>
+    </form>
+    <section class="mt-4 text-center text-sm">
+      Don&apos;t have an account?{" "}
+      <a href="/auth/signup" class="underline"> Sign up </a>
+    </section>
   </Fragment>
 </AuthLayout>
