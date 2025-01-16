@@ -6,9 +6,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { labelVariants } from "@/components/ui/label";
 import { inputVariants } from "@/components/ui/input";
 import AuthLayout from "@/layout/auth.astro";
-import AuthLink from "@/components/auth-link.astro";
+import AuthLink from '@/components/auth-link.astro'
 import { Eye, EyeSlash } from '@phosphor-icons/react';
-const result = Astro.getActionResult(actions.auth.signIn);
+const result = Astro.getActionResult(actions.auth.signUp);
 const inputErrors = isInputError(result?.error) ? result.error.fields : {};
 const formError = isInputError(result?.error) ? null : result?.error?.message;
 if (Astro.locals.user) {
@@ -16,11 +16,9 @@ if (Astro.locals.user) {
 }
 ---
 
-<AuthLayout title="Login">
-  <h1 slot="card-title">Welcome back</h1>
-  <h1 slot="card-description">
-    Login using one of the options below
-  </h1>
+<AuthLayout title="Sign up">
+  <h1 slot="card-title">Sign up</h1>
+  <h1 slot="card-description">Get started by creating an account</h1>
   <Fragment slot="card-content">
     <section class="mb-4 flex flex-col gap-y-4">
       <button
@@ -42,11 +40,11 @@ if (Astro.locals.user) {
         <span
           class="bg-white px-2 text-gray-600 dark:bg-gray-950 dark:text-gray-400"
         >
-          Or continue with email
+          Or sign up via email
         </span>
       </div>
     </section>
-    <form method="POST" action={actions.auth.signIn}>
+    <form method="POST" action={actions.auth.signUp}>
       <section class="grid gap-4">
         <span class="text-sm text-red-500">{formError}</span>
         <div class="grid gap-2">
@@ -58,24 +56,19 @@ if (Astro.locals.user) {
             name="email"
             placeholder="example@gmail.com"
             required
+            class=""
           />
-          <span class="text-sm text-red-500"
-            >{inputErrors.email?.join(",")}</span
-          >
+          <span class="text-sm text-red-500">{inputErrors.email?.join(',')}</span>
         </div>
         <div class="grid gap-2">
           <div class="flex items-center">
             <div class="flex items-center gap-x-1">
               <label class={labelVariants()} for="password">Password</label>
               <button class="eye-btn" type="button" class="hover:text-gray-600"
-              >
-                <Eye className="eye-line" size={17} />
+                ><Eye className="eye-line" size={17} />
                 <EyeSlash className="eye-off-line hidden" size={17} />
               </button>
             </div>
-            <AuthLink href="/auth/forgot-password">
-              Forgot your password?
-            </AuthLink>
           </div>
           <input
             transition:persist
@@ -85,24 +78,18 @@ if (Astro.locals.user) {
             type="password"
             required
           />
-          <span class="text-sm text-red-500"
-            >{inputErrors.password?.join(",")}</span
-          >
+          <span class="text-sm text-red-500">{inputErrors.password?.join(',')}</span>
         </div>
         <button class={cn(buttonVariants({ variant: "default" }), "w-full")}>
-          Login
+          Sign up
         </button>
-        <a
-          class={cn(buttonVariants({ variant: "default" }), "w-full")}
-          href="/auth/magic-link"
-        >
-          Login with magic link
-        </a>
       </section>
     </form>
     <section class="mt-4 text-center text-sm">
       Don&apos;t have an account?{" "}
-      <AuthLink href="/auth/signup"> Sign up </AuthLink>
+      <AuthLink href="/auth/signin">
+        Login
+      </AuthLink>
     </section>
   </Fragment>
 </AuthLayout>

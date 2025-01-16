@@ -1,8 +1,7 @@
 import { ulid } from "ulidx";
-import { sqliteTable } from "./table";
-import { integer, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const character = sqliteTable("character", {
+export const characterTable = sqliteTable("character", {
   id: text("id", {
     length: 255,
   })

@@ -1,4 +1,4 @@
-CREATE TABLE `anime_anime` (
+CREATE TABLE `anime` (
 	`id` text(255) PRIMARY KEY NOT NULL,
 	`mal_id` integer,
 	`url` text,
@@ -40,7 +40,7 @@ CREATE TABLE `anime_anime` (
 	`updated_at` text
 );
 --> statement-breakpoint
-CREATE TABLE `anime_account` (
+CREATE TABLE `account` (
 	`id` text PRIMARY KEY NOT NULL,
 	`account_id` text NOT NULL,
 	`provider_id` text NOT NULL,
@@ -54,10 +54,10 @@ CREATE TABLE `anime_account` (
 	`password` text,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `anime_user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `anime_passkey` (
+CREATE TABLE `passkey` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text,
 	`public_key` text NOT NULL,
@@ -68,10 +68,10 @@ CREATE TABLE `anime_passkey` (
 	`backed_up` integer NOT NULL,
 	`transports` text,
 	`created_at` integer,
-	FOREIGN KEY (`user_id`) REFERENCES `anime_user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `anime_session` (
+CREATE TABLE `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`expires_at` integer NOT NULL,
 	`token` text NOT NULL,
@@ -80,22 +80,24 @@ CREATE TABLE `anime_session` (
 	`ip_address` text,
 	`user_agent` text,
 	`user_id` text NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `anime_user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `anime_session_token_unique` ON `anime_session` (`token`);--> statement-breakpoint
-CREATE TABLE `anime_user` (
+CREATE UNIQUE INDEX `session_token_unique` ON `session` (`token`);--> statement-breakpoint
+CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`email` text NOT NULL,
 	`email_verified` integer NOT NULL,
 	`image` text,
 	`created_at` integer NOT NULL,
-	`updated_at` integer NOT NULL
+	`updated_at` integer NOT NULL,
+	`username` text
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `anime_user_email_unique` ON `anime_user` (`email`);--> statement-breakpoint
-CREATE TABLE `anime_verification` (
+CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_username_unique` ON `user` (`username`);--> statement-breakpoint
+CREATE TABLE `verification` (
 	`id` text PRIMARY KEY NOT NULL,
 	`identifier` text NOT NULL,
 	`value` text NOT NULL,
@@ -104,7 +106,7 @@ CREATE TABLE `anime_verification` (
 	`updated_at` integer
 );
 --> statement-breakpoint
-CREATE TABLE `anime_character` (
+CREATE TABLE `character` (
 	`id` text(255) PRIMARY KEY NOT NULL,
 	`mal_id` integer,
 	`url` text,
@@ -121,9 +123,9 @@ CREATE TABLE `anime_character` (
 	`updated_at` text
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `anime_character_mal_id_unique` ON `anime_character` (`mal_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `anime_character_url_unique` ON `anime_character` (`url`);--> statement-breakpoint
-CREATE TABLE `anime_manga` (
+CREATE UNIQUE INDEX `character_mal_id_unique` ON `character` (`mal_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `character_url_unique` ON `character` (`url`);--> statement-breakpoint
+CREATE TABLE `manga` (
 	`id` text(255) PRIMARY KEY NOT NULL,
 	`mal_id` integer,
 	`url` text(255),

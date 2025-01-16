@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "cc2193e2-9351-4e2b-b0b0-f32d2b584970",
+  "id": "326a9d4c-6d1d-4595-a288-57011bbd29e5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "anime_anime": {
-      "name": "anime_anime",
+    "anime": {
+      "name": "anime",
       "columns": {
         "id": {
           "name": "id",
@@ -287,8 +287,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_account": {
-      "name": "anime_account",
+    "account": {
+      "name": "account",
       "columns": {
         "id": {
           "name": "id",
@@ -384,12 +384,16 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "anime_account_user_id_anime_user_id_fk": {
-          "name": "anime_account_user_id_anime_user_id_fk",
-          "tableFrom": "anime_account",
-          "tableTo": "anime_user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -398,8 +402,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_passkey": {
-      "name": "anime_passkey",
+    "passkey": {
+      "name": "passkey",
       "columns": {
         "id": {
           "name": "id",
@@ -474,12 +478,16 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "anime_passkey_user_id_anime_user_id_fk": {
-          "name": "anime_passkey_user_id_anime_user_id_fk",
-          "tableFrom": "anime_passkey",
-          "tableTo": "anime_user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+        "passkey_user_id_user_id_fk": {
+          "name": "passkey_user_id_user_id_fk",
+          "tableFrom": "passkey",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -488,8 +496,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_session": {
-      "name": "anime_session",
+    "session": {
+      "name": "session",
       "columns": {
         "id": {
           "name": "id",
@@ -549,19 +557,25 @@
         }
       },
       "indexes": {
-        "anime_session_token_unique": {
-          "name": "anime_session_token_unique",
-          "columns": ["token"],
+        "session_token_unique": {
+          "name": "session_token_unique",
+          "columns": [
+            "token"
+          ],
           "isUnique": true
         }
       },
       "foreignKeys": {
-        "anime_session_user_id_anime_user_id_fk": {
-          "name": "anime_session_user_id_anime_user_id_fk",
-          "tableFrom": "anime_session",
-          "tableTo": "anime_user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -570,8 +584,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_user": {
-      "name": "anime_user",
+    "user": {
+      "name": "user",
       "columns": {
         "id": {
           "name": "id",
@@ -621,12 +635,28 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
-        "anime_user_email_unique": {
-          "name": "anime_user_email_unique",
-          "columns": ["email"],
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        },
+        "user_username_unique": {
+          "name": "user_username_unique",
+          "columns": [
+            "username"
+          ],
           "isUnique": true
         }
       },
@@ -635,8 +665,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_verification": {
-      "name": "anime_verification",
+    "verification": {
+      "name": "verification",
       "columns": {
         "id": {
           "name": "id",
@@ -687,8 +717,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_character": {
-      "name": "anime_character",
+    "character": {
+      "name": "character",
       "columns": {
         "id": {
           "name": "id",
@@ -790,14 +820,18 @@
         }
       },
       "indexes": {
-        "anime_character_mal_id_unique": {
-          "name": "anime_character_mal_id_unique",
-          "columns": ["mal_id"],
+        "character_mal_id_unique": {
+          "name": "character_mal_id_unique",
+          "columns": [
+            "mal_id"
+          ],
           "isUnique": true
         },
-        "anime_character_url_unique": {
-          "name": "anime_character_url_unique",
-          "columns": ["url"],
+        "character_url_unique": {
+          "name": "character_url_unique",
+          "columns": [
+            "url"
+          ],
           "isUnique": true
         }
       },
@@ -806,8 +840,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "anime_manga": {
-      "name": "anime_manga",
+    "manga": {
+      "name": "manga",
       "columns": {
         "id": {
           "name": "id",

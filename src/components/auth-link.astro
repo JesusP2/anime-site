@@ -1,0 +1,16 @@
+---
+interface Props {
+  href: string;
+}
+const { href } = Astro.props;
+---
+
+<a
+  href={href}
+  class="ml-auto inline-block text-sm group transition duration-300"
+>
+  <slot />
+  <span
+    class="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[1px] bg-stone-800"
+  ></span>
+</a>

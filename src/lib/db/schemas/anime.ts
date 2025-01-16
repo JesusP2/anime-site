@@ -1,8 +1,7 @@
-import { integer, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { ulid } from "ulidx";
-import { sqliteTable } from "./table";
 
-export const anime = sqliteTable("anime", {
+export const animeTable = sqliteTable("anime", {
   id: text("id", {
     length: 255,
   })
