@@ -6,14 +6,16 @@ interface Props {
   description?: string;
 }
 const { title, description } = Astro.props;
+const user = Astro.locals.user;
 ---
 
 <html lang="en">
   <Head title={title} description={description} />
   <body>
-    <main>
-      <AppSidebar client:load />
-      <slot />
+    <main class="p-4">
+      <AppSidebar user={user} client:load>
+        <slot />
+      </AppSidebar>
     </main>
   </body>
 </html>

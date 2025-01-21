@@ -1,7 +1,13 @@
 ---
-import MainLayout from '@/layout/main.astro'
----
-<MainLayout title="title">
-  hi
-</MainLayout>
+import MainLayout from "@/layout/main.astro";
+import { AnimeCard } from "@/components/anime-card";
+import { jikanClient } from "@/lib/api/jikan.client";
 
+const res = await jikanClient.GET("/seasons/now");
+---
+
+<MainLayout title="title">
+  <div class="grid auto-fill-grid gap-6 px-10">
+    {res?.data?.data?.map((anime) => <AnimeCard client:load anime={anime} />)}
+  </div>
+</MainLayout>

@@ -27,15 +27,12 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  SidebarInset,
 } from "@/components/ui/sidebar"
+import { buttonVariants } from "./ui/button"
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -159,7 +156,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ children, user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string; image?: string; } }) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" {...props}>
@@ -180,11 +177,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavProjects projects={data.projects} />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          {user ? <NavUser user={user} /> : (
+            <a className={buttonVariants()} href="/auth/signin">
+              Login
+            </a>
+          )}
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      <SidebarTrigger />
+      <SidebarInset>
+        <SidebarTrigger />
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   )
 }

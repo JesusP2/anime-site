@@ -100,3 +100,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
+.auto-fill-grid {
+  grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+}
