@@ -1,13 +1,28 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
+import { Carousel } from "@/components/carousel";
 import { jikanClient } from "@/lib/api/jikan.client";
 
-const res = await jikanClient.GET("/seasons/now");
+console.log(Astro.url.searchParams.get("page"));
+const res = await jikanClient.GET("/seasons/now", {
+  params: {
+    query: {
+      page: 4,
+    },
+  },
+});
+const res2 = await jikanClient.GET("/top/anime", {
+  params: {
+    query: {
+      filter: "airing",
+      limit: 25,
+    },
+  },
+});
+console.log(res2.data?.data);
 ---
 
 <MainLayout title="title">
-  <div class="grid auto-fill-grid gap-6 px-10">
-    {res?.data?.data?.map((anime) => <AnimeCard client:load anime={anime} />)}
-  </div>
+  <Carousel animes={res2?.data?.data} client:load />
 </MainLayout>

@@ -1,10 +1,9 @@
 import { MagicCard } from "@/components/ui/magic-card";
 import type { components } from "@/lib/api/jikan.openapi";
-import { idxToMonth } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, FilmStrip, TelevisionSimple, Calendar, Clock } from '@phosphor-icons/react'
+import { Star } from '@phosphor-icons/react'
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
+import { AiringStatus } from "./airing-status";
 
 export function AnimeCard({ anime }: { anime: components['schemas']['anime_full'] }) {
   const animeTitle = anime.titles?.find(title => title.type === 'English')?.title || anime.titles?.find(title => title.type === 'Default')?.title
@@ -35,7 +34,7 @@ export function AnimeCard({ anime }: { anime: components['schemas']['anime_full'
           <section>
             <h3
               title={animeTitle}
-              className="text-xl truncate font-bold"
+              className="text-lg truncate font-bold"
             >
               {animeTitle}
             </h3>
@@ -56,12 +55,12 @@ export function AnimeCard({ anime }: { anime: components['schemas']['anime_full'
               </div>
               <p className="text-sm text-stone-600">{anime.scored_by} users</p>
             </div>
-              <div>
-                <div className="flex gap-x-2 items-center">
-                  {anime.rank ? <p>#{anime.rank}</p> : <p>N/A</p>}
+            <div>
+              <div className="flex gap-x-2 items-center">
+                {anime.rank ? <p>#{anime.rank}</p> : <p>N/A</p>}
               </div>
-                <p className="text-sm text-stone-600">Ranking</p>
-              </div>
+              <p className="text-sm text-stone-600">Ranking</p>
+            </div>
           </section>
           <section className="flex gap-x-2">
             {anime.genres?.slice(0, 2).map(genre => (<Badge key={genre.mal_id} variant="outline"><p className="text-ellipsis truncate max-w-24">{genre.name}</p></Badge>))}
@@ -73,28 +72,5 @@ export function AnimeCard({ anime }: { anime: components['schemas']['anime_full'
         </div>
       </article>
     </MagicCard>
-  );
-}
-
-function AiringStatus({ anime }: { anime: components['schemas']['anime_full'] }) {
-  const getStatusStyle = () => {
-    switch (anime.status?.toLowerCase()) {
-      case 'currently airing':
-        return 'border-green-600 text-green-600'
-      case 'finished airing':
-        return 'border-stone-400 text-stone-600'
-      case 'not yet aired':
-        return 'border-blue-600 text-blue-600'
-      default:
-        return 'border-stone-400 text-stone-600';
-    }
-  };
-
-  const statusStyle = getStatusStyle();
-
-  return (
-    <div className={`border px-2 py-1 inline-block rounded-md text-sm ${statusStyle}`}>
-      {anime.status}
-    </div>
   );
 }
