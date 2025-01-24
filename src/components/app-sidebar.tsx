@@ -1,5 +1,5 @@
 import * as React from "react"
-import { SealCheck, Trash, CalendarCheck, MonitorPlay, PauseCircle, CheckCircle, TelevisionSimple, Book } from '@phosphor-icons/react'
+import { SealCheck, Trash, CalendarCheck, MonitorPlay, PauseCircle, CheckCircle, TelevisionSimple, Book, Leaf, MagnifyingGlass } from '@phosphor-icons/react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/sidebar"
 import { buttonVariants } from "./ui/button"
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -30,10 +29,12 @@ const data = {
         {
           title: "Current season",
           url: "/seasons/now",
+          icon: Leaf,
         },
         {
           title: "Search",
           url: "/seasons/search",
+          icon: MagnifyingGlass,
         },
       ],
     },

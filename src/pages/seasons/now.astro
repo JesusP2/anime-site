@@ -1,6 +1,7 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
+import { Typography } from "@/components/ui/typography";
 import { jikanClient } from "@/lib/api/jikan.client";
 
 const res = await jikanClient.GET("/top/anime", {
@@ -14,6 +15,7 @@ const res = await jikanClient.GET("/top/anime", {
 ---
 
 <MainLayout title="title">
+  <Typography variant="h1">CURRENT SEASON</Typography>
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
     {res?.data?.data?.map((anime) => <AnimeCard client:load anime={anime} />)}
   </div>
