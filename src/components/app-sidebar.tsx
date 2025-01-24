@@ -156,7 +156,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ children, user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string; image?: string; } }) {
+export function AppSidebar({ children, user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string; image?: string; } | null }) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" {...props}>

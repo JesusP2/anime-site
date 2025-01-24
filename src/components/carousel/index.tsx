@@ -1,33 +1,39 @@
 import type { components } from "@/lib/api/jikan.openapi";
 import { CarouselCard } from "./card";
 import { useEffect, useRef, useState } from "react";
-
 const cardWidth = 225;
+const gapBetweenCards = 16;
 export function Carousel({ animes }: { animes: components['schemas']['anime_full'][] }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pages, setPages] = useState(1);
-  const [translateRate, setTranslateRate] = useState(0);
-  const [totalTranslate, setTotalTranslate] = useState(0);
+  const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [translateWindow, setTranslateWindow] = useState(0);
+  const [totalTranslate, setTotalTranslate] = useState(0);
+
+  function handleResize() {
+    const containerWidth = containerRef.current?.clientWidth;
+    if (!containerWidth) return;
+    const minTotal = Math.floor((containerWidth + gapBetweenCards) / (cardWidth + gapBetweenCards));
+    const pages = Math.ceil(animes.length / minTotal) - 1;
+    const translateWindow = 100 + gapBetweenCards / containerWidth * 100;
+    setPages(pages);
+    setTranslateWindow(translateWindow)
+    setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
+    setTotalTranslate((pages - 1) * translateWindow + (animes.length - pages * minTotal) / minTotal * translateWindow)
+    if (currentIndex > pages) {
+      setCurrentIndex(pages - 1);
+    }
+  }
 
   useEffect(() => {
-    function calculateTranslateRate(containerWidth: number) {
-      const completeCards = Math.floor(containerWidth / (cardWidth + 16));
-      const translateRate = completeCards * (cardWidth + 16) / containerWidth;
-      return translateRate;
-    }
-    function handleResize() {
-      const containerWidth = containerRef.current?.clientWidth || 0;
-      const translateRate = calculateTranslateRate(containerWidth);
-      const total = (cardWidth + 16) * animes.length - 16;
-      setTotalTranslate(Math.round((total / containerWidth * 100 - 100) * 100) / 100);
-      setTranslateRate(translateRate * 100);
-      setPages(Math.floor(total / (containerWidth * translateRate)));
-    }
     handleResize();
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize);
-  }, [])
+    const controller = new AbortController();
+    window.addEventListener('resize', handleResize, {
+      signal: controller.signal,
+    })
+    return () => controller.abort();
+  }, [pages])
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
@@ -45,7 +51,7 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
     if (currentIndex === pages) {
       return totalTranslate;
     } else {
-      return currentIndex * translateRate;
+      return currentIndex * translateWindow;
     }
   }
 
@@ -56,11 +62,11 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
         <p>View more</p>
       </div>
       <div className="w-full h-[1px] bg-neutral-300" />
-      <div ref={containerRef} className="overflow-hidden flex gap-x-4 my-2">
+      <div ref={containerRef} className="overflow-hidden flex gap-x-4 my-2 w-full">
         <div className="flex gap-x-4 my-2 transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${calculateTranslate()}%)` }}>
           {animes.map((anime, idx) => (
             <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-              <CarouselCard anime={anime} />
+              <CarouselCard anime={anime} width={width} />
             </div>
           ))}
         </div>

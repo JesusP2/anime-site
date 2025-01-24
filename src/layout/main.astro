@@ -12,7 +12,7 @@ const user = Astro.locals.user;
 <html lang="en">
   <Head title={title} description={description} />
   <body>
-    <main class="p-4">
+    <main class="px-4">
       <AppSidebar user={user} client:load>
         <slot />
       </AppSidebar>

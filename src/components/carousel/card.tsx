@@ -4,15 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Star } from '@phosphor-icons/react'
 import { AiringStatus } from "../airing-status";
 
-export function CarouselCard({ anime }: { anime: components['schemas']['anime_full'] }) {
+export function CarouselCard({ anime, width }: { anime: components['schemas']['anime_full']; width: number }) {
   const animeTitle = anime.titles?.find(title => title.type === 'English')?.title || anime.titles?.find(title => title.type === 'Default')?.title
   return (
-    <article className="flex gap-x-4 max-w-[15rem] group">
+    <article className="group">
       <section className="h-[15rem] overflow-hidden rounded-md relative">
         <img
           loading="lazy"
+          width={width}
           className="duration-200 group-hover:scale-110 object-cover"
-          src={anime.images?.webp?.image_url || ''}
+          style={{ width }}
+          src={anime.images?.webp?.large_image_url || ''}
           alt={animeTitle}
         />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 to-transparent" />
