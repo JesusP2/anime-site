@@ -11,7 +11,7 @@ import * as React from "react"
 //   Settings2,
 //   SquareTerminal,
 // } from "lucide-react"
-import { SealCheck } from '@phosphor-icons/react'
+import { SealCheck, Trash, CalendarCheck, MonitorPlay, PauseCircle, CheckCircle, TelevisionSimple, Book } from '@phosphor-icons/react'
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -33,126 +33,87 @@ import { buttonVariants } from "./ui/button"
 
 // This is sample data.
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      icon: SealCheck,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      icon: SealCheck,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      icon: SealCheck,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
+      title: "Seasons",
       url: "#",
       icon: SealCheck,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Current season",
+          url: "/seasons/now",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Search",
+          url: "/seasons/search",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Animes",
       url: "#",
-      icon: SealCheck,
+      icon: TelevisionSimple,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Completed",
+          url: "/animes/completed",
+          icon: CheckCircle,
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Planned to Watch",
+          url: "/animes/planned",
+          icon: CalendarCheck,
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Dropped",
+          url: "/animes/dropped",
+          icon: Trash,
+        },
+        {
+          title: "Watching",
+          url: "/animes/watching",
+          icon: MonitorPlay,
+        },
+        {
+          title: "On Hold",
+          url: "/animes/on-hold",
+          icon: PauseCircle,
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Mangas",
       url: "#",
-      icon: SealCheck,
+      icon: Book,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Completed",
+          url: "/mangas/completed",
+          icon: CheckCircle,
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Planned to Watch",
+          url: "/mangas/planned",
+          icon: CalendarCheck,
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Dropped",
+          url: "/mangas/dropped",
+          icon: Trash,
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "Watching",
+          url: "/mangas/watching",
+          icon: MonitorPlay,
+        },
+        {
+          title: "On Hold",
+          url: "/mangas/on-hold",
+          icon: PauseCircle,
         },
       ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: SealCheck,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: SealCheck,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: SealCheck,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: SealCheck,
-    },
+    }
   ],
 }
 
@@ -174,7 +135,6 @@ export function AppSidebar({ children, user, ...props }: React.ComponentProps<ty
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
-          <NavProjects projects={data.projects} />
         </SidebarContent>
         <SidebarFooter>
           {user ? <NavUser user={user} /> : (

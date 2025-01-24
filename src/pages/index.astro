@@ -1,6 +1,5 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { AnimeCard } from "@/components/anime-card";
 import { Carousel } from "@/components/carousel";
 import { jikanClient } from "@/lib/api/jikan.client";
 
@@ -8,7 +7,7 @@ console.log(Astro.url.searchParams.get("page"));
 const res = await jikanClient.GET("/seasons/now", {
   params: {
     query: {
-      page: 4,
+      page: 1,
     },
   },
 });
@@ -24,5 +23,5 @@ console.log(res2.data?.data);
 ---
 
 <MainLayout title="title">
-  <Carousel animes={res2?.data?.data} client:load />
+  <Carousel animes={res?.data?.data} client:load />
 </MainLayout>

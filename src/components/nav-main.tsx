@@ -20,13 +20,14 @@ export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: Icon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: Icon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
+      title: string;
+      url: string;
+      icon: string;
     }[]
   }[]
 }) {
@@ -55,6 +56,7 @@ export function NavMain({
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
                         <a href={subItem.url}>
+                          {subItem.icon && <subItem.icon />}
                           <span>{subItem.title}</span>
                         </a>
                       </SidebarMenuSubButton>

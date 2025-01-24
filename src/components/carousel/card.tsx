@@ -8,11 +8,11 @@ export function CarouselCard({ anime, width }: { anime: components['schemas']['a
   const animeTitle = anime.titles?.find(title => title.type === 'English')?.title || anime.titles?.find(title => title.type === 'Default')?.title
   return (
     <article className="group">
-      <section className="h-[15rem] overflow-hidden rounded-md relative">
+      <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
         <img
           loading="lazy"
           width={width}
-          className="duration-200 group-hover:scale-110 object-cover"
+          className="duration-200 group-hover:scale-125 object-cover"
           style={{ width }}
           src={anime.images?.webp?.large_image_url || ''}
           alt={animeTitle}

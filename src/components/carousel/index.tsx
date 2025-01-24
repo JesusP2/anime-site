@@ -1,6 +1,7 @@
 import type { components } from "@/lib/api/jikan.openapi";
 import { CarouselCard } from "./card";
 import { useEffect, useRef, useState } from "react";
+import { buttonVariants } from "../ui/button";
 const cardWidth = 225;
 const gapBetweenCards = 16;
 export function Carousel({ animes }: { animes: components['schemas']['anime_full'][] }) {
@@ -58,8 +59,8 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
   return (
     <div className="relative w-full mx-auto">
       <div className="flex items-center justify-between">
-        <p>Current season</p>
-        <p>View more</p>
+        <h2 className="text-xl font-bold font-gabarito font-medium">Current season</h2>
+        <a href="/seasons/now" className={buttonVariants({ variant: 'link' })}>View more</a>
       </div>
       <div className="w-full h-[1px] bg-neutral-300" />
       <div ref={containerRef} className="overflow-hidden flex gap-x-4 my-2 w-full">

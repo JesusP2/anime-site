@@ -9,7 +9,7 @@ export function AnimeCard({ anime }: { anime: components['schemas']['anime_full'
   const animeTitle = anime.titles?.find(title => title.type === 'English')?.title || anime.titles?.find(title => title.type === 'Default')?.title
   return (
     <MagicCard
-      className="cursor-pointer h-48 w-[27rem] shadow-2xl overflow-hidden"
+      className="cursor-pointer h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
       gradientColor={"#D9D9D955"}
     >
       <article className="p-2 flex gap-x-4">
