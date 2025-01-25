@@ -44,7 +44,7 @@ export function AnimeCard({ data }: { data: components['schemas']['anime_full'] 
               {data.season ? `${data.season} - ${data.year}` : `${data.aired?.prop?.from?.year}`}
             </Badge>
             <Badge className="w-26 truncate">
-              {data.episodes} episodes
+              {data.episodes ? `${data.episodes} episodes` : "N/A"}
             </Badge>
           </section>
           <section className="flex gap-x-6 [&_p]:leading-4 my-3">
