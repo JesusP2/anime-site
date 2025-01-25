@@ -2,21 +2,55 @@
 import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
 import { Typography } from "@/components/ui/typography";
+import { MainPagination } from "@/components/pagination";
+import { SearchWithFilters } from "@/components/search";
 import { jikanClient } from "@/lib/api/jikan.client";
+import { db } from "@/lib/db/pool";
+import { animeTable } from "@/lib/db/schemas";
+import { and, count, eq } from "drizzle-orm";
+import { parseRecord } from "@/lib/db/parse-record";
 
+const url = new URL(Astro.request.url);
+const _currentPage = url.searchParams.get("page") || "1";
+const currentPage = isNaN(parseInt(_currentPage || ""))
+  ? 1
+  : parseInt(_currentPage);
 const res = await jikanClient.GET("/top/anime", {
   params: {
     query: {
       filter: "airing",
       limit: 25,
+      page: currentPage,
     },
   },
 });
+const animesPerPage = 25;
+const [animesCount] = await db
+  .select({ count: count() })
+  .from(animeTable)
+  .where(and(eq(animeTable.season, "winter"), eq(animeTable.year, 2025)));
+const yo = await db
+  .select()
+  .from(animeTable)
+  .where(and(eq(animeTable.season, "winter"), eq(animeTable.year, 2025)))
+  .offset(animesPerPage * (currentPage - 1))
+  .limit(animesPerPage);
+const yo2 = yo.map(anime => parseRecord({ type: "anime", record: anime }));
+console.log(yo2.length)
 ---
 
 <MainLayout title="title">
   <Typography variant="h1">CURRENT SEASON</Typography>
+  <SearchWithFilters client:load />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {res?.data?.data?.map((anime) => <AnimeCard client:load anime={anime} />)}
+    {yo2?.map((item) => <AnimeCard data={item} client:load />)}
+  </div>
+  <div class="flex justify-center my-6">
+    <MainPagination
+      url="/seasons/now"
+      lastVisiblePage={Math.ceil(animesCount?.count / animesPerPage)}
+      currentPage={currentPage}
+      client:load
+    />
   </div>
 </MainLayout>
