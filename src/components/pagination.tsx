@@ -9,9 +9,7 @@ import {
 
 const page = 2;
 export function MainPagination({ currentPage, url, lastVisiblePage }: { currentPage: number; url: string; lastVisiblePage: number }) {
-  console.log('before tabs:', lastVisiblePage, currentPage)
   const tabs: (string | number)[] = Array(lastVisiblePage).fill(0).map((_, idx) => idx + 1);
-  console.log('tabs:', tabs)
   if (lastVisiblePage - currentPage > 3) {
     tabs.splice(currentPage + 2, lastVisiblePage - currentPage - 3 < 0 ? 0 : lastVisiblePage - currentPage - 3, '...');
   }
