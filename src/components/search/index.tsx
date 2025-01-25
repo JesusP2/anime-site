@@ -9,10 +9,26 @@ import { Funnel } from "@phosphor-icons/react";
 import type { SearchFilter } from "@/lib/types";
 import { objectEntries } from "@/lib/utils";
 
-export function SearchWithFilters<T extends Record<string, SearchFilter>>({ options }: { options: T }) {
+export function SearchWithFilters<T extends Record<string, SearchFilter>>({
+  options,
+}: {
+  options: T;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); 
-  const [filters, setFilters] = useState(objectEntries(options).reduce((acc, [key, value]) => ({ ...acc, [key]: value.type === 'radio' ? value.options[0]?.value : [] }), {}) as { [K in keyof T]: T[K]['type'] extends 'radio' ? string | boolean : T[K]["options"][number]['value'][] });
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filters, setFilters] = useState(
+    objectEntries(options).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: value.type === "radio" ? value.options[0]?.value : [],
+      }),
+      {},
+    ) as {
+      [K in keyof T]: T[K]["type"] extends "radio"
+        ? string | boolean
+        : T[K]["options"][number]["value"][];
+    },
+  );
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -25,7 +41,7 @@ export function SearchWithFilters<T extends Record<string, SearchFilter>>({ opti
     return objectEntries(filters).reduce((acc, [key, value]) => {
       if (!Array.isArray(value)) {
         return acc + 1;
-      } else if  (value.length > 0) {
+      } else if (value.length > 0) {
         return acc + 1;
       }
       return acc;

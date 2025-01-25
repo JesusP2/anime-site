@@ -7,8 +7,8 @@ import {
   DialogFooter,
   DialogContent,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { SearchFilter } from "@/lib/types";
 import { MultiSelect } from "./multi-select";
 import { objectEntries } from "@/lib/utils";
@@ -23,8 +23,18 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
   isOpen: boolean;
   onClose: () => void;
   options: T;
-  filters: { [K in keyof T]: T[K]['type'] extends 'radio' ? string | boolean : T[K]["options"][number]['value'][] };
-  setFilters: Dispatch<SetStateAction<{ [K in keyof T]: T[K]['type'] extends 'radio' ? string | boolean : T[K]["options"][number]['value'][] }>>;
+  filters: {
+    [K in keyof T]: T[K]["type"] extends "radio"
+      ? string | boolean
+      : T[K]["options"][number]["value"][];
+  };
+  setFilters: Dispatch<
+    SetStateAction<{
+      [K in keyof T]: T[K]["type"] extends "radio"
+        ? string | boolean
+        : T[K]["options"][number]["value"][];
+    }>
+  >;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -34,18 +44,18 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {objectEntries(options).map(([key, { type, options, label }]) => {
-            if (type === 'radio') {
+            if (type === "radio") {
               return (
                 <RadioGroupFilters
                   key={label}
                   options={options}
                   value={filters[key] as string | boolean}
                   onChange={(value) =>
-                    setFilters(prev => ({ ...prev, [key]: value }))
+                    setFilters((prev) => ({ ...prev, [key]: value }))
                   }
                   label={label}
                 />
-              )
+              );
             } else {
               return (
                 <MultiSelect
@@ -54,11 +64,11 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
                   placeholder={`Select ${label}`}
                   value={filters[key] as any}
                   onChange={(value) =>
-                    setFilters(prev => ({ ...prev, [key]: value }))
+                    setFilters((prev) => ({ ...prev, [key]: value }))
                   }
                   label={label}
                 />
-              )
+              );
             }
           })}
         </div>
@@ -73,18 +83,28 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
   );
 }
 
-function RadioGroupFilters({ label, options, value, onChange }: { label: string; options: { label: string; value: string }[]; value: string | boolean; onChange: (value: string | boolean) => void; }) {
+function RadioGroupFilters({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: { label: string; value: string }[];
+  value: string | boolean;
+  onChange: (value: string | boolean) => void;
+}) {
   return (
     <RadioGroup value={value as string} onValueChange={onChange}>
-      <Label className="text-black">
-        {label}
-      </Label>
+      <Label className="text-black">{label}</Label>
       {options.map((option) => (
         <div key={option.value} className="flex items-center space-x-2">
           <RadioGroupItem value={option.value} id={option.value.toString()} />
-          <Label htmlFor={option.value.toString()} className="text-neutral-800">{option.label}</Label>
+          <Label htmlFor={option.value.toString()} className="text-neutral-800">
+            {option.label}
+          </Label>
         </div>
       ))}
     </RadioGroup>
-  )
+  );
 }

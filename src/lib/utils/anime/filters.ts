@@ -142,7 +142,7 @@ export const animeFilters = {
   },
   sfw: {
     label: "SFW",
-    type: 'radio',
+    type: "radio",
     options: [
       { label: "Yes", value: true },
       { label: "No", value: false },
@@ -150,7 +150,7 @@ export const animeFilters = {
   },
   orderBy: {
     label: "Order By",
-    type: 'radio',
+    type: "radio",
     options: [
       { label: "Title", value: "title" },
       { label: "Start Date", value: "start_date" },
@@ -165,7 +165,7 @@ export const animeFilters = {
   },
   sort: {
     label: "Sort",
-    type: 'radio',
+    type: "radio",
     options: [
       { label: "Ascending", value: "asc" },
       { label: "Descending", value: "desc" },
