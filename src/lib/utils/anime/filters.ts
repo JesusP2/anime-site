@@ -18,13 +18,6 @@ export const stringifiedAnimeKeys = [
 ];
 
 export const animeFilters = {
-  sfw: {
-    label: "SFW",
-    options: [
-      { label: "Yes", value: true },
-      { label: "No", value: false },
-    ],
-  },
   status: {
     label: "Status",
     options: [
@@ -62,27 +55,6 @@ export const animeFilters = {
       },
       { label: "R+ - Mild Nudity", value: "R+ - Mild Nudity" },
       { label: "Rx - Hentai", value: "Rx - Hentai" },
-    ],
-  },
-  orderBy: {
-    label: "Order By",
-    options: [
-      { label: "Title", value: "title" },
-      { label: "Start Date", value: "start_date" },
-      { label: "End Date", value: "end_date" },
-      { label: "Episodes", value: "episodes" },
-      { label: "Score", value: "score" },
-      { label: "Scored By", value: "scored_by" },
-      { label: "Rank", value: "rank" },
-      { label: "Popularity", value: "popularity" },
-      { label: "Favorites", value: "favorites" },
-    ],
-  },
-  sort: {
-    label: "Sort",
-    options: [
-      { label: "Descending", value: "desc" },
-      { label: "Ascending", value: "asc" },
     ],
   },
   genres: {
@@ -166,6 +138,37 @@ export const animeFilters = {
       { label: "Seinen", value: "seinen" },
       { label: "Shoujo", value: "shoujo" },
       { label: "Shounen", value: "shounen" },
+    ],
+  },
+  sfw: {
+    label: "SFW",
+    type: 'radio',
+    options: [
+      { label: "Yes", value: true },
+      { label: "No", value: false },
+    ],
+  },
+  orderBy: {
+    label: "Order By",
+    type: 'radio',
+    options: [
+      { label: "Title", value: "title" },
+      { label: "Start Date", value: "start_date" },
+      { label: "End Date", value: "end_date" },
+      { label: "Episodes", value: "episodes" },
+      { label: "Score", value: "score" },
+      { label: "Scored By", value: "scored_by" },
+      { label: "Rank", value: "rank" },
+      { label: "Popularity", value: "popularity" },
+      { label: "Favorites", value: "favorites" },
+    ],
+  },
+  sort: {
+    label: "Sort",
+    type: 'radio',
+    options: [
+      { label: "Ascending", value: "asc" },
+      { label: "Descending", value: "desc" },
     ],
   },
 } as const;
