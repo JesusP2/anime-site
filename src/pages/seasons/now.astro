@@ -4,7 +4,7 @@ import { AnimeCard } from "@/components/anime-card";
 import { Typography } from "@/components/ui/typography";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
-import { jikanClient } from "@/lib/api/jikan.client";
+import { animeFilters } from "@/lib/utils/anime/filters";
 import { db } from "@/lib/db/pool";
 import { animeTable } from "@/lib/db/schemas";
 import { and, count, eq } from "drizzle-orm";
@@ -15,15 +15,7 @@ const _currentPage = url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
   ? 1
   : parseInt(_currentPage);
-const res = await jikanClient.GET("/top/anime", {
-  params: {
-    query: {
-      filter: "airing",
-      limit: 25,
-      page: currentPage,
-    },
-  },
-});
+
 const animesPerPage = 25;
 const [animesCount] = await db
   .select({ count: count() })
@@ -36,12 +28,11 @@ const yo = await db
   .offset(animesPerPage * (currentPage - 1))
   .limit(animesPerPage);
 const yo2 = yo.map(anime => parseRecord({ type: "anime", record: anime }));
-console.log(yo2.length)
 ---
 
 <MainLayout title="title">
   <Typography variant="h1">CURRENT SEASON</Typography>
-  <SearchWithFilters client:load />
+  <SearchWithFilters filters={animeFilters} client:load />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
     {yo2?.map((item) => <AnimeCard data={item} client:load />)}
   </div>

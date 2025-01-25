@@ -1,11 +1,19 @@
 import type { components } from "@/lib/api/jikan.openapi";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { Badge } from "@/components/ui/badge";
-import { Star } from '@phosphor-icons/react'
+import { Star } from "@phosphor-icons/react";
 import { AiringStatus } from "../airing-status";
 
-export function CarouselCard({ anime, width }: { anime: components['schemas']['anime_full']; width: number }) {
-  const animeTitle = anime.titles?.find(title => title.type === 'English')?.title || anime.titles?.find(title => title.type === 'Default')?.title
+export function CarouselCard({
+  anime,
+  width,
+}: {
+  anime: components["schemas"]["anime_full"];
+  width: number;
+}) {
+  const animeTitle =
+    anime.titles?.find((title) => title.type === "English")?.title ||
+    anime.titles?.find((title) => title.type === "Default")?.title;
   return (
     <article className="group">
       <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
@@ -14,7 +22,7 @@ export function CarouselCard({ anime, width }: { anime: components['schemas']['a
           width={width}
           className="duration-200 group-hover:scale-125 object-cover"
           style={{ width }}
-          src={anime.images?.webp?.large_image_url || ''}
+          src={anime.images?.webp?.large_image_url || ""}
           alt={animeTitle}
         />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 to-transparent" />

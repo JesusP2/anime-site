@@ -3,7 +3,11 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db/pool";
 import { magicLink, emailOTP, username } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } from "astro:env/server";
+import {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_REDIRECT_URI,
+} from "astro:env/server";
 export const auth = betterAuth({
   plugins: [
     username(),
@@ -38,4 +42,4 @@ export const auth = betterAuth({
     },
   },
 });
-auth.api.changePassword
+auth.api.changePassword;

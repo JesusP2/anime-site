@@ -1,10 +1,10 @@
-import { CaretRight, type Icon } from '@phosphor-icons/react'
+import { CaretRight, type Icon } from "@phosphor-icons/react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,7 +14,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavMain({
   items,
@@ -28,8 +28,8 @@ export function NavMain({
       title: string;
       url: string;
       icon: string;
-    }[]
-  }[]
+    }[];
+  }[];
 }) {
   return (
     <SidebarGroup>
@@ -47,7 +47,10 @@ export function NavMain({
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                  <CaretRight weight='bold' className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <CaretRight
+                    weight="bold"
+                    className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                  />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
@@ -69,5 +72,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

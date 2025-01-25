@@ -34,8 +34,8 @@ for (let i = START; i < END; i++) {
   if (!res?.data?.data) continue;
   const anime = res?.data.data;
   for (const stringifyKey of stringifyKeys) {
-    anime[stringifyKey] = JSON.stringify(anime[stringifyKey] || {})
+    anime[stringifyKey] = JSON.stringify(anime[stringifyKey] || {});
   }
-  await db.insert(animeTable).values(anime)
-  await new Promise(resolve => setTimeout(resolve, 1_000))
+  await db.insert(animeTable).values(anime);
+  await new Promise((resolve) => setTimeout(resolve, 1_000));
 }

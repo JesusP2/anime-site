@@ -3,8 +3,8 @@ import {
   ArrowBendUpRight,
   ArrowsHorizontal,
   Trash,
-  type Icon
-} from "@phosphor-icons/react"
+  type Icon,
+} from "@phosphor-icons/react";
 
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -21,18 +21,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavProjects({
   projects,
 }: {
   projects: {
-    name: string
-    url: string
-    icon: Icon
-  }[]
+    name: string;
+    url: string;
+    icon: Icon;
+  }[];
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -63,7 +63,10 @@ export function NavProjects({
                   <span>View Project</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <ArrowBendUpRight weight="bold" className="text-muted-foreground" />
+                  <ArrowBendUpRight
+                    weight="bold"
+                    className="text-muted-foreground"
+                  />
                   <span>Share Project</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -77,11 +80,14 @@ export function NavProjects({
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
-            <ArrowsHorizontal weight="bold" className="text-sidebar-foreground/70" />
+            <ArrowsHorizontal
+              weight="bold"
+              className="text-sidebar-foreground/70"
+            />
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

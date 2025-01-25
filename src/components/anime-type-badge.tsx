@@ -1,8 +1,14 @@
 import { Badge } from "@/components/ui/badge";
-import { FilmStrip, TelevisionSimple, MusicNote, Megaphone, PlayCircle } from '@phosphor-icons/react'
+import {
+  FilmStrip,
+  TelevisionSimple,
+  MusicNote,
+  Megaphone,
+  PlayCircle,
+} from "@phosphor-icons/react";
 import type { components } from "@/lib/api/jikan.openapi";
 
-type AnimeType = components['schemas']['anime_search_query_type'];
+type AnimeType = components["schemas"]["anime_search_query_type"];
 
 interface AnimeTypeBadgeProps {
   type: string;
@@ -11,19 +17,19 @@ interface AnimeTypeBadgeProps {
 export function AnimeTypeBadge({ type }: AnimeTypeBadgeProps) {
   const getTypeIcon = () => {
     switch (type.toLowerCase()) {
-      case 'movie':
+      case "movie":
         return <FilmStrip className="w-3 h-3" />;
-      case 'tv':
+      case "tv":
         return <TelevisionSimple className="w-3 h-3" />;
-      case 'music':
+      case "music":
         return <MusicNote className="w-3 h-3" />;
-      case 'cm':
-      case 'pv':
+      case "cm":
+      case "pv":
         return <Megaphone className="w-3 h-3" />;
-      case 'ova':
-      case 'ona':
-      case 'special':
-      case 'tv_special':
+      case "ova":
+      case "ona":
+      case "special":
+      case "tv_special":
       default:
         return <PlayCircle className="w-3 h-3" />;
     }
@@ -35,4 +41,4 @@ export function AnimeTypeBadge({ type }: AnimeTypeBadgeProps) {
       {type.charAt(0).toUpperCase() + type.toLowerCase().slice(1)}
     </Badge>
   );
-} 
+}

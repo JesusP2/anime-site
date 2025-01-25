@@ -8,5 +8,10 @@ import {
 
 export const authClient = createAuthClient({
   baseURL: "http://localhost:4321",
-  plugins: [magicLinkClient(), emailOTPClient(), passkeyClient(), usernameClient()],
+  plugins: [
+    magicLinkClient(),
+    emailOTPClient(),
+    passkeyClient(),
+    usernameClient(),
+  ],
 });

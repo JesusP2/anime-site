@@ -1,7 +1,14 @@
-import type { FullAnimeRecord, FullCharacterRecord, FullMangaRecord } from "../types";
+import type {
+  FullAnimeRecord,
+  FullCharacterRecord,
+  FullMangaRecord,
+} from "../types";
 import { stringifiedAnimeKeys } from "../utils/anime/filters";
 
-type Record = { type: "anime"; record: FullAnimeRecord } | { type: "manga"; record: FullMangaRecord } | { type: "character"; record: FullCharacterRecord };
+type Record =
+  | { type: "anime"; record: FullAnimeRecord }
+  | { type: "manga"; record: FullMangaRecord }
+  | { type: "character"; record: FullCharacterRecord };
 
 export function parseRecord({ type, record }: Record) {
   if (type === "anime") {

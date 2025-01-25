@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { buttonVariants } from "../ui/button";
 const cardWidth = 225;
 const gapBetweenCards = 16;
-export function Carousel({ animes }: { animes: components['schemas']['anime_full'][] }) {
+export function Carousel({
+  animes,
+}: {
+  animes: components["schemas"]["anime_full"][];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,13 +19,18 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
   function handleResize() {
     const containerWidth = containerRef.current?.clientWidth;
     if (!containerWidth) return;
-    const minTotal = Math.floor((containerWidth + gapBetweenCards) / (cardWidth + gapBetweenCards));
+    const minTotal = Math.floor(
+      (containerWidth + gapBetweenCards) / (cardWidth + gapBetweenCards),
+    );
     const pages = Math.ceil(animes.length / minTotal) - 1;
-    const translateWindow = 100 + gapBetweenCards / containerWidth * 100;
+    const translateWindow = 100 + (gapBetweenCards / containerWidth) * 100;
     setPages(pages);
-    setTranslateWindow(translateWindow)
+    setTranslateWindow(translateWindow);
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
-    setTotalTranslate((pages - 1) * translateWindow + (animes.length - pages * minTotal) / minTotal * translateWindow)
+    setTotalTranslate(
+      (pages - 1) * translateWindow +
+        ((animes.length - pages * minTotal) / minTotal) * translateWindow,
+    );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
     }
@@ -30,22 +39,18 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
   useEffect(() => {
     handleResize();
     const controller = new AbortController();
-    window.addEventListener('resize', handleResize, {
+    window.addEventListener("resize", handleResize, {
       signal: controller.signal,
-    })
+    });
     return () => controller.abort();
-  }, [pages])
+  }, [pages]);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === pages ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === pages ? 0 : prevIndex + 1));
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? pages : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? pages : prevIndex - 1));
   };
 
   function calculateTranslate() {
@@ -59,12 +64,22 @@ export function Carousel({ animes }: { animes: components['schemas']['anime_full
   return (
     <div className="relative w-full mx-auto">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold font-gabarito font-medium">Current season</h2>
-        <a href="/seasons/now" className={buttonVariants({ variant: 'link' })}>View more</a>
+        <h2 className="text-xl font-bold font-gabarito font-medium">
+          Current season
+        </h2>
+        <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+          View more
+        </a>
       </div>
       <div className="w-full h-[1px] bg-neutral-300" />
-      <div ref={containerRef} className="overflow-hidden flex gap-x-4 my-2 w-full">
-        <div className="flex gap-x-4 my-2 transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${calculateTranslate()}%)` }}>
+      <div
+        ref={containerRef}
+        className="overflow-hidden flex gap-x-4 my-2 w-full"
+      >
+        <div
+          className="flex gap-x-4 my-2 transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${calculateTranslate()}%)` }}
+        >
           {animes.map((anime, idx) => (
             <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
               <CarouselCard anime={anime} width={width} />

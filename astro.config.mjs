@@ -7,10 +7,10 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  output: "server",
   env: {
     schema: {
-      ANIME_API:envField.string({ context: "client", access: "public" }),
+      ANIME_API: envField.string({ context: "client", access: "public" }),
       DATABASE_URL: envField.string({ context: "server", access: "secret" }),
       DATABASE_TOKEN: envField.string({ context: "server", access: "secret" }),
       CLOUDFLARE_TOKEN: envField.string({

@@ -6,16 +6,16 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const idxToMonth = [
-  'JAN',
-  'FEB',
-  'MARCH',
-  'APRIL',
-  'MAY',
-  'JUNE',
-  'JULY',
-  'AUG',
-  'SEPT',
-  'OCT',
-  'NOV',
-  'DEC',
+  "JAN",
+  "FEB",
+  "MARCH",
+  "APRIL",
+  "MAY",
+  "JUNE",
+  "JULY",
+  "AUG",
+  "SEPT",
+  "OCT",
+  "NOV",
+  "DEC",
 ];

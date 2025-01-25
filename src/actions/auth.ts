@@ -29,7 +29,7 @@ export const auth = {
         });
       } catch (err) {
         if (err instanceof APIError) {
-          const code = ACTION_ERROR_CODES.find(code => code === err.status);
+          const code = ACTION_ERROR_CODES.find((code) => code === err.status);
           throw new ActionError({
             code: code ?? "BAD_REQUEST",
             message: err.body.message,
@@ -66,7 +66,7 @@ export const auth = {
         });
       } catch (err) {
         if (err instanceof APIError) {
-          const code = ACTION_ERROR_CODES.find(code => code === err.status);
+          const code = ACTION_ERROR_CODES.find((code) => code === err.status);
           throw new ActionError({
             code: code ?? "BAD_REQUEST",
             message: err.body.message,

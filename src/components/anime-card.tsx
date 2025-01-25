@@ -1,12 +1,18 @@
 import { MagicCard } from "@/components/ui/magic-card";
 import type { components } from "@/lib/api/jikan.openapi";
 import { Badge } from "@/components/ui/badge";
-import { Star } from '@phosphor-icons/react'
+import { Star } from "@phosphor-icons/react";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
 
-export function AnimeCard({ data }: { data: components['schemas']['anime_full'] }) {
-  const animeTitle = data.titles?.find(title => title.type === 'English')?.title || data.titles?.find(title => title.type === 'Default')?.title
+export function AnimeCard({
+  data,
+}: {
+  data: components["schemas"]["anime_full"];
+}) {
+  const animeTitle =
+    data.titles?.find((title) => title.type === "English")?.title ||
+    data.titles?.find((title) => title.type === "Default")?.title;
   return (
     <MagicCard
       className="cursor-pointer h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
@@ -17,7 +23,7 @@ export function AnimeCard({ data }: { data: components['schemas']['anime_full'] 
           <img
             loading="lazy"
             className="duration-200 group-hover:scale-110 object-cover"
-            src={data.images?.webp?.image_url || ''}
+            src={data.images?.webp?.image_url || ""}
             alt={animeTitle}
           />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent" />
@@ -26,22 +32,21 @@ export function AnimeCard({ data }: { data: components['schemas']['anime_full'] 
           </div>
           <div className="absolute bottom-2 left-2">
             <p className="text-white border-l pl-2 leading-4">
-              {data.rating?.split(' ').at(0)}
+              {data.rating?.split(" ").at(0)}
             </p>
           </div>
         </section>
         <div className="w-[13rem]">
           <section>
-            <h3
-              title={animeTitle}
-              className="text-lg truncate font-bold"
-            >
+            <h3 title={animeTitle} className="text-lg truncate font-bold">
               {animeTitle}
             </h3>
           </section>
           <section className="flex gap-x-2 my-2">
             <Badge className="w-26 truncate">
-              {data.season ? `${data.season} - ${data.year}` : `${data.aired?.prop?.from?.year}`}
+              {data.season
+                ? `${data.season} - ${data.year}`
+                : `${data.aired?.prop?.from?.year}`}
             </Badge>
             <Badge className="w-26 truncate">
               {data.episodes ? `${data.episodes} episodes` : "N/A"}
@@ -63,8 +68,18 @@ export function AnimeCard({ data }: { data: components['schemas']['anime_full'] 
             </div>
           </section>
           <section className="flex gap-x-2">
-            {data.genres?.slice(0, 2).map(genre => (<Badge key={genre.mal_id} variant="outline"><p className="text-ellipsis truncate max-w-24">{genre.name}</p></Badge>))}
-            {data.genres?.length && data.genres?.length > 2 && <Badge variant="outline"><p className="text-ellipsis truncate max-w-24">+ {data.genres?.length - 2}</p></Badge>}
+            {data.genres?.slice(0, 2).map((genre) => (
+              <Badge key={genre.mal_id} variant="outline">
+                <p className="text-ellipsis truncate max-w-24">{genre.name}</p>
+              </Badge>
+            ))}
+            {data.genres?.length && data.genres?.length > 2 && (
+              <Badge variant="outline">
+                <p className="text-ellipsis truncate max-w-24">
+                  + {data.genres?.length - 2}
+                </p>
+              </Badge>
+            )}
           </section>
           <section className="my-2">
             <AiringStatus anime={data} />

@@ -11,6 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "env-cmd drizzle-kit studio",
+    "format:fix": "prettier --write .",
     "anime": "tsx --env-file=.env ./src/scripts/anime.ts"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
     "@radix-ui/react-label": "^2.1.1",
+    "@radix-ui/react-popover": "^1.1.5",
     "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
@@ -42,6 +44,7 @@
     "better-auth": "^1.1.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "drizzle-orm": "^0.38.3",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.0.0-alpha.1",

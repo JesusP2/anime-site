@@ -5,3 +5,7 @@ export type FullAnimeRecord = InferSelectModel<typeof animeTable>;
 export type FullMangaRecord = InferSelectModel<typeof mangaTable>;
 export type FullCharacterRecord = InferSelectModel<typeof characterTable>;
 
+export type SearchFilter = {
+  label: string;
+  options: { label: string; value: string | number | boolean }[];
+};

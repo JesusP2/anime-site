@@ -1,8 +1,19 @@
-import * as React from "react"
-import { SealCheck, Trash, CalendarCheck, MonitorPlay, PauseCircle, CheckCircle, TelevisionSimple, Book, Leaf, MagnifyingGlass } from '@phosphor-icons/react'
+import * as React from "react";
+import {
+  SealCheck,
+  Trash,
+  CalendarCheck,
+  MonitorPlay,
+  PauseCircle,
+  CheckCircle,
+  TelevisionSimple,
+  Book,
+  Leaf,
+  MagnifyingGlass,
+} from "@phosphor-icons/react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -15,8 +26,8 @@ import {
   SidebarRail,
   SidebarTrigger,
   SidebarInset,
-} from "@/components/ui/sidebar"
-import { buttonVariants } from "./ui/button"
+} from "@/components/ui/sidebar";
+import { buttonVariants } from "./ui/button";
 
 const data = {
   navMain: [
@@ -101,11 +112,17 @@ const data = {
           icon: PauseCircle,
         },
       ],
-    }
+    },
   ],
-}
+};
 
-export function AppSidebar({ children, user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string; image?: string; } | null }) {
+export function AppSidebar({
+  children,
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user: { name: string; email: string; image?: string } | null;
+}) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" {...props}>
@@ -125,7 +142,9 @@ export function AppSidebar({ children, user, ...props }: React.ComponentProps<ty
           <NavMain items={data.navMain} />
         </SidebarContent>
         <SidebarFooter>
-          {user ? <NavUser user={user} /> : (
+          {user ? (
+            <NavUser user={user} />
+          ) : (
             <a className={buttonVariants()} href="/auth/signin">
               Login
             </a>
@@ -138,5 +157,5 @@ export function AppSidebar({ children, user, ...props }: React.ComponentProps<ty
         {children}
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
