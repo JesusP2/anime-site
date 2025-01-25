@@ -35,7 +35,7 @@ export function MultiSelect({
   return (
     <div className="flex flex-col space-y-1.5">
       <Label htmlFor={label}>{label}</Label>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen} modal>
         <PopoverTrigger asChild>
           <Button
             id={label}

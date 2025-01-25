@@ -7,5 +7,5 @@ export type FullCharacterRecord = InferSelectModel<typeof characterTable>;
 
 export type SearchFilter = {
   label: string;
-  options: { label: string; value: string | number | boolean }[];
+  options: { label: string; value: string }[];
 };

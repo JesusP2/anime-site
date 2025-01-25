@@ -6,17 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FilterModal } from "./modal";
 import { Funnel } from "@phosphor-icons/react";
+import type { SearchFilter } from "@/lib/types";
+import { objectEntries, objectKeys } from "@/lib/utils";
 
-export default function SearchWithFilters() {
+export function SearchWithFilters<T extends Record<string, SearchFilter>>({ options }: { options: T }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    categories: [],
-    priceRanges: [],
-    ratings: [],
-  });
+  const [filters, setFilters] = useState(objectKeys(options).reduce((acc, key) => ({ ...acc, [key]: [] }), {}) as { [K in keyof T]: string[] });
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     console.log("Search Query:", searchQuery);
     console.log("Filters:", filters);
@@ -24,11 +22,12 @@ export default function SearchWithFilters() {
   };
 
   const getActiveFiltersCount = () => {
-    return (
-      filters.categories.length +
-      filters.priceRanges.length +
-      filters.ratings.length
-    );
+    return objectEntries(filters).reduce((acc, [key, value]) => {
+      if (value.length > 0) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
   };
 
   return (
@@ -68,6 +67,7 @@ export default function SearchWithFilters() {
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         filters={filters}
+        options={options}
         setFilters={setFilters}
       />
     </div>

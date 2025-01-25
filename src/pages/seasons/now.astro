@@ -32,7 +32,7 @@ const yo2 = yo.map(anime => parseRecord({ type: "anime", record: anime }));
 
 <MainLayout title="title">
   <Typography variant="h1">CURRENT SEASON</Typography>
-  <SearchWithFilters filters={animeFilters} client:load />
+  <SearchWithFilters options={animeFilters} client:load />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
     {yo2?.map((item) => <AnimeCard data={item} client:load />)}
   </div>
