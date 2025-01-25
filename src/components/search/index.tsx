@@ -24,9 +24,7 @@ export function SearchWithFilters<T extends Record<string, SearchFilter>>({
       }),
       {},
     ) as {
-      [K in keyof T]: T[K]["type"] extends "radio"
-        ? string | boolean
-        : T[K]["options"][number]["value"][];
+      [K in keyof T]: string[] | string | boolean;
     },
   );
 
