@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/command";
 import { CaretUpDown, Check } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
+import type { MangaFilters } from "@/lib/utils/manga/filters";
+import type { AnimeFilters } from "@/lib/utils/anime/filters";
 
 export function MultiSelect({
   options,
@@ -24,10 +26,10 @@ export function MultiSelect({
   onChange,
   label,
 }: {
-  options: { label: string; value: string }[];
+  options: AnimeFilters[keyof AnimeFilters]["options"] | MangaFilters[keyof MangaFilters]["options"];
   placeholder: string;
-  value: string[];
-  onChange: (value: string[]) => void;
+  value:  (string | boolean)[];
+  onChange: (value: (string | boolean)[]) => void;
   label: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -56,7 +58,7 @@ export function MultiSelect({
               <CommandGroup>
                 {options.map((option) => (
                   <CommandItem
-                    key={option.value}
+                    key={option.value.toString()}
                     onSelect={() => {
                       onChange(
                         value.includes(option.value)

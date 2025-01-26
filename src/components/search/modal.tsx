@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { SearchFilter } from "@/lib/types";
 import { MultiSelect } from "./multi-select";
 import { objectEntries } from "@/lib/utils";
+import type { MangaFilters } from "@/lib/utils/manga/filters";
+import type { AnimeFilters } from "@/lib/utils/anime/filters";
 
-export function FilterModal<T extends Record<string, SearchFilter>>({
+export function FilterModal({
   isOpen,
   onClose,
   options,
@@ -22,13 +23,13 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  options: T;
+  options: AnimeFilters | MangaFilters;
   filters: {
-    [K in keyof T]: string[] | string | boolean;
+    [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
   };
   setFilters: Dispatch<
     SetStateAction<{
-      [K in keyof T]: string[] | string | boolean;
+      [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
     }>
   >;
 }) {
@@ -39,30 +40,30 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
           <DialogTitle>Filter Options</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {objectEntries(options).map(([key, { type, options, label }]) => {
-            if (type === "radio") {
+          {objectEntries(options).map(([key, value]) => {
+            if ('type' in value && value.type === "radio" && !Array.isArray(filters[key])) {
               return (
                 <RadioGroupFilters
-                  key={label}
-                  options={options}
-                  value={filters[key] as string | boolean}
+                  key={value.label}
+                  options={value.options}
+                  value={filters[key]}
                   onChange={(value) =>
                     setFilters((prev) => ({ ...prev, [key]: value }))
                   }
-                  label={label}
+                  label={value.label}
                 />
               );
-            } else {
+            } else if (Array.isArray(filters[key])) {
               return (
                 <MultiSelect
-                  key={label}
-                  options={options}
-                  placeholder={`Select ${label}`}
-                  value={filters[key] as any}
+                  key={value.label}
+                  options={value.options}
+                  placeholder={`Select ${value.label}`}
+                  value={filters[key]}
                   onChange={(value) =>
                     setFilters((prev) => ({ ...prev, [key]: value }))
                   }
-                  label={label}
+                  label={value.label}
                 />
               );
             }
@@ -72,7 +73,7 @@ export function FilterModal<T extends Record<string, SearchFilter>>({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={() => console.log(filters)}>Apply Filters</Button>
+          <Button onClick={onClose}>Apply Filters</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -86,7 +87,7 @@ function RadioGroupFilters({
   onChange,
 }: {
   label: string;
-  options: { label: string; value: string }[];
+  options: AnimeFilters[keyof AnimeFilters]['options'] | MangaFilters[keyof MangaFilters]['options'];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {
@@ -94,8 +95,8 @@ function RadioGroupFilters({
     <RadioGroup value={value as string} onValueChange={onChange}>
       <Label className="text-black">{label}</Label>
       {options.map((option) => (
-        <div key={option.value} className="flex items-center space-x-2">
-          <RadioGroupItem value={option.value} id={option.value.toString()} />
+        <div key={option.value as string} className="flex items-center space-x-2">
+          <RadioGroupItem value={option.value as string} id={option.value.toString()} />
           <Label htmlFor={option.value.toString()} className="text-neutral-800">
             {option.label}
           </Label>

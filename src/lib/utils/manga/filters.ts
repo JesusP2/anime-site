@@ -1,4 +1,4 @@
-export const stringifiedAnimeKeys = [
+export const stringifiedMangaKeys = [
   "images",
   "trailer",
   "titles",
@@ -17,7 +17,7 @@ export const stringifiedAnimeKeys = [
   "streaming",
 ];
 
-export const animeFilters = {
+export const mangaFilters = {
   status: {
     label: "Status",
     options: [
@@ -172,4 +172,4 @@ export const animeFilters = {
     ],
   },
 } as const;
-export type AnimeFilters = typeof animeFilters;
+export type MangaFilters = typeof mangaFilters;
