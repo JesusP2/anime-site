@@ -7,7 +7,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const page = 2;
 export function MainPagination({
   currentPage,
   url,
@@ -36,7 +35,7 @@ export function MainPagination({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={createLink(url, page - 1)} />
+          <PaginationPrevious isActive={currentPage > 1} href={createLink(url, currentPage - 1)} />
         </PaginationItem>
         {tabs.map((tab, idx) => (
           <PaginationItem key={tab + idx.toString()}>
@@ -49,7 +48,7 @@ export function MainPagination({
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext href={createLink(url, page + 1)} />
+          <PaginationNext isActive={currentPage < lastVisiblePage} href={createLink(url, currentPage + 1)} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

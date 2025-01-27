@@ -1,7 +1,6 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
-import { Typography } from "@/components/ui/typography";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/utils/anime/filters";
@@ -16,8 +15,7 @@ const _currentPage = Astro.url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
   ? 1
   : parseInt(_currentPage);
-const season = Astro.locals.currentSeason.season;
-const year = Astro.locals.currentSeason.year;
+const { season, year } = Astro.locals.currentSeason;
 
 const animesPerPage = 25;
 const searchParams = new URLSearchParams(Astro.url.searchParams);
