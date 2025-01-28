@@ -7,39 +7,72 @@ import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/utils/anime/filters";
 import { db } from "@/lib/db/pool";
 import { animeTable } from "@/lib/db/schemas";
-import { and, count, eq } from "drizzle-orm";
+import { count } from "drizzle-orm";
 import { parseRecord } from "@/lib/db/parse-record";
+import { animeSearchParamsToDrizzleQuery } from "@/lib/search-params-to-drizzle-query";
+import type { components } from "@/lib/api/jikan.openapi";
 
-const url = new URL(Astro.request.url);
-const _currentPage = url.searchParams.get("page") || "1";
+const _currentPage = Astro.url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
   ? 1
   : parseInt(_currentPage);
+const season = Astro.locals.currentSeason.season;
+const year = Astro.locals.currentSeason.year;
 
 const animesPerPage = 25;
-const [animesCount] = await db
-  .select({ count: count() })
-  .from(animeTable)
-  .where(and(eq(animeTable.season, "winter"), eq(animeTable.year, 2025)));
-const stringifiedAnimeRecords = await db
-  .select()
-  .from(animeTable)
-  .where(and(eq(animeTable.season, "winter"), eq(animeTable.year, 2025)))
-  .offset(animesPerPage * (currentPage - 1))
-  .limit(animesPerPage);
-const animeRecords = stringifiedAnimeRecords.map(anime => parseRecord({ type: "anime", record: anime }));
+const searchParams = new URLSearchParams(Astro.url.searchParams);
+searchParams.set("season", season);
+searchParams.set("year", year.toString());
+function getAnimesCount() {
+  const { where, orderBy } = animeSearchParamsToDrizzleQuery(
+    searchParams,
+    25,
+  );
+  const query = db.select({ count: count() }).from(animeTable).where(where);
+  if (orderBy) {
+    return query.orderBy(orderBy);
+  }
+  return query;
+}
+
+function getCurrentSeason() {
+  const { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
+    searchParams,
+    25,
+  );
+  const query = db
+    .select()
+    .from(animeTable)
+    .where(where)
+    .offset(offset)
+    .limit(limit);
+  if (orderBy) {
+    return query.orderBy(orderBy);
+  }
+  return query;
+}
+const [animesCount] = await getAnimesCount();
+let stringifiedAnimeRecords = await getCurrentSeason();
+const animeRecords = stringifiedAnimeRecords.map((anime) =>
+  parseRecord({ type: "anime", record: anime }),
+) as components["schemas"]["anime_full"][];
 ---
 
 <MainLayout title="title">
-  <Typography variant="h1">CURRENT SEASON</Typography>
-  <SearchWithFilters baseUrl="/seasons/now" options={animeFilters} client:load />
+  <SearchWithFilters
+    url={new URL(Astro.url)}
+    options={animeFilters}
+    client:load
+  />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {animeRecords?.map((item) => <AnimeCard data={item} client:load />)}
+    {
+      animeRecords?.map((item) => ( <AnimeCard data={item as any} client:load />))
+    }
   </div>
   <div class="flex justify-center my-6">
     <MainPagination
-      url="/seasons/now"
-      lastVisiblePage={Math.ceil(animesCount?.count / animesPerPage)}
+      url={new URL(Astro.url)}
+      lastVisiblePage={Math.ceil((animesCount?.count ?? 0) / animesPerPage)}
       currentPage={currentPage}
       client:load
     />

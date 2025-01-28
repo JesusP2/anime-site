@@ -44,4 +44,7 @@ export default defineConfig({
     },
   },
   integrations: [react(), tailwind({ applyBaseStyles: false })],
+  image: {
+    domains: ["cdn.myanimelist.net"],
+  },
 });

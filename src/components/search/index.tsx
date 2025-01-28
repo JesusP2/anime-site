@@ -11,27 +11,35 @@ import { navigate } from "astro:transitions/client";
 import type { AnimeFilters } from "@/lib/utils/anime/filters";
 import type { MangaFilters } from "@/lib/utils/manga/filters";
 
-export function SearchWithFilters({
-  options,
-  baseUrl
-}: {
-  options: AnimeFilters | MangaFilters;
-  baseUrl: string;
-}) {
-  const [searchParams, setSearchParams] = useState(new URLSearchParams());
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [filters, setFilters] = useState(
-    objectEntries(options).reduce(
-      (acc, [key, value]) => ({
-        ...acc,
-        [key]: "radio" in value ? value.options[0]?.value : [],
-      }),
-      {},
-    ) as {
-      [K in keyof T]: string[] | string | boolean;
+function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
+  return objectEntries(options).reduce(
+    (acc, [key, value]) => {
+      if ('type' in value && key === 'sfw') {
+        acc[key] = url.searchParams.get(key) === 'true';
+        return acc;
+      } else if ('type' in value) {
+        acc[key] = url.searchParams.get(key) ?? value.options[0]?.value;
+        return acc;
+      }
+      acc[key] = url.searchParams.getAll(key);
+      return acc;
+    },
+    {} as {
+      [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
     },
   );
+}
+export function SearchWithFilters({
+  options,
+  url
+}: {
+  options: AnimeFilters | MangaFilters;
+  url: URL;
+}) {
+  const [searchParams, setSearchParams] = useState(url.searchParams);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filters, setFilters] = useState(setupFilters(options, url));
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [_, value]) => {
@@ -58,9 +66,8 @@ export function SearchWithFilters({
   }
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Product Search</h1>
+      <h1 className="text-2xl font-bold mb-6">Current Season</h1>
       <div className="flex flex-col space-y-1.5">
-        <Label htmlFor="search-query">Search Query</Label>
         <div className="flex space-x-2">
           <Input
             id="search-query"
@@ -84,7 +91,7 @@ export function SearchWithFilters({
               </span>
             )}
           </Button>
-          <Button onClick={() => navigate(`${baseUrl}?${searchParams.toString()}`)}>Search</Button>
+          <Button onClick={() => navigate(`${url.pathname}?${searchParams.toString()}`)}>Search</Button>
         </div>
       </div>
       <FilterModal

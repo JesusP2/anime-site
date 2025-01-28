@@ -3,7 +3,6 @@ import MainLayout from "@/layout/main.astro";
 import { Carousel } from "@/components/carousel";
 import { jikanClient } from "@/lib/api/jikan.client";
 
-console.log(Astro.url.searchParams.get("page"));
 const res = await jikanClient.GET("/seasons/now", {
   params: {
     query: {

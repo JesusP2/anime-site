@@ -14,7 +14,7 @@ export function MainPagination({
   lastVisiblePage,
 }: {
   currentPage: number;
-  url: string;
+  url: URL;
   lastVisiblePage: number;
 }) {
   const tabs: (string | number)[] = Array(lastVisiblePage)
@@ -36,12 +36,12 @@ export function MainPagination({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={`${url}?page=${page - 1}`} />
+          <PaginationPrevious href={createLink(url, page - 1)} />
         </PaginationItem>
         {tabs.map((tab, idx) => (
           <PaginationItem key={tab + idx.toString()}>
             <PaginationLink
-              href={`${url}?page=${tab}`}
+              href={createLink(url, tab)}
               isActive={tab === currentPage}
             >
               {tab}
@@ -49,9 +49,14 @@ export function MainPagination({
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext href={`${url}?page=${page + 1}`} />
+          <PaginationNext href={createLink(url, page + 1)} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
   );
+}
+
+function createLink(url: URL, page: number | string) {
+  url.searchParams.set("page", page.toString());
+  return url.toString();
 }
