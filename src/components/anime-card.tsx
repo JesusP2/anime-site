@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star } from "@phosphor-icons/react";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
+import { StatusDropdown } from "./status-dropdown";
 
 export function AnimeCard({
   data,
@@ -81,8 +82,9 @@ export function AnimeCard({
               </Badge>
             )}
           </section>
-          <section className="my-2">
+          <section className="my-2 flex items-center justify-between">
             <AiringStatus anime={data} />
+            <StatusDropdown mal_id={data.mal_id} />
           </section>
         </div>
       </article>

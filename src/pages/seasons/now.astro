@@ -43,7 +43,7 @@ function getCurrentSeason() {
     .from(animeTable)
     .where(where)
     .offset(offset)
-    .limit(limit);
+  .limit(limit);
   if (orderBy) {
     return query.orderBy(orderBy);
   }

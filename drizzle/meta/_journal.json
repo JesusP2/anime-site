@@ -15,6 +15,27 @@
       "when": 1738130906979,
       "tag": "0001_worthless_firebrand",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1738141494565,
+      "tag": "0002_parched_cyclops",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1738142259097,
+      "tag": "0003_thick_jubilee",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1738142787813,
+      "tag": "0004_lame_gertrude_yorkes",
+      "breakpoints": true
     }
   ]
 }
