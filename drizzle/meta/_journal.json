@@ -8,6 +8,13 @@
       "when": 1736737236305,
       "tag": "0000_talented_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1738130906979,
+      "tag": "0001_worthless_firebrand",
+      "breakpoints": true
     }
   ]
 }
