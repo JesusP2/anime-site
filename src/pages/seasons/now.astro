@@ -5,8 +5,8 @@ import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/utils/anime/filters";
 import { db } from "@/lib/db/pool";
-import { animeTable } from "@/lib/db/schemas";
-import { count } from "drizzle-orm";
+import { animeTable, trackedEntityTable } from "@/lib/db/schemas";
+import { count, eq } from "drizzle-orm";
 import { parseRecord } from "@/lib/db/parse-record";
 import { animeSearchParamsToDrizzleQuery } from "@/lib/search-params-to-drizzle-query";
 import type { components } from "@/lib/api/jikan.openapi";
@@ -22,10 +22,7 @@ const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
 function getAnimesCount() {
-  const { where, orderBy } = animeSearchParamsToDrizzleQuery(
-    searchParams,
-    25,
-  );
+  const { where, orderBy } = animeSearchParamsToDrizzleQuery(searchParams, 25);
   const query = db.select({ count: count() }).from(animeTable).where(where);
   if (orderBy) {
     return query.orderBy(orderBy);
@@ -43,7 +40,11 @@ function getCurrentSeason() {
     .from(animeTable)
     .where(where)
     .offset(offset)
-  .limit(limit);
+    .limit(limit)
+    .leftJoin(
+      trackedEntityTable,
+      eq(animeTable.mal_id, trackedEntityTable.mal_id),
+    );
   if (orderBy) {
     return query.orderBy(orderBy);
   }
@@ -52,7 +53,13 @@ function getCurrentSeason() {
 const [animesCount] = await getAnimesCount();
 let stringifiedAnimeRecords = await getCurrentSeason();
 const animeRecords = stringifiedAnimeRecords.map((anime) =>
-  parseRecord({ type: "anime", record: anime }),
+  parseRecord({
+    type: "anime",
+    record: {
+      ...anime.anime,
+      entityStatus: anime.tracked_entity?.entityStatus,
+    },
+  }),
 ) as components["schemas"]["anime_full"][];
 ---
 
@@ -63,9 +70,7 @@ const animeRecords = stringifiedAnimeRecords.map((anime) =>
     client:load
   />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {
-      animeRecords?.map((item) => ( <AnimeCard data={item as any} client:load />))
-    }
+    {animeRecords?.map((item) => <AnimeCard data={item as any} client:load />)}
   </div>
   <div class="flex justify-center my-6">
     <MainPagination

@@ -10,11 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useState } from "react"
 import { actions } from "astro:actions"
+import { useState } from "react";
 
 export function StatusDropdown({ mal_id, defaultStatus }: { mal_id: number, defaultStatus: string; }) {
+  const [status, setStatus] = useState(defaultStatus)
   async function handleStatusChange(newStatus: string) {
+    setStatus(newStatus)
     await actions.updateEntity({ mal_id, status: newStatus })
   }
   return (
@@ -28,7 +30,7 @@ export function StatusDropdown({ mal_id, defaultStatus }: { mal_id: number, defa
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup defaultValue={defaultStatus} onValueChange={handleStatusChange}>
+        <DropdownMenuRadioGroup value={status} onValueChange={handleStatusChange}>
           <DropdownMenuRadioItem className="flex items-center gap-2" value="completed"><CheckCircle />Completed</DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex items-center gap-2" value="planned"><CalendarCheck />Planned to watch</DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex items-center gap-2" value="dropped"><Trash />Dropped</DropdownMenuRadioItem>

@@ -84,7 +84,7 @@ export function AnimeCard({
           </section>
           <section className="my-2 flex items-center justify-between">
             <AiringStatus anime={data} />
-            <StatusDropdown mal_id={data.mal_id} />
+            <StatusDropdown mal_id={data.mal_id} defaultStatus={data.entityStatus} />
           </section>
         </div>
       </article>
