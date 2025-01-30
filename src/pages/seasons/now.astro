@@ -36,7 +36,23 @@ function getCurrentSeason() {
     25,
   );
   const query = db
-    .select()
+  .select({
+    titles: animeTable.titles,
+    images: animeTable.images,
+    type: animeTable.type,
+    rating: animeTable.rating,
+    season: animeTable.season,
+    year: animeTable.year,
+    aired: animeTable.aired,
+    episodes: animeTable.episodes,
+    score: animeTable.score,
+    scored_by: animeTable.scored_by,
+    rank: animeTable.rank,
+    genres: animeTable.genres,
+    mal_id: animeTable.mal_id,
+    status: animeTable.status,
+    entityStatus: trackedEntityTable.entityStatus,
+  })
     .from(animeTable)
     .where(where)
     .offset(offset)
@@ -55,10 +71,7 @@ let stringifiedAnimeRecords = await getCurrentSeason();
 const animeRecords = stringifiedAnimeRecords.map((anime) =>
   parseRecord({
     type: "anime",
-    record: {
-      ...anime.anime,
-      entityStatus: anime.tracked_entity?.entityStatus,
-    },
+    record: anime as any,
   }),
 ) as components["schemas"]["anime_full"][];
 ---
