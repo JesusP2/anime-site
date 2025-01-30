@@ -16,9 +16,10 @@ const animesPerPage = 25;
 const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
-
-const animesCount = await getAnimesCount(searchParams, animesPerPage);
-const animeRecords = await getCurrentSeason(searchParams, animesPerPage);
+const [animesCount, animeRecords] = await Promise.all([
+  getAnimesCount(searchParams, animesPerPage),
+  getCurrentSeason(searchParams, animesPerPage),
+]);
 ---
 
 <MainLayout title="title">

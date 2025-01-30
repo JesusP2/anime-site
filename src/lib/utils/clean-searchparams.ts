@@ -1,68 +1,6 @@
-import { and, SQL, desc, inArray } from "drizzle-orm";
-import { animeTable } from "./db/schemas";
-import { SQLiteColumn } from "drizzle-orm/sqlite-core";
-import { type AnimeFilters } from "@/lib/anime/filters";
-import { objectKeys } from "./utils";
-import type { MangaFilters } from "./manga/filters";
-
-export function animeSearchParamsToDrizzleQuery(
-  searchParams: URLSearchParams,
-  recordsPerPage: number,
-) {
-  let where: SQL | undefined;
-  if (searchParams.get("season")) {
-    where = createAnimeWhereClause(where, "season", searchParams);
-  }
-  if (searchParams.get("year")) {
-    where = createAnimeWhereClause(where, "year", searchParams);
-  }
-  if (searchParams.get("status")) {
-    where = createAnimeWhereClause(where, "status", searchParams);
-  }
-  if (searchParams.get("type")) {
-    where = createAnimeWhereClause(where, "type", searchParams);
-  }
-  if (searchParams.get("rating")) {
-    where = createAnimeWhereClause(where, "rating", searchParams);
-  }
-
-  let orderBy: SQL | SQLiteColumn | undefined;
-  if (searchParams.get("orderBy")) {
-    const column =
-      animeTable[searchParams.get("orderBy") as keyof typeof animeTable];
-    if (column instanceof SQLiteColumn) {
-      if (searchParams.get("sort") === "desc") {
-        orderBy = desc(column);
-      } else {
-        orderBy = column;
-      }
-    }
-  }
-  let offset = 0;
-  if (
-    searchParams.get("page") &&
-    parseInt(searchParams.get("page") as string) > 0
-  ) {
-    offset =
-      (parseInt(searchParams.get("page") as string) - 1) * recordsPerPage;
-  }
-  return { where, orderBy, offset, limit: recordsPerPage };
-}
-
-function createAnimeWhereClause<T extends keyof typeof animeTable>(
-  where: SQL | undefined,
-  columnName: T,
-  searchParams: URLSearchParams,
-) {
-  const column = animeTable[columnName];
-  if (column instanceof SQLiteColumn) {
-    const filters = searchParams.getAll(columnName);
-    return where
-      ? and(where, inArray(column, filters))
-      : inArray(column, filters);
-  }
-  return where;
-}
+import { objectKeys } from ".";
+import type { AnimeFilters } from "../anime/filters";
+import type { MangaFilters } from "../manga/filters";
 
 export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
   searchParams: URLSearchParams,
@@ -72,6 +10,7 @@ export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
   const newSearchParams = new URLSearchParams();
   for (const key of keys) {
     if (typeof key !== "string") continue;
+    // @ts-expect-error skill issue
     const allowedValues = filters[key].options.map(({ value }) => value);
     const values = searchParams.getAll(key);
     if (!values.length) continue;

@@ -1,15 +1,13 @@
 import { count, eq } from "drizzle-orm";
 import { animeTable, trackedEntityTable } from "../db/schemas";
-import {
-  animeSearchParamsToDrizzleQuery,
-  cleanSearchParams,
-} from "../search-params-to-drizzle-query";
+import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { animeFilters } from "./filters";
 import { parseRecord } from "../db/parse-record";
 import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
 import { ok, err, type Result } from "neverthrow";
+import { cleanSearchParams } from "../utils/clean-searchparams";
 
 export async function getAnimesCount(
   searchParams: URLSearchParams,
