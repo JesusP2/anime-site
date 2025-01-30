@@ -10,7 +10,6 @@ import node from "@astrojs/node";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-
   env: {
     schema: {
       ANIME_API: envField.string({ context: "client", access: "public" }),
@@ -46,14 +45,11 @@ export default defineConfig({
       // EMAIL_FROM: envField.string({ context: "server", access: "public" }),
     },
   },
-
   integrations: [react(), tailwind({ applyBaseStyles: false })],
-
   image: {
     domains: ["cdn.myanimelist.net"],
   },
-
   adapter: node({
     mode: "standalone",
-  }),
+  })
 });

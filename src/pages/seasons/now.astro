@@ -17,11 +17,8 @@ const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
 
-const [animesCount] = await getAnimesCount(searchParams, animesPerPage);
-const animeRecords = await getCurrentSeason(
-  searchParams,
-  animesPerPage,
-);
+const animesCount = await getAnimesCount(searchParams, animesPerPage);
+const animeRecords = await getCurrentSeason(searchParams, animesPerPage);
 ---
 
 <MainLayout title="title">
@@ -31,14 +28,31 @@ const animeRecords = await getCurrentSeason(
     client:load
   />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {animeRecords.map((item) => <AnimeCard data={item} client:load />)}
+    {
+      animesCount.isOk() && animeRecords.isOk()
+        ? animeRecords.value.map((item) => (
+            <AnimeCard data={item} client:load />
+          ))
+        : "Unexpected error"
+    }
   </div>
   <div class="flex justify-center my-6">
-    <MainPagination
-      url={new URL(Astro.url)}
-      lastVisiblePage={Math.ceil((animesCount?.count ?? 0) / animesPerPage)}
-      currentPage={currentPage}
-      client:load
-    />
+    {
+      animesCount.isOk() ? (
+        <MainPagination
+          url={new URL(Astro.url)}
+          lastVisiblePage={Math.ceil((animesCount.value ?? 0) / animesPerPage)}
+          currentPage={currentPage}
+          client:load
+        />
+      ) : (
+        <MainPagination
+          url={new URL(Astro.url)}
+          lastVisiblePage={1}
+          currentPage={currentPage}
+          client:load
+        />
+      )
+    }
   </div>
 </MainLayout>

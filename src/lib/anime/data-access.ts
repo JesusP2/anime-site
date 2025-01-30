@@ -9,27 +9,35 @@ import { animeFilters } from "./filters";
 import { parseRecord } from "../db/parse-record";
 import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
+import { ok, err, type Result } from "neverthrow";
 
-export function getAnimesCount(
+export async function getAnimesCount(
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-) {
+): Promise<Result<number, Error>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
     recordsPerPage,
   );
   const query = db.select({ count: count() }).from(animeTable).where(where);
-  if (orderBy) {
-    return query.orderBy(orderBy);
+  let animesCount: number;
+  try {
+    if (orderBy) {
+      animesCount = (await query.orderBy(orderBy))[0]?.count as number;
+    }
+    animesCount = (await query)[0]?.count as number;
+    return ok(animesCount);
+  } catch (_) {
+    console.error(_);
+    return err(new Error("Could not get animes count"));
   }
-  return query;
 }
 
 export async function getCurrentSeason(
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-) {
+): Promise<Result<AnimeCardItem[], Error>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
@@ -62,11 +70,18 @@ export async function getCurrentSeason(
       eq(animeTable.mal_id, trackedEntityTable.mal_id),
     );
   let stringifiedAnimeRecords: any[] = [];
-  if (orderBy) {
-    stringifiedAnimeRecords = await query.orderBy(orderBy);
+  try {
+    if (orderBy) {
+      stringifiedAnimeRecords = await query.orderBy(orderBy);
+    }
+    stringifiedAnimeRecords = await query;
+    return ok(
+      stringifiedAnimeRecords.map((anime) =>
+        parseRecord(anime, stringifiedAnimeKeys),
+      ),
+    );
+  } catch (_) {
+    console.error(_);
+    return err(new Error("Could not get animes"));
   }
-  stringifiedAnimeRecords = await query;
-  return stringifiedAnimeRecords.map((anime) =>
-    parseRecord(anime, stringifiedAnimeKeys),
-  ) as AnimeCardItem[];
 }
