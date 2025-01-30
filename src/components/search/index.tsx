@@ -8,8 +8,8 @@ import { FilterModal } from "./modal";
 import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
 import { navigate } from "astro:transitions/client";
-import type { AnimeFilters } from "@/lib/utils/anime/filters";
-import type { MangaFilters } from "@/lib/utils/manga/filters";
+import type { AnimeFilters } from "@/lib/anime/filters";
+import type { MangaFilters } from "@/lib/manga/filters";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   return objectEntries(options).reduce(

@@ -1,0 +1,18 @@
+export const stringifiedAnimeKeys = [
+  "images",
+  "trailer",
+  "titles",
+  "aired",
+  "broadcast",
+  "producers",
+  "licensors",
+  "studios",
+  "genres",
+  "explicit_genres",
+  "themes",
+  "demographics",
+  "relations",
+  "theme",
+  "external",
+  "streaming",
+];

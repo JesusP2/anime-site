@@ -3,7 +3,7 @@ import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
-import { animeFilters } from "@/lib/utils/anime/filters";
+import { animeFilters } from "@/lib/anime/filters";
 import { db } from "@/lib/db/pool";
 import { animeTable, trackedEntityTable } from "@/lib/db/schemas";
 import { count, eq } from "drizzle-orm";

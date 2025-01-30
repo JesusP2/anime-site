@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MultiSelect } from "./multi-select";
 import { objectEntries } from "@/lib/utils";
-import type { MangaFilters } from "@/lib/utils/manga/filters";
-import type { AnimeFilters } from "@/lib/utils/anime/filters";
+import type { MangaFilters } from "@/lib/manga/filters";
+import type { AnimeFilters } from "@/lib/anime/filters";
 
 export function FilterModal({
   isOpen,

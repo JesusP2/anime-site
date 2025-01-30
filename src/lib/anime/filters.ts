@@ -1,22 +1,3 @@
-export const stringifiedAnimeKeys = [
-  "images",
-  "trailer",
-  "titles",
-  "aired",
-  "broadcast",
-  "producers",
-  "licensors",
-  "studios",
-  "genres",
-  "explicit_genres",
-  "themes",
-  "demographics",
-  "relations",
-  "theme",
-  "external",
-  "streaming",
-];
-
 export const animeFilters = {
   status: {
     label: "Status",

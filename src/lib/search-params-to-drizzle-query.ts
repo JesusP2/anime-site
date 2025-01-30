@@ -1,7 +1,7 @@
 import { and, SQL, desc, inArray } from "drizzle-orm";
 import { animeTable } from "./db/schemas";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
-import { animeFilters } from "./utils/anime/filters";
+import { animeFilters } from "@/lib/anime/filters";
 
 export function animeSearchParamsToDrizzleQuery(
   searchParams: URLSearchParams,

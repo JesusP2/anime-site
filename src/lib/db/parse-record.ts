@@ -4,7 +4,7 @@ import type {
   FullCharacterRecord,
   FullMangaRecord,
 } from "../types";
-import { stringifiedAnimeKeys } from "../utils/anime/filters";
+import { stringifiedAnimeKeys } from "@/lib/anime/stringified-keys";
 
 type Record =
   | { type: "anime"; record: FullAnimeRecord }

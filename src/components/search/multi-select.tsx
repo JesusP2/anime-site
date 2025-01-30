@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/command";
 import { CaretUpDown, Check } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-import type { MangaFilters } from "@/lib/utils/manga/filters";
-import type { AnimeFilters } from "@/lib/utils/anime/filters";
+import type { MangaFilters } from "@/lib/manga/filters";
+import type { AnimeFilters } from "@/lib/anime/filters";
 
 export function MultiSelect({
   options,
