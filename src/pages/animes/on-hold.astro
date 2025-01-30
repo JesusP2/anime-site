@@ -4,21 +4,18 @@ import { AnimeCard } from "@/components/anime-card";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
-import { getCurrentSeason, getCurrentSeasonCount } from "@/lib/anime/data-access";
+import { getAnimesWithStatus, getAnimesWithStatusCount } from "@/lib/anime/data-access";
 
 const _currentPage = Astro.url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
   ? 1
   : parseInt(_currentPage);
-const { season, year } = Astro.locals.currentSeason;
+const searchParams = new URLSearchParams(Astro.url.searchParams);
 
 const animesPerPage = 25;
-const searchParams = new URLSearchParams(Astro.url.searchParams);
-searchParams.set("season", season);
-searchParams.set("year", year.toString());
 const [animesCount, animeRecords] = await Promise.all([
-  getCurrentSeasonCount(searchParams, animesPerPage),
-  getCurrentSeason(searchParams, animesPerPage),
+  getAnimesWithStatusCount('on-hold', searchParams, animesPerPage),
+  getAnimesWithStatus('on-hold', searchParams, animesPerPage),
 ]);
 ---
 
@@ -57,3 +54,4 @@ const [animesCount, animeRecords] = await Promise.all([
     }
   </div>
 </MainLayout>
+
