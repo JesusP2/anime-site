@@ -6,10 +6,27 @@ import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
 import { StatusDropdown } from "./status-dropdown";
 
+export type AnimeCardItem = Pick<
+  components["schemas"]["anime_full"],
+  | "titles"
+  | "images"
+  | "type"
+  | "rating"
+  | "season"
+  | "year"
+  | "aired"
+  | "episodes"
+  | "score"
+  | "scored_by"
+  | "rank"
+  | "genres"
+  | "mal_id"
+  | "status"
+> & { entityStatus: string }; 
 export function AnimeCard({
   data,
 }: {
-  data: components["schemas"]["anime_full"];
+  data: AnimeCardItem;
 }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||

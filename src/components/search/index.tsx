@@ -1,9 +1,6 @@
-"use client";
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { FilterModal } from "./modal";
 import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
@@ -15,7 +12,7 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   return objectEntries(options).reduce(
     (acc, [key, value]) => {
       if ('type' in value && key === 'sfw') {
-        acc[key] = url.searchParams.get(key) === 'true';
+        acc[key] = url.searchParams.get(key) ? url.searchParams.get(key) === 'true' : true;
         return acc;
       } else if ('type' in value) {
         acc[key] = url.searchParams.get(key) ?? value.options[0]?.value;

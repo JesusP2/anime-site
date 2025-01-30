@@ -1,7 +1,9 @@
 import { and, SQL, desc, inArray } from "drizzle-orm";
 import { animeTable } from "./db/schemas";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
-import { animeFilters } from "@/lib/anime/filters";
+import { type AnimeFilters } from "@/lib/anime/filters";
+import { objectKeys } from "./utils";
+import type { MangaFilters } from "./manga/filters";
 
 export function animeSearchParamsToDrizzleQuery(
   searchParams: URLSearchParams,
@@ -20,25 +22,8 @@ export function animeSearchParamsToDrizzleQuery(
   if (searchParams.get("type")) {
     where = createAnimeWhereClause(where, "type", searchParams);
   }
-
-  let allowedRatings = animeFilters.rating.options.map(({ value }) => value);
-  if (searchParams.get("sfw") === "false") {
-    allowedRatings = allowedRatings.filter((rating) => !rating.startsWith("R"));
-    if (!searchParams.get("rating")) {
-      where = where
-        ? and(where, inArray(animeTable.rating, allowedRatings))
-        : inArray(animeTable.rating, allowedRatings);
-    }
-  }
   if (searchParams.get("rating")) {
-    const ratings = searchParams
-      .getAll("rating")
-      .filter((rating) =>
-        allowedRatings.includes(rating as (typeof allowedRatings)[number]),
-      );
-    where = where
-      ? and(where, inArray(animeTable.rating, ratings))
-      : inArray(animeTable.rating, ratings);
+    where = createAnimeWhereClause(where, "rating", searchParams);
   }
 
   let orderBy: SQL | SQLiteColumn | undefined;
@@ -71,18 +56,70 @@ function createAnimeWhereClause<T extends keyof typeof animeTable>(
 ) {
   const column = animeTable[columnName];
   if (column instanceof SQLiteColumn) {
-    let filters = searchParams.getAll(columnName);
-    if (columnName in animeFilters) {
-      const allowedFilters = animeFilters[
-        columnName as keyof typeof animeFilters
-      ].options.map(({ value }) => value);
-      filters = filters.filter((filter) =>
-        allowedFilters.includes(filter as any),
-      );
-    }
+    const filters = searchParams.getAll(columnName);
     return where
       ? and(where, inArray(column, filters))
       : inArray(column, filters);
   }
   return where;
+}
+
+export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
+  searchParams: URLSearchParams,
+  filters: T,
+) {
+  const keys = objectKeys(filters).filter((key) => key !== "sfw");
+  const newSearchParams = new URLSearchParams();
+  for (const key of keys) {
+    if (typeof key !== "string") continue;
+    const allowedValues = filters[key].options.map(({ value }) => value);
+    const values = searchParams.getAll(key);
+    if (!values.length) continue;
+    const filteredValues = values.filter((value) => {
+      if (typeof allowedValues[0] === "string") {
+        return allowedValues.includes(value);
+      }
+      if (typeof allowedValues[0] === "number") {
+        return allowedValues.includes(Number(value));
+      }
+      if (typeof allowedValues[0] === "boolean") {
+        return allowedValues.includes(value === "true");
+      }
+    });
+    for (const value of filteredValues) {
+      newSearchParams.append(key, value);
+    }
+  }
+  const page = searchParams.get("page") as string;
+  if (searchParams.get("page") && parseInt(page) > 0) {
+    newSearchParams.set("page", page);
+  }
+  const season = searchParams.get("season") as string;
+  if (
+    searchParams.get("season") &&
+    ["winter", "spring", "summer", "fall"].includes(season)
+  ) {
+    newSearchParams.set("season", season);
+  }
+  const year = searchParams.get("year") as string;
+  if (searchParams.get("year") && parseInt(year) > 0) {
+    newSearchParams.set("year", year);
+  }
+  let ratings = newSearchParams.getAll("rating");
+  if (searchParams.get("sfw") === "false" && ratings.length) {
+    ratings = ratings.filter((rating) => !rating.startsWith("R"));
+  } else if (searchParams.get("sfw") === "false") {
+    ratings = filters.rating.options
+      .map(({ value }) => value)
+      .filter((rating) => !rating.startsWith("R"));
+  }
+  if (ratings.length) {
+    newSearchParams.delete("rating");
+    for (const rating of ratings) {
+      newSearchParams.append("rating", rating);
+    }
+  } else {
+    newSearchParams.delete("rating");
+  }
+  return newSearchParams;
 }

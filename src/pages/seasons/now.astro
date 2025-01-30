@@ -4,12 +4,7 @@ import { AnimeCard } from "@/components/anime-card";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
-import { db } from "@/lib/db/pool";
-import { animeTable, trackedEntityTable } from "@/lib/db/schemas";
-import { count, eq } from "drizzle-orm";
-import { parseRecord } from "@/lib/db/parse-record";
-import { animeSearchParamsToDrizzleQuery } from "@/lib/search-params-to-drizzle-query";
-import type { components } from "@/lib/api/jikan.openapi";
+import { getCurrentSeason, getAnimesCount } from "@/lib/anime/data-access";
 
 const _currentPage = Astro.url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
@@ -21,59 +16,12 @@ const animesPerPage = 25;
 const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
-function getAnimesCount() {
-  const { where, orderBy } = animeSearchParamsToDrizzleQuery(searchParams, 25);
-  const query = db.select({ count: count() }).from(animeTable).where(where);
-  if (orderBy) {
-    return query.orderBy(orderBy);
-  }
-  return query;
-}
 
-function getCurrentSeason() {
-  const { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
-    searchParams,
-    25,
-  );
-  const query = db
-  .select({
-    titles: animeTable.titles,
-    images: animeTable.images,
-    type: animeTable.type,
-    rating: animeTable.rating,
-    season: animeTable.season,
-    year: animeTable.year,
-    aired: animeTable.aired,
-    episodes: animeTable.episodes,
-    score: animeTable.score,
-    scored_by: animeTable.scored_by,
-    rank: animeTable.rank,
-    genres: animeTable.genres,
-    mal_id: animeTable.mal_id,
-    status: animeTable.status,
-    entityStatus: trackedEntityTable.entityStatus,
-  })
-    .from(animeTable)
-    .where(where)
-    .offset(offset)
-    .limit(limit)
-    .leftJoin(
-      trackedEntityTable,
-      eq(animeTable.mal_id, trackedEntityTable.mal_id),
-    );
-  if (orderBy) {
-    return query.orderBy(orderBy);
-  }
-  return query;
-}
-const [animesCount] = await getAnimesCount();
-let stringifiedAnimeRecords = await getCurrentSeason();
-const animeRecords = stringifiedAnimeRecords.map((anime) =>
-  parseRecord({
-    type: "anime",
-    record: anime as any,
-  }),
-) as components["schemas"]["anime_full"][];
+const [animesCount] = await getAnimesCount(searchParams, animesPerPage);
+const animeRecords = await getCurrentSeason(
+  searchParams,
+  animesPerPage,
+);
 ---
 
 <MainLayout title="title">
@@ -83,7 +31,7 @@ const animeRecords = stringifiedAnimeRecords.map((anime) =>
     client:load
   />
   <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {animeRecords?.map((item) => <AnimeCard data={item as any} client:load />)}
+    {animeRecords.map((item) => <AnimeCard data={item} client:load />)}
   </div>
   <div class="flex justify-center my-6">
     <MainPagination
