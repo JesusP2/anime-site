@@ -7,7 +7,7 @@ export const animeTable = sqliteTable("anime", {
   })
     .primaryKey()
     .$defaultFn(ulid),
-  mal_id: integer("mal_id"),
+  mal_id: integer("mal_id").unique(),
   url: text("url"),
   images: text("images"), //json
   trailer: text("trailer"), //json
@@ -21,6 +21,7 @@ export const animeTable = sqliteTable("anime", {
     length: 255,
   }),
   episodes: integer("episodes"),
+  episodes_info: text("episodes_info"), //json
   status: text("status", {
     length: 255,
   }),
@@ -56,6 +57,8 @@ export const animeTable = sqliteTable("anime", {
   theme: text("theme"), //json
   external: text("external"), //json
   streaming: text("streaming"), //json
+  characters: text("characters"), //json
+  staff: text("staff"), //json
   createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
   updatedAt: text("updated_at").$defaultFn(() => new Date().toISOString()),
 });

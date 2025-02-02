@@ -5,9 +5,10 @@ import { Star } from "@phosphor-icons/react";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
 import { StatusDropdown } from "./status-dropdown";
+import type { FullAnimeRecord } from "@/lib/types";
 
 export type AnimeCardItem = Pick<
-  components["schemas"]["anime_full"],
+  FullAnimeRecord,
   | "titles"
   | "images"
   | "type"

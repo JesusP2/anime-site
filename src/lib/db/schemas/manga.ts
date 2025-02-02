@@ -7,7 +7,7 @@ export const mangaTable = sqliteTable("manga", {
   })
     .primaryKey()
     .$defaultFn(ulid),
-  mal_id: integer("mal_id"),
+  mal_id: integer("mal_id").unique(),
   url: text("url", {
     length: 255,
   }),

@@ -1,6 +1,8 @@
-import type { InferSelectModel } from "drizzle-orm";
-import type { animeTable, characterTable, mangaTable } from "./db/schemas";
+import type { components } from "./api/jikan.openapi";
 
-export type FullAnimeRecord = InferSelectModel<typeof animeTable>;
-export type FullMangaRecord = InferSelectModel<typeof mangaTable>;
-export type FullCharacterRecord = InferSelectModel<typeof characterTable>;
+export type FullAnimeRecord = components["schemas"]["anime_full"] & {
+  episodes_info: components["schemas"]["anime_episodes"]['data'];
+  staff: components["schemas"]["anime_staff"]['data'];
+  characters: components["schemas"]["anime_characters"]['data'];
+  streaming: components["schemas"]["external_links"]['data'];
+};

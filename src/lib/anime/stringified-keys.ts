@@ -2,6 +2,7 @@ export const stringifiedAnimeKeys = [
   "images",
   "trailer",
   "titles",
+  "episodes_info",
   "aired",
   "broadcast",
   "producers",
@@ -15,4 +16,6 @@ export const stringifiedAnimeKeys = [
   "theme",
   "external",
   "streaming",
+  "staff",
+  "characters"
 ];

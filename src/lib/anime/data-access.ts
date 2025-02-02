@@ -8,6 +8,30 @@ import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
 import { ok, err, type Result } from "neverthrow";
 import { cleanSearchParams } from "../utils/clean-searchparams";
+import type { FullAnimeRecord } from "../types";
+
+export async function getAnime(
+  mal_id: string,
+): Promise<Result<FullAnimeRecord, Error>> {
+  try {
+    const [anime] = await db
+      .select()
+      .from(animeTable)
+      .where(eq(animeTable.mal_id, Number(mal_id)));
+    if (anime) {
+      return ok(
+        parseRecord(
+          anime,
+          stringifiedAnimeKeys,
+        ) as FullAnimeRecord,
+      );
+    }
+    return err(new Error("Could not get anime"));
+  } catch (_) {
+    console.error(_);
+    return err(new Error("Could not get anime"));
+  }
+}
 
 export async function getCurrentSeasonCount(
   searchParams: URLSearchParams,

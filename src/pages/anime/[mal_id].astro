@@ -1,0 +1,12 @@
+---
+import MainLayout from "@/layout/main.astro";
+
+import AnimePage from "@/components/anime-page.astro";
+import { getAnime } from "@/lib/anime/data-access";
+const mal_id = parseInt(Astro.params.mal_id || "0");
+const anime = await getAnime(mal_id.toString());
+---
+
+<MainLayout title="title">
+  {anime.isOk() ? <AnimePage anime={anime.value} /> : <div>Error</div>}
+</MainLayout>

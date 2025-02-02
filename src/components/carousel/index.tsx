@@ -2,12 +2,13 @@ import type { components } from "@/lib/api/jikan.openapi";
 import { CarouselCard } from "./card";
 import { useEffect, useRef, useState } from "react";
 import { buttonVariants } from "../ui/button";
+import type { FullAnimeRecord } from "@/lib/types";
 const cardWidth = 225;
 const gapBetweenCards = 16;
 export function Carousel({
   animes,
 }: {
-  animes: components["schemas"]["anime_full"][];
+  animes: FullAnimeRecord[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);

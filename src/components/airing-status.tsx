@@ -1,9 +1,10 @@
 import type { components } from "@/lib/api/jikan.openapi";
+import type { FullAnimeRecord } from "@/lib/types";
 
 export function AiringStatus({
   anime,
 }: {
-  anime: components["schemas"]["anime_full"];
+  anime: FullAnimeRecord;
 }) {
   const getStatusStyle = () => {
     switch (anime.status?.toLowerCase()) {

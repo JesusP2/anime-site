@@ -2,9 +2,6 @@ import {
   sqliteTable,
   text,
   integer,
-  uniqueIndex,
-  unique,
-  index,
 } from "drizzle-orm/sqlite-core";
 import { ulid } from "ulidx";
 

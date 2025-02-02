@@ -3,12 +3,13 @@ import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "@phosphor-icons/react";
 import { AiringStatus } from "../airing-status";
+import type { FullAnimeRecord } from "@/lib/types";
 
 export function CarouselCard({
   anime,
   width,
 }: {
-  anime: components["schemas"]["anime_full"];
+  anime: FullAnimeRecord;
   width: number;
 }) {
   const animeTitle =
