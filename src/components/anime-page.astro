@@ -1,5 +1,15 @@
 ---
 import type { FullAnimeRecord } from "@/lib/types";
+import { Badge } from "@/components/ui/badge";
+import {
+  TelevisionSimple,
+  Calendar,
+  Clock,
+  Users,
+  Trophy,
+  Star,
+  Person,
+} from "@phosphor-icons/react";
 type Props = {
   anime: FullAnimeRecord;
 };
@@ -10,101 +20,76 @@ const animeTitle =
 ---
 
 <div class="container mx-auto px-4 py-8">
-  <div class="flex flex-col md:flex-row gap-8">
-    <div class="md:w-1/3">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <div class="lg:w-1/3">
       <img
         src={anime.images?.webp?.large_image_url}
         alt={animeTitle}
-        class="w-full rounded-lg shadow-lg mb-6 min-w-[300px]"
+        class="w-full max-w-sm lg:max-w-7xl mx-auto rounded-lg shadow-lg mb-5"
       />
-
-      <div class="bg-gray-50 rounded-lg p-4 shadow-md">
-        <h2 class="text-lg font-semibold mb-3">Quick Stats</h2>
-        <div class="space-y-2">
-          {
-            anime.type && (
-              <div class="flex justify-between">
-                <span class="text-gray-600">Type:</span>
-                <span class="font-medium">{anime.type}</span>
-              </div>
-            )
-          }
-          {
-            anime.season && (
-              <div class="flex justify-between">
-                <span class="text-gray-600">Season:</span>
-                <span class="font-medium capitalize">{`${anime.season} ${anime.year}`}</span>
-              </div>
-            )
-          }
-          {
-            anime.duration && (
-              <div class="flex justify-between">
-                <span class="text-gray-600">Duration:</span>
-                <span class="font-medium">{anime.duration}</span>
-              </div>
-            )
-          }
-          {
-            anime.rating && (
-              <div class="flex justify-between">
-                <span class="text-gray-600">Age Rating:</span>
-                <span class="font-medium">{anime.rating}</span>
-              </div>
-            )
-          }
-        </div>
-      </div>
     </div>
 
-    <div class="md:w-2/3">
-      <h1 class="text-4xl font-bold mb-2">{animeTitle}</h1>
-      {
-        anime.titles && (
-          <div class="text-gray-600 mb-4">
-            {anime.titles.map((title) => (
-              <span class="mr-4">
+    <div class="lg:w-2/3">
+      <h1 class="text-4xl font-bold mb-2">
+        {animeTitle}
+      </h1>
+      <div class="mb-4">
+        {
+          anime.titles &&
+            anime.titles.map((title) => (
+              <Badge className="mr-4" variant="secondary">
                 {title.title} ({title.type})
-              </span>
-            ))}
-          </div>
-        )
-      }
+              </Badge>
+            ))
+        }
+      </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-1 grid-cols-4 gap-4 mb-6 max-w-lg">
         {
           anime.score && (
-            <div class="bg-blue-50 p-3 rounded-lg text-center">
-              <p class="text-2xl font-bold text-blue-600">⭐ {anime.score}</p>
-              <p class="text-sm text-gray-600">Score</p>
+            <div class="bg-blue-50 grid place-items-center p-3 rounded-lg text-center">
+              <div>
+                <p class="text-xs sm:text-[15px] font-bold text-blue-600">
+                  ⭐ {anime.score}
+                </p>
+                <p class="text-xs sm:text-[15px] text-gray-600">Score</p>
+              </div>
             </div>
           )
         }
         {
           anime.rank && (
-            <div class="bg-purple-50 p-3 rounded-lg text-center">
-              <p class="text-2xl font-bold text-purple-600">#{anime.rank}</p>
-              <p class="text-sm text-gray-600">Rank</p>
+            <div class="bg-purple-50 grid place-items-center p-3 rounded-lg text-center">
+              <div>
+                <p class="text-xs sm:text-[15px] font-bold text-purple-600">
+                  #{anime.rank}
+                </p>
+                <p class="text-xs sm:text-sm text-gray-600">Rank</p>
+              </div>
             </div>
           )
         }
         {
           anime.popularity && (
-            <div class="bg-green-50 p-3 rounded-lg text-center">
-              <p class="text-2xl font-bold text-green-600">
-                #{anime.popularity}
-              </p>
-              <p class="text-sm text-gray-600">Popularity</p>
+            <div class="bg-green-50 grid place-items-center p-3 rounded-lg text-center">
+              <div>
+                <p class="text-xs sm:text-[15px] font-bold text-green-600">
+                  #{anime.popularity}
+                </p>
+                <p class="text-xs sm:text-sm text-gray-600">Popularity</p>
+              </div>
             </div>
           )
         }
         {
           anime.members && (
-            <div class="bg-orange-50 p-3 rounded-lg text-center">
-              <p class="text-2xl font-bold text-orange-600">
-                {anime.members.toLocaleString()}
-              </p>
-              <p class="text-sm text-gray-600">Members</p>
+            <div class="bg-orange-50 grid place-items-center p-3 rounded-lg text-center">
+              <div>
+                <p class="text-xs sm:text-[15px] font-bold text-orange-600">
+                  {anime.members.toLocaleString()}
+                </p>
+                <p class="text-xs sm:text-sm text-gray-600">Members</p>
+              </div>
             </div>
           )
         }
@@ -119,109 +104,106 @@ const animeTitle =
         )
       }
 
-      {
-        anime.genres && anime.genres.length > 0 && (
-          <div class="mb-6">
-            <h2 class="text-xl font-semibold mb-2">Genres</h2>
-            <div class="flex flex-wrap gap-2">
-              {anime.genres.map((genre) => (
-                <span class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">
-                  {genre.name}
-                </span>
-              ))}
+      <div class="bg-white rounded-lg p-5 pl-0 shadow-sm">
+        <h2 class="text-xl font-semibold mb-3">Information</h2>
+        <div class="space-y-4">
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Type</div>
+            <div class="text-gray-900">{anime.type}</div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Episodes</div>
+            <div class="text-gray-900">{anime.episodes || "Unknown"}</div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Status</div>
+            <div class="text-gray-900">{anime.status}</div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Season</div>
+            <div class="text-gray-900 capitalize">
+              {`${anime.season} ${anime.year}`}
             </div>
           </div>
-        )
-      }
 
-      {
-        anime.studios && anime.studios.length > 0 && (
-          <div class="mb-6">
-            <h2 class="text-xl font-semibold mb-2">Studios</h2>
-            <div class="flex flex-wrap gap-2">
-              {anime.studios.map((studio) => (
-                <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm">
-                  {studio.name}
-                </span>
-              ))}
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Aired</div>
+            <div class="text-gray-900">
+              {
+                anime.aired?.from
+                  ? new Date(anime.aired.from).toLocaleDateString()
+                  : "?"
+              }
+              {" to "}
+              {
+                anime.aired?.to
+                  ? new Date(anime.aired.to).toLocaleDateString()
+                  : "?"
+              }
             </div>
           </div>
-        )
-      }
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {
-          anime.aired && (
-            <div class="bg-gray-50 rounded-lg p-4">
-              <h2 class="text-lg font-semibold mb-2">Aired</h2>
-              <p class="text-gray-700">
-                From: {anime.aired.from && new Date(anime.aired.from).toLocaleDateString()}
-              </p>
-              {anime.aired.to && (
-                <p class="text-gray-700">
-                  To: {new Date(anime.aired.to).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-          )
-        }
-        {
-          anime.broadcast && (
-            <div class="bg-gray-50 rounded-lg p-4">
-              <h2 class="text-lg font-semibold mb-2">Broadcast</h2>
-              <p class="text-gray-700">{anime.broadcast.string}</p>
-            </div>
-          )
-        }
-      </div>
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Rating</div>
+            <div class="text-gray-900">{anime.rating}</div>
+          </div>
 
-      <div class="bg-gray-50 rounded-lg p-4">
-        <h2 class="text-xl font-semibold mb-3">Additional Information</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {
-            anime.source && (
-              <div>
-                <span class="text-gray-600">Source:</span>
-                <span class="ml-2 font-medium">{anime.source}</span>
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Genres</div>
+            <div class="text-gray-900">
+              <div class="flex flex-wrap gap-2">
+                {
+                  anime.genres?.map((genre) => (
+                    <span class="bg-purple-50 text-purple-600 text-sm px-2 py-1 rounded">
+                      {genre.name}
+                    </span>
+                  ))
+                }
               </div>
-            )
-          }
-          {
-            anime.status && (
-              <div>
-                <span class="text-gray-600">Status:</span>
-                <span class="ml-2 font-medium">{anime.status}</span>
+            </div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Demographics</div>
+            <div class="text-gray-900">
+              {anime.demographics?.join(", ") || "Unknown"}
+            </div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Studios</div>
+            <div class="text-gray-900">
+              <div class="flex flex-wrap gap-2">
+                {
+                  anime.studios?.map((studio) => (
+                    <span class="bg-blue-50 text-blue-600 text-sm px-2 py-1 rounded">
+                      {studio.name}
+                    </span>
+                  ))
+                }
               </div>
-            )
-          }
-          {
-            anime.episodes && (
-              <div>
-                <span class="text-gray-600">Episodes:</span>
-                <span class="ml-2 font-medium">{anime.episodes}</span>
-              </div>
-            )
-          }
-          {
-            anime.demographics && anime.demographics.length > 0 && (
-              <div>
-                <span class="text-gray-600">Demographics:</span>
-                <span class="ml-2 font-medium">
-                  {anime.demographics.map((d) => d.name).join(", ")}
-                </span>
-              </div>
-            )
-          }
+            </div>
+          </div>
+
+          <div class="flex border-b border-gray-100 pb-3">
+            <div class="w-32 text-gray-500">Broadcast</div>
+            <div class="text-gray-900">
+              {anime.broadcast?.string || "Unknown"}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-12 grid md:grid-cols-2 gap-8">
+  <div class="mt-12 grid lg:grid-cols-2 gap-8">
     {
-    anime.characters && anime.characters.length > 0 && (
+      anime.characters && anime.characters.length > 0 && (
         <div>
-          <h2 class="text-2xl font-bold mb-4">Main Characters</h2>
+          <h2 class="text-xl font-semibold mb-3">Main Characters</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {anime.characters.slice(0, 6).map((char) => (
               <div class="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm">
@@ -244,7 +226,7 @@ const animeTitle =
     {
       anime.staff && anime.staff.length > 0 && (
         <div>
-          <h2 class="text-2xl font-bold mb-4">Key Staff</h2>
+          <h2 class="text-xl font-semibold mb-3">Key Staff</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {anime.staff.slice(0, 6).map((person) => (
               <div class="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm">
@@ -270,7 +252,7 @@ const animeTitle =
   {
     anime.episodes_info && anime.episodes_info.length > 0 && (
       <div class="mt-12">
-        <h2 class="text-2xl font-bold mb-4">Episodes</h2>
+        <h2 class="text-xl font-semibold mb-3">Episodes</h2>
         <div class="grid gap-4">
           {anime.episodes_info.map((episode) => (
             <div class="bg-white p-4 rounded-lg shadow-sm">
@@ -279,7 +261,8 @@ const animeTitle =
                   Episode {episode.mal_id}: {episode.title}
                 </h3>
                 <span class="text-sm text-gray-600">
-                  {episode.aired && new Date(episode.aired).toLocaleDateString()}
+                  {episode.aired &&
+                    new Date(episode.aired).toLocaleDateString()}
                 </span>
               </div>
             </div>
@@ -292,7 +275,7 @@ const animeTitle =
   {
     anime.streaming && anime.streaming.length > 0 && (
       <div class="mt-12 mb-8">
-        <h2 class="text-2xl font-bold mb-4">Where to Watch</h2>
+        <h2 class="text-xl font-semibold mb-3">Where to Watch</h2>
         <div class="flex flex-wrap gap-3">
           {anime.streaming.map((link) => (
             <a

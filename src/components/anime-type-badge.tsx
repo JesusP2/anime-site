@@ -6,9 +6,6 @@ import {
   Megaphone,
   PlayCircle,
 } from "@phosphor-icons/react";
-import type { components } from "@/lib/api/jikan.openapi";
-
-type AnimeType = components["schemas"]["anime_search_query_type"];
 
 interface AnimeTypeBadgeProps {
   type: string;

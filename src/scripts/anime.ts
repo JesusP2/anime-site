@@ -2,7 +2,7 @@ import { jikanClient } from "@/lib/api/jikan.client";
 import { db } from "@/lib/db/pool";
 import { animeTable } from "@/lib/db/schemas";
 
-const START = 1;
+const START = 5645;
 const END = 100_000;
 
 const stringifyKeys = [
@@ -24,14 +24,8 @@ const stringifyKeys = [
   "streaming",
 ];
 
-const failed: number[] = [
-   351,  796,  856,  981,
-  1047, 1184, 2080, 2095,
-  2650, 2716, 2723, 2771,
-  2786, 2861, 3130, 3152,
-  3950, 4581, 4835
-];
-for (let mal_id of failed) {
+const failed: number[] = [];
+for (let mal_id = START; mal_id < END; mal_id++) {
   const animeRes = await jikanClient.GET("/anime/{id}/full", {
     params: {
       path: {

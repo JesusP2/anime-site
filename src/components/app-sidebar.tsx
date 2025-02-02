@@ -8,8 +8,8 @@ import {
   CheckCircle,
   TelevisionSimple,
   Book,
-  Leaf,
   MagnifyingGlass,
+  Calendar,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -40,7 +40,7 @@ const data = {
         {
           title: "Current season",
           url: "/seasons/now",
-          icon: Leaf,
+          icon: Calendar,
         },
         {
           title: "Search",
