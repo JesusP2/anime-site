@@ -29,7 +29,10 @@ export function FilterModal({
   };
   setFilters: Dispatch<
     SetStateAction<{
-      [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
+      [K in keyof AnimeFilters | keyof MangaFilters]:
+        | string[]
+        | string
+        | boolean;
     }>
   >;
 }) {
@@ -41,7 +44,11 @@ export function FilterModal({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {objectEntries(options).map(([key, value]) => {
-            if ('type' in value && value.type === "radio" && !Array.isArray(filters[key])) {
+            if (
+              "type" in value &&
+              value.type === "radio" &&
+              !Array.isArray(filters[key])
+            ) {
               return (
                 <RadioGroupFilters
                   key={value.label}
@@ -87,7 +94,9 @@ function RadioGroupFilters({
   onChange,
 }: {
   label: string;
-  options: AnimeFilters[keyof AnimeFilters]['options'] | MangaFilters[keyof MangaFilters]['options'];
+  options:
+    | AnimeFilters[keyof AnimeFilters]["options"]
+    | MangaFilters[keyof MangaFilters]["options"];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {
@@ -95,8 +104,14 @@ function RadioGroupFilters({
     <RadioGroup value={value as string} onValueChange={onChange}>
       <Label className="text-black">{label}</Label>
       {options.map((option) => (
-        <div key={option.value as string} className="flex items-center space-x-2">
-          <RadioGroupItem value={option.value as string} id={option.value.toString()} />
+        <div
+          key={option.value as string}
+          className="flex items-center space-x-2"
+        >
+          <RadioGroupItem
+            value={option.value as string}
+            id={option.value.toString()}
+          />
           <Label htmlFor={option.value.toString()} className="text-neutral-800">
             {option.label}
           </Label>

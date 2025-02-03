@@ -1,12 +1,22 @@
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 
-export function KeyStaffCard({ staff, positions }: { staff: any; positions?: string[] }) {
+export function KeyStaffCard({
+  staff,
+  positions,
+}: {
+  staff: any;
+  positions?: string[];
+}) {
   return (
     <Card key={staff.name} className="overflow-hidden rounded-md max-w-[350px]">
       <CardContent className="p-4">
         <div className="flex gap-4">
-          <img src={staff?.images?.jpg?.image_url} alt={staff?.name} className="h-16 w-16 rounded-full" />
+          <img
+            src={staff?.images?.jpg?.image_url}
+            alt={staff?.name}
+            className="h-16 w-16 rounded-full"
+          />
           <div className="space-y-2">
             <div>
               <h3 className="font-semibold text-lg">{staff.name}</h3>
@@ -24,5 +34,5 @@ export function KeyStaffCard({ staff, positions }: { staff: any; positions?: str
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

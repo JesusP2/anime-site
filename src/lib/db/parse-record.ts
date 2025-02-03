@@ -1,4 +1,7 @@
-export function parseRecord(record: Record<string, unknown>, stringifiedKeys: string[]) {
+export function parseRecord(
+  record: Record<string, unknown>,
+  stringifiedKeys: string[],
+) {
   const parsedRecord = { ...record } as any;
   for (const key of stringifiedKeys) {
     if (!(key in record)) continue;

@@ -284,9 +284,7 @@
       "indexes": {
         "anime_mal_id_unique": {
           "name": "anime_mal_id_unique",
-          "columns": [
-            "mal_id"
-          ],
+          "columns": ["mal_id"],
           "isUnique": true
         }
       },
@@ -396,12 +394,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -490,12 +484,8 @@
           "name": "passkey_user_id_user_id_fk",
           "tableFrom": "passkey",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -567,9 +557,7 @@
       "indexes": {
         "session_token_unique": {
           "name": "session_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         }
       },
@@ -578,12 +566,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -655,16 +639,12 @@
       "indexes": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         },
         "user_username_unique": {
           "name": "user_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         }
       },
@@ -830,16 +810,12 @@
       "indexes": {
         "character_mal_id_unique": {
           "name": "character_mal_id_unique",
-          "columns": [
-            "mal_id"
-          ],
+          "columns": ["mal_id"],
           "isUnique": true
         },
         "character_url_unique": {
           "name": "character_url_unique",
-          "columns": [
-            "url"
-          ],
+          "columns": ["url"],
           "isUnique": true
         }
       },
@@ -911,9 +887,7 @@
       "indexes": {
         "tracked_entity_user_id_mal_id_unique": {
           "name": "tracked_entity_user_id_mal_id_unique",
-          "columns": [
-            "user_id_mal_id"
-          ],
+          "columns": ["user_id_mal_id"],
           "isUnique": true
         }
       },
@@ -1146,9 +1120,7 @@
       "indexes": {
         "manga_mal_id_unique": {
           "name": "manga_mal_id_unique",
-          "columns": [
-            "mal_id"
-          ],
+          "columns": ["mal_id"],
           "isUnique": true
         }
       },

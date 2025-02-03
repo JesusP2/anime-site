@@ -1,11 +1,6 @@
-import type { components } from "@/lib/api/jikan.openapi";
-import type { FullAnimeRecord } from "@/lib/types";
+import type { AnimeCardItem } from "./anime-card";
 
-export function AiringStatus({
-  anime,
-}: {
-  anime: FullAnimeRecord;
-}) {
+export function AiringStatus({ anime }: { anime: AnimeCardItem }) {
   const getStatusStyle = () => {
     switch (anime.status?.toLowerCase()) {
       case "currently airing":

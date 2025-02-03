@@ -11,7 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "env-cmd drizzle-kit studio",
-    "format:fix": "prettier --write .",
+    "format:fix": "prettier --write ./src",
     "anime": "tsx --env-file=.env ./src/scripts/anime.ts",
     "manga": "tsx --env-file=.env ./src/scripts/manga.ts"
   },

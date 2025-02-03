@@ -2,7 +2,9 @@ import { and, inArray, type SQL } from "drizzle-orm";
 import type { animeTable, mangaTable } from "../db/schemas";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 
-export function createWhereClause<T extends typeof animeTable | typeof mangaTable>(
+export function createWhereClause<
+  T extends typeof animeTable | typeof mangaTable,
+>(
   where: SQL | undefined,
   table: T,
   columnName: keyof T,

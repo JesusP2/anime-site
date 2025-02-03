@@ -9,34 +9,40 @@ import type { AnimeCardItem } from "@/components/anime-card";
 import { ok, err, type Result } from "neverthrow";
 import { cleanSearchParams } from "../utils/clean-searchparams";
 import type { FullAnimeRecord } from "../types";
+import { ActionError } from "astro:actions";
 
 export async function getAnime(
   mal_id: string,
-): Promise<Result<FullAnimeRecord, Error>> {
+): Promise<Result<FullAnimeRecord, ActionError>> {
   try {
     const [anime] = await db
       .select()
       .from(animeTable)
       .where(eq(animeTable.mal_id, Number(mal_id)));
     if (anime) {
-      return ok(
-        parseRecord(
-          anime,
-          stringifiedAnimeKeys,
-        ) as FullAnimeRecord,
-      );
+      return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
     }
-    return err(new Error("Could not get anime"));
+    return err(
+      new ActionError({
+        code: "NOT_FOUND",
+        message: "Could not get anime",
+      }),
+    );
   } catch (_) {
     console.error(_);
-    return err(new Error("Could not get anime"));
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
   }
 }
 
 export async function getCurrentSeasonCount(
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-): Promise<Result<number, Error>> {
+): Promise<Result<number, ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
@@ -52,14 +58,19 @@ export async function getCurrentSeasonCount(
     return ok(animesCount);
   } catch (_) {
     console.error(_);
-    return err(new Error("Could not get animes count"));
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
   }
 }
 
 export async function getCurrentSeason(
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-): Promise<Result<AnimeCardItem[], Error>> {
+): Promise<Result<AnimeCardItem[], ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
@@ -104,7 +115,12 @@ export async function getCurrentSeason(
     );
   } catch (_) {
     console.error(_);
-    return err(new Error("Could not get animes"));
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
   }
 }
 
@@ -112,13 +128,23 @@ export async function getAnimesWithStatusCount(
   status: string,
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-): Promise<Result<number, Error>> {
+  userId?: string,
+): Promise<Result<number, ActionError>> {
+  if (!userId) {
+    return err(
+      new ActionError({
+        code: "UNAUTHORIZED",
+        message: "User not found",
+      }),
+    );
+  }
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   let { where, orderBy } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
     recordsPerPage,
   );
   where = and(where, eq(trackedEntityTable.entityStatus, status));
+  where = and(where, eq(trackedEntityTable.userId, userId));
   const query = db
     .select({ count: count() })
     .from(animeTable)
@@ -136,7 +162,12 @@ export async function getAnimesWithStatusCount(
     return ok(animesCount);
   } catch (_) {
     console.error(_);
-    return err(new Error("Could not get animes count"));
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
   }
 }
 
@@ -144,13 +175,23 @@ export async function getAnimesWithStatus(
   status: string,
   searchParams: URLSearchParams,
   recordsPerPage = 25,
-): Promise<Result<AnimeCardItem[], Error>> {
+  userId?: string,
+): Promise<Result<AnimeCardItem[], ActionError>> {
+  if (!userId) {
+    return err(
+      new ActionError({
+        code: "UNAUTHORIZED",
+        message: "User not found",
+      }),
+    );
+  }
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   let { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,
     recordsPerPage,
   );
   where = and(where, eq(trackedEntityTable.entityStatus, status));
+  where = and(where, eq(trackedEntityTable.userId, userId));
   const query = db
     .select({
       titles: animeTable.titles,
@@ -190,6 +231,11 @@ export async function getAnimesWithStatus(
     );
   } catch (_) {
     console.error(_);
-    return err(new Error("Could not get animes"));
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
   }
 }

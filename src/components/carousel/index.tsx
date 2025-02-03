@@ -5,11 +5,7 @@ import { buttonVariants } from "../ui/button";
 import type { FullAnimeRecord } from "@/lib/types";
 const cardWidth = 225;
 const gapBetweenCards = 16;
-export function Carousel({
-  animes,
-}: {
-  animes: FullAnimeRecord[];
-}) {
+export function Carousel({ animes }: { animes: FullAnimeRecord[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);

@@ -11,10 +11,12 @@ import type { MangaFilters } from "@/lib/manga/filters";
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   return objectEntries(options).reduce(
     (acc, [key, value]) => {
-      if ('type' in value && key === 'sfw') {
-        acc[key] = url.searchParams.get(key) ? url.searchParams.get(key) === 'true' : true;
+      if ("type" in value && key === "sfw") {
+        acc[key] = url.searchParams.get(key)
+          ? url.searchParams.get(key) === "true"
+          : true;
         return acc;
-      } else if ('type' in value) {
+      } else if ("type" in value) {
         acc[key] = url.searchParams.get(key) ?? value.options[0]?.value;
         return acc;
       }
@@ -22,13 +24,16 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
       return acc;
     },
     {} as {
-      [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
+      [K in keyof AnimeFilters | keyof MangaFilters]:
+        | string[]
+        | string
+        | boolean;
     },
   );
 }
 export function SearchWithFilters({
   options,
-  url
+  url,
 }: {
   options: AnimeFilters | MangaFilters;
   url: URL;
@@ -88,7 +93,13 @@ export function SearchWithFilters({
               </span>
             )}
           </Button>
-          <Button onClick={() => navigate(`${url.pathname}?${searchParams.toString()}`)}>Search</Button>
+          <Button
+            onClick={() =>
+              navigate(`${url.pathname}?${searchParams.toString()}`)
+            }
+          >
+            Search
+          </Button>
         </div>
       </div>
       <FilterModal

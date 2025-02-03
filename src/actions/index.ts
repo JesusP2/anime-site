@@ -3,7 +3,6 @@ import { auth } from "./auth";
 import { z } from "astro:schema";
 import { db } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
-import { ulid } from "ulidx";
 
 export const server = {
   auth,

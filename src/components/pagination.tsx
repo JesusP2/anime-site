@@ -35,12 +35,15 @@ export function MainPagination({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious isActive={currentPage > 1} href={createLink(url, currentPage - 1)} />
+          <PaginationPrevious
+            isActive={currentPage > 1}
+            href={createLink(url, currentPage - 1, lastVisiblePage)}
+          />
         </PaginationItem>
         {tabs.map((tab, idx) => (
           <PaginationItem key={tab + idx.toString()}>
             <PaginationLink
-              href={createLink(url, tab)}
+              href={createLink(url, tab, lastVisiblePage)}
               isActive={tab === currentPage}
             >
               {tab}
@@ -48,14 +51,22 @@ export function MainPagination({
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext isActive={currentPage < lastVisiblePage} href={createLink(url, currentPage + 1)} />
+          <PaginationNext
+            isActive={currentPage < lastVisiblePage}
+            href={createLink(url, currentPage + 1, lastVisiblePage)}
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
   );
 }
 
-function createLink(url: URL, page: number | string) {
+function createLink(url: URL, page: number | string, lastVisiblePage: number) {
+  if (Number(page) < 1) {
+    page = 1;
+  } else if (Number(page) > lastVisiblePage) {
+    page = lastVisiblePage === 0 ? 1 : lastVisiblePage;
+  }
   url.searchParams.set("page", page.toString());
   return url.toString();
 }

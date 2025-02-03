@@ -17,5 +17,5 @@ export const stringifiedAnimeKeys = [
   "external",
   "streaming",
   "staff",
-  "characters"
+  "characters",
 ];

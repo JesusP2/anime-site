@@ -89,21 +89,24 @@ for (let mal_id = START; mal_id < END; mal_id++) {
     anime.characters = JSON.stringify(characters.slice(0, 6));
     anime.episodes_info = JSON.stringify(episodes);
     anime.streaming = JSON.stringify(streaming);
-    await db.insert(animeTable).values(anime).onConflictDoUpdate({
-      target: animeTable.mal_id,
-      set: {
-        staff: anime.staff,
-        episodes: anime.episodes,
-        characters: anime.characters,
-        episodes_info: anime.episodes_info,
-        streaming: anime.streaming,
-      },
-    });
+    await db
+      .insert(animeTable)
+      .values(anime)
+      .onConflictDoUpdate({
+        target: animeTable.mal_id,
+        set: {
+          staff: anime.staff,
+          episodes: anime.episodes,
+          characters: anime.characters,
+          episodes_info: anime.episodes_info,
+          streaming: anime.streaming,
+        },
+      });
   } catch (err) {
     failed.push(mal_id);
     console.error(mal_id, err);
   }
   if (mal_id % 100 === 0) {
-    console.log('mal_id:', mal_id, failed);
+    console.log("mal_id:", mal_id, failed);
   }
 }

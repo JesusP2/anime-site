@@ -6,6 +6,7 @@ import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
 import { StatusDropdown } from "./status-dropdown";
 import type { FullAnimeRecord } from "@/lib/types";
+import type { User } from "better-auth";
 
 export type AnimeCardItem = Pick<
   FullAnimeRecord,
@@ -23,11 +24,13 @@ export type AnimeCardItem = Pick<
   | "genres"
   | "mal_id"
   | "status"
-> & { entityStatus: string }; 
+> & { entityStatus: string };
 export function AnimeCard({
   data,
+  user,
 }: {
   data: AnimeCardItem;
+  user: User | null;
 }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
@@ -102,7 +105,11 @@ export function AnimeCard({
           </section>
           <section className="my-2 flex items-center justify-between">
             <AiringStatus anime={data} />
-            <StatusDropdown mal_id={data.mal_id} defaultStatus={data.entityStatus} />
+            <StatusDropdown
+              data={data}
+              defaultStatus={data.entityStatus}
+              user={user}
+            />
           </section>
         </div>
       </article>

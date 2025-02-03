@@ -1,10 +1,13 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { AnimeCard } from "@/components/anime-card";
+import { AnimesCompletedGrid } from "@/components/pages/anime/completed";
 import { MainPagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
-import { getAnimesWithStatus, getAnimesWithStatusCount } from "@/lib/anime/data-access";
+import {
+  getAnimesWithStatus,
+  getAnimesWithStatusCount,
+} from "@/lib/anime/data-access";
 
 const _currentPage = Astro.url.searchParams.get("page") || "1";
 const currentPage = isNaN(parseInt(_currentPage || ""))
@@ -14,8 +17,18 @@ const searchParams = new URLSearchParams(Astro.url.searchParams);
 
 const animesPerPage = 25;
 const [animesCount, animeRecords] = await Promise.all([
-  getAnimesWithStatusCount('completed', searchParams, animesPerPage),
-  getAnimesWithStatus('completed', searchParams, animesPerPage),
+  getAnimesWithStatusCount(
+    "completed",
+    searchParams,
+    animesPerPage,
+    Astro.locals.user?.id,
+  ),
+  getAnimesWithStatus(
+    "completed",
+    searchParams,
+    animesPerPage,
+    Astro.locals.user?.id,
+  ),
 ]);
 ---
 
@@ -25,15 +38,11 @@ const [animesCount, animeRecords] = await Promise.all([
     options={animeFilters}
     client:load
   />
-  <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {
-      animesCount.isOk() && animeRecords.isOk()
-        ? animeRecords.value.map((item) => (
-            <AnimeCard data={item} client:load />
-          ))
-        : "Unexpected error"
-    }
-  </div>
+  <AnimesCompletedGrid
+    _animeRecords={animeRecords.isOk() ? animeRecords.value : []}
+    user={Astro.locals.user}
+    client:load
+  />
   <div class="flex justify-center my-6">
     {
       animesCount.isOk() ? (

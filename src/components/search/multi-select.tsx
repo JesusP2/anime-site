@@ -26,9 +26,11 @@ export function MultiSelect({
   onChange,
   label,
 }: {
-  options: AnimeFilters[keyof AnimeFilters]["options"] | MangaFilters[keyof MangaFilters]["options"];
+  options:
+    | AnimeFilters[keyof AnimeFilters]["options"]
+    | MangaFilters[keyof MangaFilters]["options"];
   placeholder: string;
-  value:  (string | boolean)[];
+  value: (string | boolean)[];
   onChange: (value: (string | boolean)[]) => void;
   label: string;
 }) {
@@ -36,7 +38,9 @@ export function MultiSelect({
 
   return (
     <div className="flex flex-col space-y-1.5">
-      <Label htmlFor={label} className="max-w-min">{label}</Label>
+      <Label htmlFor={label} className="max-w-min">
+        {label}
+      </Label>
       <Popover open={open} onOpenChange={setOpen} modal>
         <PopoverTrigger asChild>
           <Button

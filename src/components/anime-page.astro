@@ -10,7 +10,6 @@ const { anime } = Astro.props;
 const animeTitle =
   anime.titles?.find((title) => title.type === "English")?.title ||
   anime.titles?.find((title) => title.type === "Default")?.title;
-console.log(anime.demographics);
 ---
 
 <div class="container mx-auto px-4 py-8">
@@ -30,7 +29,7 @@ console.log(anime.demographics);
       <div class="mb-4">
         {
           anime.titles?.map((title) => (
-            <Badge className="mr-4" variant="secondary">
+            <Badge className="mr-4 mt-2" variant="secondary">
               {title.title} ({title.type})
             </Badge>
           ))
