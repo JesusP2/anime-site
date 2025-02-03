@@ -21,6 +21,7 @@ import { actions } from "astro:actions";
 import { useState } from "react";
 import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
+import { TrackedAnimeRecordsKey } from "@/lib/constants";
 
 export function StatusDropdown({
   data,
@@ -35,7 +36,7 @@ export function StatusDropdown({
   async function handleStatusChange(newStatus: string) {
     setStatus(newStatus);
     if (!data.mal_id) return;
-    if (!user) {
+    if (user) {
       await actions.updateEntity({ mal_id: data.mal_id, status: newStatus });
       return;
     }
@@ -52,7 +53,7 @@ export function StatusDropdown({
         JSON.stringify(storedAnimeRecords),
       );
     } else {
-      storedAnimeRecords.push(data);
+      storedAnimeRecords.push({ ...data, entityStatus: newStatus });
       localStorage.setItem(
         TrackedAnimeRecordsKey,
         JSON.stringify(storedAnimeRecords),

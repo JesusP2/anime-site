@@ -1,1 +1,1 @@
-const TrackedAnimeRecordsKey = "TrackedAnimeRecordsKey";
+export const TrackedAnimeRecordsKey = "TrackedAnimeRecordsKey";

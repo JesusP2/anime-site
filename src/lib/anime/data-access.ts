@@ -70,6 +70,7 @@ export async function getCurrentSeasonCount(
 export async function getCurrentSeason(
   searchParams: URLSearchParams,
   recordsPerPage = 25,
+  userId?: string,
 ): Promise<Result<AnimeCardItem[], ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
@@ -100,7 +101,10 @@ export async function getCurrentSeason(
     .limit(limit)
     .leftJoin(
       trackedEntityTable,
-      eq(animeTable.mal_id, trackedEntityTable.mal_id),
+      and(
+        eq(animeTable.mal_id, trackedEntityTable.mal_id),
+        eq(trackedEntityTable.userId, userId ?? "0"),
+      ),
     );
   let stringifiedAnimeRecords: any[] = [];
   try {
