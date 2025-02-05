@@ -1,11 +1,10 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { EntityWithStatusGrid } from "@/components/entity-with-status-grid";
+import { LocalAnimesGrid } from "@/components/local-animes-grid";
 import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
 import { getAnimeRecordsByStatus } from "@/lib/entity-records";
-import { TrackedAnimeRecordsKey } from "@/lib/constants";
 
 const animesPerPage = 25;
 const { animesCount, animeRecords, currentPage } =
@@ -18,10 +17,9 @@ const { animesCount, animeRecords, currentPage } =
     options={animeFilters}
     client:load
   />
-  <EntityWithStatusGrid
+  <LocalAnimesGrid
     records={animeRecords.isOk() ? animeRecords.value : []}
     entityStatus="watching"
-    localStorageKey={TrackedAnimeRecordsKey}
     user={Astro.locals.user}
     client:load
   />

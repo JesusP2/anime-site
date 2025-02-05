@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { actions } from "astro:actions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
 import { TrackedAnimeRecordsKey, TrackedMangaRecordsKey } from "@/lib/constants";
@@ -35,6 +35,11 @@ export function StatusDropdown({
   user: User | null;
 }) {
   const [status, setStatus] = useState(defaultStatus);
+
+  useEffect(() => {
+    setStatus(defaultStatus);
+  }, [defaultStatus]);
+
   async function handleStatusChange(newStatus: string) {
     setStatus(newStatus);
     if (!data.mal_id) return;
