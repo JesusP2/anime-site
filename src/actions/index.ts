@@ -10,9 +10,10 @@ export const server = {
     accept: "json",
     input: z.object({
       mal_id: z.number(),
+      entityType: z.enum(['ANIME', 'MANGA']),
       status: z.string(),
     }),
-    handler: async ({ mal_id, status }, context) => {
+    handler: async ({ mal_id, entityType, status }, context) => {
       const userId = context.locals.user?.id;
       if (!userId) {
         throw new Error("Unauthorized");
@@ -21,7 +22,7 @@ export const server = {
         .insert(trackedEntityTable)
         .values({
           userId: userId,
-          entityType: "ANIME",
+          entityType,
           entityStatus: status,
           userIdMalId: `${userId}-${mal_id}`,
           mal_id,

@@ -1,7 +1,7 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { AnimeCard } from "@/components/anime-card";
-import { MainPagination } from "@/components/pagination";
+import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
 import { getCurrentSeason, getCurrentSeasonCount } from "@/lib/anime/data-access";
@@ -32,28 +32,19 @@ const [animesCount, animeRecords] = await Promise.all([
     {
       animesCount.isOk() && animeRecords.isOk()
         ? animeRecords.value.map((item) => (
-            <AnimeCard data={item} client:load />
+            <AnimeCard data={item} user={Astro.locals.user} client:load />
           ))
         : "Unexpected error"
     }
   </div>
   <div class="flex justify-center my-6">
-    {
-      animesCount.isOk() ? (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={Math.ceil((animesCount.value ?? 0) / animesPerPage)}
-          currentPage={currentPage}
-          client:load
-        />
-      ) : (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={1}
-          currentPage={currentPage}
-          client:load
-        />
-      )
-    }
+    <Pagination
+      url={new URL(Astro.url)}
+      lastVisiblePage={Math.ceil(
+        (animesCount.isOk() ? animesCount.value : 1) / animesPerPage,
+      )}
+      currentPage={currentPage}
+      client:load
+    />
   </div>
 </MainLayout>

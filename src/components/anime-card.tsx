@@ -7,6 +7,7 @@ import { AiringStatus } from "./airing-status";
 import { StatusDropdown } from "./status-dropdown";
 import type { FullAnimeRecord } from "@/lib/types";
 import type { User } from "better-auth";
+import { TrackedAnimeRecordsKey } from "@/lib/constants";
 
 export type AnimeCardItem = Pick<
   FullAnimeRecord,
@@ -107,6 +108,7 @@ export function AnimeCard({
             <AiringStatus anime={data} />
             <StatusDropdown
               data={data}
+              entityType="ANIME"
               defaultStatus={data.entityStatus}
               user={user}
             />

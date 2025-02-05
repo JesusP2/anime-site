@@ -1,8 +1,4 @@
-import type { components } from "@/lib/api/jikan.openapi";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
-import { Badge } from "@/components/ui/badge";
-import { Star } from "@phosphor-icons/react";
-import { AiringStatus } from "../airing-status";
 import type { FullAnimeRecord } from "@/lib/types";
 
 export function CarouselCard({
@@ -16,6 +12,7 @@ export function CarouselCard({
     anime.titles?.find((title) => title.type === "English")?.title ||
     anime.titles?.find((title) => title.type === "Default")?.title;
   return (
+    <a href={`/anime/${anime.mal_id}`}>
     <article className="group">
       <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
         <img
@@ -38,5 +35,6 @@ export function CarouselCard({
         </h3>
       </section>
     </article>
+    </a>
   );
 }

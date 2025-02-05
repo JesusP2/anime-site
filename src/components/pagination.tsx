@@ -1,5 +1,5 @@
 import {
-  Pagination,
+  Pagination as BasePagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export function MainPagination({
+export function Pagination({
   currentPage,
   url,
   lastVisiblePage,
@@ -32,7 +32,7 @@ export function MainPagination({
     tabs.splice(1, currentPage - 3 < 0 ? 0 : currentPage - 3, "...");
   }
   return (
-    <Pagination>
+    <BasePagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
@@ -57,7 +57,7 @@ export function MainPagination({
           />
         </PaginationItem>
       </PaginationContent>
-    </Pagination>
+    </BasePagination>
   );
 }
 

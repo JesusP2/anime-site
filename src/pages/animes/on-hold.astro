@@ -1,36 +1,15 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import EmptyItems from "@/components/empty-items.astro";
-import { AnimeCard } from "@/components/anime-card";
-import { MainPagination } from "@/components/pagination";
+import { EntityWithStatusGrid } from "@/components/entity-with-status-grid";
+import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
-import {
-  getAnimesWithStatus,
-  getAnimesWithStatusCount,
-} from "@/lib/anime/data-access";
-
-const _currentPage = Astro.url.searchParams.get("page") || "1";
-const currentPage = isNaN(parseInt(_currentPage || ""))
-  ? 1
-  : parseInt(_currentPage);
-const searchParams = new URLSearchParams(Astro.url.searchParams);
+import { getAnimeRecordsByStatus } from "@/lib/entity-records";
+import { TrackedAnimeRecordsKey } from "@/lib/constants";
 
 const animesPerPage = 25;
-const [animesCount, animeRecords] = await Promise.all([
-  getAnimesWithStatusCount(
-    "on-hold",
-    searchParams,
-    animesPerPage,
-    Astro.locals.user?.id,
-  ),
-  getAnimesWithStatus(
-    "on-hold",
-    searchParams,
-    animesPerPage,
-    Astro.locals.user?.id,
-  ),
-]);
+const { animesCount, animeRecords, currentPage } =
+  await getAnimeRecordsByStatus(Astro, "on-hold", animesPerPage);
 ---
 
 <MainLayout title="title">
@@ -39,38 +18,23 @@ const [animesCount, animeRecords] = await Promise.all([
     options={animeFilters}
     client:load
   />
-  <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-    {
-      animesCount.isOk() &&
-      animeRecords.isOk() &&
-      animeRecords.value.length > 0 ? (
-        <div class="grid auto-fill-grid gap-6 px-10 w-full mx-auto bg-blue-100">
-          {animeRecords.value.map((item) => (
-            <AnimeCard data={item} client:load />
-          ))}
-        </div>
-      ) : (
-        <EmptyItems />
-      )
-    }
-  </div>
+  <EntityWithStatusGrid
+    records={animeRecords.isOk() ? animeRecords.value : []}
+    entityStatus="on-hold"
+    localStorageKey={TrackedAnimeRecordsKey}
+    user={Astro.locals.user}
+    client:load
+  />
   <div class="flex justify-center my-6">
-    {
-      animesCount.isOk() ? (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={Math.ceil((animesCount.value ?? 0) / animesPerPage)}
-          currentPage={currentPage}
-          client:load
-        />
-      ) : (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={1}
-          currentPage={currentPage}
-          client:load
-        />
-      )
+    <Pagination
+      url={new URL(Astro.url)}
+      lastVisiblePage={Math.ceil(
+        (animesCount.isOk() ? animesCount.value : 1) / animesPerPage,
+      )}
+      currentPage={currentPage}
+      client:load
+    />
     }
   </div>
 </MainLayout>
+

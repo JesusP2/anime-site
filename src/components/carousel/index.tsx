@@ -1,4 +1,3 @@
-import type { components } from "@/lib/api/jikan.openapi";
 import { CarouselCard } from "./card";
 import { useEffect, useRef, useState } from "react";
 import { buttonVariants } from "../ui/button";

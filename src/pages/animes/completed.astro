@@ -1,35 +1,15 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { AnimesCompletedGrid } from "@/components/pages/anime/completed";
-import { MainPagination } from "@/components/pagination";
+import { EntityWithStatusGrid } from "@/components/entity-with-status-grid";
+import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";
-import {
-  getAnimesWithStatus,
-  getAnimesWithStatusCount,
-} from "@/lib/anime/data-access";
-
-const _currentPage = Astro.url.searchParams.get("page") || "1";
-const currentPage = isNaN(parseInt(_currentPage || ""))
-  ? 1
-  : parseInt(_currentPage);
-const searchParams = new URLSearchParams(Astro.url.searchParams);
+import { getAnimeRecordsByStatus } from "@/lib/entity-records";
+import { TrackedAnimeRecordsKey } from "@/lib/constants";
 
 const animesPerPage = 25;
-const [animesCount, animeRecords] = await Promise.all([
-  getAnimesWithStatusCount(
-    "completed",
-    searchParams,
-    animesPerPage,
-    Astro.locals.user?.id,
-  ),
-  getAnimesWithStatus(
-    "completed",
-    searchParams,
-    animesPerPage,
-    Astro.locals.user?.id,
-  ),
-]);
+const { animesCount, animeRecords, currentPage } =
+  await getAnimeRecordsByStatus(Astro, "completed", animesPerPage);
 ---
 
 <MainLayout title="title">
@@ -38,28 +18,22 @@ const [animesCount, animeRecords] = await Promise.all([
     options={animeFilters}
     client:load
   />
-  <AnimesCompletedGrid
-    _animeRecords={animeRecords.isOk() ? animeRecords.value : []}
+  <EntityWithStatusGrid
+    records={animeRecords.isOk() ? animeRecords.value : []}
+    entityStatus="completed"
+    localStorageKey={TrackedAnimeRecordsKey}
     user={Astro.locals.user}
     client:load
   />
   <div class="flex justify-center my-6">
-    {
-      animesCount.isOk() ? (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={Math.ceil((animesCount.value ?? 0) / animesPerPage)}
-          currentPage={currentPage}
-          client:load
-        />
-      ) : (
-        <MainPagination
-          url={new URL(Astro.url)}
-          lastVisiblePage={1}
-          currentPage={currentPage}
-          client:load
-        />
-      )
+    <Pagination
+      url={new URL(Astro.url)}
+      lastVisiblePage={Math.ceil(
+        (animesCount.isOk() ? animesCount.value : 1) / animesPerPage,
+      )}
+      currentPage={currentPage}
+      client:load
+    />
     }
   </div>
 </MainLayout>

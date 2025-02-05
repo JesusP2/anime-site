@@ -21,15 +21,17 @@ import { actions } from "astro:actions";
 import { useState } from "react";
 import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
-import { TrackedAnimeRecordsKey } from "@/lib/constants";
+import { TrackedAnimeRecordsKey, TrackedMangaRecordsKey } from "@/lib/constants";
 
 export function StatusDropdown({
   data,
   defaultStatus,
+  entityType,
   user,
 }: {
   data: AnimeCardItem;
   defaultStatus: string;
+  entityType: 'ANIME' | 'MANGA';
   user: User | null;
 }) {
   const [status, setStatus] = useState(defaultStatus);
@@ -37,26 +39,27 @@ export function StatusDropdown({
     setStatus(newStatus);
     if (!data.mal_id) return;
     if (user) {
-      await actions.updateEntity({ mal_id: data.mal_id, status: newStatus });
+      await actions.updateEntity({ mal_id: data.mal_id, entityType, status: newStatus });
       return;
     }
-    const storedAnimeRecords = JSON.parse(
-      localStorage.getItem(TrackedAnimeRecordsKey) || "[]",
+    const localStorageKey = entityType === 'ANIME' ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
+    const storedRecords = JSON.parse(
+      localStorage.getItem(localStorageKey) || "[]",
     );
-    const storedAnimeRecord = storedAnimeRecords.find(
+    const storedRecord = storedRecords.find(
       (animeRecord: any) => animeRecord.mal_id === data.mal_id,
     );
-    if (storedAnimeRecord) {
-      storedAnimeRecord.entityStatus = newStatus;
+    if (storedRecord) {
+      storedRecord.entityStatus = newStatus;
       localStorage.setItem(
-        TrackedAnimeRecordsKey,
-        JSON.stringify(storedAnimeRecords),
+        localStorageKey,
+        JSON.stringify(storedRecords),
       );
     } else {
-      storedAnimeRecords.push({ ...data, entityStatus: newStatus });
+      storedRecords.push({ ...data, entityStatus: newStatus });
       localStorage.setItem(
-        TrackedAnimeRecordsKey,
-        JSON.stringify(storedAnimeRecords),
+        localStorageKey,
+        JSON.stringify(storedRecords),
       );
     }
   }
