@@ -4,8 +4,8 @@ import { animeTable } from "@/lib/db/schemas";
 
 // max  = 60778
 // min  = 31838
-const START = process.env.START;
-const END = process.env.END;
+const START = Number(process.env.START);
+const END = Number(process.env.END);
 
 const stringifyKeys = [
   "images",
