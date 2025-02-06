@@ -12,8 +12,8 @@
     "db:push": "drizzle-kit push",
     "db:studio": "env-cmd drizzle-kit studio",
     "format:fix": "prettier --write ./src",
-    "anime": "tsx --env-file=.env ./src/scripts/anime.ts",
-    "manga": "tsx --env-file=.env ./src/scripts/manga.ts"
+    "anime": "tsx ./src/scripts/anime.ts",
+    "manga": "tsx ./src/scripts/manga.ts"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",
