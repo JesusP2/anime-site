@@ -15,6 +15,7 @@ const { animesCount, animeRecords, currentPage } =
   <SearchWithFilters
     url={new URL(Astro.url)}
     options={animeFilters}
+    title="Animes planned to watch"
     client:load
   />
   <LocalAnimesGrid

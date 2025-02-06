@@ -25,18 +25,20 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     {} as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
+      | string[]
+      | string
+      | boolean;
     },
   );
 }
 export function SearchWithFilters({
   options,
   url,
+  title,
 }: {
   options: AnimeFilters | MangaFilters;
   url: URL;
+  title: string,
 }) {
   const [searchParams, setSearchParams] = useState(url.searchParams);
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,7 +70,7 @@ export function SearchWithFilters({
   }
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Current Season</h1>
+      <h1 className="text-2xl font-bold mb-6">{title}</h1>
       <div className="flex flex-col space-y-1.5">
         <div className="flex space-x-2">
           <Input

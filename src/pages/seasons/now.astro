@@ -29,6 +29,7 @@ const [animesCount, animeRecords] = await Promise.all([
   <SearchWithFilters
     url={new URL(Astro.url)}
     options={animeFilters}
+    title="Animes this season"
     client:load
   />
   <LocalSeasonGrid
