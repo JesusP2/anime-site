@@ -32,7 +32,7 @@ export function LocalSeasonGrid({
     <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
       {
         _records.map((item) => (
-          <AnimeCard key={item.mal_id} data={item} user={user} />
+          <AnimeCard key={item.mal_id} data={item} />
         ))}
     </div>
   );

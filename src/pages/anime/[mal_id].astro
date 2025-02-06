@@ -4,9 +4,10 @@ import MainLayout from "@/layout/main.astro";
 import AnimePage from "@/components/anime-page.astro";
 import { getAnime } from "@/lib/anime/data-access";
 const mal_id = parseInt(Astro.params.mal_id || "0");
-const anime = await getAnime(mal_id.toString());
+const userId = Astro.locals.user?.id
+const anime = await getAnime(mal_id.toString(), userId);
 ---
 
 <MainLayout title="title">
-  {anime.isOk() ? <AnimePage anime={anime.value} /> : <div>Error</div>}
+  {anime.isOk() ? <AnimePage anime={anime.value} user={Astro.locals.user} /> : <div>Error</div>}
 </MainLayout>

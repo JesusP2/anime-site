@@ -1,7 +1,6 @@
 import {
   CalendarCheck,
   CheckCircle,
-  ListBullets,
   MonitorPlay,
   PauseCircle,
   Trash,
@@ -23,22 +22,32 @@ import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
 import { TrackedAnimeRecordsKey, TrackedMangaRecordsKey } from "@/lib/constants";
 
+const statuses = ['completed', 'planned', 'dropped', 'watching', 'on-hold'];
 export function StatusDropdown({
   data,
-  defaultStatus,
   entityType,
   user,
 }: {
   data: AnimeCardItem;
-  defaultStatus: string;
   entityType: 'ANIME' | 'MANGA';
   user: User | null;
 }) {
-  const [status, setStatus] = useState(defaultStatus);
+  const [status, setStatus] = useState(data.entityStatus);
 
   useEffect(() => {
-    setStatus(defaultStatus);
-  }, [defaultStatus]);
+    if (!user) {
+      const localStorageKey = entityType === 'ANIME' ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
+      const storedRecords = JSON.parse(
+        localStorage.getItem(localStorageKey) || "[]",
+      );
+      const storedRecord = storedRecords.find(
+        (animeRecord: any) => animeRecord.mal_id === data.mal_id,
+      );
+      if (storedRecord) {
+        setStatus(storedRecord.entityStatus);
+      }
+    }
+  }, []);
 
   async function handleStatusChange(newStatus: string) {
     setStatus(newStatus);
@@ -73,11 +82,9 @@ export function StatusDropdown({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          size="icon"
-          className="size-[30px] rounded-sm mr-2"
+          className="rounded-sm mr-2"
         >
-          <ListBullets className="h-1 w-1" />
-          <span className="sr-only">Open status menu</span>
+          <RenderStatus status={status} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -87,43 +94,44 @@ export function StatusDropdown({
           value={status}
           onValueChange={handleStatusChange}
         >
-          <DropdownMenuRadioItem
-            className="flex items-center gap-2"
-            value="completed"
-          >
-            <CheckCircle />
-            Completed
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            className="flex items-center gap-2"
-            value="planned"
-          >
-            <CalendarCheck />
-            Planned to watch
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            className="flex items-center gap-2"
-            value="dropped"
-          >
-            <Trash />
-            Dropped
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            className="flex items-center gap-2"
-            value="watching"
-          >
-            <MonitorPlay />
-            Watching
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            className="flex items-center gap-2"
-            value="on-hold"
-          >
-            <PauseCircle />
-            On hold
-          </DropdownMenuRadioItem>
+          {statuses.map(status => (
+            <DropdownMenuRadioItem
+              key={status}
+              value={status}
+              className="flex items-center gap-2"
+            >
+              <RenderStatus status={status} />
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+function RenderStatus({ status }: { status: string }) {
+  switch (status) {
+    case "completed":
+      return (<>
+        <CheckCircle className="h-4 w-4" />Completed
+      </>);
+    case "planned":
+      return (<>
+        <CalendarCheck className="h-4 w-4" />Planned to watch
+      </>);
+    case "dropped":
+      return (<>
+        <Trash className="h-4 w-4" />Dropped
+      </>);
+    case "watching":
+      return (<>
+        <MonitorPlay className="h-4 w-4" />Watching
+      </>);
+    case "on-hold":
+      return (<>
+        <PauseCircle className="h-4 w-4" />On hold
+      </>);
+    default:
+      return (<></>);
+  }
 }

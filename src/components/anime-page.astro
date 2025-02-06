@@ -3,10 +3,13 @@ import type { FullAnimeRecord } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { KeyStaffCard } from "@/components/key-staff-card";
 import { MainCharacterCard } from "@/components/main-character-card";
+import { StatusDropdown } from "./status-dropdown";
+import type { User } from "better-auth";
 type Props = {
   anime: FullAnimeRecord;
+  user: User | null;
 };
-const { anime } = Astro.props;
+const { anime, user } = Astro.props;
 const animeTitle =
   anime.titles?.find((title) => title.type === "English")?.title ||
   anime.titles?.find((title) => title.type === "Default")?.title;
@@ -75,7 +78,9 @@ const animeTitle =
                 <p class="text-xs sm:text-sm text-gray-600">Popularity</p>
               </div>
             </div>
-          ) : 'Unknown'
+          ) : (
+            "Unknown"
+          )
         }
         {
           anime.members ? (
@@ -87,18 +92,31 @@ const animeTitle =
                 <p class="text-xs sm:text-sm text-gray-600">Members</p>
               </div>
             </div>
-          ) : 'Unknown'
+          ) : (
+            "Unknown"
+          )
         }
       </div>
 
-      {
-        anime.synopsis ? (
-          <div class="mb-6">
-            <h2 class="text-xl font-semibold mb-2">Synopsis</h2>
-            <p class="text-gray-700 leading-relaxed">{anime.synopsis}</p>
-          </div>
-        ) : 'Unknown'
-      }
+      <StatusDropdown
+        data={anime}
+        entityType="ANIME"
+        user={user}
+        client:load
+      />
+
+      <div class="mt-4">
+        {
+          anime.synopsis ? (
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-2">Synopsis</h2>
+              <p class="text-gray-700 leading-relaxed">{anime.synopsis}</p>
+            </div>
+          ) : (
+            "Unknown"
+          )
+        }
+      </div>
 
       <h2 class="text-xl font-semibold mb-3">Information</h2>
       <div class="bg-white rounded-lg p-5 shadow-sm">

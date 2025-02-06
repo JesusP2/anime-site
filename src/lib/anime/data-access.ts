@@ -13,12 +13,24 @@ import { ActionError } from "astro:actions";
 
 export async function getAnime(
   mal_id: string,
+  userId: string | undefined,
 ): Promise<Result<FullAnimeRecord, ActionError>> {
   try {
-    const [anime] = await db
+    let query: any = db
       .select()
       .from(animeTable)
       .where(eq(animeTable.mal_id, Number(mal_id)));
+    if (userId) {
+      query = query
+      .leftJoin(
+        trackedEntityTable,
+        and(
+          eq(animeTable.mal_id, trackedEntityTable.mal_id),
+          eq(trackedEntityTable.userId, userId),
+        ),
+      );
+    }
+    const [anime] = await query;
     if (anime) {
       return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
     }
