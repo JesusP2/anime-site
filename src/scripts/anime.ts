@@ -2,8 +2,10 @@ import { jikanClient } from "@/lib/api/jikan.client";
 import { db } from "@/lib/db/pool";
 import { animeTable } from "@/lib/db/schemas";
 
-const START = 5645;
-const END = 100_000;
+// max  = 60778
+// min  = 31838
+const START = process.env.START;
+const END = process.env.END;
 
 const stringifyKeys = [
   "images",
