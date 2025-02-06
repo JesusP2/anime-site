@@ -12,25 +12,55 @@ import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 
 export async function getAnime(
-  mal_id: string,
+  mal_id: number,
   userId: string | undefined,
 ): Promise<Result<FullAnimeRecord, ActionError>> {
   try {
-    let query: any = db
-      .select()
-      .from(animeTable)
-      .where(eq(animeTable.mal_id, Number(mal_id)));
+    const selectKeys = {
+      titles: animeTable.titles,
+      images: animeTable.images,
+      type: animeTable.type,
+      rating: animeTable.rating,
+      season: animeTable.season,
+      year: animeTable.year,
+      aired: animeTable.aired,
+      episodes: animeTable.episodes,
+      score: animeTable.score,
+      scored_by: animeTable.scored_by,
+      rank: animeTable.rank,
+      genres: animeTable.genres,
+      mal_id: animeTable.mal_id,
+      status: animeTable.status,
+    } as const;
     if (userId) {
-      query = query
-      .leftJoin(
-        trackedEntityTable,
-        and(
-          eq(animeTable.mal_id, trackedEntityTable.mal_id),
-          eq(trackedEntityTable.userId, userId),
-        ),
+      const [anime] = await db
+        .select({
+          ...selectKeys,
+          entityStatus: trackedEntityTable.entityStatus,
+        })
+        .from(animeTable)
+        .where(eq(animeTable.mal_id, mal_id))
+        .leftJoin(
+          trackedEntityTable,
+          and(
+            eq(animeTable.mal_id, trackedEntityTable.mal_id),
+            eq(trackedEntityTable.userId, userId),
+          ),
+        );
+      if (anime) {
+        return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
+      }
+      return err(
+        new ActionError({
+          code: "NOT_FOUND",
+          message: "Could not get anime",
+        }),
       );
     }
-    const [anime] = await query;
+    const [anime] = await db
+      .select(selectKeys)
+      .from(animeTable)
+      .where(eq(animeTable.mal_id, mal_id));
     if (anime) {
       return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
     }

@@ -22,7 +22,7 @@ import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
 import { TrackedAnimeRecordsKey, TrackedMangaRecordsKey } from "@/lib/constants";
 
-const statuses = ['completed', 'planned', 'dropped', 'watching', 'on-hold'];
+const statuses = ['completed', 'planned', 'dropped', 'watching', 'on-hold', 'not-started'];
 export function StatusDropdown({
   data,
   entityType,
@@ -53,13 +53,26 @@ export function StatusDropdown({
     setStatus(newStatus);
     if (!data.mal_id) return;
     if (user) {
-      await actions.updateEntity({ mal_id: data.mal_id, entityType, status: newStatus });
+      if (newStatus === 'not-started') {
+        await actions.deleteEntity({ mal_id: data.mal_id });
+        return;
+      } else {
+        await actions.updateEntity({ mal_id: data.mal_id, entityType, status: newStatus });
+      }
       return;
     }
     const localStorageKey = entityType === 'ANIME' ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
     const storedRecords = JSON.parse(
       localStorage.getItem(localStorageKey) || "[]",
     );
+    if (newStatus === 'not-started') {
+      const filteredRecords = storedRecords.filter((animeRecord: any) => animeRecord.mal_id !== data.mal_id)
+      localStorage.setItem(
+        localStorageKey,
+        JSON.stringify(filteredRecords),
+      );
+      return;
+    }
     const storedRecord = storedRecords.find(
       (animeRecord: any) => animeRecord.mal_id === data.mal_id,
     );
@@ -132,6 +145,6 @@ function RenderStatus({ status }: { status: string }) {
         <PauseCircle className="h-4 w-4" />On hold
       </>);
     default:
-      return (<></>);
+      return (<>Not started</>);
   }
 }

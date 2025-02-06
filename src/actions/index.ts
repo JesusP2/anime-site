@@ -1,8 +1,9 @@
-import { defineAction } from "astro:actions";
+import { ActionError, defineAction } from "astro:actions";
 import { auth } from "./auth";
 import { z } from "astro:schema";
 import { db } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
+import { and, eq } from "drizzle-orm";
 
 export const server = {
   auth,
@@ -10,13 +11,16 @@ export const server = {
     accept: "json",
     input: z.object({
       mal_id: z.number(),
-      entityType: z.enum(['ANIME', 'MANGA']),
+      entityType: z.enum(["ANIME", "MANGA"]),
       status: z.string(),
     }),
     handler: async ({ mal_id, entityType, status }, context) => {
       const userId = context.locals.user?.id;
       if (!userId) {
-        throw new Error("Unauthorized");
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized",
+        });
       }
       await db
         .insert(trackedEntityTable)
@@ -31,6 +35,29 @@ export const server = {
           target: trackedEntityTable.userIdMalId,
           set: { mal_id, entityStatus: status },
         });
+    },
+  }),
+  deleteEntity: defineAction({
+    accept: "json",
+    input: z.object({
+      mal_id: z.number(),
+    }),
+    handler: async ({ mal_id }, context) => {
+      const userId = context.locals.user?.id;
+      if (!userId) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized",
+        });
+      }
+      await db
+        .delete(trackedEntityTable)
+        .where(
+          and(
+            eq(trackedEntityTable.userId, userId),
+            eq(trackedEntityTable.mal_id, mal_id),
+          ),
+        );
     },
   }),
 };
