@@ -31,6 +31,16 @@ export async function getAnime(
       genres: animeTable.genres,
       mal_id: animeTable.mal_id,
       status: animeTable.status,
+      popularity: animeTable.popularity,
+      members: animeTable.members,
+      synopsis: animeTable.synopsis,
+      demographics: animeTable.demographics,
+      studios: animeTable.studios,
+      broadcast: animeTable.broadcast,
+      characters: animeTable.characters,
+      staff: animeTable.staff,
+      episodes_info: animeTable.episodes_info,
+      streaming: animeTable.streaming,
     } as const;
     if (userId) {
       const [anime] = await db

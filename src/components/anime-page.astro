@@ -31,11 +31,17 @@ const animeTitle =
       </h1>
       <div class="mb-4">
         {
-          anime.titles?.map((title) => (
-            <Badge className="mr-4 mt-2" variant="secondary">
-              {title.title} ({title.type})
-            </Badge>
-          ))
+          anime.titles
+            ?.filter(
+              (title) =>
+                title.type &&
+                ["English", "Default", "Japanese"].includes(title.type),
+            )
+            .map((title) => (
+              <Badge className="mr-4 mt-2" variant="secondary">
+                {title.title} ({title.type})
+              </Badge>
+            ))
         }
       </div>
 
@@ -98,12 +104,7 @@ const animeTitle =
         }
       </div>
 
-      <StatusDropdown
-        data={anime}
-        entityType="ANIME"
-        user={user}
-        client:load
-      />
+      <StatusDropdown data={anime} entityType="ANIME" user={user} client:load />
 
       <div class="mt-4">
         {
