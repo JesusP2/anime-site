@@ -6,13 +6,3 @@ export type FullAnimeRecord = components["schemas"]["anime_full"] & {
   characters: components["schemas"]["anime_characters"]["data"];
   streaming: components["schemas"]["external_links"]["data"];
 };
-
-export type Result<T, E = Error> =
-  | {
-      success: true;
-      value: T;
-    }
-  | {
-      success: false;
-      error: E;
-    };

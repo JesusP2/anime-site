@@ -7,8 +7,9 @@ import { parseRecord } from "../db/parse-record";
 import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
 import { cleanSearchParams } from "../utils/clean-searchparams";
-import type { FullAnimeRecord, Result } from "../types";
+import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
+import { err, ok, type Result } from "../result";
 
 export async function getAnime(
   mal_id: number,
