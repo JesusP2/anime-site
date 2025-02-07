@@ -47,18 +47,17 @@ export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
   let ratings = newSearchParams.getAll("rating");
   if (searchParams.get("sfw") === "false" && ratings.length) {
     ratings = ratings.filter((rating) => !rating.startsWith("R"));
+    newSearchParams.set('ratings_filtered', 'yes')
   } else if (searchParams.get("sfw") === "false") {
     ratings = filters.rating.options
       .map(({ value }) => value)
       .filter((rating) => !rating.startsWith("R"));
   }
+  newSearchParams.delete("rating");
   if (ratings.length) {
-    newSearchParams.delete("rating");
     for (const rating of ratings) {
       newSearchParams.append("rating", rating);
     }
-  } else {
-    newSearchParams.delete("rating");
   }
   return newSearchParams;
 }

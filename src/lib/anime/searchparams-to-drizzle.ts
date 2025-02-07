@@ -20,7 +20,7 @@ export function animeSearchParamsToDrizzleQuery(
   if (searchParams.get("type")) {
     where = createWhereClause(where, animeTable, "type", searchParams);
   }
-  if (searchParams.get("rating")) {
+  if (searchParams.get("rating") || searchParams.get('ratings_filtered')) {
     where = createWhereClause(where, animeTable, "rating", searchParams);
   }
 
