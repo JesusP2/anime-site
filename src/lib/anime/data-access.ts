@@ -10,6 +10,7 @@ import { cleanSearchParams } from "../utils/clean-searchparams";
 import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
+import type { AstroGlobal } from "astro";
 
 export async function getAnime(
   mal_id: number,
@@ -294,4 +295,32 @@ export async function getAnimesWithStatus(
       }),
     );
   }
+}
+
+export async function getAnimeRecordsByStatus(Astro: AstroGlobal, status: string, recordsPerPage = 25) {
+	const _currentPage = Astro.url.searchParams.get("page") || "1";
+	const currentPage = isNaN(parseInt(_currentPage || ""))
+		? 1
+		: parseInt(_currentPage);
+	const searchParams = new URLSearchParams(Astro.url.searchParams);
+
+	const [animesCount, animeRecords] = await Promise.all([
+		getAnimesWithStatusCount(
+			status,
+			searchParams,
+			recordsPerPage,
+			Astro.locals.user?.id,
+		),
+		getAnimesWithStatus(
+			status,
+			searchParams,
+			recordsPerPage,
+			Astro.locals.user?.id,
+		),
+	]);
+	return {
+		animesCount,
+		animeRecords,
+		currentPage,
+	}
 }

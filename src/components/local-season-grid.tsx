@@ -1,12 +1,10 @@
 import { AnimeCard, type AnimeCardItem } from "@/components/anime-card";
 import { EmptyItems } from "@/components/empty-items";
-import type { User } from "better-auth";
 
 export function LocalSeasonGrid({
   records,
 }: {
   records: AnimeCardItem[];
-  user: User | null;
 }) {
   if (!records.length) {
     return <EmptyItems />;
