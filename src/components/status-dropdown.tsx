@@ -20,23 +20,36 @@ import { actions } from "astro:actions";
 import { useEffect, useState } from "react";
 import type { User } from "better-auth";
 import type { AnimeCardItem } from "./anime-card";
-import { TrackedAnimeRecordsKey, TrackedMangaRecordsKey } from "@/lib/constants";
+import {
+  TrackedAnimeRecordsKey,
+  TrackedMangaRecordsKey,
+} from "@/lib/constants";
 
-const statuses = ['completed', 'planned', 'dropped', 'watching', 'on-hold', 'not-started'];
+const statuses = [
+  "completed",
+  "planned",
+  "dropped",
+  "watching",
+  "on-hold",
+  "not-started",
+];
 export function StatusDropdown({
   data,
   entityType,
   user,
 }: {
   data: AnimeCardItem;
-  entityType: 'ANIME' | 'MANGA';
+  entityType: "ANIME" | "MANGA";
   user: User | null;
 }) {
   const [status, setStatus] = useState(data.entityStatus);
 
   useEffect(() => {
     if (!user) {
-      const localStorageKey = entityType === 'ANIME' ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
+      const localStorageKey =
+        entityType === "ANIME"
+          ? TrackedAnimeRecordsKey
+          : TrackedMangaRecordsKey;
       const storedRecords = JSON.parse(
         localStorage.getItem(localStorageKey) || "[]",
       );
@@ -53,24 +66,28 @@ export function StatusDropdown({
     setStatus(newStatus);
     if (!data.mal_id) return;
     if (user) {
-      if (newStatus === 'not-started') {
+      if (newStatus === "not-started") {
         await actions.deleteEntity({ mal_id: data.mal_id });
         return;
       } else {
-        await actions.updateEntity({ mal_id: data.mal_id, entityType, status: newStatus });
+        await actions.updateEntity({
+          mal_id: data.mal_id,
+          entityType,
+          status: newStatus,
+        });
       }
       return;
     }
-    const localStorageKey = entityType === 'ANIME' ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
+    const localStorageKey =
+      entityType === "ANIME" ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
     const storedRecords = JSON.parse(
       localStorage.getItem(localStorageKey) || "[]",
     );
-    if (newStatus === 'not-started') {
-      const filteredRecords = storedRecords.filter((animeRecord: any) => animeRecord.mal_id !== data.mal_id)
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify(filteredRecords),
+    if (newStatus === "not-started") {
+      const filteredRecords = storedRecords.filter(
+        (animeRecord: any) => animeRecord.mal_id !== data.mal_id,
       );
+      localStorage.setItem(localStorageKey, JSON.stringify(filteredRecords));
       return;
     }
     const storedRecord = storedRecords.find(
@@ -78,25 +95,16 @@ export function StatusDropdown({
     );
     if (storedRecord) {
       storedRecord.entityStatus = newStatus;
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify(storedRecords),
-      );
+      localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
     } else {
       storedRecords.push({ ...data, entityStatus: newStatus });
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify(storedRecords),
-      );
+      localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
     }
   }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="rounded-sm mr-2"
-        >
+        <Button variant="outline" className="rounded-sm mr-2">
           <RenderStatus status={status} />
         </Button>
       </DropdownMenuTrigger>
@@ -107,7 +115,7 @@ export function StatusDropdown({
           value={status}
           onValueChange={handleStatusChange}
         >
-          {statuses.map(status => (
+          {statuses.map((status) => (
             <DropdownMenuRadioItem
               key={status}
               value={status}
@@ -125,26 +133,41 @@ export function StatusDropdown({
 function RenderStatus({ status }: { status: string }) {
   switch (status) {
     case "completed":
-      return (<>
-        <CheckCircle className="h-4 w-4" />Completed
-      </>);
+      return (
+        <>
+          <CheckCircle className="h-4 w-4" />
+          Completed
+        </>
+      );
     case "planned":
-      return (<>
-        <CalendarCheck className="h-4 w-4" />Planned to watch
-      </>);
+      return (
+        <>
+          <CalendarCheck className="h-4 w-4" />
+          Planned to watch
+        </>
+      );
     case "dropped":
-      return (<>
-        <Trash className="h-4 w-4" />Dropped
-      </>);
+      return (
+        <>
+          <Trash className="h-4 w-4" />
+          Dropped
+        </>
+      );
     case "watching":
-      return (<>
-        <MonitorPlay className="h-4 w-4" />Watching
-      </>);
+      return (
+        <>
+          <MonitorPlay className="h-4 w-4" />
+          Watching
+        </>
+      );
     case "on-hold":
-      return (<>
-        <PauseCircle className="h-4 w-4" />On hold
-      </>);
+      return (
+        <>
+          <PauseCircle className="h-4 w-4" />
+          On hold
+        </>
+      );
     default:
-      return (<>Not started</>);
+      return <>Not started</>;
   }
 }

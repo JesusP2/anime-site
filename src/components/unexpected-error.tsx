@@ -1,3 +1,3 @@
 export function UnexpectedError() {
-  return <div>Unexpected error</div>
+  return <div>Unexpected error</div>;
 }

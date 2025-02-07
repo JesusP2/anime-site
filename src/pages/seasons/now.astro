@@ -1,9 +1,6 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { LocalSeasonGrid } from "@/components/local-season-grid";
-import { Pagination } from "@/components/pagination";
-import { SearchWithFilters } from "@/components/search";
-import { animeFilters } from "@/lib/anime/filters";
+import { SeasonNowPage } from "@/components/season-now.page";
 import {
   getCurrentSeason,
   getCurrentSeasonCount,
@@ -26,26 +23,12 @@ const [animesCount, animeRecords] = await Promise.all([
 ---
 
 <MainLayout title="title">
-  <SearchWithFilters
+  <SeasonNowPage
     url={new URL(Astro.url)}
-    onSearch={() => console.log('hi')}
-    options={animeFilters}
-    title="Animes this season"
+    records={animeRecords}
+    count={animesCount}
+    currentPage={currentPage}
+    recordsPerPage={animesPerPage}
     client:load
   />
-  <LocalSeasonGrid
-    records={animeRecords.success ? animeRecords.value : []}
-    client:load
-  />
-  <div class="flex justify-center my-6">
-    <Pagination
-      url={new URL(Astro.url)}
-      lastVisiblePage={Math.ceil(
-        (animesCount.success ? animesCount.value : 1) / animesPerPage,
-      )}
-      currentPage={currentPage}
-      client:load
-    />
-  </div>
-  <script></script>
 </MainLayout>

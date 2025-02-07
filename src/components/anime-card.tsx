@@ -23,11 +23,7 @@ export type AnimeCardItem = Pick<
   | "mal_id"
   | "status"
 > & { entityStatus: string };
-export function AnimeCard({
-  data,
-}: {
-  data: AnimeCardItem;
-}) {
+export function AnimeCard({ data }: { data: AnimeCardItem }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
     data.titles?.find((title) => title.type === "Default")?.title;
@@ -89,7 +85,9 @@ export function AnimeCard({
             <section className="flex gap-x-2">
               {data.genres?.slice(0, 2).map((genre) => (
                 <Badge key={genre.mal_id} variant="outline">
-                  <p className="text-ellipsis truncate max-w-24">{genre.name}</p>
+                  <p className="text-ellipsis truncate max-w-24">
+                    {genre.name}
+                  </p>
                 </Badge>
               ))}
               {data.genres?.length && data.genres?.length > 2 && (

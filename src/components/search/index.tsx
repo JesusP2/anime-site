@@ -25,9 +25,9 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     {} as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-      | string[]
-      | string
-      | boolean;
+        | string[]
+        | string
+        | boolean;
     },
   );
 }
@@ -39,7 +39,7 @@ export function SearchWithFilters({
 }: {
   options: AnimeFilters | MangaFilters;
   url: URL;
-  title: string,
+  title: string;
   onSearch: (filters: URLSearchParams) => void;
 }) {
   const [searchParams, setSearchParams] = useState(url.searchParams);
@@ -98,11 +98,7 @@ export function SearchWithFilters({
               </span>
             )}
           </Button>
-          <Button
-            onClick={() => onSearch(searchParams)}
-          >
-            Search
-          </Button>
+          <Button onClick={() => onSearch(searchParams)}>Search</Button>
         </div>
       </div>
       <FilterModal
