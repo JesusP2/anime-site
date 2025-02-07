@@ -19,7 +19,7 @@ const { animesCount, animeRecords, currentPage } =
     client:load
   />
   <LocalAnimesGrid
-    records={animeRecords.isOk() ? animeRecords.value : []}
+    records={animeRecords.success ? animeRecords.value : []}
     entityStatus="dropped"
     user={Astro.locals.user}
     client:load
@@ -28,7 +28,7 @@ const { animesCount, animeRecords, currentPage } =
     <Pagination
       url={new URL(Astro.url)}
       lastVisiblePage={Math.ceil(
-        (animesCount.isOk() ? animesCount.value : 1) / animesPerPage,
+        (animesCount.success ? animesCount.value : 1) / animesPerPage,
       )}
       currentPage={currentPage}
       client:load

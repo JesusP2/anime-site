@@ -9,5 +9,5 @@ const anime = await getAnime(Number(mal_id), userId);
 ---
 
 <MainLayout title="title">
-  {anime.isOk() ? <AnimePage anime={anime.value} user={Astro.locals.user} /> : <div>Error</div>}
+  {anime.success ? <AnimePage anime={anime.value} user={Astro.locals.user} /> : <div>Error</div>}
 </MainLayout>

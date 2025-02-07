@@ -28,20 +28,20 @@ const [animesCount, animeRecords] = await Promise.all([
 <MainLayout title="title">
   <SearchWithFilters
     url={new URL(Astro.url)}
+    onSearch={() => console.log('hi')}
     options={animeFilters}
     title="Animes this season"
     client:load
   />
   <LocalSeasonGrid
-    records={animeRecords.isOk() ? animeRecords.value : []}
-    user={Astro.locals.user}
+    records={animeRecords.success ? animeRecords.value : []}
     client:load
   />
   <div class="flex justify-center my-6">
     <Pagination
       url={new URL(Astro.url)}
       lastVisiblePage={Math.ceil(
-        (animesCount.isOk() ? animesCount.value : 1) / animesPerPage,
+        (animesCount.success ? animesCount.value : 1) / animesPerPage,
       )}
       currentPage={currentPage}
       client:load

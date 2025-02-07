@@ -6,9 +6,8 @@ import { animeFilters } from "./filters";
 import { parseRecord } from "../db/parse-record";
 import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
-import { ok, err, type Result } from "neverthrow";
 import { cleanSearchParams } from "../utils/clean-searchparams";
-import type { FullAnimeRecord } from "../types";
+import type { FullAnimeRecord, Result } from "../types";
 import { ActionError } from "astro:actions";
 
 export async function getAnime(

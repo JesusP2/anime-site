@@ -35,10 +35,12 @@ export function SearchWithFilters({
   options,
   url,
   title,
+  onSearch,
 }: {
   options: AnimeFilters | MangaFilters;
   url: URL;
   title: string,
+  onSearch: (filters: URLSearchParams) => void;
 }) {
   const [searchParams, setSearchParams] = useState(url.searchParams);
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,6 +70,7 @@ export function SearchWithFilters({
     });
     setSearchParams(searchParams);
   }
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">{title}</h1>
@@ -96,9 +99,7 @@ export function SearchWithFilters({
             )}
           </Button>
           <Button
-            onClick={() =>
-              navigate(`${url.pathname}?${searchParams.toString()}`)
-            }
+            onClick={() => onSearch(searchParams)}
           >
             Search
           </Button>
