@@ -10,6 +10,33 @@ import type { Result } from "@/lib/result";
 import type { ActionError } from "astro:actions";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 
+function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
+  const entries = searchParams.entries();
+  let filteredRecords = records;
+  for (let [key] of entries) {
+    const filters = searchParams.getAll(key);
+    if (!filters.length) continue;
+    filteredRecords = filteredRecords.filter((record) => {
+      if (key === "status") {
+        return record.status && filters.includes(record.status);
+      }
+      if (key === "type") {
+        return record.type && filters.includes(record.type);
+      }
+      if (key === "rating") {
+        return record.rating && filters.includes(record.rating);
+      }
+      if (key === "genre") {
+        return record.genres?.some((genre) =>
+          genre.name && filters.includes(genre.name),
+        );
+      }
+      return true;
+    });
+  }
+  return filteredRecords;
+}
+
 export function AnimesWithStatusPage({
   url,
   records,
@@ -33,24 +60,15 @@ export function AnimesWithStatusPage({
     const value = JSON.parse(
       localStorage.getItem(TrackedAnimeRecordsKey) || "[]",
     ) as AnimeCardItem[];
-    _setRecords(value.filter((item) => item.entityStatus === entityStatus));
+    const recordsWithStatus = value.filter(
+      (item) => item.entityStatus === entityStatus,
+    );
+
+    _setRecords(applyFilters(recordsWithStatus, url.searchParams));
   }, []);
 
-  function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
-    searchParams.entries().forEach(([key, value]) => {
-      console.log(key, value);
-    });
-  }
-
   function onSearch(searchParams: URLSearchParams) {
-    if (!user) {
-      navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
-      return;
-    }
-    const value = JSON.parse(
-      localStorage.getItem(TrackedAnimeRecordsKey) || "[]",
-    ) as AnimeCardItem[];
-    applyFilters(value, searchParams);
+    navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
   }
 
   if (!_records.length) {

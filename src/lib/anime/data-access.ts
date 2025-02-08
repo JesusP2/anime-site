@@ -11,6 +11,7 @@ import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
 import type { AstroGlobal } from "astro";
+import { getCurrentPage } from "../utils/records-per-page";
 
 export async function getAnime(
   mal_id: number,
@@ -94,7 +95,7 @@ export async function getAnime(
 
 export async function getCurrentSeasonCount(
   searchParams: URLSearchParams,
-  recordsPerPage = 25,
+  recordsPerPage: number,
 ): Promise<Result<number, ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   const { where, orderBy } = animeSearchParamsToDrizzleQuery(
@@ -122,7 +123,7 @@ export async function getCurrentSeasonCount(
 
 export async function getCurrentSeason(
   searchParams: URLSearchParams,
-  recordsPerPage = 25,
+  recordsPerPage: number,
   userId?: string,
 ): Promise<Result<AnimeCardItem[], ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
@@ -184,7 +185,7 @@ export async function getCurrentSeason(
 export async function getAnimesWithStatusCount(
   status: string,
   searchParams: URLSearchParams,
-  recordsPerPage = 25,
+  recordsPerPage: number,
   userId?: string,
 ): Promise<Result<number, ActionError>> {
   if (!userId) {
@@ -231,7 +232,7 @@ export async function getAnimesWithStatusCount(
 export async function getAnimesWithStatus(
   status: string,
   searchParams: URLSearchParams,
-  recordsPerPage = 25,
+  recordsPerPage: number,
   userId?: string,
 ): Promise<Result<AnimeCardItem[], ActionError>> {
   if (!userId) {
@@ -300,12 +301,9 @@ export async function getAnimesWithStatus(
 export async function getAnimeRecordsByStatus(
   Astro: AstroGlobal,
   status: string,
-  recordsPerPage = 25,
+  recordsPerPage: number,
 ) {
-  const _currentPage = Astro.url.searchParams.get("page") || "1";
-  const currentPage = isNaN(parseInt(_currentPage || ""))
-    ? 1
-    : parseInt(_currentPage);
+  const currentPage = getCurrentPage(Astro.url);
   const searchParams = new URLSearchParams(Astro.url.searchParams);
 
   const [animesCount, animeRecords] = await Promise.all([

@@ -5,14 +5,12 @@ import {
   getCurrentSeason,
   getCurrentSeasonCount,
 } from "@/lib/anime/data-access";
+import { getRecordsPerPage, getCurrentPage } from "@/lib/utils/records-per-page";
 
-const _currentPage = Astro.url.searchParams.get("page") || "1";
-const currentPage = isNaN(parseInt(_currentPage || ""))
-  ? 1
-  : parseInt(_currentPage);
+const currentPage = getCurrentPage(Astro.url);
 const { season, year } = Astro.locals.currentSeason;
 
-const animesPerPage = 25;
+const animesPerPage = getRecordsPerPage(Astro.url);
 const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
