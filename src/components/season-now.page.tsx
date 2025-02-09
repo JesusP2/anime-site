@@ -39,7 +39,7 @@ export function SeasonNowPage({
           ))}</div>) : <EmptyItems />}
       <div className="flex justify-center my-6">
         <Pagination
-          url={new URL(url.toString())}
+          url={url}
           lastVisiblePage={Math.ceil(
             (count.success ? count.value : 1) / recordsPerPage,
           )}
