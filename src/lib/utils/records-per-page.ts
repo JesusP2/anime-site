@@ -1,15 +1,13 @@
-export function getRecordsPerPage(url: URL) {
-  const params = url.searchParams;
-  const page = params.get("recordsPerPage");
+export function getRecordsPerPage(searchParams: URLSearchParams) {
+  const page = searchParams.get("recordsPerPage");
   if (page) {
     return parseInt(page);
   }
   return 25;
 }
 
-export function getCurrentPage(url: URL) {
-  const params = url.searchParams;
-  const page = params.get("page");
+export function getCurrentPage(searchParams: URLSearchParams) {
+  const page =  searchParams.get("page");
   if (page) {
     return parseInt(page);
   }

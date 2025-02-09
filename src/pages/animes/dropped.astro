@@ -7,9 +7,8 @@ import { animeFilters } from "@/lib/anime/filters";
 import { getAnimeRecordsByStatus } from "@/lib/anime/data-access";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
-const animesPerPage = getRecordsPerPage(Astro.url);
-const { animesCount, animeRecords, currentPage } =
-  await getAnimeRecordsByStatus(Astro, "droppped", animesPerPage);
+const { animesCount, animeRecords } =
+  await getAnimeRecordsByStatus(Astro, "droppped");
 ---
 
 <MainLayout title="title">

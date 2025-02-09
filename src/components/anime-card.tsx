@@ -4,7 +4,6 @@ import { Star } from "@phosphor-icons/react";
 import { AnimeTypeBadge } from "@/components/anime-type-badge";
 import { AiringStatus } from "./airing-status";
 import type { FullAnimeRecord } from "@/lib/types";
-import type { User } from "better-auth";
 
 export type AnimeCardItem = Pick<
   FullAnimeRecord,
@@ -22,6 +21,8 @@ export type AnimeCardItem = Pick<
   | "genres"
   | "mal_id"
   | "status"
+  | "popularity"
+  | "favorites"
 > & { entityStatus: string };
 export function AnimeCard({ data }: { data: AnimeCardItem }) {
   const animeTitle =

@@ -133,6 +133,7 @@ export const animeFilters = {
     label: "Order By",
     type: "radio",
     options: [
+      { label: 'None', value: 'none' },
       { label: "Episodes", value: "episodes" },
       { label: "Score", value: "score" },
       { label: "Scored By", value: "scored_by" },

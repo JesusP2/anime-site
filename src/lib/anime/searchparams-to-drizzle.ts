@@ -1,4 +1,4 @@
-import { desc, type SQL } from "drizzle-orm";
+import { and, desc, ilike, like, or, type SQL } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { animeTable } from "../db/schemas";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
@@ -23,9 +23,24 @@ export function animeSearchParamsToDrizzleQuery(
   if (searchParams.get("rating") || searchParams.get('ratings_filtered')) {
     where = createWhereClause(where, animeTable, "rating", searchParams);
   }
+  if (searchParams.get("genre")) {
+    let genreWhere: SQL | undefined = undefined;
+    for (const genre of searchParams.getAll("genre")) {
+      if (genreWhere) {
+        genreWhere = or(genreWhere, like(animeTable.genres, `%"name":"${genre}"%%`));
+      } else {
+        genreWhere = like(animeTable.genres, `%"name":"${genre}"%`);
+      }
+    }
+    if (where) {
+      where = and(where, genreWhere);
+    } else {
+      where = genreWhere;
+    }
+  }
 
   let orderBy: SQL | SQLiteColumn | undefined;
-  if (searchParams.get("orderBy")) {
+  if (searchParams.get("orderBy") && searchParams.get('orderBy') !== 'none') {
     const column =
       animeTable[searchParams.get("orderBy") as keyof typeof animeTable];
     if (column instanceof SQLiteColumn) {

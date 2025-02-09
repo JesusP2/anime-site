@@ -49,7 +49,15 @@ export function SearchWithFilters({
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [_, value]) => {
-      if (!Array.isArray(value)) {
+      if (_ === 'sort') {
+        return acc;
+      }
+      if (_ === "orderBy") {
+        if (value === 'none') {
+          return acc;
+        }
+        return acc + 2;
+      } else if (!Array.isArray(value)) {
         return acc + 1;
       } else if (value.length > 0) {
         return acc + 1;

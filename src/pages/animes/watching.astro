@@ -7,7 +7,7 @@ import { animeFilters } from "@/lib/anime/filters";
 import { getAnimeRecordsByStatus } from "@/lib/anime/data-access";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
-const animesPerPage = getRecordsPerPage(Astro.url);
+const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
 const { animesCount, animeRecords, currentPage } =
   await getAnimeRecordsByStatus(Astro, "watching", animesPerPage);
 ---

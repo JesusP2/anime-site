@@ -11,7 +11,7 @@ import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
 import type { AstroGlobal } from "astro";
-import { getCurrentPage } from "../utils/records-per-page";
+import { getCurrentPage, getRecordsPerPage } from "../utils/records-per-page";
 
 export async function getAnime(
   mal_id: number,
@@ -301,9 +301,8 @@ export async function getAnimesWithStatus(
 export async function getAnimeRecordsByStatus(
   Astro: AstroGlobal,
   status: string,
-  recordsPerPage: number,
 ) {
-  const currentPage = getCurrentPage(Astro.url);
+  const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
   const searchParams = new URLSearchParams(Astro.url.searchParams);
 
   const [animesCount, animeRecords] = await Promise.all([
@@ -323,6 +322,5 @@ export async function getAnimeRecordsByStatus(
   return {
     animesCount,
     animeRecords,
-    currentPage,
   };
 }

@@ -26,7 +26,9 @@ const stringifyKeys = [
   "streaming",
 ];
 
-const failed: number[] = [];
+const failed: number[] = [
+43368
+];
 for (let mal_id = START; mal_id < END; mal_id++) {
   const animeRes = await jikanClient.GET("/anime/{id}/full", {
     params: {

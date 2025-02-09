@@ -2,12 +2,12 @@
 import MainLayout from "@/layout/main.astro";
 import { getAnimeRecordsByStatus } from "@/lib/anime/data-access";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
-import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
-const animesPerPage = getRecordsPerPage(Astro.url);
 const entityStatus = "completed";
-const { animesCount, animeRecords, currentPage } =
-  await getAnimeRecordsByStatus(Astro, entityStatus, animesPerPage);
+const { animesCount, animeRecords } = await getAnimeRecordsByStatus(
+  Astro,
+  entityStatus,
+);
 ---
 
 <MainLayout title="title">
@@ -16,8 +16,6 @@ const { animesCount, animeRecords, currentPage } =
     records={animeRecords}
     count={animesCount}
     entityStatus={entityStatus}
-    currentPage={currentPage}
-    recordsPerPage={animesPerPage}
     user={Astro.locals.user}
     client:load
   />
