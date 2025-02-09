@@ -83,12 +83,14 @@ export function AnimesWithStatusPage({
   count,
   entityStatus,
   user,
+  title,
 }: {
   url: URL;
   records: Result<AnimeCardItem[], ActionError>;
   count: Result<number, ActionError>;
   entityStatus: string;
   user: User | null;
+  title: string;
 }) {
   const [_records, _setRecords] = useState(records.success ? records.value : []);
   const [_count, _setCount] = useState(count.success ? count.value : 1);
@@ -122,7 +124,7 @@ export function AnimesWithStatusPage({
         url={url}
         onSearch={onSearch}
         options={animeFilters}
-        title="Animes completed"
+        title={title}
       />
       <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
         {_records.map((item) => (

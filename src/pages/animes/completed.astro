@@ -12,6 +12,7 @@ const { animesCount, animeRecords } = await getAnimeRecordsByStatus(
 
 <MainLayout title="title">
   <AnimesWithStatusPage
+    title="Animes completed"
     url={new URL(Astro.url)}
     records={animeRecords}
     count={animesCount}

@@ -1,39 +1,23 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { LocalAnimesGrid } from "@/components/local-animes-grid";
-import { Pagination } from "@/components/pagination";
-import { SearchWithFilters } from "@/components/search";
-import { animeFilters } from "@/lib/anime/filters";
 import { getAnimeRecordsByStatus } from "@/lib/anime/data-access";
-import { getRecordsPerPage } from "@/lib/utils/records-per-page";
+import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
 
-const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
-const { animesCount, animeRecords, currentPage } =
-  await getAnimeRecordsByStatus(Astro, "on-hold", animesPerPage);
+const entityStatus = "on-hold";
+const { animesCount, animeRecords } = await getAnimeRecordsByStatus(
+  Astro,
+  entityStatus,
+);
 ---
 
 <MainLayout title="title">
-  <SearchWithFilters
-    url={new URL(Astro.url)}
-    options={animeFilters}
+  <AnimesWithStatusPage
     title="Animes on hold"
-    client:load
-  />
-  <LocalAnimesGrid
-    records={animeRecords.success ? animeRecords.value : []}
-    entityStatus="on-hold"
+    url={new URL(Astro.url)}
+    records={animeRecords}
+    count={animesCount}
+    entityStatus={entityStatus}
     user={Astro.locals.user}
     client:load
   />
-  <div class="flex justify-center my-6">
-    <Pagination
-      url={new URL(Astro.url)}
-      lastVisiblePage={Math.ceil(
-        (animesCount.success ? animesCount.value : 1) / animesPerPage,
-      )}
-      currentPage={currentPage}
-      client:load
-    />
-  </div>
 </MainLayout>
-
