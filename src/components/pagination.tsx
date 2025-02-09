@@ -67,6 +67,8 @@ function createLink(url: URL, page: number | string, lastVisiblePage: number) {
   } else if (Number(page) > lastVisiblePage) {
     page = lastVisiblePage === 0 ? 1 : lastVisiblePage;
   }
-  url.searchParams.set("page", page.toString());
+  const searchParams = new URLSearchParams(url.searchParams);
+  searchParams.set("page", page.toString());
+  url.search = searchParams.toString();
   return url.toString();
 }
