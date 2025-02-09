@@ -126,7 +126,7 @@ export function AnimesWithStatusPage({
         options={animeFilters}
         title={title}
       />
-      <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
+      <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto flex-1">
         {_records.map((item) => (
           <AnimeCard key={item.mal_id} data={item} />
         ))}
