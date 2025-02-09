@@ -10,15 +10,12 @@ export const animeFilters = {
   type: {
     label: "Type",
     options: [
-      { label: "TV", value: "tv" },
-      { label: "Movie", value: "movie" },
-      { label: "OVA", value: "ova" },
-      { label: "Special", value: "special" },
-      { label: "ONA", value: "ona" },
-      { label: "Music", value: "music" },
-      { label: "CM", value: "cm" },
-      { label: "PV", value: "pv" },
-      { label: "TV Special", value: "tv_special" },
+      { label: "TV", value: "TV" },
+      { label: "Movie", value: "Movie" },
+      { label: "OVA", value: "OVA" },
+      { label: "Special", value: "Special" },
+      { label: "ONA", value: "ONA" },
+      { label: "Music", value: "Music" },
     ],
   },
   rating: {

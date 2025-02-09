@@ -37,6 +37,7 @@ export function SeasonNowPage({
           {records.value.map((item) => (
             <AnimeCard key={item.mal_id} data={item} />
           ))}</div>) : <EmptyItems />}
+      <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
           url={url}

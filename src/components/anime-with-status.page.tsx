@@ -115,9 +115,6 @@ export function AnimesWithStatusPage({
     navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
   }
 
-  if (!_records.length) {
-    return <EmptyItems />;
-  }
   return (
     <>
       <SearchWithFilters
@@ -126,11 +123,12 @@ export function AnimesWithStatusPage({
         options={animeFilters}
         title={title}
       />
-      <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto flex-1">
-        {_records.map((item) => (
-          <AnimeCard key={item.mal_id} data={item} />
-        ))}
-      </div>
+      {_records.length ? (
+        <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
+          {_records.map((item) => (
+            <AnimeCard key={item.mal_id} data={item} />
+          ))}</div>) : <EmptyItems />}
+      <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
           url={url}
