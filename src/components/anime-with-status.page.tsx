@@ -34,7 +34,7 @@ function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
   }
   // lista vacia y sfw activo => no filtro
   // lista vacia y sfw desactivado => filtrar sfw
-  // lista no vvacia y swf activo => filtrar lista
+  // lista no vacia y swf activo => filtrar lista
   // lista no vacia y sfw desactivado => filtrar filtros y lista
   const sfw = searchParams.get("sfw") ? searchParams.get("sfw") === "true" : true;
   let ratings = searchParams.getAll("rating")

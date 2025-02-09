@@ -22,7 +22,7 @@ const [animesCount, animeRecords] = await Promise.all([
 
 <MainLayout title="title">
   <SeasonNowPage
-    url={new URL(Astro.url)}
+    url={new URL(Astro.url.toString())}
     records={animeRecords}
     count={animesCount}
     currentPage={currentPage}

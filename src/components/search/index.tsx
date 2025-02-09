@@ -48,11 +48,11 @@ export function SearchWithFilters({
   const [filters, setFilters] = useState(setupFilters(options, url));
 
   const getActiveFiltersCount = () => {
-    return objectEntries(filters).reduce((acc, [_, value]) => {
-      if (_ === 'sort') {
+    return objectEntries(filters).reduce((acc, [key, value]) => {
+      if (key === 'sort') {
         return acc;
       }
-      if (_ === "orderBy") {
+      if (key === "orderBy") {
         if (value === 'none') {
           return acc;
         }

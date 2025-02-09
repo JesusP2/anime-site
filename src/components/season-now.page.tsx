@@ -28,7 +28,7 @@ export function SeasonNowPage({
     <>
       <SearchWithFilters
         url={url}
-        onSearch={(searchParams) => navigate(`/seasons/now?${searchParams.toString()}`)}
+        onSearch={(searchParams) => navigate(searchParams.toString() ? `/seasons/now?${searchParams.toString()}` : '/seasons/now')}
         options={animeFilters}
         title="Animes this season"
       />
@@ -39,7 +39,7 @@ export function SeasonNowPage({
           ))}</div>) : <EmptyItems />}
       <div className="flex justify-center my-6">
         <Pagination
-          url={url}
+          url={new URL(url.toString())}
           lastVisiblePage={Math.ceil(
             (count.success ? count.value : 1) / recordsPerPage,
           )}
