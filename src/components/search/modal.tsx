@@ -1,11 +1,12 @@
-import { type Dispatch, type SetStateAction } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogHeader,
   DialogTitle,
   DialogFooter,
   DialogContent,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,31 +14,40 @@ import { MultiSelect } from "./multi-select";
 import { objectEntries } from "@/lib/utils";
 import type { MangaFilters } from "@/lib/manga/filters";
 import type { AnimeFilters } from "@/lib/anime/filters";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 export function FilterModal({
-  isOpen,
-  onClose,
   options,
   filters,
+  children,
   setFilters,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
+  children: ReactNode;
   options: AnimeFilters | MangaFilters;
   filters: {
     [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
-  };
+  } & { q: string; };
   setFilters: Dispatch<
     SetStateAction<{
       [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
-    }>
+      | string[]
+      | string
+      | boolean;
+    } & { q: string; }>
   >;
 }) {
+  const [_filters, _setFilters] = useState(filters);
+
+  function onClose() {
+    setFilters(_filters)
+  }
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog onOpenChange={() => {
+      _setFilters(filters)
+    }}>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Filter Options</DialogTitle>
@@ -47,28 +57,28 @@ export function FilterModal({
             if (
               "type" in value &&
               value.type === "radio" &&
-              !Array.isArray(filters[key])
+              !Array.isArray(_filters[key])
             ) {
               return (
                 <RadioGroupFilters
                   key={value.label}
                   options={value.options}
-                  value={filters[key]}
+                  value={_filters[key]}
                   onChange={(value) =>
-                    setFilters((prev) => ({ ...prev, [key]: value }))
+                    _setFilters((prev) => ({ ...prev, [key]: value }))
                   }
                   label={value.label}
                 />
               );
-            } else if (Array.isArray(filters[key])) {
+            } else if (Array.isArray(_filters[key])) {
               return (
                 <MultiSelect
                   key={value.label}
                   options={value.options}
                   placeholder={`Select ${value.label}`}
-                  value={filters[key]}
+                  value={_filters[key]}
                   onChange={(value) =>
-                    setFilters((prev) => ({ ...prev, [key]: value }))
+                    _setFilters((prev) => ({ ...prev, [key]: value }))
                   }
                   label={value.label}
                 />
@@ -77,10 +87,12 @@ export function FilterModal({
           })}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline">
             Cancel
           </Button>
-          <Button onClick={onClose}>Apply Filters</Button>
+          <DialogClose onClick={onClose} className={buttonVariants({})}>
+            Apply Filters
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -95,8 +107,8 @@ function RadioGroupFilters({
 }: {
   label: string;
   options:
-    | AnimeFilters[keyof AnimeFilters]["options"]
-    | MangaFilters[keyof MangaFilters]["options"];
+  | AnimeFilters[keyof AnimeFilters]["options"]
+  | MangaFilters[keyof MangaFilters]["options"];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {

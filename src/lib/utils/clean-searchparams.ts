@@ -6,8 +6,11 @@ export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
   searchParams: URLSearchParams,
   filters: T,
 ) {
-  const keys = objectKeys(filters).filter((key) => key !== "sfw");
   const newSearchParams = new URLSearchParams();
+  if (searchParams.get("q")) {
+    newSearchParams.set("q", searchParams.get("q") ?? "");
+  }
+  const keys = objectKeys(filters).filter((key) => key !== "sfw");
   for (const key of keys) {
     if (typeof key !== "string") continue;
     // @ts-expect-error skill issue
@@ -47,7 +50,7 @@ export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
   let ratings = newSearchParams.getAll("rating");
   if (searchParams.get("sfw") === "false" && ratings.length) {
     ratings = ratings.filter((rating) => !rating.startsWith("R"));
-    newSearchParams.set('ratings_filtered', 'yes')
+    newSearchParams.set("ratings_filtered", "yes");
   } else if (searchParams.get("sfw") === "false") {
     ratings = filters.rating.options
       .map(({ value }) => value)
