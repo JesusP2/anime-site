@@ -41,6 +41,10 @@ export default defineConfig({
         context: "server",
         access: "public",
       }),
+      PINECONE_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       // RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       // EMAIL_FROM: envField.string({ context: "server", access: "public" }),
     },

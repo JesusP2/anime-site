@@ -10,14 +10,6 @@ const res = await jikanClient.GET("/seasons/now", {
     },
   },
 });
-const res2 = await jikanClient.GET("/top/anime", {
-  params: {
-    query: {
-      filter: "airing",
-      limit: 25,
-    },
-  },
-});
 ---
 
 <MainLayout title="title">
