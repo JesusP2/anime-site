@@ -1,19 +1,19 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import {
-  getAnimesWithStatus,
-} from "@/lib/anime/data-access";
+import { getAnimesWithStatus } from "@/lib/anime/data-access";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
 const entityStatus = "completed";
 const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
-const records = await getAnimesWithStatus(
-  entityStatus,
-  new URLSearchParams(Astro.url.searchParams),
-  recordsPerPage,
-  Astro.locals.user?.id,
-);
+const records = Astro.locals.user
+  ? await getAnimesWithStatus(
+      entityStatus,
+      new URLSearchParams(Astro.url.searchParams),
+      recordsPerPage,
+      Astro.locals.user.id,
+    )
+  : ({ success: true, value: { data: [], count: 0 } } as any);
 ---
 
 <MainLayout title="Animes completed">

@@ -15,7 +15,7 @@ import { semanticSearch } from "../semantic-search";
 export async function getAnime(
   mal_id: number,
   userId: string | undefined,
-): Promise<Result<FullAnimeRecord, ActionError>> {
+): Promise<Result<FullAnimeRecord & { entityStatus?: string }, ActionError>> {
   try {
     const selectKeys = {
       titles: animeTable.titles,
@@ -59,7 +59,7 @@ export async function getAnime(
           ),
         );
       if (anime) {
-        return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
+        return ok(parseRecord(anime, stringifiedAnimeKeys));
       }
       return err(
         new ActionError({
@@ -73,7 +73,7 @@ export async function getAnime(
       .from(animeTable)
       .where(eq(animeTable.mal_id, mal_id));
     if (anime) {
-      return ok(parseRecord(anime, stringifiedAnimeKeys) as FullAnimeRecord);
+      return ok(parseRecord(anime, stringifiedAnimeKeys));
     }
     return err(
       new ActionError({
@@ -95,7 +95,6 @@ export async function getAnime(
 export async function getCurrentSeason(
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  userId?: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   let { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
@@ -135,14 +134,7 @@ export async function getCurrentSeason(
       .from(animeTable)
       .where(where)
       .offset(offset)
-      .limit(limit)
-      .leftJoin(
-        trackedEntityTable,
-        and(
-          eq(animeTable.mal_id, trackedEntityTable.mal_id),
-          eq(trackedEntityTable.userId, userId ?? "0"),
-        ),
-      );
+      .limit(limit);
     if (orderBy) {
       const [stringifiedAnimeRecords, animeCount] = await Promise.all([
         query.orderBy(orderBy),
@@ -180,16 +172,8 @@ export async function getAnimesWithStatus(
   status: string,
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  userId?: string,
+  userId: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
-  if (!userId) {
-    return err(
-      new ActionError({
-        code: "UNAUTHORIZED",
-        message: "User not found",
-      }),
-    );
-  }
   const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
   let { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
     cleanedSearchParams,

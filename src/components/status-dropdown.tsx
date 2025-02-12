@@ -19,11 +19,12 @@ import {
 import { actions } from "astro:actions";
 import { useEffect, useState } from "react";
 import type { User } from "better-auth";
-import type { AnimeCardItem } from "./anime-card";
 import {
   TrackedAnimeRecordsKey,
   TrackedMangaRecordsKey,
 } from "@/lib/constants";
+import type { FullAnimeRecord } from "@/lib/types";
+import { transformFullAnimeToAnimeCard } from "@/lib/utils/transform-full-anime-to-anime-card";
 
 const statuses = [
   "completed",
@@ -38,7 +39,7 @@ export function StatusDropdown({
   entityType,
   user,
 }: {
-  data: AnimeCardItem;
+  data: FullAnimeRecord & { entityStatus?: string };
   entityType: "ANIME" | "MANGA";
   user: User | null;
 }) {
@@ -97,7 +98,7 @@ export function StatusDropdown({
       storedRecord.entityStatus = newStatus;
       localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
     } else {
-      storedRecords.push({ ...data, entityStatus: newStatus });
+      storedRecords.push(transformFullAnimeToAnimeCard(data, newStatus));
       localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
     }
   }
@@ -130,7 +131,7 @@ export function StatusDropdown({
   );
 }
 
-function RenderStatus({ status }: { status: string }) {
+function RenderStatus({ status }: { status?: string }) {
   switch (status) {
     case "completed":
       return (

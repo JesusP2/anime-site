@@ -5,8 +5,9 @@ import { KeyStaffCard } from "@/components/key-staff-card";
 import { MainCharacterCard } from "@/components/main-character-card";
 import { StatusDropdown } from "./status-dropdown";
 import type { User } from "better-auth";
+import { transformFullAnimeToAnimeCard } from "@/lib/utils/transform-full-anime-to-anime-card";
 type Props = {
-  anime: FullAnimeRecord;
+  anime: FullAnimeRecord & { entityStatus?: string };
   user: User | null;
 };
 const { anime, user } = Astro.props;
@@ -104,7 +105,12 @@ const animeTitle =
         }
       </div>
 
-      <StatusDropdown data={anime} entityType="ANIME" user={user} client:load />
+      <StatusDropdown
+        data={anime}
+        entityType="ANIME"
+        user={user}
+        client:load
+      />
 
       <div class="mt-4">
         {
@@ -225,7 +231,10 @@ const animeTitle =
           <h2 class="text-xl font-semibold mb-3">Main Characters</h2>
           <div class="grid staff-auto-fill-grid gap-6">
             {anime.characters.slice(0, 6).map((char) => (
-              <MainCharacterCard character={char.character} role={char.role} />
+              <MainCharacterCard
+                character={char.character}
+                role={char.role || ""}
+              />
             ))}
           </div>
         </div>
