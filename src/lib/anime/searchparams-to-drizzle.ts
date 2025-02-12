@@ -1,4 +1,4 @@
-import { and, desc, ilike, like, or, type SQL } from "drizzle-orm";
+import { and, desc, like, or, type SQL } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { animeTable } from "../db/schemas";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";

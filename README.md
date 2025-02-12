@@ -1,4 +1,3 @@
 # TODOS:
 
-- anime page
-- vector search
+- search for local storage,

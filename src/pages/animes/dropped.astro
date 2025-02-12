@@ -1,19 +1,24 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { getAnimeRecordsByStatus } from "@/lib/anime/data-access";
+import { getAnimesWithStatus } from "@/lib/anime/data-access";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
+import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
 const entityStatus = "droppped";
-const { animesCount, animeRecords } =
-  await getAnimeRecordsByStatus(Astro, entityStatus);
+const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
+const records = await getAnimesWithStatus(
+  entityStatus,
+  new URLSearchParams(Astro.url.searchParams),
+  recordsPerPage,
+  Astro.locals.user?.id,
+);
 ---
 
 <MainLayout title="Animes dropped">
   <AnimesWithStatusPage
     title="Animes dropped"
     url={new URL(Astro.url)}
-    records={animeRecords}
-    count={animesCount}
+    records={records}
     entityStatus={entityStatus}
     user={Astro.locals.user}
     client:load

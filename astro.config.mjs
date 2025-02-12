@@ -41,7 +41,15 @@ export default defineConfig({
         context: "server",
         access: "public",
       }),
-      PINECONE_KEY: envField.string({
+      OPENAI_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      ZILLIZ_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      ZILLIZ_ENDPOINT: envField.string({
         context: "server",
         access: "secret",
       }),

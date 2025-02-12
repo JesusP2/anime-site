@@ -3,7 +3,6 @@ import MainLayout from "@/layout/main.astro";
 import { SeasonNowPage } from "@/components/season-now.page";
 import {
   getCurrentSeason,
-  getCurrentSeasonCount,
 } from "@/lib/anime/data-access";
 import { getRecordsPerPage, getCurrentPage } from "@/lib/utils/records-per-page";
 
@@ -14,17 +13,13 @@ const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
 const searchParams = new URLSearchParams(Astro.url.searchParams);
 searchParams.set("season", season);
 searchParams.set("year", year.toString());
-const [animesCount, animeRecords] = await Promise.all([
-  getCurrentSeasonCount(searchParams, animesPerPage),
-  getCurrentSeason(searchParams, animesPerPage),
-]);
+const records = await getCurrentSeason(searchParams, animesPerPage);
 ---
 
 <MainLayout title="title">
   <SeasonNowPage
     url={new URL(Astro.url.toString())}
-    records={animeRecords}
-    count={animesCount}
+    records={records}
     currentPage={currentPage}
     recordsPerPage={animesPerPage}
     client:load

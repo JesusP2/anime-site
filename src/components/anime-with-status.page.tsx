@@ -10,6 +10,7 @@ import type { Result } from "@/lib/result";
 import type { ActionError } from "astro:actions";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
+import { Grid } from "./grid";
 
 function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
   const entries = searchParams.entries();
@@ -80,20 +81,17 @@ function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
 export function AnimesWithStatusPage({
   url,
   records,
-  count,
   entityStatus,
   user,
   title,
 }: {
   url: URL;
-  records: Result<AnimeCardItem[], ActionError>;
-  count: Result<number, ActionError>;
+  records: Result<{ data: AnimeCardItem[]; count: number; }, ActionError>;
   entityStatus: string;
   user: User | null;
   title: string;
 }) {
-  const [_records, _setRecords] = useState(records.success ? records.value : []);
-  const [_count, _setCount] = useState(count.success ? count.value : 1);
+  const [_records, _setRecords] = useState(records);
   const currentPage = getCurrentPage(url.searchParams);
   const recordsPerPage = getRecordsPerPage(url.searchParams);
   useEffect(() => {
@@ -106,8 +104,7 @@ export function AnimesWithStatusPage({
     );
 
     const { data, count } = applyFilters(recordsWithStatus, url.searchParams);
-    _setRecords(data);
-    _setCount(count);
+    _setRecords({ success: true, value: { data, count } });
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
@@ -123,17 +120,13 @@ export function AnimesWithStatusPage({
         options={animeFilters}
         title={title}
       />
-      {_records.length ? (
-        <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-          {_records.map((item) => (
-            <AnimeCard key={item.mal_id} data={item} />
-          ))}</div>) : <EmptyItems />}
+      <Grid records={_records} />
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
           url={url}
           lastVisiblePage={Math.ceil(
-            _count / recordsPerPage,
+            (_records.success ? _records.value.count : 1) / recordsPerPage,
           )}
           currentPage={currentPage}
         />
