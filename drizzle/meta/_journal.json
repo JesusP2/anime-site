@@ -64,6 +64,34 @@
       "when": 1739498730536,
       "tag": "0008_harsh_salo",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1739504649482,
+      "tag": "0009_yummy_fixer",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1739504950986,
+      "tag": "0010_regular_old_lace",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1739518198525,
+      "tag": "0011_productive_iron_monger",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1739527682267,
+      "tag": "0012_medical_chamber",
+      "breakpoints": true
     }
   ]
 }

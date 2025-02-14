@@ -3,8 +3,6 @@ import { animeTable, trackedEntityTable } from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { animeFilters } from "./filters";
-import { parseRecord } from "../db/parse-record";
-import { stringifiedAnimeKeys } from "./stringified-keys";
 import type { AnimeCardItem } from "@/components/anime-card";
 import { cleanSearchParams } from "../utils/clean-searchparams";
 import type { FullAnimeRecord } from "../types";
@@ -147,14 +145,9 @@ export async function getCurrentSeason(
         count: animeCount[0]?.count ?? 0,
       });
     }
-    const [stringifiedAnimeRecords, animeCount] = await Promise.all([
-      query,
-      queryCount,
-    ]);
+    const [animeRecords, animeCount] = await Promise.all([query, queryCount]);
     return ok({
-      data: stringifiedAnimeRecords.map((anime) =>
-        parseRecord(anime, stringifiedAnimeKeys),
-      ),
+      data: animeRecords,
       count: animeCount[0]?.count ?? 0,
     });
   } catch (_) {
@@ -226,25 +219,18 @@ export async function getAnimesWithStatus(
         eq(animeTable.mal_id, trackedEntityTable.mal_id),
       );
     if (orderBy) {
-      const [stringifiedAnimeRecords, animeCount] = await Promise.all([
+      const [animeRecords, animeCount] = await Promise.all([
         query.orderBy(orderBy),
         queryCount,
       ]);
       return ok({
-        data: stringifiedAnimeRecords.map((anime) =>
-          parseRecord(anime, stringifiedAnimeKeys),
-        ),
+        data: animeRecords,
         count: animeCount[0]?.count ?? 0,
       });
     }
-    const [stringifiedAnimeRecords, animeCount] = await Promise.all([
-      query,
-      queryCount,
-    ]);
+    const [animeRecords, animeCount] = await Promise.all([query, queryCount]);
     return ok({
-      data: stringifiedAnimeRecords.map((anime) =>
-        parseRecord(anime, stringifiedAnimeKeys),
-      ),
+      data: animeRecords,
       count: animeCount[0]?.count ?? 0,
     });
   } catch (_) {
