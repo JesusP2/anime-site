@@ -50,6 +50,20 @@
       "when": 1738313186368,
       "tag": "0006_marvelous_wolverine",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1739496448063,
+      "tag": "0007_redundant_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1739498730536,
+      "tag": "0008_harsh_salo",
+      "breakpoints": true
     }
   ]
 }

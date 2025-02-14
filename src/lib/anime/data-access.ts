@@ -15,7 +15,9 @@ import { semanticSearch } from "../semantic-search";
 export async function getAnime(
   mal_id: number,
   userId: string | undefined,
-): Promise<Result<FullAnimeRecord & { entityStatus?: string }, ActionError>> {
+): Promise<
+  Result<FullAnimeRecord & { entityStatus: string | null }, ActionError>
+> {
   try {
     const selectKeys = {
       titles: animeTable.titles,
@@ -59,7 +61,7 @@ export async function getAnime(
           ),
         );
       if (anime) {
-        return ok(parseRecord(anime, stringifiedAnimeKeys));
+        return ok(anime);
       }
       return err(
         new ActionError({
@@ -73,7 +75,7 @@ export async function getAnime(
       .from(animeTable)
       .where(eq(animeTable.mal_id, mal_id));
     if (anime) {
-      return ok(parseRecord(anime, stringifiedAnimeKeys));
+      return ok({ ...anime, entityStatus: null });
     }
     return err(
       new ActionError({
@@ -129,21 +131,19 @@ export async function getCurrentSeason(
         genres: animeTable.genres,
         mal_id: animeTable.mal_id,
         status: animeTable.status,
-        entityStatus: trackedEntityTable.entityStatus,
+        characters: animeTable.characters,
       })
       .from(animeTable)
       .where(where)
       .offset(offset)
       .limit(limit);
     if (orderBy) {
-      const [stringifiedAnimeRecords, animeCount] = await Promise.all([
+      const [animeRecords, animeCount] = await Promise.all([
         query.orderBy(orderBy),
         queryCount,
       ]);
       return ok({
-        data: stringifiedAnimeRecords.map((anime) =>
-          parseRecord(anime, stringifiedAnimeKeys),
-        ),
+        data: animeRecords,
         count: animeCount[0]?.count ?? 0,
       });
     }

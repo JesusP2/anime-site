@@ -19,12 +19,8 @@ import {
 import { actions } from "astro:actions";
 import { useEffect, useState } from "react";
 import type { User } from "better-auth";
-import {
-  TrackedAnimeRecordsKey,
-  TrackedMangaRecordsKey,
-} from "@/lib/constants";
 import type { FullAnimeRecord } from "@/lib/types";
-import { transformFullAnimeToAnimeCard } from "@/lib/utils/transform-full-anime-to-anime-card";
+import { deleteEntityFromLocalDB, getEntityFromLocalDB, updateLocalDB } from "@/lib/pglite";
 
 const statuses = [
   "completed",
@@ -47,19 +43,13 @@ export function StatusDropdown({
 
   useEffect(() => {
     if (!user) {
-      const localStorageKey =
-        entityType === "ANIME"
-          ? TrackedAnimeRecordsKey
-          : TrackedMangaRecordsKey;
-      const storedRecords = JSON.parse(
-        localStorage.getItem(localStorageKey) || "[]",
-      );
-      const storedRecord = storedRecords.find(
-        (animeRecord: any) => animeRecord.mal_id === data.mal_id,
-      );
-      if (storedRecord) {
-        setStatus(storedRecord.entityStatus);
-      }
+      getEntityFromLocalDB(entityType, data.mal_id!).then((record) => {
+        if (record) {
+          setStatus(record.entity_status);
+        } else {
+          setStatus('not-started');
+        }
+      }).catch(console.error);
     }
   }, []);
 
@@ -79,28 +69,11 @@ export function StatusDropdown({
       }
       return;
     }
-    const localStorageKey =
-      entityType === "ANIME" ? TrackedAnimeRecordsKey : TrackedMangaRecordsKey;
-    const storedRecords = JSON.parse(
-      localStorage.getItem(localStorageKey) || "[]",
-    );
     if (newStatus === "not-started") {
-      const filteredRecords = storedRecords.filter(
-        (animeRecord: any) => animeRecord.mal_id !== data.mal_id,
-      );
-      localStorage.setItem(localStorageKey, JSON.stringify(filteredRecords));
+      await deleteEntityFromLocalDB(entityType, data.mal_id!);
       return;
     }
-    const storedRecord = storedRecords.find(
-      (animeRecord: any) => animeRecord.mal_id === data.mal_id,
-    );
-    if (storedRecord) {
-      storedRecord.entityStatus = newStatus;
-      localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
-    } else {
-      storedRecords.push(transformFullAnimeToAnimeCard(data, newStatus));
-      localStorage.setItem(localStorageKey, JSON.stringify(storedRecords));
-    }
+    await updateLocalDB(entityType, data, newStatus);
   }
   return (
     <DropdownMenu>
@@ -133,6 +106,8 @@ export function StatusDropdown({
 
 function RenderStatus({ status }: { status?: string }) {
   switch (status) {
+    case undefined:
+      return <>Loading...</>;
     case "completed":
       return (
         <>

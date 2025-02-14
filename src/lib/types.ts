@@ -5,4 +5,4 @@ export type FullAnimeRecord = components["schemas"]["anime_full"] & {
   staff: components["schemas"]["anime_staff"]["data"];
   characters: components["schemas"]["anime_characters"]["data"];
   streaming: components["schemas"]["external_links"]["data"];
-};
+} & { mal_id: number | null };

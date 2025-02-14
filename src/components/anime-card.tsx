@@ -23,7 +23,7 @@ export type AnimeCardItem = Pick<
   | "status"
   | "popularity"
   | "favorites"
-> & { entityStatus: string };
+>;
 export function AnimeCard({ data }: { data: AnimeCardItem }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
@@ -72,9 +72,9 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
               <div>
                 <div className="flex gap-x-2 items-center">
                   <Star weight="bold" />
-                  <p>{data.score}</p>
+                  <p>{data.score ?? 'N/A'}</p>
                 </div>
-                <p className="text-sm text-stone-600">{data.scored_by} users</p>
+                {data.scored_by ? (<p className="text-sm text-stone-600">{data.scored_by} users</p>) : <p className="text-sm text-stone-600">N/A</p>}
               </div>
               <div>
                 <div className="flex gap-x-2 items-center">

@@ -4,6 +4,7 @@ import { z } from "astro:schema";
 import { db } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
 import { and, eq } from "drizzle-orm";
+import { getEmbedding } from "@/lib/semantic-search";
 
 export const server = {
   auth,
@@ -58,6 +59,16 @@ export const server = {
             eq(trackedEntityTable.mal_id, mal_id),
           ),
         );
+    },
+  }),
+  semanticSearch: defineAction({
+    accept: "json",
+    input: z.object({
+      q: z.string(),
+    }),
+    handler: async ({ q }) => {
+      const embedding = await getEmbedding(q);
+      return embedding;
     },
   }),
 };

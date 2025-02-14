@@ -1,16 +1,15 @@
-import { AnimeCard, type AnimeCardItem } from "@/components/anime-card";
-import { EmptyItems } from "@/components/empty-items";
-import { TrackedAnimeRecordsKey } from "@/lib/constants";
+import { type AnimeCardItem } from "@/components/anime-card";
 import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
 import { SearchWithFilters } from "./search";
 import { animeFilters } from "@/lib/anime/filters";
 import type { Result } from "@/lib/result";
-import type { ActionError } from "astro:actions";
+import { actions, type ActionError } from "astro:actions";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
 import { Grid } from "./grid";
+import { getEntitiesFromLocalDB } from "@/lib/pglite";
 
 function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
   const entries = searchParams.entries();
@@ -86,7 +85,7 @@ export function AnimesWithStatusPage({
   title,
 }: {
   url: URL;
-  records: Result<{ data: AnimeCardItem[]; count: number; }, ActionError>;
+  records: Result<{ data: (AnimeCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
   entityStatus: string;
   user: User | null;
   title: string;
@@ -96,19 +95,19 @@ export function AnimesWithStatusPage({
   const recordsPerPage = getRecordsPerPage(url.searchParams);
   useEffect(() => {
     if (user) return;
-    const value = JSON.parse(
-      localStorage.getItem(TrackedAnimeRecordsKey) || "[]",
-    ) as AnimeCardItem[];
-    const recordsWithStatus = value.filter(
-      (item) => item.entityStatus === entityStatus,
-    );
-
-    const { data, count } = applyFilters(recordsWithStatus, url.searchParams);
-    _setRecords({ success: true, value: { data, count } });
+    getEntitiesFromLocalDB("ANIME", entityStatus).then((recordsWithStatus) => {
+      if (!Array.isArray(recordsWithStatus)) {
+        _setRecords({ success: true, value: { data: [], count: 0 } });
+        return;
+      };
+      const { data, count } = applyFilters(recordsWithStatus, url.searchParams);
+      _setRecords({ success: true, value: { data, count } });
+    })
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set('page', '1');
+    actions.semanticSearch({ q: searchParams.get('q') ?? '' }).then(({ data }) => console.log(data))
     navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
   }
 

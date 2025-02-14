@@ -4,7 +4,7 @@ import { getAnimesWithStatus } from "@/lib/anime/data-access";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 
-const entityStatus = "droppped";
+const entityStatus = "dropped";
 const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
 const records = Astro.locals.user
   ? await getAnimesWithStatus(

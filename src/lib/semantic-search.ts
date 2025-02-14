@@ -1,13 +1,21 @@
 import { openai } from "./openai";
 import { client } from "./zilliz";
 
-export async function semanticSearch(q: string, collection_name: string, topk: number): Promise<number[] | undefined> {
+export async function getEmbedding(q: string) {
   const embeddings = await openai.embeddings.create({
     model: "text-embedding-3-small",
     input: [q],
     encoding_format: "float",
   });
-  const embedding = embeddings.data[0]?.embedding;
+  return embeddings.data[0]?.embedding;
+}
+
+export async function semanticSearch(
+  q: string,
+  collection_name: string,
+  topk: number,
+): Promise<number[] | undefined> {
+  const embedding = await getEmbedding(q);
   if (embedding) {
     const res = await client.search({
       topk,
@@ -18,3 +26,4 @@ export async function semanticSearch(q: string, collection_name: string, topk: n
     return res.results.map(({ id }) => Number(id));
   }
 }
+

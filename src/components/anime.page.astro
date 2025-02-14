@@ -5,7 +5,6 @@ import { KeyStaffCard } from "@/components/key-staff-card";
 import { MainCharacterCard } from "@/components/main-character-card";
 import { StatusDropdown } from "./status-dropdown";
 import type { User } from "better-auth";
-import { transformFullAnimeToAnimeCard } from "@/lib/utils/transform-full-anime-to-anime-card";
 type Props = {
   anime: FullAnimeRecord & { entityStatus?: string };
   user: User | null;
