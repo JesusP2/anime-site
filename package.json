@@ -62,6 +62,7 @@
     "motion": "^11.18.0",
     "neverthrow": "^8.1.1",
     "openapi-fetch": "^0.13.4",
+    "postgres": "^3.4.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
