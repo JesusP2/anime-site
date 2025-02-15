@@ -10,7 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "env-cmd drizzle-kit studio",
+    "db:studio": "drizzle-kit studio",
     "format:fix": "prettier --write ./src",
     "anime": "tsx ./src/scripts/anime.ts",
     "anime-vectors": "tsx --env-file=.env ./src/scripts/anime-vectors.ts",

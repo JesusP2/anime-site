@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX `tracked_entity_user_id_mal_id_unique` ON `tracked_entity` (`user_id`,`mal_id`);

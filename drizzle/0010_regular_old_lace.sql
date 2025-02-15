@@ -1,1 +1,0 @@
-ALTER TABLE `tracked_entity` DROP COLUMN `embedding`;

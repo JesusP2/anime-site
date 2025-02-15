@@ -3,7 +3,6 @@ import {
   pgTable,
   varchar,
   timestamp,
-  pgEnum,
 } from "drizzle-orm/pg-core";
 import { ulid } from "ulidx";
 

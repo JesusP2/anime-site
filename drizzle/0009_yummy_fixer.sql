@@ -1,1 +1,0 @@
-ALTER TABLE `tracked_entity` ADD `embedding` F32_BLOB(1536);
