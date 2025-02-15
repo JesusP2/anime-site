@@ -1,48 +1,55 @@
 import { ulid } from "ulidx";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { float32Array } from "./f32_blob";
+import {
+  integer,
+  pgTable,
+  varchar,
+  json,
+  boolean,
+  vector,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-export const mangaTable = sqliteTable("manga", {
-  id: text("id", {
+export const mangaTable = pgTable("manga", {
+  id: varchar("id", {
     length: 255,
   })
     .primaryKey()
     .$defaultFn(ulid),
   mal_id: integer("mal_id").unique(),
-  url: text("url", {
+  url: varchar("url", {
     length: 255,
   }),
-  images: text("images", { mode: 'json' }), //json
-  approved: integer("approved", { mode: 'boolean' }), //boolean
-  titles: text("titles", { mode: 'json' }), //json
-  title_synonyms: text("title_synonyms", { mode: 'json' }), //json
-  type: text("type", {
+  images: json("images"), //json
+  approved: boolean("approved"), //boolean
+  titles: varchar("titles"), //json
+  title_synonyms: json("title_synonyms"), //json
+  type: varchar("type", {
     length: 255,
   }),
   chapters: integer("chapters"),
   volumes: integer("volumes"),
-  status: text("status", {
+  status: varchar("status", {
     length: 255,
   }),
-  publishing: integer("publishing", { mode: 'boolean' }), //boolean
-  published: text("published", { mode: 'json' }), //json
+  publishing: boolean("publishing"), //boolean
+  published: boolean("published"), //json
   score: integer("score"),
   scored_by: integer("scored_by"),
   rank: integer("rank"),
   popularity: integer("popularity"),
   members: integer("members"),
   favorites: integer("favorites"),
-  synopsis: text("synopsis"),
-  background: text("background"),
-  authors: text("authors", { mode: 'json' }), //json
-  serializations: text("serializations", { mode: 'json' }), //json
-  genres: text("genres", { mode: 'json' }), //json
-  explicit_genres: text("explicit_genres", { mode: 'json' }), //json
-  themes: text("themes", { mode: 'json' }), //json
-  demographics: text("demographics", { mode: 'json' }), //json
-  relations: text("relations", { mode: 'json' }), //json
-  external: text("external", { mode: 'json' }), //json
-  embedding: float32Array("embedding", { dimensions: 1536 }),
-  createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
-  updatedAt: text("updated_at").$defaultFn(() => new Date().toISOString()),
+  synopsis: varchar("synopsis"),
+  background: varchar("background"),
+  authors: json("authors"), //json
+  serializations: json("serializations"), //json
+  genres: varchar("genres"), //json
+  explicit_genres: json("explicit_genres"), //json
+  themes: varchar("themes"), //json
+  demographics: json("demographics"), //json
+  relations: json("relations"), //json
+  external: json("external"), //json
+  embedding: vector("embedding", { dimensions: 1536 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });

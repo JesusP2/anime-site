@@ -1,23 +1,29 @@
 import { ulid } from "ulidx";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  pgTable,
+  varchar,
+  json,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-export const characterTable = sqliteTable("character", {
-  id: text("id", {
+export const characterTable = pgTable("character", {
+  id: varchar("id", {
     length: 255,
   })
     .primaryKey()
     .$defaultFn(ulid),
   mal_id: integer("mal_id").unique(),
-  url: text("url").unique(),
-  images: text("images"), //json
-  name: text("name"),
-  name_kanji: text("name_kanji"),
-  nicknames: text("nicknames"), //json
+  url: varchar("url").unique(),
+  images: varchar("images"), //json
+  name: varchar("name"),
+  name_kanji: varchar("name_kanji"),
+  nicknames: json("nicknames"), //json
   favorites: integer("favorites"),
-  about: text("about"),
-  anime: text("anime"), //json
-  manga: text("manga"), //json
-  voices: text("voices"), //json
-  createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
-  updatedAt: text("updated_at").$defaultFn(() => new Date().toISOString()),
+  about: varchar("about"),
+  anime: json("anime"), //json
+  manga: json("manga"), //json
+  voices: json("voices"), //json
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
