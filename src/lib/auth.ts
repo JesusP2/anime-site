@@ -34,11 +34,11 @@ export const auth = betterAuth({
   socialProviders: {
     google: {
       enabled: true,
-      // redirectURI: GOOGLE_REDIRECT_URI,
-      // clientId: GOOGLE_CLIENT_ID,
-      // clientSecret: GOOGLE_CLIENT_SECRET,
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirectURI: GOOGLE_REDIRECT_URI,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      // clientId: process.env.GOOGLE_CLIENT_ID!,
+      // clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
 });

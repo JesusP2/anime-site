@@ -13,7 +13,7 @@
     "db:studio": "drizzle-kit studio",
     "format:fix": "prettier --write ./src",
     "anime": "tsx ./src/scripts/anime.ts",
-    "manga-vectors": "tsx --env-file=.env ./src/scripts/manga-vectors.ts",
+    "anime-vectors": "tsx --env-file=.env ./src/scripts/anime-vectors.ts",
     "manga": "tsx ./src/scripts/manga.ts"
   },
   "dependencies": {

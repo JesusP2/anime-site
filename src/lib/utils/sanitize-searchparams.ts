@@ -2,7 +2,7 @@ import { objectKeys } from ".";
 import type { AnimeFilters } from "../anime/filters";
 import type { MangaFilters } from "../manga/filters";
 
-export function cleanSearchParams<T extends AnimeFilters | MangaFilters>(
+export function sanitizeSearchParams<T extends AnimeFilters | MangaFilters>(
   searchParams: URLSearchParams,
   filters: T,
 ) {

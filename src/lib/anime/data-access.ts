@@ -1,14 +1,37 @@
-import { and, count, eq, inArray } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { animeTable, trackedEntityTable } from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { animeFilters } from "./filters";
 import type { AnimeCardItem } from "@/components/anime-card";
-import { cleanSearchParams } from "../utils/clean-searchparams";
+import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
-import { semanticSearch } from "../semantic-search";
+
+function mapScore(score: string | null) {
+  if (typeof score !== "string") return null;
+  const _score = parseFloat(score);
+  if (isNaN(_score)) return null;
+  return _score;
+}
+
+const animeCardKeys = {
+  titles: animeTable.titles,
+  images: animeTable.images,
+  type: animeTable.type,
+  rating: animeTable.rating,
+  season: animeTable.season,
+  year: animeTable.year,
+  aired: animeTable.aired,
+  episodes: animeTable.episodes,
+  score: animeTable.score,
+  scored_by: animeTable.scored_by,
+  rank: animeTable.rank,
+  genres: animeTable.genres,
+  mal_id: animeTable.mal_id,
+  status: animeTable.status,
+} as const;
 
 export async function getAnime(
   mal_id: number,
@@ -59,7 +82,7 @@ export async function getAnime(
           ),
         );
       if (anime) {
-        return ok(anime);
+        return ok({ ...anime, score: mapScore(anime.score) });
       }
       return err(
         new ActionError({
@@ -73,7 +96,7 @@ export async function getAnime(
       .from(animeTable)
       .where(eq(animeTable.mal_id, mal_id));
     if (anime) {
-      return ok({ ...anime, entityStatus: null });
+      return ok({ ...anime, entityStatus: null, score: mapScore(anime.score) });
     }
     return err(
       new ActionError({
@@ -96,58 +119,36 @@ export async function getCurrentSeason(
   searchParams: URLSearchParams,
   recordsPerPage: number,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
-  const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
-  let { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
-    cleanedSearchParams,
-    recordsPerPage,
+  const sanitizedSearchParams = sanitizeSearchParams(
+    searchParams,
+    animeFilters,
   );
+  let { similarity, where, orderBy, offset } =
+    await animeSearchParamsToDrizzleQuery(
+      sanitizedSearchParams,
+      recordsPerPage,
+    );
   try {
-    const q = cleanedSearchParams.get("q");
-    if (typeof q === "string" && q !== "") {
-      const ids = await semanticSearch(q, "anime", 25);
-      if (ids) {
-        where = and(where, inArray(animeTable.mal_id, ids));
-      }
-    }
-    const queryCount = await db
+    const queryCount = db
       .select({ count: count() })
       .from(animeTable)
       .where(where);
     const query = db
-      .select({
-        titles: animeTable.titles,
-        images: animeTable.images,
-        type: animeTable.type,
-        rating: animeTable.rating,
-        season: animeTable.season,
-        year: animeTable.year,
-        aired: animeTable.aired,
-        episodes: animeTable.episodes,
-        score: animeTable.score,
-        scored_by: animeTable.scored_by,
-        rank: animeTable.rank,
-        genres: animeTable.genres,
-        mal_id: animeTable.mal_id,
-        status: animeTable.status,
-        characters: animeTable.characters,
-      })
+      .select(similarity ? { ...animeCardKeys, similarity } : animeCardKeys)
       .from(animeTable)
       .where(where)
       .offset(offset)
-      .limit(limit);
-    if (orderBy) {
-      const [animeRecords, animeCount] = await Promise.all([
-        query.orderBy(orderBy),
-        queryCount,
-      ]);
-      return ok({
-        data: animeRecords,
-        count: animeCount[0]?.count ?? 0,
-      });
-    }
-    const [animeRecords, animeCount] = await Promise.all([query, queryCount]);
+      .orderBy(...(orderBy as any))
+      .limit(recordsPerPage);
+    const [animeRecords, animeCount] = await Promise.all([
+      query,
+      similarity ? [{ count: 25 }] : queryCount,
+    ]);
     return ok({
-      data: animeRecords,
+      data: animeRecords.map((r) => ({
+        ...r,
+        score: mapScore(r.score),
+      })),
       count: animeCount[0]?.count ?? 0,
     });
   } catch (_) {
@@ -167,23 +168,13 @@ export async function getAnimesWithStatus(
   recordsPerPage: number,
   userId: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
-  const cleanedSearchParams = cleanSearchParams(searchParams, animeFilters);
-  let { where, orderBy, offset, limit } = animeSearchParamsToDrizzleQuery(
-    cleanedSearchParams,
-    recordsPerPage,
-  );
+  const cleanedSearchParams = sanitizeSearchParams(searchParams, animeFilters);
+  let { similarity, where, orderBy, offset } =
+    await animeSearchParamsToDrizzleQuery(cleanedSearchParams, recordsPerPage);
   where = and(where, eq(trackedEntityTable.entityStatus, status));
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
-    const q = cleanedSearchParams.get("q");
-    if (typeof q === "string" && q !== "") {
-      const ids = await semanticSearch(q, "anime", 25);
-      if (ids) {
-        where = and(where, inArray(animeTable.mal_id, ids));
-      }
-    }
-
     const queryCount = db
       .select({ count: count() })
       .from(animeTable)
@@ -193,44 +184,25 @@ export async function getAnimesWithStatus(
         eq(animeTable.mal_id, trackedEntityTable.mal_id),
       );
     const query = db
-      .select({
-        titles: animeTable.titles,
-        images: animeTable.images,
-        type: animeTable.type,
-        rating: animeTable.rating,
-        season: animeTable.season,
-        year: animeTable.year,
-        aired: animeTable.aired,
-        episodes: animeTable.episodes,
-        score: animeTable.score,
-        scored_by: animeTable.scored_by,
-        rank: animeTable.rank,
-        genres: animeTable.genres,
-        mal_id: animeTable.mal_id,
-        status: animeTable.status,
-        entityStatus: trackedEntityTable.entityStatus,
-      })
+      .select(similarity ? { ...animeCardKeys, similarity } : animeCardKeys)
       .from(animeTable)
       .where(where)
       .offset(offset)
-      .limit(limit)
+      .limit(recordsPerPage)
+      .orderBy(...(orderBy as any))
       .leftJoin(
         trackedEntityTable,
         eq(animeTable.mal_id, trackedEntityTable.mal_id),
       );
-    if (orderBy) {
-      const [animeRecords, animeCount] = await Promise.all([
-        query.orderBy(orderBy),
-        queryCount,
-      ]);
-      return ok({
-        data: animeRecords,
-        count: animeCount[0]?.count ?? 0,
-      });
-    }
-    const [animeRecords, animeCount] = await Promise.all([query, queryCount]);
+    const [animeRecords, animeCount] = await Promise.all([
+      query,
+      similarity ? [{ count: 25 }] : queryCount,
+    ]);
     return ok({
-      data: animeRecords,
+      data: animeRecords.map((r) => ({
+        ...r,
+        score: mapScore(r.score),
+      })),
       count: animeCount[0]?.count ?? 0,
     });
   } catch (_) {
