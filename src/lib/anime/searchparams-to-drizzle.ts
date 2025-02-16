@@ -1,7 +1,7 @@
 import { and, desc, like, or, type SQL } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { animeTable } from "../db/schemas";
-import { SQLiteColumn } from "drizzle-orm/sqlite-core";
+import { PgColumn } from "drizzle-orm/pg-core";
 
 export function animeSearchParamsToDrizzleQuery(
   searchParams: URLSearchParams,
@@ -39,11 +39,11 @@ export function animeSearchParamsToDrizzleQuery(
     }
   }
 
-  let orderBy: SQL | SQLiteColumn | undefined;
+  let orderBy: SQL | PgColumn | undefined;
   if (searchParams.get("orderBy") && searchParams.get('orderBy') !== 'none') {
     const column =
       animeTable[searchParams.get("orderBy") as keyof typeof animeTable];
-    if (column instanceof SQLiteColumn) {
+    if (column instanceof PgColumn) {
       if (searchParams.get("sort") === "desc") {
         orderBy = desc(column);
       } else {

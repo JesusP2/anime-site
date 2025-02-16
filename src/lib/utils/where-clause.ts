@@ -1,6 +1,6 @@
 import { and, inArray, type SQL } from "drizzle-orm";
 import type { animeTable, mangaTable } from "../db/schemas";
-import { SQLiteColumn } from "drizzle-orm/sqlite-core";
+import { PgColumn } from "drizzle-orm/pg-core";
 
 export function createWhereClause<
   T extends typeof animeTable | typeof mangaTable,
@@ -12,11 +12,11 @@ export function createWhereClause<
 ) {
   if (
     columnName in table &&
-    table[columnName] instanceof SQLiteColumn &&
+    table[columnName] instanceof PgColumn &&
     typeof columnName === "string"
   ) {
     const column = table[columnName];
-    if (column instanceof SQLiteColumn) {
+    if (column instanceof PgColumn) {
       const filters = searchParams.getAll(columnName);
       return where
         ? and(where, inArray(column, filters))
