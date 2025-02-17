@@ -1,4 +1,4 @@
-import { CaretRight, type Icon } from "@phosphor-icons/react";
+import { CaretRight, MagnifyingGlass, type Icon } from "@phosphor-icons/react";
 
 import {
   Collapsible,
@@ -27,7 +27,7 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
-      icon: string;
+      icon: Icon;
     }[];
   }[];
 }) {
@@ -35,6 +35,14 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild>
+            <a href="/anime/search">
+              <MagnifyingGlass />
+              Search
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         {items.map((item) => (
           <Collapsible
             key={item.title}

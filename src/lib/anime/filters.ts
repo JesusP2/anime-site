@@ -1,4 +1,22 @@
+const initialYear = 1961;
+const years = Array.from({ length: new Date().getFullYear() - initialYear + 1 }, (_, i) => initialYear + i);
+
 export const animeFilters = {
+  year: {
+    label: "Year",
+    options: [
+      ...(years.map((year) => ({ label: year.toString(), value: year.toString() }))),
+    ],
+  },
+  season: {
+    label: "Season",
+    options: [
+      { label: 'Winter', value: 'winter' },
+      { label: 'Spring', value: 'spring' },
+      { label: 'Summer', value: 'summer' },
+      { label: 'Fall', value: 'fall' },
+    ],
+  },
   status: {
     label: "Status",
     options: [

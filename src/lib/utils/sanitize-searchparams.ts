@@ -36,17 +36,6 @@ export function sanitizeSearchParams<T extends AnimeFilters | MangaFilters>(
   if (searchParams.get("page") && parseInt(page) > 0) {
     newSearchParams.set("page", page);
   }
-  const season = searchParams.get("season") as string;
-  if (
-    searchParams.get("season") &&
-    ["winter", "spring", "summer", "fall"].includes(season)
-  ) {
-    newSearchParams.set("season", season);
-  }
-  const year = searchParams.get("year") as string;
-  if (searchParams.get("year") && parseInt(year) > 0) {
-    newSearchParams.set("year", year);
-  }
   let ratings = newSearchParams.getAll("rating");
   if (searchParams.get("sfw") === "false" && ratings.length) {
     ratings = ratings.filter((rating) => !rating.startsWith("R"));

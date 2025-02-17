@@ -5,77 +5,11 @@ import { Pagination } from "./pagination";
 import { SearchWithFilters } from "./search";
 import { animeFilters } from "@/lib/anime/filters";
 import type { Result } from "@/lib/result";
-import { actions, type ActionError } from "astro:actions";
+import { type ActionError } from "astro:actions";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
 import { Grid } from "./grid";
 import { getAnimesFromLocalDB } from "@/lib/anime/pglite-queries";
-
-function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
-  const entries = searchParams.entries();
-  let filteredRecords = records;
-  for (let [key] of entries) {
-    const filters = searchParams.getAll(key);
-    if (!filters.length) continue;
-    filteredRecords = filteredRecords.filter((record) => {
-      if (key === "status") {
-        return record.status && filters.includes(record.status);
-      }
-      if (key === "type") {
-        return record.type && filters.includes(record.type);
-      }
-      if (key === "genre") {
-        return record.genres?.some((genre) =>
-          genre.name && filters.includes(genre.name),
-        );
-      }
-      return true;
-    });
-  }
-  // lista vacia y sfw activo => no filtro
-  // lista vacia y sfw desactivado => filtrar sfw
-  // lista no vacia y swf activo => filtrar lista
-  // lista no vacia y sfw desactivado => filtrar filtros y lista
-  const sfw = searchParams.get("sfw") ? searchParams.get("sfw") === "true" : true;
-  let ratings = searchParams.getAll("rating")
-  let allowedRatings = animeFilters.rating.options.map((rating) => rating.value);
-  if (!ratings.length && !sfw) {
-    ratings = allowedRatings.filter((rating) => !rating.startsWith('R'));
-    filteredRecords = filteredRecords.filter((record) => {
-      return record.rating && ratings.includes(record.rating);
-    });
-  } else if (ratings.length && sfw) {
-    filteredRecords = filteredRecords.filter((record) => {
-      return record.rating && ratings.includes(record.rating);
-    });
-  } else if (ratings.length && !sfw) {
-    ratings = ratings.filter((rating) => !rating.startsWith('R'));
-    filteredRecords = filteredRecords.filter((record) => {
-      return record.rating && ratings.includes(record.rating);
-    });
-  }
-  const orderBy = searchParams.get("orderBy");
-  const sort = searchParams.get("sort");
-  filteredRecords = filteredRecords.sort((a, b) => {
-    const aValue = a[orderBy as keyof AnimeCardItem] as number | string | null | undefined;
-    const bValue = b[orderBy as keyof AnimeCardItem] as number | string | null | undefined;
-    if (aValue === bValue || aValue === null || bValue === null || aValue === undefined || bValue === undefined) {
-      return 0;
-    }
-    if (sort === "asc") {
-      return aValue > bValue ? 1 : -1;
-    }
-    return aValue > bValue ? -1 : 1;
-  })
-
-  const currentPage = getCurrentPage(searchParams);
-  const recordsPerPage = getRecordsPerPage(searchParams);
-  const offset = (currentPage - 1) * recordsPerPage;
-  return {
-    data: filteredRecords.slice(offset, offset + recordsPerPage),
-    count: filteredRecords.length,
-  }
-}
 
 export function AnimesWithStatusPage({
   url,

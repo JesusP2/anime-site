@@ -7,7 +7,7 @@ import type { ActionError } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { Grid } from "./grid";
 
-export function SeasonNowPage({
+export function SearchAnimePage({
   url,
   records,
   currentPage,
@@ -22,9 +22,9 @@ export function SeasonNowPage({
     <>
       <SearchWithFilters
         url={url}
-        onSearch={(searchParams) => navigate(searchParams.toString() ? `/seasons/now?${searchParams.toString()}` : '/seasons/now')}
+        onSearch={(searchParams) => navigate(searchParams.toString() ? `/anime/search?${searchParams.toString()}` : '/anime/search')}
         options={animeFilters}
-        title="Animes this season"
+        title="Anime search"
       />
       <Grid records={records} />
       <div className="flex-1" />

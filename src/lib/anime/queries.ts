@@ -220,3 +220,38 @@ export async function getAnimesWithStatus(
     );
   }
 }
+
+export async function getAnimeSeason(
+  season: "summer" | "winter" | "spring" | "fall",
+  year: number,
+  recordsPerPage: number,
+  currentPage: number,
+): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
+  try {
+    const offset = (currentPage - 1) * recordsPerPage;
+    const [animes, animeCount] = await Promise.all([
+      db
+        .select(animeCardKeys)
+        .from(animeTable)
+        .where(and(eq(animeTable.season, season), eq(animeTable.year, year)))
+        .offset(offset)
+        .limit(recordsPerPage),
+      db
+        .select({ count: count() })
+        .from(animeTable)
+        .where(and(eq(animeTable.season, season), eq(animeTable.year, year))),
+    ]);
+    return ok({
+      data: animes.map((r) => ({ ...r, score: mapScore(r.score) })),
+      count: animeCount[0]?.count ?? 0,
+    });
+  } catch (_) {
+    console.error(_);
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
+  }
+}

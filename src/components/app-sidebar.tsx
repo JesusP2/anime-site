@@ -32,24 +32,6 @@ import { buttonVariants } from "./ui/button";
 const data = {
   navMain: [
     {
-      title: "Seasons",
-      url: "#",
-      icon: SealCheck,
-      isActive: true,
-      items: [
-        {
-          title: "Current season",
-          url: "/seasons/now",
-          icon: Calendar,
-        },
-        {
-          title: "Search",
-          url: "/seasons/search",
-          icon: MagnifyingGlass,
-        },
-      ],
-    },
-    {
       title: "Animes",
       url: "#",
       icon: TelevisionSimple,

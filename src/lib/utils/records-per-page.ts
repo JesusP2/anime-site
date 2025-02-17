@@ -7,7 +7,7 @@ export function getRecordsPerPage(searchParams: URLSearchParams) {
 }
 
 export function getCurrentPage(searchParams: URLSearchParams) {
-  const page =  searchParams.get("page");
+  const page = searchParams.get("page");
   if (page) {
     return parseInt(page);
   }

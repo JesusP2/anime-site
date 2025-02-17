@@ -34,24 +34,24 @@ export async function animeSearchParamsToDrizzleQuery(
   if (searchParams.get("rating") || searchParams.get("ratings_filtered")) {
     where = createWhereClause(where, table, "rating", searchParams);
   }
-  if (searchParams.get("genre")) {
-    let genreWhere: SQL | undefined = undefined;
-    for (const genre of searchParams.getAll("genre")) {
-      if (genreWhere) {
-        genreWhere = or(
-          genreWhere,
-          like(table.genres, `%"name":"${genre}"%%`),
-        );
-      } else {
-        genreWhere = like(table.genres, `%"name":"${genre}"%`);
-      }
-    }
-    if (where) {
-      where = and(where, genreWhere);
-    } else {
-      where = genreWhere;
-    }
-  }
+  // if (searchParams.get("genre")) {
+  //   let genreWhere: SQL | undefined = undefined;
+  //   for (const genre of searchParams.getAll("genre")) {
+  //     if (genreWhere) {
+  //       genreWhere = or(
+  //         genreWhere,
+  //         like(table.genres, `%"name":"${genre}"%%`),
+  //       );
+  //     } else {
+  //       genreWhere = like(table.genres, `%"name":"${genre}"%`);
+  //     }
+  //   }
+  //   if (where) {
+  //     where = and(where, genreWhere);
+  //   } else {
+  //     where = genreWhere;
+  //   }
+  // }
 
   const q = searchParams.get("q");
   const orderBy: (SQL | PgColumn | ((t: { similarity: any }) => SQL))[] = [];

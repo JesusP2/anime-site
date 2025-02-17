@@ -1,23 +1,21 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import { SeasonNowPage } from "@/components/season-now.page";
+import { SearchAnimePage } from "@/components/search-anime.page";
 import {
   getCurrentSeason,
 } from "@/lib/anime/queries";
 import { getRecordsPerPage, getCurrentPage } from "@/lib/utils/records-per-page";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
-const { season, year } = Astro.locals.currentSeason;
+// const { season, year } = Astro.locals.currentSeason;
 
 const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
 const searchParams = new URLSearchParams(Astro.url.searchParams);
-searchParams.set("season", season);
-searchParams.set("year", year.toString());
 const records = await getCurrentSeason(searchParams, animesPerPage);
 ---
 
-<MainLayout title="title">
-  <SeasonNowPage
+<MainLayout title="Anime Search">
+  <SearchAnimePage
     url={new URL(Astro.url.toString())}
     records={records}
     currentPage={currentPage}
