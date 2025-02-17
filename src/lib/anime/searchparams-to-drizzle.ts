@@ -1,14 +1,12 @@
 import {
-  and,
   cosineDistance,
   desc,
-  like,
-  or,
   sql,
   type SQL,
+  type SQLChunk,
 } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
-import { PgColumn } from "drizzle-orm/pg-core";
+import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 import type { animeTable } from "../db/schemas";
 import type { pgliteAnimeTable } from "../pglite";
 
@@ -53,8 +51,9 @@ export async function animeSearchParamsToDrizzleQuery(
   //   }
   // }
 
-  const q = searchParams.get("q");
+  const nullsLast = (it: AnyPgColumn | SQLChunk) => sql<any>`${it} NULLS LAST`;
   const orderBy: (SQL | PgColumn | ((t: { similarity: any }) => SQL))[] = [];
+  const q = searchParams.get("q");
   let similarity: SQL<number> | undefined;
   if (typeof q === "string" && q !== "") {
     const embedding = await getEmbedding(q);
@@ -69,9 +68,9 @@ export async function animeSearchParamsToDrizzleQuery(
       table[searchParams.get("orderBy") as keyof typeof table];
     if (column instanceof PgColumn) {
       if (searchParams.get("sort") === "desc") {
-        orderBy.push(desc(column));
+        orderBy.push(nullsLast(desc(column)));
       } else {
-        orderBy.push(column);
+        orderBy.push(nullsLast(column));
       }
     }
   }
