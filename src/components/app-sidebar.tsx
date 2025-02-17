@@ -106,7 +106,7 @@ export function AppSidebar({
   user: { name: string; email: string; image?: string } | null;
 }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <SidebarMenu>
