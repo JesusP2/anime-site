@@ -45,7 +45,8 @@ export function StatusDropdown({
     if (!user) {
       getEntityFromLocalDB(entityType, data.mal_id!).then((record) => {
         if (record) {
-          setStatus(record.entity_status);
+          console.log(record)
+          setStatus(record.entityStatus);
         } else {
           setStatus('not-started');
         }
