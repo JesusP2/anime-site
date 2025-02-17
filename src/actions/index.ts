@@ -61,7 +61,7 @@ export const server = {
         );
     },
   }),
-  semanticSearch: defineAction({
+  getEmbedding: defineAction({
     accept: "json",
     input: z.object({
       q: z.string(),

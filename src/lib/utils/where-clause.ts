@@ -1,9 +1,10 @@
 import { and, inArray, type SQL } from "drizzle-orm";
 import type { animeTable, mangaTable } from "../db/schemas";
+import type { pgliteAnimeTable } from "../pglite";
 import { PgColumn } from "drizzle-orm/pg-core";
 
 export function createWhereClause<
-  T extends typeof animeTable | typeof mangaTable,
+  T extends typeof animeTable | typeof mangaTable | typeof pgliteAnimeTable,
 >(
   where: SQL | undefined,
   table: T,

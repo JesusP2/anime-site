@@ -8,13 +8,8 @@ import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
-
-function mapScore(score: string | null) {
-  if (typeof score !== "string") return null;
-  const _score = parseFloat(score);
-  if (isNaN(_score)) return null;
-  return _score;
-}
+import { getEmbedding } from "../semantic-search";
+import { mapScore } from "../utils/map-score";
 
 const animeCardKeys = {
   titles: animeTable.titles,
@@ -65,6 +60,7 @@ export async function getAnime(
       staff: animeTable.staff,
       episodes_info: animeTable.episodes_info,
       streaming: animeTable.streaming,
+      embedding: animeTable.embedding,
     } as const;
     if (userId) {
       const [anime] = await db
@@ -127,6 +123,8 @@ export async function getCurrentSeason(
     await animeSearchParamsToDrizzleQuery(
       sanitizedSearchParams,
       recordsPerPage,
+      animeTable,
+      getEmbedding,
     );
   try {
     const queryCount = db
@@ -142,7 +140,7 @@ export async function getCurrentSeason(
       .limit(recordsPerPage);
     const [animeRecords, animeCount] = await Promise.all([
       query,
-      similarity ? [{ count: 25 }] : queryCount,
+      similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
     return ok({
       data: animeRecords.map((r) => ({
@@ -170,8 +168,15 @@ export async function getAnimesWithStatus(
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const cleanedSearchParams = sanitizeSearchParams(searchParams, animeFilters);
   let { similarity, where, orderBy, offset } =
-    await animeSearchParamsToDrizzleQuery(cleanedSearchParams, recordsPerPage);
-  where = and(where, eq(trackedEntityTable.entityStatus, status));
+    await animeSearchParamsToDrizzleQuery(
+      cleanedSearchParams,
+      recordsPerPage,
+      animeTable,
+      getEmbedding,
+    );
+  where = where
+    ? and(where, eq(trackedEntityTable.entityStatus, status))
+    : eq(trackedEntityTable.entityStatus, status);
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
@@ -196,7 +201,7 @@ export async function getAnimesWithStatus(
       );
     const [animeRecords, animeCount] = await Promise.all([
       query,
-      similarity ? [{ count: 25 }] : queryCount,
+      similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
     return ok({
       data: animeRecords.map((r) => ({

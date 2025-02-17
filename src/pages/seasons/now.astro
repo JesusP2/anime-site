@@ -3,7 +3,7 @@ import MainLayout from "@/layout/main.astro";
 import { SeasonNowPage } from "@/components/season-now.page";
 import {
   getCurrentSeason,
-} from "@/lib/anime/data-access";
+} from "@/lib/anime/queries";
 import { getRecordsPerPage, getCurrentPage } from "@/lib/utils/records-per-page";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);

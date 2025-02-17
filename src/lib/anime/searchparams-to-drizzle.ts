@@ -8,29 +8,31 @@ import {
   type SQL,
 } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
-import { animeTable } from "../db/schemas";
 import { PgColumn } from "drizzle-orm/pg-core";
-import { getEmbedding } from "../semantic-search";
+import type { animeTable } from "../db/schemas";
+import type { pgliteAnimeTable } from "../pglite";
 
 export async function animeSearchParamsToDrizzleQuery(
   searchParams: URLSearchParams,
   recordsPerPage: number,
+  table: typeof animeTable | typeof pgliteAnimeTable,
+  getEmbedding: (q: string) => Promise<number[] | undefined>,
 ) {
   let where: SQL | undefined;
   if (searchParams.get("season")) {
-    where = createWhereClause(where, animeTable, "season", searchParams);
+    where = createWhereClause(where, table, "season", searchParams);
   }
   if (searchParams.get("year")) {
-    where = createWhereClause(where, animeTable, "year", searchParams);
+    where = createWhereClause(where, table, "year", searchParams);
   }
   if (searchParams.get("status")) {
-    where = createWhereClause(where, animeTable, "status", searchParams);
+    where = createWhereClause(where, table, "status", searchParams);
   }
   if (searchParams.get("type")) {
-    where = createWhereClause(where, animeTable, "type", searchParams);
+    where = createWhereClause(where, table, "type", searchParams);
   }
   if (searchParams.get("rating") || searchParams.get("ratings_filtered")) {
-    where = createWhereClause(where, animeTable, "rating", searchParams);
+    where = createWhereClause(where, table, "rating", searchParams);
   }
   if (searchParams.get("genre")) {
     let genreWhere: SQL | undefined = undefined;
@@ -38,10 +40,10 @@ export async function animeSearchParamsToDrizzleQuery(
       if (genreWhere) {
         genreWhere = or(
           genreWhere,
-          like(animeTable.genres, `%"name":"${genre}"%%`),
+          like(table.genres, `%"name":"${genre}"%%`),
         );
       } else {
-        genreWhere = like(animeTable.genres, `%"name":"${genre}"%`);
+        genreWhere = like(table.genres, `%"name":"${genre}"%`);
       }
     }
     if (where) {
@@ -57,14 +59,14 @@ export async function animeSearchParamsToDrizzleQuery(
   if (typeof q === "string" && q !== "") {
     const embedding = await getEmbedding(q);
     if (embedding) {
-      similarity = sql<number>`1 - (${cosineDistance(animeTable.embedding, embedding)})`;
-      orderBy.push((t) => desc(t.similarity));
+      similarity = sql<number>`1 - (${cosineDistance(table.embedding, embedding)})`;
+      orderBy.push(t => desc(t.similarity));
     }
   }
 
   if (searchParams.get("orderBy") && searchParams.get("orderBy") !== "none") {
     const column =
-      animeTable[searchParams.get("orderBy") as keyof typeof animeTable];
+      table[searchParams.get("orderBy") as keyof typeof table];
     if (column instanceof PgColumn) {
       if (searchParams.get("sort") === "desc") {
         orderBy.push(desc(column));

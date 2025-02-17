@@ -20,7 +20,7 @@ import { actions } from "astro:actions";
 import { useEffect, useState } from "react";
 import type { User } from "better-auth";
 import type { FullAnimeRecord } from "@/lib/types";
-import { deleteEntityFromLocalDB, getEntityFromLocalDB, updateLocalDB } from "@/lib/pglite";
+import { deleteAnimeFromLocalDB, getAnimeFromLocalDB, updateLocalAnime } from "@/lib/anime/pglite-queries";
 
 const statuses = [
   "completed",
@@ -35,7 +35,7 @@ export function StatusDropdown({
   entityType,
   user,
 }: {
-  data: FullAnimeRecord & { entityStatus?: string };
+  data: FullAnimeRecord & { entityStatus?: string, embedding: number[] };
   entityType: "ANIME" | "MANGA";
   user: User | null;
 }) {
@@ -43,7 +43,7 @@ export function StatusDropdown({
 
   useEffect(() => {
     if (!user) {
-      getEntityFromLocalDB(entityType, data.mal_id!).then((record) => {
+      getAnimeFromLocalDB(data.mal_id!).then((record) => {
         if (record) {
           console.log(record)
           setStatus(record.entityStatus);
@@ -71,10 +71,10 @@ export function StatusDropdown({
       return;
     }
     if (newStatus === "not-started") {
-      await deleteEntityFromLocalDB(entityType, data.mal_id!);
+      await deleteAnimeFromLocalDB(data.mal_id!);
       return;
     }
-    await updateLocalDB(entityType, data, newStatus);
+    await updateLocalAnime(data, newStatus);
   }
   return (
     <DropdownMenu>

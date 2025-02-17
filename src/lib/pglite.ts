@@ -13,9 +13,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { components } from "./api/jikan.openapi";
 import { drizzle, PgliteDatabase } from "drizzle-orm/pglite";
-import { eq } from "drizzle-orm";
 
-const animeTable = pgTable("anime", {
+export const pgliteAnimeTable = pgTable("anime", {
   mal_id: integer("mal_id").unique().notNull(),
   entityStatus: varchar("entity_status", {
     length: 255,
@@ -53,7 +52,7 @@ declare global {
   interface Window {
     pgliteClient: PGlite;
     db: PgliteDatabase<{
-      animeTable: typeof animeTable;
+      animeTable: typeof pgliteAnimeTable;
     }>;
   }
 }
@@ -68,7 +67,7 @@ export async function getLocalDB() {
   const client = new PGlite("idb://my-pgdata", {
     extensions: { vector },
   });
-  const db = drizzle({ client, schema: { animeTable } });
+  const db = drizzle({ client, schema: { animeTable: pgliteAnimeTable } });
   window.pgliteClient = client;
   window.db = db;
   await createLocalDB(client);
@@ -104,77 +103,4 @@ export async function createLocalDB(client: PGlite) {
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );
   `);
-}
-
-export async function updateLocalDB(
-  entityType: "ANIME" | "MANGA",
-  data: AnimeCardItem | FullAnimeRecord,
-  entityStatus: string,
-) {
-  const { pgliteClient, db } = await getLocalDB();
-  if (entityType === "ANIME") {
-    const _data = {
-      mal_id: data.mal_id,
-      entityStatus,
-      titles: data.titles,
-      images: data.images,
-      type: data.type,
-      rating: data.rating,
-      season: data.season,
-      year: data.year,
-      aired: data.aired,
-      episodes: data.episodes,
-      score: data.score,
-      scored_by: data.scored_by,
-      rank: data.rank,
-      genres: data.genres,
-      status: data.status,
-      popularity: data.popularity,
-    };
-    await db
-      .insert(animeTable)
-      .values(_data as any)
-      .onConflictDoUpdate({
-        target: animeTable.mal_id,
-        set: _data as any,
-      });
-  }
-}
-
-export async function deleteEntityFromLocalDB(
-  entityType: "ANIME" | "MANGA",
-  mal_id: number,
-) {
-  const { db } = await getLocalDB();
-  if (entityType === "ANIME") {
-    await db.delete(animeTable).where(eq(animeTable.mal_id, mal_id));
-  }
-}
-
-export async function getEntityFromLocalDB(
-  entityType: "ANIME" | "MANGA",
-  mal_id: number,
-) {
-  const { db } = await getLocalDB();
-  if (entityType === "ANIME") {
-    const [record] = await db
-      .select()
-      .from(animeTable)
-      .where(eq(animeTable.mal_id, mal_id));
-    return record;
-  }
-}
-
-export async function getEntitiesFromLocalDB(
-  entityType: "ANIME" | "MANGA",
-  entityStatus: string,
-) {
-  const { db } = await getLocalDB();
-  if (entityType === "ANIME") {
-    const records = await db
-      .select()
-      .from(animeTable)
-      .where(eq(animeTable.entityStatus, entityStatus));
-    return records;
-  }
 }

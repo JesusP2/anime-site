@@ -9,7 +9,7 @@ import { actions, type ActionError } from "astro:actions";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
 import { Grid } from "./grid";
-import { getEntitiesFromLocalDB } from "@/lib/pglite";
+import { getAnimesFromLocalDB } from "@/lib/anime/pglite-queries";
 
 function applyFilters(records: AnimeCardItem[], searchParams: URLSearchParams) {
   const entries = searchParams.entries();
@@ -95,20 +95,32 @@ export function AnimesWithStatusPage({
   const recordsPerPage = getRecordsPerPage(url.searchParams);
   useEffect(() => {
     if (user) return;
-    getEntitiesFromLocalDB("ANIME", entityStatus).then((recordsWithStatus) => {
-      if (!Array.isArray(recordsWithStatus)) {
+    getAnimesFromLocalDB(entityStatus, url.searchParams).then((recordsWithStatus) => {
+      console.log(recordsWithStatus)
+      if (!recordsWithStatus.success) {
         _setRecords({ success: true, value: { data: [], count: 0 } });
         return;
       };
-      const { data, count } = applyFilters(recordsWithStatus, url.searchParams);
+      const { data, count } = recordsWithStatus.value;
       _setRecords({ success: true, value: { data, count } });
     })
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set('page', '1');
-    actions.semanticSearch({ q: searchParams.get('q') ?? '' }).then(({ data }) => console.log(data))
-    navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
+    if (user) {
+      navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
+    } else {
+      getAnimesFromLocalDB(entityStatus, searchParams).then((recordsWithStatus) => {
+        console.log(recordsWithStatus)
+        if (!recordsWithStatus.success) {
+          _setRecords({ success: true, value: { data: [], count: 0 } });
+          return;
+        };
+        const { data, count } = recordsWithStatus.value;
+        _setRecords({ success: true, value: { data, count } });
+      })
+    }
   }
 
   return (
