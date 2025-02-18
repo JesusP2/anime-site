@@ -26,7 +26,7 @@ const animeTitle =
     </div>
 
     <div class="flex-1">
-      <h1 class="text-4xl font-bold mb-2">
+      <h1 class="text-4xl font-bold mb-2 dark:text-white">
         {animeTitle}
       </h1>
       <div class="mb-4">
@@ -48,12 +48,12 @@ const animeTitle =
       <div class="grid grid-cols-1 grid-cols-4 gap-4 mb-6 max-w-lg">
         {
           anime.score ? (
-            <div class="bg-blue-50 grid place-items-center p-3 rounded-lg text-center">
+            <div class="bg-blue-50 dark:bg-blue-900/30 grid place-items-center p-3 rounded-lg text-center">
               <div>
-                <p class="text-xs sm:text-[15px] font-bold text-blue-600">
+                <p class="text-xs sm:text-[15px] font-bold text-blue-600 dark:text-blue-400">
                   ⭐ {anime.score}
                 </p>
-                <p class="text-xs sm:text-[15px] text-gray-600">Score</p>
+                <p class="text-xs sm:text-[15px] text-gray-600 dark:text-gray-400">Score</p>
               </div>
             </div>
           ) : (
@@ -62,12 +62,12 @@ const animeTitle =
         }
         {
           anime.rank ? (
-            <div class="bg-purple-50 grid place-items-center p-3 rounded-lg text-center">
+            <div class="bg-purple-50 dark:bg-purple-900/30 grid place-items-center p-3 rounded-lg text-center">
               <div>
-                <p class="text-xs sm:text-[15px] font-bold text-purple-600">
+                <p class="text-xs sm:text-[15px] font-bold text-purple-600 dark:text-purple-400">
                   #{anime.rank}
                 </p>
-                <p class="text-xs sm:text-sm text-gray-600">Rank</p>
+                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Rank</p>
               </div>
             </div>
           ) : (
@@ -76,12 +76,12 @@ const animeTitle =
         }
         {
           anime.popularity ? (
-            <div class="bg-green-50 grid place-items-center p-3 rounded-lg text-center">
+            <div class="bg-green-50 dark:bg-green-900/30 grid place-items-center p-3 rounded-lg text-center">
               <div>
-                <p class="text-xs sm:text-[15px] font-bold text-green-600">
+                <p class="text-xs sm:text-[15px] font-bold text-green-600 dark:text-green-400">
                   #{anime.popularity}
                 </p>
-                <p class="text-xs sm:text-sm text-gray-600">Popularity</p>
+                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Popularity</p>
               </div>
             </div>
           ) : (
@@ -90,12 +90,12 @@ const animeTitle =
         }
         {
           anime.members ? (
-            <div class="bg-orange-50 grid place-items-center p-3 rounded-lg text-center">
+            <div class="bg-orange-50 dark:bg-orange-900/30 grid place-items-center p-3 rounded-lg text-center">
               <div>
-                <p class="text-xs sm:text-[15px] font-bold text-orange-600">
+                <p class="text-xs sm:text-[15px] font-bold text-orange-600 dark:text-orange-400">
                   {anime.members.toLocaleString()}
                 </p>
-                <p class="text-xs sm:text-sm text-gray-600">Members</p>
+                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Members</p>
               </div>
             </div>
           ) : (
@@ -115,8 +115,8 @@ const animeTitle =
         {
           anime.synopsis ? (
             <div class="mb-6">
-              <h2 class="text-xl font-semibold mb-2">Synopsis</h2>
-              <p class="text-gray-700 leading-relaxed">{anime.synopsis}</p>
+              <h2 class="text-xl font-semibold mb-2 dark:text-white">Synopsis</h2>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{anime.synopsis}</p>
             </div>
           ) : (
             "Unknown"
@@ -124,34 +124,34 @@ const animeTitle =
         }
       </div>
 
-      <h2 class="text-xl font-semibold mb-3">Information</h2>
-      <div class="bg-white rounded-lg p-5 shadow-sm">
+      <h2 class="text-xl font-semibold mb-3 dark:text-white">Information</h2>
+      <div class="bg-white dark:bg-background rounded-lg p-5 shadow-sm">
         <div class="space-y-4">
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Type</div>
-            <div class="text-gray-900">{anime.type}</div>
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Type</div>
+            <div class="text-gray-900 dark:text-gray-100">{anime.type}</div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Episodes</div>
-            <div class="text-gray-900">{anime.episodes || "Unknown"}</div>
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Episodes</div>
+            <div class="text-gray-900 dark:text-gray-100">{anime.episodes || "Unknown"}</div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Status</div>
-            <div class="text-gray-900">{anime.status}</div>
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Status</div>
+            <div class="text-gray-900 dark:text-gray-100">{anime.status}</div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Season</div>
-            <div class="text-gray-900 capitalize">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Season</div>
+            <div class="text-gray-900 dark:text-gray-100 capitalize">
               {`${anime.season} ${anime.year}`}
             </div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Aired</div>
-            <div class="text-gray-900">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Aired</div>
+            <div class="text-gray-900 dark:text-gray-100">
               {
                 anime.aired?.from
                   ? new Date(anime.aired.from).toLocaleDateString()
@@ -166,14 +166,14 @@ const animeTitle =
             </div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Rating</div>
-            <div class="text-gray-900">{anime.rating}</div>
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Rating</div>
+            <div class="text-gray-900 dark:text-gray-100">{anime.rating}</div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Genres</div>
-            <div class="text-gray-900">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Genres</div>
+            <div class="text-gray-900 dark:text-gray-100">
               <div class="flex flex-wrap gap-2">
                 {
                   anime.genres?.map((genre) => (
@@ -186,9 +186,9 @@ const animeTitle =
             </div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Demographics</div>
-            <div class="text-gray-900">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Demographics</div>
+            <div class="text-gray-900 dark:text-gray-100">
               {
                 anime.demographics?.map((demographic) => (
                   <Badge variant="secondary">{demographic.name}</Badge>
@@ -197,9 +197,9 @@ const animeTitle =
             </div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Studios</div>
-            <div class="text-gray-900">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Studios</div>
+            <div class="text-gray-900 dark:text-gray-100">
               <div class="flex flex-wrap gap-2">
                 {
                   anime.studios?.map((studio) => (
@@ -212,9 +212,9 @@ const animeTitle =
             </div>
           </div>
 
-          <div class="flex border-b border-gray-100 pb-3">
-            <div class="w-32 text-gray-500">Broadcast</div>
-            <div class="text-gray-900">
+          <div class="flex border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="w-32 text-gray-500 dark:text-gray-400">Broadcast</div>
+            <div class="text-gray-900 dark:text-gray-100">
               {anime.broadcast?.string || "Unknown"}
             </div>
           </div>
@@ -244,7 +244,7 @@ const animeTitle =
     {
       anime.staff && anime.staff.length > 0 && (
         <div>
-          <h2 class="text-xl font-semibold mb-3">Key Staff</h2>
+          <h2 class="text-xl font-semibold mb-3 dark:text-white">Key Staff</h2>
           <div class="grid staff-auto-fill-grid gap-6">
             {anime.staff.slice(0, 6).map(({ person, positions }) => (
               <KeyStaffCard staff={person} positions={positions} />
@@ -258,15 +258,15 @@ const animeTitle =
   {
     anime.episodes_info && anime.episodes_info.length > 0 && (
       <div class="mt-12">
-        <h2 class="text-xl font-semibold mb-3">Episodes</h2>
+        <h2 class="text-xl font-semibold mb-3 dark:text-white">Episodes</h2>
         <div class="grid gap-4">
           {anime.episodes_info.map((episode) => (
-            <div class="bg-white p-4 rounded-lg shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
               <div class="flex justify-between items-center mb-2">
-                <h3 class="font-semibold">
+                <h3 class="font-semibold dark:text-white">
                   Episode {episode.mal_id}: {episode.title}
                 </h3>
-                <span class="text-sm text-gray-600">
+                <span class="text-sm text-gray-600 dark:text-gray-400">
                   {episode.aired &&
                     new Date(episode.aired).toLocaleDateString()}
                 </span>
