@@ -7,13 +7,15 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const user = Astro.locals.user;
+const isSidebarOpen = Astro.cookies.get('sidebar:state')?.value === 'true';
+const isDarkMode = Astro.cookies.get('theme')?.value === 'dark';
 ---
 
-<html lang="en">
+<html lang="en" class={isDarkMode ? 'dark' : ''}>
   <Head title={title} description={description} />
   <body>
     <main class="px-4 flex flex-col h-full">
-      <AppSidebar user={user} client:load>
+      <AppSidebar isSidebarOpen={isSidebarOpen} user={user} client:load>
         <slot />
       </AppSidebar>
     </main>

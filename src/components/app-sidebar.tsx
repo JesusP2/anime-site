@@ -28,6 +28,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
+import { ThemeSwitch } from "./theme-switch";
 
 const data = {
   navMain: [
@@ -101,12 +102,15 @@ const data = {
 export function AppSidebar({
   children,
   user,
+  isSidebarOpen,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
+  isSidebarOpen: boolean;
   user: { name: string; email: string; image?: string } | null;
 }) {
+
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={isSidebarOpen}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <SidebarMenu>
@@ -124,6 +128,7 @@ export function AppSidebar({
           <NavMain items={data.navMain} />
         </SidebarContent>
         <SidebarFooter>
+          <ThemeSwitch />
           {user ? (
             <NavUser user={user} />
           ) : (

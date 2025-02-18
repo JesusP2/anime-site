@@ -1,10 +1,11 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { SearchAnimePage } from "@/components/search-anime.page";
+import { getCurrentSeason } from "@/lib/anime/queries";
 import {
-  getCurrentSeason,
-} from "@/lib/anime/queries";
-import { getRecordsPerPage, getCurrentPage } from "@/lib/utils/records-per-page";
+  getRecordsPerPage,
+  getCurrentPage,
+} from "@/lib/utils/records-per-page";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 // const { season, year } = Astro.locals.currentSeason;

@@ -107,3 +107,9 @@ body {
 .staff-auto-fill-grid {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
