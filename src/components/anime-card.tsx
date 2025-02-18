@@ -28,11 +28,12 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
     data.titles?.find((title) => title.type === "Default")?.title;
+
   return (
     <a href={`/anime/${data.mal_id}`} className="cursor-pointer">
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
-        gradientColor={"#D9D9D955"}
+        gradientColor={"#A9A9A955"}
       >
         <article className="p-[0.5rem] flex gap-x-[1rem]">
           <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative">
@@ -54,45 +55,49 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
           </section>
           <div className="w-[13rem]">
             <section>
-              <h3 title={animeTitle} className="text-lg truncate font-bold">
+              <h3 title={animeTitle} className="text-lg truncate font-bold dark:text-white">
                 {animeTitle}
               </h3>
             </section>
             <section className="flex gap-x-2 my-2">
-              <Badge className="w-26 truncate">
+              <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
                 {data.season
                   ? `${data.season} - ${data.year}`
                   : `${data.aired?.prop?.from?.year}`}
               </Badge>
-              <Badge className="w-26 truncate">
+              <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
                 {data.episodes ? `${data.episodes} episodes` : "N/A"}
               </Badge>
             </section>
-            <section className="flex gap-x-6 [&_p]:leading-4 my-3">
+            <section className="flex gap-x-6 [&_p]:leading-4 my-3 dark:text-gray-100">
               <div>
                 <div className="flex gap-x-2 items-center">
-                  <Star weight="bold" />
+                  <Star weight="bold" className="dark:text-yellow-400" />
                   <p>{data.score ?? 'N/A'}</p>
                 </div>
-                {data.scored_by ? (<p className="text-sm text-stone-600">{data.scored_by} users</p>) : <p className="text-sm text-stone-600">N/A</p>}
+                {data.scored_by ? (
+                  <p className="text-sm text-stone-600 dark:text-gray-400">{data.scored_by} users</p>
+                ) : (
+                  <p className="text-sm text-stone-600 dark:text-gray-400">N/A</p>
+                )}
               </div>
               <div>
                 <div className="flex gap-x-2 items-center">
                   {data.rank ? <p>#{data.rank}</p> : <p>N/A</p>}
                 </div>
-                <p className="text-sm text-stone-600">Ranking</p>
+                <p className="text-sm text-stone-600 dark:text-gray-400">Ranking</p>
               </div>
             </section>
             <section className="flex gap-x-2">
               {data.genres?.slice(0, 2).map((genre) => (
-                <Badge key={genre.mal_id} variant="outline">
+                <Badge key={genre.mal_id} variant="outline" className="dark:border-gray-700 dark:text-gray-100">
                   <p className="text-ellipsis truncate max-w-24">
                     {genre.name}
                   </p>
                 </Badge>
               ))}
               {data.genres?.length && data.genres?.length > 2 && (
-                <Badge variant="outline">
+                <Badge variant="outline" className="dark:border-gray-700 dark:text-gray-100">
                   <p className="text-ellipsis truncate max-w-24">
                     + {data.genres?.length - 2}
                   </p>

@@ -6,7 +6,6 @@ import { AnimeCard, type AnimeCardItem } from "@/components/anime-card";
 
 export function Grid<T extends AnimeCardItem>({ records }: { records: Result<{ data: T[]; count: number; }, ActionError> }) {
   if (!records.success) {
-    console.log(records)
     return <UnexpectedError />;
   } else if (records.value.data.length === 0) {
     return <EmptyItems />;

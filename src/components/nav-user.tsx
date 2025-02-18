@@ -24,15 +24,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
+import type { User } from "better-auth";
 
 export function NavUser({
   user,
 }: {
-  user: {
-    name: string;
-    email: string;
-    image?: string;
-  };
+  user: User;
 }) {
   const { isMobile } = useSidebar();
 

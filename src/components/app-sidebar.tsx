@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  SealCheck,
   Trash,
   CalendarCheck,
   MonitorPlay,
@@ -8,8 +7,6 @@ import {
   CheckCircle,
   TelevisionSimple,
   Book,
-  MagnifyingGlass,
-  Calendar,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -29,6 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
 import { ThemeSwitch } from "./theme-switch";
+import type { User } from 'better-auth';
 
 const data = {
   navMain: [
@@ -103,10 +101,12 @@ export function AppSidebar({
   children,
   user,
   isSidebarOpen,
+  isDarkMode,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   isSidebarOpen: boolean;
-  user: { name: string; email: string; image?: string } | null;
+    isDarkMode: boolean;
+  user: User | null;
 }) {
 
   return (
@@ -128,7 +128,7 @@ export function AppSidebar({
           <NavMain items={data.navMain} />
         </SidebarContent>
         <SidebarFooter>
-          <ThemeSwitch />
+          <ThemeSwitch isDarkMode={isDarkMode} />
           {user ? (
             <NavUser user={user} />
           ) : (

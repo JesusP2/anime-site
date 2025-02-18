@@ -45,7 +45,6 @@ export function StatusDropdown({
     if (!user) {
       getAnimeFromLocalDB(data.mal_id!).then((record) => {
         if (record) {
-          console.log(record)
           setStatus(record.entityStatus);
         } else {
           setStatus('not-started');

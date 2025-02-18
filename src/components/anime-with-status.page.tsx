@@ -30,7 +30,6 @@ export function AnimesWithStatusPage({
   useEffect(() => {
     if (user) return;
     getAnimesFromLocalDB(entityStatus, url.searchParams).then((recordsWithStatus) => {
-      console.log(recordsWithStatus)
       if (!recordsWithStatus.success) {
         _setRecords({ success: true, value: { data: [], count: 0 } });
         return;
@@ -46,7 +45,6 @@ export function AnimesWithStatusPage({
       navigate(`/animes/${entityStatus}?${searchParams.toString()}`);
     } else {
       getAnimesFromLocalDB(entityStatus, searchParams).then((recordsWithStatus) => {
-        console.log(recordsWithStatus)
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;

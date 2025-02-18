@@ -1,29 +1,28 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
-export function ThemeSwitch() {
+export function ThemeSwitch(props: { isDarkMode: boolean; }) {
   const id = useId();
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(props.isDarkMode);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains("dark")
-    setIsDarkMode(isDarkMode)
-  }, [])
+  function setTheme(isDarkMode: boolean) {
+    setIsDarkMode(isDarkMode);
+    document.documentElement.classList[isDarkMode ? "add" : "remove"]("dark");
+    document.cookie = `theme=${isDarkMode ? 'dark' : 'light'}`;
+  }
 
   async function toggleTheme(isDarkMode: boolean) {
-    const startViewTransition = document.startViewTransition;
-    if (!startViewTransition) {
-      setIsDarkMode(isDarkMode);
+    if (!document.startViewTransition) {
+      setTheme(isDarkMode)
+      return;
     }
     await document.startViewTransition(() => {
       flushSync(() => {
-        setIsDarkMode(isDarkMode);
-        document.documentElement.classList[isDarkMode ? "add" : "remove"]("dark");
-        document.cookie = `theme=${isDarkMode ? 'dark' : 'light'}`;
+        setTheme(isDarkMode)
       })
     }).ready
     const x = ref.current?.getBoundingClientRect().left;
@@ -46,14 +45,6 @@ export function ThemeSwitch() {
       }
     );
   }
-
-  // useEffect(() => {
-  //   if (isDarkMode) {
-  //     document.documentElement.classList.add('dark');
-  //   } else {
-  //     document.documentElement.classList.remove('dark');
-  //   }
-  // }, [isDarkMode]);
 
   return (
     <div ref={ref}>
