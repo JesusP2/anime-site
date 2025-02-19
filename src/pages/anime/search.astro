@@ -1,7 +1,7 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { SearchAnimePage } from "@/components/search-anime.page";
-import { getCurrentSeason } from "@/lib/anime/queries";
+import { getAnimes } from "@/lib/anime/queries";
 import {
   getRecordsPerPage,
   getCurrentPage,
@@ -12,7 +12,7 @@ const currentPage = getCurrentPage(Astro.url.searchParams);
 
 const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
 const searchParams = new URLSearchParams(Astro.url.searchParams);
-const records = await getCurrentSeason(searchParams, animesPerPage);
+const records = await getAnimes(searchParams, animesPerPage);
 ---
 
 <MainLayout title="Anime Search">

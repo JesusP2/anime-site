@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@phosphor-icons/react";
 import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 

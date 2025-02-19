@@ -4,7 +4,7 @@ import { buttonVariants } from "../ui/button";
 import type { FullAnimeRecord } from "@/lib/types";
 const cardWidth = 225;
 const gapBetweenCards = 16;
-export function Carousel({ animes }: { animes: FullAnimeRecord[] }) {
+export function Carousel({ animes }: { animes: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,7 +25,7 @@ export function Carousel({ animes }: { animes: FullAnimeRecord[] }) {
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
     setTotalTranslate(
       (pages - 1) * translateWindow +
-        ((animes.length - pages * minTotal) / minTotal) * translateWindow,
+      ((animes.length - pages * minTotal) / minTotal) * translateWindow,
     );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
@@ -83,7 +83,6 @@ export function Carousel({ animes }: { animes: FullAnimeRecord[] }) {
           ))}
         </div>
       </div>
-
       <button
         onClick={handlePrevious}
         className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"
@@ -91,7 +90,6 @@ export function Carousel({ animes }: { animes: FullAnimeRecord[] }) {
       >
         ←
       </button>
-
       <button
         onClick={handleNext}
         className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"

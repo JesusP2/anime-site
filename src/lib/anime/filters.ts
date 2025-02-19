@@ -1,24 +1,33 @@
 const initialYear = 1961;
-const years = Array.from({ length: new Date().getFullYear() - initialYear + 1 }, (_, i) => initialYear + i);
+const years = Array.from(
+  { length: new Date().getFullYear() - initialYear + 1 },
+  (_, i) => initialYear + i,
+);
 
 export const animeFilters = {
   year: {
     label: "Year",
+    group: "basic",
     options: [
-      ...(years.map((year) => ({ label: year.toString(), value: year.toString() }))),
+      ...years.map((year) => ({
+        label: year.toString(),
+        value: year.toString(),
+      })),
     ],
   },
   season: {
     label: "Season",
+    group: "basic",
     options: [
-      { label: 'Winter', value: 'winter' },
-      { label: 'Spring', value: 'spring' },
-      { label: 'Summer', value: 'summer' },
-      { label: 'Fall', value: 'fall' },
+      { label: "Winter", value: "winter" },
+      { label: "Spring", value: "spring" },
+      { label: "Summer", value: "summer" },
+      { label: "Fall", value: "fall" },
     ],
   },
   status: {
     label: "Status",
+    group: "basic",
     options: [
       { label: "Airing", value: "Currently Airing" },
       { label: "Completed", value: "Finished Airing" },
@@ -27,6 +36,7 @@ export const animeFilters = {
   },
   type: {
     label: "Type",
+    group: "content",
     options: [
       { label: "TV", value: "TV" },
       { label: "Movie", value: "Movie" },
@@ -38,6 +48,7 @@ export const animeFilters = {
   },
   rating: {
     label: "Rating",
+    group: "content",
     options: [
       { label: "G - All Ages", value: "G - All Ages" },
       { label: "PG - Children", value: "PG - Children" },
@@ -55,6 +66,7 @@ export const animeFilters = {
   },
   genre: {
     label: "Genre",
+    group: "content",
     options: [
       { label: "Action", value: "Action" },
       { label: "Adventure", value: "Adventure" },
@@ -139,6 +151,7 @@ export const animeFilters = {
   sfw: {
     label: "SFW",
     type: "radio",
+    group: "display",
     options: [
       { label: "Yes", value: true },
       { label: "No", value: false },
@@ -147,8 +160,9 @@ export const animeFilters = {
   orderBy: {
     label: "Order By",
     type: "radio",
+    group: "display",
     options: [
-      { label: 'None', value: 'none' },
+      { label: "None", value: "none" },
       { label: "Episodes", value: "episodes" },
       { label: "Score", value: "score" },
       { label: "Scored By", value: "scored_by" },
@@ -160,6 +174,7 @@ export const animeFilters = {
   sort: {
     label: "Sort",
     type: "radio",
+    group: "display",
     options: [
       { label: "Ascending", value: "asc" },
       { label: "Descending", value: "desc" },

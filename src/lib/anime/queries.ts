@@ -111,7 +111,7 @@ export async function getAnime(
   }
 }
 
-export async function getCurrentSeason(
+export async function getAnimes(
   searchParams: URLSearchParams,
   recordsPerPage: number,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
@@ -221,30 +221,40 @@ export async function getAnimesWithStatus(
   }
 }
 
-export async function getAnimeSeason(
-  season: "summer" | "winter" | "spring" | "fall",
-  year: number,
+export async function getCarouselAnimes(
+  searchParams: URLSearchParams,
   recordsPerPage: number,
-  currentPage: number,
-): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
+): Promise<
+  Result<
+    Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[],
+    ActionError
+  >
+> {
+  const sanitizedSearchParams = sanitizeSearchParams(
+    searchParams,
+    animeFilters,
+  );
+  sanitizedSearchParams.delete("q");
+  let { where, orderBy, offset } = await animeSearchParamsToDrizzleQuery(
+    sanitizedSearchParams,
+    recordsPerPage,
+    animeTable,
+    getEmbedding,
+  );
   try {
-    const offset = (currentPage - 1) * recordsPerPage;
-    const [animes, animeCount] = await Promise.all([
-      db
-        .select(animeCardKeys)
-        .from(animeTable)
-        .where(and(eq(animeTable.season, season), eq(animeTable.year, year)))
-        .offset(offset)
-        .limit(recordsPerPage),
-      db
-        .select({ count: count() })
-        .from(animeTable)
-        .where(and(eq(animeTable.season, season), eq(animeTable.year, year))),
-    ]);
-    return ok({
-      data: animes.map((r) => ({ ...r, score: mapScore(r.score) })),
-      count: animeCount[0]?.count ?? 0,
-    });
+    const animeRecords = await db
+      .select({
+        mal_id: animeTable.mal_id,
+        titles: animeTable.titles,
+        images: animeTable.images,
+        type: animeTable.type,
+      })
+      .from(animeTable)
+      .where(where)
+      .offset(offset)
+      .orderBy(...(orderBy as any))
+      .limit(recordsPerPage);
+    return ok(animeRecords);
   } catch (_) {
     console.error(_);
     return err(

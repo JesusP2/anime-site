@@ -5,7 +5,7 @@ export function CarouselCard({
   anime,
   width,
 }: {
-  anime: FullAnimeRecord;
+  anime: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
   width: number;
 }) {
   const animeTitle =

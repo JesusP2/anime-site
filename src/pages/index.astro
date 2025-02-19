@@ -1,17 +1,28 @@
 ---
-import MainLayout from "@/layout/main.astro";
-import { Carousel } from "@/components/carousel";
-import { jikanClient } from "@/lib/api/jikan.client";
-
-const res = await jikanClient.GET("/seasons/now", {
-  params: {
-    query: {
-      page: 1,
-    },
-  },
-});
+import Head from "@/components/head.astro";
+import { LandingPage } from "@/components/landing/page";
+import { getCarouselAnimes } from "@/lib/anime/queries";
+const currentSeasonSearch = new URLSearchParams([
+  ["season", Astro.locals.currentSeason.season],
+  ["year", Astro.locals.currentSeason.year],
+  ["page", "1"],
+]);
+const allTimeFavoritesSearch = new URLSearchParams([
+  ["orderBy", "score"],
+  ["sort", "desc"],
+]);
+const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
+const allTimeFavorites = await getCarouselAnimes(allTimeFavoritesSearch, 15);
 ---
 
-<MainLayout title="title">
-  <Carousel animes={res?.data?.data} client:load />
-</MainLayout>
+<html lang="en" class="dark">
+  <Head title={"title"} description={"description"} />
+  <body>
+    <LandingPage
+      currentSeasonAnimes={currentSeasonAnimes}
+      ,
+      allTimeFavorites={allTimeFavorites}
+      client:load
+    />
+  </body>
+</html>

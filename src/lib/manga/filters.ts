@@ -1,6 +1,33 @@
+const initialYear = 1961;
+const years = Array.from(
+  { length: new Date().getFullYear() - initialYear + 1 },
+  (_, i) => initialYear + i,
+);
+
 export const mangaFilters = {
+  year: {
+    label: "Year",
+    group: "basic",
+    options: [
+      ...years.map((year) => ({
+        label: year.toString(),
+        value: year.toString(),
+      })),
+    ],
+  },
+  season: {
+    label: "Season",
+    group: "basic",
+    options: [
+      { label: "Winter", value: "winter" },
+      { label: "Spring", value: "spring" },
+      { label: "Summer", value: "summer" },
+      { label: "Fall", value: "fall" },
+    ],
+  },
   status: {
     label: "Status",
+    group: "basic",
     options: [
       { label: "Airing", value: "Currently Airing" },
       { label: "Completed", value: "Finished Airing" },
@@ -9,20 +36,19 @@ export const mangaFilters = {
   },
   type: {
     label: "Type",
+    group: "content",
     options: [
-      { label: "TV", value: "tv" },
-      { label: "Movie", value: "movie" },
-      { label: "OVA", value: "ova" },
-      { label: "Special", value: "special" },
-      { label: "ONA", value: "ona" },
-      { label: "Music", value: "music" },
-      { label: "CM", value: "cm" },
-      { label: "PV", value: "pv" },
-      { label: "TV Special", value: "tv_special" },
+      { label: "TV", value: "TV" },
+      { label: "Movie", value: "Movie" },
+      { label: "OVA", value: "OVA" },
+      { label: "Special", value: "Special" },
+      { label: "ONA", value: "ONA" },
+      { label: "Music", value: "Music" },
     ],
   },
   rating: {
     label: "Rating",
+    group: "content",
     options: [
       { label: "G - All Ages", value: "G - All Ages" },
       { label: "PG - Children", value: "PG - Children" },
@@ -40,6 +66,7 @@ export const mangaFilters = {
   },
   genre: {
     label: "Genre",
+    group: "content",
     options: [
       { label: "Action", value: "Action" },
       { label: "Adventure", value: "Adventure" },
@@ -124,6 +151,7 @@ export const mangaFilters = {
   sfw: {
     label: "SFW",
     type: "radio",
+    group: "display",
     options: [
       { label: "Yes", value: true },
       { label: "No", value: false },
@@ -132,7 +160,9 @@ export const mangaFilters = {
   orderBy: {
     label: "Order By",
     type: "radio",
+    group: "display",
     options: [
+      { label: "None", value: "none" },
       { label: "Episodes", value: "episodes" },
       { label: "Score", value: "score" },
       { label: "Scored By", value: "scored_by" },
@@ -144,6 +174,7 @@ export const mangaFilters = {
   sort: {
     label: "Sort",
     type: "radio",
+    group: "display",
     options: [
       { label: "Ascending", value: "asc" },
       { label: "Descending", value: "desc" },

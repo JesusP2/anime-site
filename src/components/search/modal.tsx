@@ -15,14 +15,9 @@ import { objectEntries } from "@/lib/utils";
 import type { MangaFilters } from "@/lib/manga/filters";
 import type { AnimeFilters } from "@/lib/anime/filters";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Separator } from "../ui/separator";
 
-export function FilterModal({
-  options,
-  filters,
-  children,
-  setFilters,
-}: {
-  children: ReactNode;
+type CommonProps = {
   options: AnimeFilters | MangaFilters;
   filters: {
     [K in keyof AnimeFilters | keyof MangaFilters]: string[] | string | boolean;
@@ -33,14 +28,41 @@ export function FilterModal({
       | string[]
       | string
       | boolean;
-    } & { q: string; }>
-  >;
-}) {
+    } & { q: string; }>>
+}
+export function FilterModal({
+  options,
+  filters,
+  children,
+  setFilters,
+}: {
+  children: ReactNode;
+} & CommonProps) {
   const [_filters, _setFilters] = useState(filters);
 
   function onClose() {
     setFilters(_filters)
   }
+
+  const basicFilters = objectEntries(options).reduce((acc, [key, value]) => {
+    if (value.group === 'basic') {
+      acc[key] = value
+    }
+    return acc;
+  }, {} as typeof options);
+  const contentFilters = objectEntries(options).reduce((acc, [key, value]) => {
+    if (value.group === 'content') {
+      acc[key] = value
+    }
+    return acc;
+  }, {} as typeof options);
+  const displayFilters = objectEntries(options).reduce((acc, [key, value]) => {
+    if (value.group === 'display') {
+      acc[key] = value
+    }
+    return acc;
+  }, {} as typeof options);
+
   return (
     <Dialog onOpenChange={() => {
       _setFilters(filters)
@@ -48,43 +70,34 @@ export function FilterModal({
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-3xl overflow-y-scroll max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Filter Options</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          {objectEntries(options).map(([key, value]) => {
-            if (
-              "type" in value &&
-              value.type === "radio" &&
-              !Array.isArray(_filters[key])
-            ) {
-              return (
-                <RadioGroupFilters
-                  key={value.label}
-                  options={value.options}
-                  value={_filters[key]}
-                  onChange={(value) =>
-                    _setFilters((prev) => ({ ...prev, [key]: value }))
-                  }
-                  label={value.label}
-                />
-              );
-            } else if (Array.isArray(_filters[key])) {
-              return (
-                <MultiSelect
-                  key={value.label}
-                  options={value.options}
-                  placeholder={`Select ${value.label}`}
-                  value={_filters[key]}
-                  onChange={(value) =>
-                    _setFilters((prev) => ({ ...prev, [key]: value }))
-                  }
-                  label={value.label}
-                />
-              );
-            }
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-foreground">Basic Filters</h3>
+              <div className="space-y-4">
+                <Idk options={basicFilters} filters={_filters} setFilters={_setFilters} />
+              </div>
+            </div>
+            <Separator className="my-4" />
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-foreground">Content Filters</h3>
+              <div className="space-y-4">
+                <Idk options={contentFilters} filters={_filters} setFilters={_setFilters} />
+              </div>
+            </div>
+          </div>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-foreground">Display Options</h3>
+              <div className="space-y-4">
+                <Idk options={displayFilters} filters={_filters} setFilters={_setFilters} />
+              </div>
+            </div>
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline">
@@ -97,6 +110,45 @@ export function FilterModal({
       </DialogContent>
     </Dialog>
   );
+}
+
+function Idk({ options, filters, setFilters }: CommonProps) {
+  return (
+    objectEntries(options).map(([key, value]) => {
+      if (
+        "type" in value &&
+        value.type === "radio" &&
+        !Array.isArray(filters[key])
+      ) {
+        return (
+          <div className="space-y-2" key={value.label}>
+            <RadioGroupFilters
+              options={value.options}
+              value={filters[key]}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, [key]: value }))
+              }
+              label={value.label}
+            />
+          </div>
+        );
+      } else if (Array.isArray(filters[key])) {
+        return (
+          <div className="space-y-2" key={value.label}>
+            <MultiSelect
+              options={value.options}
+              placeholder={`Select ${value.label}`}
+              value={filters[key]}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, [key]: value }))
+              }
+              label={value.label}
+            />
+          </div>
+        );
+      }
+    })
+  )
 }
 
 function RadioGroupFilters({
@@ -114,7 +166,7 @@ function RadioGroupFilters({
 }) {
   return (
     <RadioGroup value={value as string} onValueChange={onChange}>
-      <Label className="text-black">{label}</Label>
+      <Label className="text-foreground">{label}</Label>
       {options.map((option) => (
         <div
           key={option.value as string}
@@ -124,7 +176,7 @@ function RadioGroupFilters({
             value={option.value as string}
             id={option.value.toString()}
           />
-          <Label htmlFor={option.value.toString()} className="text-neutral-800">
+          <Label htmlFor={option.value.toString()} className="text-muted-foreground">
             {option.label}
           </Label>
         </div>
