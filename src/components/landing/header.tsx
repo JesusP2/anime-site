@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react"
 import { List, MagnifyingGlass } from "@phosphor-icons/react"
 import { ThemeSwitch } from "../theme-switch"
+import type { User } from "better-auth";
+import { buttonVariants } from "../ui/button";
+import { UserDropdown } from "../user-dropdown";
+import { cn } from "@/lib/utils";
 
-export function Header({ isDarkMode }: { isDarkMode: boolean }) {
+export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User | null }) {
   const [showSearch, setShowSearch] = useState(false)
 
   useEffect(() => {
@@ -21,19 +25,19 @@ export function Header({ isDarkMode }: { isDarkMode: boolean }) {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/10"
+      className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300", showSearch ? "bg-background" : "bg-background/10")}
     >
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-7xl">
         <div className="flex items-center justify-between p-4 lg:px-8">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="font-bold text-white">A</span>
             </div>
-            <span className="text-lg font-semibold">AniSearch</span>
+            <span className="sm:block hidden text-lg font-semibold">AniSearch</span>
           </div>
 
           <div
-            className={`absolute left-1/2 transform -translate-x-1/2 transition-all duration-500 ${showSearch ? "w-1/2 opacity-100" : "w-0 opacity-0"
+            className={`transform transition-all duration-500 ${showSearch ? "w-[50%] opacity-100" : "w-0 opacity-0"
               }`}
           >
             <div className="relative">
@@ -43,7 +47,7 @@ export function Header({ isDarkMode }: { isDarkMode: boolean }) {
               <input
                 type="search"
                 placeholder="Search anime..."
-                className="w-full bg-[#1A1B26] border border-gray-800 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 animate-liquid-merge"
+                className="w-full dark:bg-[#1A1B26] border border-gray-200 dark:border-gray-800 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 animate-liquid-merge"
               />
             </div>
           </div>
@@ -51,9 +55,13 @@ export function Header({ isDarkMode }: { isDarkMode: boolean }) {
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6">
               <ThemeSwitch isDarkMode={isDarkMode} />
+              {user ? <UserDropdown user={user} /> : (
+                <a className={buttonVariants()} href="/auth/signin">
+                  Login
+                </a>
+              )}
             </div>
             <button className="md:hidden text-gray-400 hover:text-white">
-              yoo
               <List className="w-5 h-5" />
             </button>
           </div>

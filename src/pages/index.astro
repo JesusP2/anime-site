@@ -4,26 +4,36 @@ import { LandingPage } from "@/components/landing/page";
 import { getCarouselAnimes } from "@/lib/anime/queries";
 const currentSeasonSearch = new URLSearchParams([
   ["season", Astro.locals.currentSeason.season],
-  ["year", Astro.locals.currentSeason.year],
+  ["year", Astro.locals.currentSeason.year.toString()],
   ["page", "1"],
 ]);
 const allTimeFavoritesSearch = new URLSearchParams([
   ["orderBy", "score"],
   ["sort", "desc"],
+  ["page", "1"],
+]);
+const popularThisSeasonSearch = new URLSearchParams([
+  ["orderBy", "score"],
+  ["sort", "desc"],
+  ["season", Astro.locals.currentSeason.season],
+  ["year", Astro.locals.currentSeason.year.toString()],
+  ["page", "1"],
 ]);
 const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
-const allTimeFavorites = await getCarouselAnimes(allTimeFavoritesSearch, 15);
+const allTimeFavoritesAnimes = await getCarouselAnimes(allTimeFavoritesSearch, 15);
+const popularThisSeasonAnimes = await getCarouselAnimes(popularThisSeasonSearch, 15);
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"title"} description={"description"} />
-  <body>
+  <body class="overflow-x-hidden">
     <LandingPage
       isDarkMode={isDarkMode}
       currentSeasonAnimes={currentSeasonAnimes}
-      ,
-      allTimeFavorites={allTimeFavorites}
+      popularThisSeasonAnimes={popularThisSeasonAnimes}
+      user={Astro.locals.user}
+      allTimeFavorites={allTimeFavoritesAnimes}
       client:load
     />
   </body>

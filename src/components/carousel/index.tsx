@@ -1,10 +1,10 @@
 import { CarouselCard } from "./card";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { buttonVariants } from "../ui/button";
 import type { FullAnimeRecord } from "@/lib/types";
 const cardWidth = 225;
 const gapBetweenCards = 16;
-export function Carousel({ animes }: { animes: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; }) {
+export function Carousel({ animes, header }: { animes: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; header: ReactNode; }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,14 +59,7 @@ export function Carousel({ animes }: { animes: Pick<FullAnimeRecord, "mal_id" | 
 
   return (
     <div className="relative w-full mx-auto">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold font-gabarito font-medium">
-          Current season
-        </h2>
-        <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
-          View more
-        </a>
-      </div>
+      {header}
       <div className="w-full h-[1px] bg-neutral-300" />
       <div
         ref={containerRef}

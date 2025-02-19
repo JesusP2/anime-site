@@ -7,9 +7,11 @@ import { Spotlight } from "../ui/spotlight-new";
 import { Carousel } from "../carousel";
 import type { Result } from "@/lib/result";
 import type { FullAnimeRecord } from "@/lib/types";
+import type { User } from "better-auth";
+import { buttonVariants } from "../ui/button";
 
 type Card = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
-export function LandingPage({ currentSeasonAnimes, allTimeFavorites, isDarkMode }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error>; isDarkMode: boolean }) {
+export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThisSeasonAnimes, isDarkMode, user }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error>; popularThisSeasonAnimes: Result<Card[], Error>; isDarkMode: boolean; user: User | null }) {
   const [showMainSearch, setShowMainSearch] = useState(true)
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, isDarkMode 
 
   return (
     <div className="min-h-screen dark:text-white text-gray-900">
-      <Header isDarkMode={isDarkMode} />
+      <Header isDarkMode={isDarkMode} user={user} />
       <Spotlight />
       <main>
         <div className="flex flex-col items-center justify-center px-4 text-center h-screen">
@@ -68,44 +70,50 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, isDarkMode 
             </button>
           </div>
         </div>
-        <div className="w-full max-w-6xl mx-auto mt-16 space-y-16">
+        <div className="w-full max-w-7xl mx-auto mt-16 space-y-16">
           {currentSeasonAnimes.success ? (
             <section>
-              <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
-                Trending Anime
-              </h2>
-              <Carousel animes={currentSeasonAnimes.value} />
+              <Carousel header={
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold font-gabarito font-medium">
+                    Current Season
+                  </h2>
+                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+                    View more
+                  </a>
+                </div>
+              } animes={currentSeasonAnimes.value} />
             </section>
           ) : null}
           {allTimeFavorites.success ? (
             <section>
-              <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
-                All-Time Favorites
-              </h2>
-              <Carousel animes={allTimeFavorites.value} />
+              <Carousel header={
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold font-gabarito font-medium">
+                    All Time Favorites
+                  </h2>
+                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+                    View more
+                  </a>
+                </div>
+              } animes={allTimeFavorites.value} />
             </section>
           ) : null}
 
-          <section>
-            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
-              Popular This Season
-            </h2>
-          </section>
-
-          <section>
-            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
-              All-Time Favorites
-            </h2>
-          </section>
-
-          <section>
-            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
-              New Releases
-            </h2>
-            <div className="h-[1000px]">
-              hi
-            </div>
-          </section>
+          {popularThisSeasonAnimes.success ? (
+            <section>
+              <Carousel header={
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold font-gabarito font-medium">
+                    Popular this season
+                  </h2>
+                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+                    View more
+                  </a>
+                </div>
+              } animes={popularThisSeasonAnimes.value} />
+            </section>
+          ) : null}
         </div>
       </main>
     </div>
