@@ -80,6 +80,10 @@ export function SearchWithFilters({
     <div className="w-full max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">{title}</h1>
       <div className="flex flex-col space-y-1.5">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          _onSearch();
+        }}>
         <div className="flex space-x-2">
           <Input
             id="search-query"
@@ -108,8 +112,9 @@ export function SearchWithFilters({
               )}
             </Button>
           </FilterModal>
-          <Button onClick={_onSearch}>Search</Button>
+          <Button>Search</Button>
         </div>
+        </form>
       </div>
     </div>
   );

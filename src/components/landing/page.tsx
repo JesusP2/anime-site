@@ -9,6 +9,7 @@ import type { Result } from "@/lib/result";
 import type { FullAnimeRecord } from "@/lib/types";
 import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
+import { navigate } from "astro:transitions/client";
 
 type Card = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
 export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThisSeasonAnimes, isDarkMode, user }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error>; popularThisSeasonAnimes: Result<Card[], Error>; isDarkMode: boolean; user: User | null }) {
@@ -52,23 +53,32 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
             <span className="text-[#B46EE8]"> intelligent search</span> and personalized recommendations.
           </p>
 
-          <div
-            id="search-field"
-            className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
-          >
-            <div className="relative flex-1">
-              <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="search"
-                placeholder="Search by title, genre, or studio..."
-                className="w-full dark:bg-[#1A1B26] dark:border-gray-800 dark:text-white dark:placeholder:text-gray-500 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 border rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-              />
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target as HTMLFormElement);
+            const search = new URLSearchParams();
+            search.set('q', formData.get('q') as string ?? '');
+            await navigate(`/anime/search?${search.toString()}`);
+          }}>
+            <div
+              id="search-field"
+              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+            >
+              <div className="relative flex-1">
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Search by title, genre, or studio..."
+                  className="w-full dark:bg-[#1A1B26] dark:border-gray-800 dark:text-white dark:placeholder:text-gray-500 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 border rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                />
+              </div>
+              <button className="px-8 py-3 bg-[#E93D82] text-white rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
+                Search Anime
+              </button>
             </div>
-            <button className="px-8 py-3 bg-[#E93D82] text-white rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
-              Search Anime
-            </button>
-          </div>
+          </form>
         </div>
         <div className="w-full max-w-7xl mx-auto mt-16 space-y-16">
           {currentSeasonAnimes.success ? (
