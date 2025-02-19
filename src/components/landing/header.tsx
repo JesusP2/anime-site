@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { List, MagnifyingGlass } from "@phosphor-icons/react"
+import { ThemeSwitch } from "../theme-switch"
 
-export function Header() {
+export function Header({ isDarkMode }: { isDarkMode: boolean }) {
   const [showSearch, setShowSearch] = useState(false)
 
   useEffect(() => {
@@ -49,15 +50,7 @@ export function Header() {
 
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6">
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
-                Browse
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
-                Seasons
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
-                Random
-              </a>
+              <ThemeSwitch isDarkMode={isDarkMode} />
             </div>
             <button className="md:hidden text-gray-400 hover:text-white">
               yoo

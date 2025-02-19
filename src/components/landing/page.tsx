@@ -9,7 +9,7 @@ import type { Result } from "@/lib/result";
 import type { FullAnimeRecord } from "@/lib/types";
 
 type Card = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
-export function LandingPage({ currentSeasonAnimes, allTimeFavorites }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error> }) {
+export function LandingPage({ currentSeasonAnimes, allTimeFavorites, isDarkMode }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error>; isDarkMode: boolean }) {
   const [showMainSearch, setShowMainSearch] = useState(true)
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites }: { current
   }, [])
 
   return (
-    <div className="min-h-screen text-white">
-      <Header />
+    <div className="min-h-screen dark:text-white text-gray-900">
+      <Header isDarkMode={isDarkMode} />
       <Spotlight />
       <main>
         <div className="flex flex-col items-center justify-center px-4 text-center h-screen">
@@ -45,7 +45,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites }: { current
             <span className="inline-block ml-2">✨</span>
           </h1>
 
-          <p className="max-w-2xl text-gray-400 text-lg mb-8">
+          <p className={`max-w-2xl dark:text-gray-400 text-gray-600 text-lg mb-8`}>
             Your gateway to the world of anime. Find your next favorite series with our
             <span className="text-[#B46EE8]"> intelligent search</span> and personalized recommendations.
           </p>
@@ -60,10 +60,10 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites }: { current
               <input
                 type="search"
                 placeholder="Search by title, genre, or studio..."
-                className="w-full bg-[#1A1B26] border border-gray-800 rounded-lg py-3 pl-12 pr-4 text-white placeholder:text-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                className="w-full dark:bg-[#1A1B26] dark:border-gray-800 dark:text-white dark:placeholder:text-gray-500 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 border rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
               />
             </div>
-            <button className="px-8 py-3 bg-[#E93D82] rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
+            <button className="px-8 py-3 bg-[#E93D82] text-white rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
               Search Anime
             </button>
           </div>
@@ -71,27 +71,37 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites }: { current
         <div className="w-full max-w-6xl mx-auto mt-16 space-y-16">
           {currentSeasonAnimes.success ? (
             <section>
-              <h2 className="text-2xl font-bold mb-6 text-white">Trending Anime</h2>
+              <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
+                Trending Anime
+              </h2>
               <Carousel animes={currentSeasonAnimes.value} />
             </section>
           ) : null}
           {allTimeFavorites.success ? (
             <section>
-              <h2 className="text-2xl font-bold mb-6 text-white">All-Time Favorites</h2>
+              <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
+                All-Time Favorites
+              </h2>
               <Carousel animes={allTimeFavorites.value} />
             </section>
           ) : null}
 
           <section>
-            <h2 className="text-2xl font-bold mb-6 text-white">Popular This Season</h2>
+            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
+              Popular This Season
+            </h2>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold mb-6 text-white">All-Time Favorites</h2>
+            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
+              All-Time Favorites
+            </h2>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold mb-6 text-white">New Releases</h2>
+            <h2 className="`text-2xl font-bold mb-6 dark:text-white text-gray-900`">
+              New Releases
+            </h2>
             <div className="h-[1000px]">
               hi
             </div>

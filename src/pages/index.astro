@@ -13,12 +13,14 @@ const allTimeFavoritesSearch = new URLSearchParams([
 ]);
 const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
 const allTimeFavorites = await getCarouselAnimes(allTimeFavoritesSearch, 15);
+const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
-<html lang="en" class="dark">
+<html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"title"} description={"description"} />
   <body>
     <LandingPage
+      isDarkMode={isDarkMode}
       currentSeasonAnimes={currentSeasonAnimes}
       ,
       allTimeFavorites={allTimeFavorites}
