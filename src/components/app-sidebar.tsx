@@ -38,27 +38,27 @@ const data = {
       items: [
         {
           title: "Completed",
-          url: "/animes/completed",
+          url: "/anime/completed",
           icon: CheckCircle,
         },
         {
           title: "Planned to Watch",
-          url: "/animes/planned",
+          url: "/anime/planned",
           icon: CalendarCheck,
         },
         {
           title: "Dropped",
-          url: "/animes/dropped",
+          url: "/anime/dropped",
           icon: Trash,
         },
         {
           title: "Watching",
-          url: "/animes/watching",
+          url: "/anime/watching",
           icon: MonitorPlay,
         },
         {
           title: "On Hold",
-          url: "/animes/on-hold",
+          url: "/anime/on-hold",
           icon: PauseCircle,
         },
       ],

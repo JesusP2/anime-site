@@ -63,7 +63,7 @@ export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User |
 
           <div className="flex items-center gap-6">
             <div className="hidden sm:flex items-center gap-6">
-              <a href="/animes/completed">
+              <a href="/anime/completed">
                 <span className="text-netrual-400">My Animes</span>
               </a>
             </div>
