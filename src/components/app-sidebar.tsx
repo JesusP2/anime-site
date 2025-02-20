@@ -7,6 +7,7 @@ import {
   CheckCircle,
   TelevisionSimple,
   Book,
+  SignIn,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -25,8 +26,8 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
-import { ThemeSwitch } from "./theme-switch";
 import type { User } from 'better-auth';
+import { ThemeButton } from "./theme-button";
 
 const data = {
   navMain: [
@@ -105,20 +106,22 @@ export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   isSidebarOpen: boolean;
-    isDarkMode: boolean;
+  isDarkMode: boolean;
   user: User | null;
 }) {
 
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
-      <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader>
+      <Sidebar collapsible="icon" {...props} variant="floating">
+        <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
             <SidebarMenuItem className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <SidebarMenuButton className="truncate font-semibold" asChild>
                 <a href="/">
-                  <img src="/banime.svg" className="aspect-square size-6" />
-                  Anime site
+                  <div className="flex items-center gap-2">
+                    <img src="/favicon.svg" className="aspect-square size-6" />
+                    <span className="sm:block hidden text-lg font-semibold">AniSearch</span>
+                  </div>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -126,14 +129,19 @@ export function AppSidebar({
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
+          <div className="mx-3 group-data-[collapsible=icon]:mx-auto">
+            <ThemeButton isDarkMode={isDarkMode} />
+          </div>
         </SidebarContent>
         <SidebarFooter>
-          <ThemeSwitch isDarkMode={isDarkMode} />
           {user ? (
             <NavUser user={user} />
           ) : (
             <a className={buttonVariants()} href="/auth/signin">
-              Login
+              <SignIn className="w-5 h-5" weight="bold" />
+              <span className="group-data-[collapsible=icon]:hidden">
+                Login
+              </span>
             </a>
           )}
         </SidebarFooter>
@@ -143,6 +151,6 @@ export function AppSidebar({
         <SidebarTrigger />
         {children}
       </SidebarInset>
-    </SidebarProvider>
+    </SidebarProvider >
   );
 }

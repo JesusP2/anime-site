@@ -36,9 +36,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
       <main>
         <div className="flex flex-col items-center justify-center px-4 text-center h-screen">
           <div className="mb-8 relative">
-            <div className="w-32 h-32 bg-gradient-to-br from-pink-500 via-purple-600 to-blue-600 rounded-3xl flex items-center justify-center transform rotate-12 mb-4">
-              <span className="text-6xl font-bold text-white transform -rotate-12">A</span>
-            </div>
+            <img src="/favicon.svg" className="size-32  transform rotate-12" />
             <div className="absolute -top-4 -right-4 w-12 h-12 bg-pink-500/20 rounded-full blur-xl"></div>
             <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-purple-500/20 rounded-full blur-xl"></div>
           </div>

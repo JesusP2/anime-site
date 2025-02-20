@@ -49,19 +49,19 @@ export function FilterModal({
       acc[key] = value
     }
     return acc;
-  }, {} as typeof options);
+  }, {} as any);
   const contentFilters = objectEntries(options).reduce((acc, [key, value]) => {
     if (value.group === 'content') {
       acc[key] = value
     }
     return acc;
-  }, {} as typeof options);
+  }, {} as any);
   const displayFilters = objectEntries(options).reduce((acc, [key, value]) => {
     if (value.group === 'display') {
       acc[key] = value
     }
     return acc;
-  }, {} as typeof options);
+  }, {} as any);
 
   return (
     <Dialog onOpenChange={() => {
@@ -70,7 +70,7 @@ export function FilterModal({
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl overflow-y-scroll max-h-[80vh]">
+      <DialogContent className="max-w-3xl overflow-y-auto max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Filter Options</DialogTitle>
         </DialogHeader>

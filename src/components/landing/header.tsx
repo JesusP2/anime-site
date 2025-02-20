@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 import { List, MagnifyingGlass } from "@phosphor-icons/react"
-import { ThemeSwitch } from "../theme-switch"
 import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
 import { UserDropdown } from "../user-dropdown";
 import { cn } from "@/lib/utils";
 import { navigate } from "astro:transitions/client";
+import { ThemeButton } from "../theme-button";
 
 export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User | null }) {
   const [showSearch, setShowSearch] = useState(false)
@@ -23,6 +23,7 @@ export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User |
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+  // 60px - 128px
 
   return (
     <header
@@ -31,9 +32,7 @@ export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User |
       <div className="container mx-auto max-w-7xl">
         <div className="flex items-center justify-between p-4 lg:px-8">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="font-bold text-white">A</span>
-            </div>
+            <img src="/favicon.svg" className="aspect-square size-6" />
             <span className="sm:block hidden text-lg font-semibold">AniSearch</span>
           </div>
 
@@ -63,8 +62,13 @@ export function Header({ isDarkMode, user }: { isDarkMode: boolean; user: User |
           </div>
 
           <div className="flex items-center gap-6">
+            <div className="hidden sm:flex items-center gap-6">
+              <a href="/animes/completed">
+                <span className="text-netrual-400">My Animes</span>
+              </a>
+            </div>
             <div className="hidden md:flex items-center gap-6">
-              <ThemeSwitch isDarkMode={isDarkMode} />
+              <ThemeButton isDarkMode={isDarkMode} />
               {user ? <UserDropdown user={user} /> : (
                 <a className={buttonVariants()} href="/auth/signin">
                   Login
