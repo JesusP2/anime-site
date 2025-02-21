@@ -42,11 +42,6 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
             </section>
             <section className="flex gap-x-2 my-2">
               <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
-                {data.season
-                  ? `${data.season} - ${data.year}`
-                  : `${data.aired?.prop?.from?.year}`}
-              </Badge>
-              <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
                 {data.chapters ? `${data.chapters} chapters` : data.volumes ? `${data.volumes} volumes` : "N/A"}
               </Badge>
             </section>
