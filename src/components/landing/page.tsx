@@ -1,18 +1,17 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { Header } from "./header"
 import { Spotlight } from "../ui/spotlight-new";
 import { Carousel } from "../carousel";
 import type { Result } from "@/lib/result";
-import type { FullAnimeRecord } from "@/lib/types";
+import type { FullAnimeRecord, FullMangaRecord } from "@/lib/types";
 import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
 import { navigate } from "astro:transitions/client";
 
-type Card = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
-export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThisSeasonAnimes, isDarkMode, user }: { currentSeasonAnimes: Result<Card[], Error>, allTimeFavorites: Result<Card[], Error>; popularThisSeasonAnimes: Result<Card[], Error>; isDarkMode: boolean; user: User | null }) {
+type AnimeCard = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
+type MangaCard = Pick<FullMangaRecord, 'mal_id' | 'titles' | 'images' | 'type'>
+export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThisSeasonAnimes, topMangas, isDarkMode, user }: { currentSeasonAnimes: Result<AnimeCard[], Error>, allTimeFavorites: Result<AnimeCard[], Error>; popularThisSeasonAnimes: Result<AnimeCard[], Error>; topMangas: Result<MangaCard[], Error>; isDarkMode: boolean; user: User | null }) {
   const [showMainSearch, setShowMainSearch] = useState(true)
 
   useEffect(() => {
@@ -90,7 +89,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
                     View more
                   </a>
                 </div>
-              } animes={currentSeasonAnimes.value} />
+              } records={currentSeasonAnimes.value} type="ANIME" />
             </section>
           ) : null}
           {allTimeFavorites.success ? (
@@ -104,7 +103,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
                     View more
                   </a>
                 </div>
-              } animes={allTimeFavorites.value} />
+              } records={allTimeFavorites.value} type="ANIME" />
             </section>
           ) : null}
 
@@ -119,7 +118,21 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
                     View more
                   </a>
                 </div>
-              } animes={popularThisSeasonAnimes.value} />
+              } records={popularThisSeasonAnimes.value} type="ANIME" />
+            </section>
+          ) : null}
+          {topMangas.success ? (
+            <section>
+              <Carousel header={
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold font-gabarito font-medium">
+                    Top Mangas
+                  </h2>
+                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+                    View more
+                  </a>
+                </div>
+              } records={topMangas.value} type="MANGA" />
             </section>
           ) : null}
         </div>

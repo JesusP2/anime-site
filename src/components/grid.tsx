@@ -2,9 +2,11 @@ import { UnexpectedError } from "@/components/unexpected-error";
 import { EmptyItems } from "@/components/empty-items";
 import type { ActionError } from "astro:actions";
 import type { Result } from "@/lib/result";
-import { AnimeCard, type AnimeCardItem } from "@/components/anime-card";
+import { AnimeCard } from "@/components/anime-card";
+import type { AnimeCardItem, MangaCardItem } from "@/lib/types";
+import { MangaCard } from "./manga-card";
 
-export function Grid<T extends AnimeCardItem>({ records }: { records: Result<{ data: T[]; count: number; }, ActionError> }) {
+export function Grid<T extends AnimeCardItem | MangaCardItem>({ records }: { records: Result<{ data: T[]; count: number; }, ActionError> }) {
   if (!records.success) {
     return <UnexpectedError />;
   } else if (records.value.data.length === 0) {
@@ -13,8 +15,9 @@ export function Grid<T extends AnimeCardItem>({ records }: { records: Result<{ d
   return (
     <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
       {records.value.data.map((item) => (
-        <AnimeCard key={item.mal_id} data={item} />
+        'rating' in item ? <AnimeCard key={item.mal_id} data={item} />
+          : 'chapters' in item ? <MangaCard key={item.mal_id} data={item} />
+            : null
       ))}</div>
   );
 }
-

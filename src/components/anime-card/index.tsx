@@ -1,29 +1,10 @@
 import { MagicCard } from "@/components/ui/magic-card";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "@phosphor-icons/react";
-import { AnimeTypeBadge } from "@/components/anime-type-badge";
-import { AiringStatus } from "./airing-status";
-import type { FullAnimeRecord } from "@/lib/types";
+import { AnimeTypeBadge } from "@/components/anime-card/type-badge";
+import { AiringStatus } from "@/components/anime-card/airing-status";
+import type { AnimeCardItem } from "@/lib/types";
 
-export type AnimeCardItem = Pick<
-  FullAnimeRecord,
-  | "titles"
-  | "images"
-  | "type"
-  | "rating"
-  | "season"
-  | "year"
-  | "aired"
-  | "episodes"
-  | "score"
-  | "scored_by"
-  | "rank"
-  | "genres"
-  | "mal_id"
-  | "status"
-  | "popularity"
-  | "favorites"
->;
 export function AnimeCard({ data }: { data: AnimeCardItem }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||

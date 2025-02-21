@@ -1,0 +1,28 @@
+---
+import MainLayout from "@/layout/main.astro";
+import { getMangasWithStatus } from "@/lib/manga/queries";
+import { MangasWithStatusPage } from "@/components/manga-with-status.page";
+import { getRecordsPerPage } from "@/lib/utils/records-per-page";
+
+const entityStatus = "dropped";
+const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
+const records = Astro.locals.user
+  ? await getMangasWithStatus(
+      entityStatus,
+      new URLSearchParams(Astro.url.searchParams),
+      recordsPerPage,
+      Astro.locals.user.id,
+    )
+  : ({ success: true, value: { data: [], count: 0 } } as any);
+---
+
+<MainLayout title="Mangas dropped">
+  <MangasWithStatusPage
+    title="Mangas dropped"
+    url={new URL(Astro.url)}
+    records={records}
+    entityStatus={entityStatus}
+    user={Astro.locals.user}
+    client:load
+  />
+</MainLayout>

@@ -5,7 +5,7 @@ import { flushSync } from "react-dom";
 export function ThemeButton(props: { isDarkMode: boolean; }) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLLabelElement>(null);
 
   function setTheme(isDarkMode: boolean) {
     setIsDarkMode(isDarkMode);
@@ -15,7 +15,6 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
   }
 
   async function toggleTheme(isDarkMode: boolean) {
-    console.log('toggleTheme', isDarkMode)
     if (!document.startViewTransition || !ref.current) {
       setTheme(isDarkMode)
       return;
@@ -25,11 +24,12 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
         setTheme(isDarkMode)
       })
     }).ready
-    const x = ref.current?.getBoundingClientRect().left + ref.current?.getBoundingClientRect().width / 2;
-    const y = ref.current?.getBoundingClientRect().top + ref.current?.getBoundingClientRect().height / 2;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const diagonal = Math.sqrt(width ** 2 + height ** 2);
+    const { left, top, width, height } = ref.current.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const diagonal = Math.sqrt(screenWidth ** 2 + screenHeight ** 2);
     const duration = diagonal / 3;
     document.documentElement.animate(
       {
@@ -47,7 +47,7 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
   }
 
   return (
-    <div className="flex flex-col justify-center" ref={ref}>
+    <div className="flex flex-col justify-center">
       <input
         type="checkbox"
         name={id}
@@ -57,6 +57,7 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
         onChange={(e) => toggleTheme(e.target.checked)}
       />
       <label
+        ref={ref}
         className="group relative inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border border-input bg-background text-foreground shadow-sm shadow-black/5 transition-colors hover:bg-accent hover:text-accent-foreground peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ring/70"
         htmlFor={id}
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}

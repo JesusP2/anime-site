@@ -1,4 +1,4 @@
-import type { AnimeCardItem } from "./anime-card";
+import type { AnimeCardItem } from "@/lib/types";
 
 export function AiringStatus({ anime }: { anime: AnimeCardItem }) {
   const getStatusStyle = () => {

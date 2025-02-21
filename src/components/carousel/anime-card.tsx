@@ -1,18 +1,18 @@
-import { AnimeTypeBadge } from "@/components/anime-type-badge";
+import { AnimeTypeBadge } from "@/components/anime-card/type-badge";
 import type { FullAnimeRecord } from "@/lib/types";
 
-export function CarouselCard({
-  anime,
+export function CarouselAnimeCard({
+  record,
   width,
 }: {
-  anime: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
+  record: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
   width: number;
 }) {
   const animeTitle =
-    anime.titles?.find((title) => title.type === "English")?.title ||
-    anime.titles?.find((title) => title.type === "Default")?.title;
+    record.titles?.find((title) => title.type === "English")?.title ||
+    record.titles?.find((title) => title.type === "Default")?.title;
   return (
-    <a href={`/anime/${anime.mal_id}`}>
+    <a href={`/anime/${record.mal_id}`}>
       <article className="group">
         <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
           <img
@@ -20,12 +20,12 @@ export function CarouselCard({
             width={width}
             className="duration-200 group-hover:scale-125 object-cover"
             style={{ width }}
-            src={anime.images?.webp?.large_image_url || ""}
+            src={record.images?.webp?.large_image_url || ""}
             alt={animeTitle}
           />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 to-transparent" />
           <div className="absolute top-2 left-2">
-            {anime.type && <AnimeTypeBadge type={anime.type} />}
+            {record.type && <AnimeTypeBadge type={record.type} />}
           </div>
           <h3
             title={animeTitle}

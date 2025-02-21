@@ -1,4 +1,4 @@
-import { type AnimeCardItem } from "@/components/anime-card";
+import { type AnimeCardItem } from "@/lib/types";
 import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
 import { animeFilters } from "@/lib/anime/filters";

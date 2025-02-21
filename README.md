@@ -5,3 +5,6 @@
 - manga entity
 - auth dark mode
 - finish auth
+- update View more links
+- change genres and themes from varchar to json
+- add embedding index for local db

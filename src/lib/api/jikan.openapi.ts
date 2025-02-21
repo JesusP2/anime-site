@@ -1557,7 +1557,8 @@ export interface components {
         | "Publishing"
         | "On Hiatus"
         | "Discontinued"
-        | "Not yet published";
+        | "Not yet published"
+        | null;
       /** @description Publishing boolean */
       publishing?: boolean;
       published?: components["schemas"]["daterange"];

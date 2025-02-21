@@ -1,6 +1,6 @@
 import { and, count, eq } from "drizzle-orm";
 import { getLocalDB, pgliteAnimeTable } from "../pglite";
-import type { AnimeCardItem } from "@/components/anime-card";
+import type { AnimeCardItem } from "@/lib/types";
 import type { FullAnimeRecord } from "../types";
 import { animeFilters } from "./filters";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";

@@ -1,10 +1,14 @@
-import { CarouselCard } from "./card";
+import { CarouselAnimeCard } from "./anime-card";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { buttonVariants } from "../ui/button";
-import type { FullAnimeRecord } from "@/lib/types";
+import type { FullAnimeRecord, FullMangaRecord } from "@/lib/types";
+import { CarouselMangaCard } from "./manga-card";
 const cardWidth = 225;
 const gapBetweenCards = 16;
-export function Carousel({ animes, header }: { animes: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; header: ReactNode; }) {
+
+type Props = {
+  header: ReactNode;
+} & ({ type: "ANIME"; records: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; } | { type: "MANGA"; records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[]; });
+export function Carousel({ records, header, type }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,14 +22,14 @@ export function Carousel({ animes, header }: { animes: Pick<FullAnimeRecord, "ma
     const minTotal = Math.floor(
       (containerWidth + gapBetweenCards) / (cardWidth + gapBetweenCards),
     );
-    const pages = Math.ceil(animes.length / minTotal) - 1;
+    const pages = Math.ceil(records.length / minTotal) - 1;
     const translateWindow = 100 + (gapBetweenCards / containerWidth) * 100;
     setPages(pages);
     setTranslateWindow(translateWindow);
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
     setTotalTranslate(
       (pages - 1) * translateWindow +
-      ((animes.length - pages * minTotal) / minTotal) * translateWindow,
+      ((records.length - pages * minTotal) / minTotal) * translateWindow,
     );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
@@ -69,11 +73,20 @@ export function Carousel({ animes, header }: { animes: Pick<FullAnimeRecord, "ma
           className="flex gap-x-4 my-2 transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${calculateTranslate()}%)` }}
         >
-          {animes.map((anime, idx) => (
-            <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-              <CarouselCard anime={anime} width={width} />
-            </div>
-          ))}
+          {type === 'ANIME' ? (
+            records.map((anime, idx) => (
+              <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
+                <CarouselAnimeCard record={anime} width={width} />
+              </div>
+            ))
+          ) : (
+            records.map((manga, idx) => (
+              <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
+                <CarouselMangaCard record={manga} width={width} />
+              </div>
+            ))
+          )
+          }
         </div>
       </div>
       <button

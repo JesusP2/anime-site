@@ -1,0 +1,12 @@
+---
+import MainLayout from "@/layout/main.astro";
+
+import { getManga } from "@/lib/manga/queries";
+const mal_id = parseInt(Astro.params.mal_id || "0");
+const userId = Astro.locals.user?.id;
+const manga = await getManga(Number(mal_id), userId);
+---
+
+<MainLayout title="title">
+  {JSON.stringify(manga)}
+</MainLayout>

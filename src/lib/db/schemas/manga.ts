@@ -20,7 +20,7 @@ export const mangaTable = pgTable(
     })
       .primaryKey()
       .$defaultFn(ulid),
-    mal_id: integer("mal_id").unique(),
+    mal_id: integer("mal_id").unique().notNull(),
     url: varchar("url", {
       length: 255,
     }),
@@ -32,12 +32,12 @@ export const mangaTable = pgTable(
     title_synonyms: json("title_synonyms"), //json
     type: varchar("type", {
       length: 255,
-    }),
+    }).$type<components["schemas"]["manga_full"]["type"]>(),
     chapters: integer("chapters"),
     volumes: integer("volumes"),
     status: varchar("status", {
       length: 255,
-    }),
+    }).$type<components["schemas"]["manga_full"]["status"]>(),
     publishing: boolean("publishing"), //boolean
     published: boolean("published").$type<components["schemas"]["daterange"]>(), //json
     score: numeric("score"),
@@ -50,10 +50,12 @@ export const mangaTable = pgTable(
     background: varchar("background"),
     authors: json("authors"), //json
     serializations: json("serializations").$type<components["schemas"]["mal_url"][]>(), //json
+    // genres: json("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
     genres: varchar("genres").$type<components["schemas"]["mal_url"][]>(), //json
     explicit_genres: json("explicit_genres").$type<components["schemas"]["mal_url"][]>(), //json
     themes: varchar("themes").$type<components["schemas"]["mal_url"][]>(), //json
-    demographics: json("demographics").$type<components["schemas"]["mal_url"][]>(), //json
+    // themes: json("themes").$type<components["schemas"]["mal_url"][]>(), //json
+    demographics: json("demographics").notNull().$type<components["schemas"]["mal_url"][]>(), //json
     relations: json("relations").$type<components["schemas"]["relation"][]>(), //json
     external: json("external").$type<components["schemas"]["external_links"]>(), //json
     embedding: vector("embedding", { dimensions: 1536 }),

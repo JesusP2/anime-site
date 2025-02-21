@@ -1,17 +1,17 @@
-import { type AnimeCardItem } from "@/lib/types";
+import { type MangaCardItem } from "@/lib/types";
 import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
 import { SearchWithFilters } from "./search";
-import { animeFilters } from "@/lib/anime/filters";
+import { mangaFilters } from "@/lib/manga/filters";
 import type { Result } from "@/lib/result";
 import { type ActionError } from "astro:actions";
 import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
 import { Grid } from "./grid";
-import { getAnimesFromLocalDB } from "@/lib/anime/pglite-queries";
+import { getMangasFromLocalDB } from "@/lib/manga/pglite-queries";
 import { navigate } from "astro:transitions/client";
 
-export function AnimesWithStatusPage({
+export function MangasWithStatusPage({
   url,
   records,
   entityStatus,
@@ -19,7 +19,7 @@ export function AnimesWithStatusPage({
   title,
 }: {
   url: URL;
-  records: Result<{ data: (AnimeCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
+  records: Result<{ data: (MangaCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
   entityStatus: string;
   user: User | null;
   title: string;
@@ -29,7 +29,7 @@ export function AnimesWithStatusPage({
   const recordsPerPage = getRecordsPerPage(url.searchParams);
   useEffect(() => {
     if (user) return;
-    getAnimesFromLocalDB(entityStatus, url.searchParams).then((recordsWithStatus) => {
+    getMangasFromLocalDB(entityStatus, url.searchParams).then((recordsWithStatus) => {
       if (!recordsWithStatus.success) {
         _setRecords({ success: true, value: { data: [], count: 0 } });
         return;
@@ -42,9 +42,9 @@ export function AnimesWithStatusPage({
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set('page', '1');
     if (user) {
-      navigate(`/anime/${entityStatus}?${searchParams.toString()}`);
+      navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
     } else {
-      getAnimesFromLocalDB(entityStatus, searchParams).then((recordsWithStatus) => {
+      getMangasFromLocalDB(entityStatus, searchParams).then((recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
@@ -60,7 +60,7 @@ export function AnimesWithStatusPage({
       <SearchWithFilters
         url={url}
         onSearch={onSearch}
-        options={animeFilters}
+        options={mangaFilters}
         title={title}
       />
       <Grid records={_records} />

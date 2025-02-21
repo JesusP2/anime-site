@@ -3,7 +3,7 @@ import { animeTable, trackedEntityTable } from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { animeFilters } from "./filters";
-import type { AnimeCardItem } from "@/components/anime-card";
+import type { AnimeCardItem } from "@/lib/types";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
