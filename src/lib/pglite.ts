@@ -11,12 +11,14 @@ import {
 } from "drizzle-orm/pg-core";
 import type { components } from "./api/jikan.openapi";
 import { drizzle, type PgliteDatabase } from "drizzle-orm/pglite";
+import { entityStatuses } from "./constants";
+import type { EntityStatus } from "./types";
 
 export const pgliteAnimeTable = pgTable("anime", {
   mal_id: integer("mal_id").unique().notNull(),
-  entityStatus: varchar("entity_status", {
-    length: 255,
-  }).notNull(),
+  entityStatus: varchar('entity_status', {
+    enum: entityStatuses,
+  }).notNull().$type<EntityStatus>(),
   titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
   images: json("images")
     .notNull()
@@ -48,9 +50,9 @@ export const pgliteAnimeTable = pgTable("anime", {
 
 export const pgliteMangaTable = pgTable("manga", {
   mal_id: integer("mal_id").unique().notNull(),
-  entityStatus: varchar("entity_status", {
-    length: 255,
-  }).notNull(),
+  entityStatus: varchar('entity_status', {
+    enum: entityStatuses,
+  }).notNull().$type<EntityStatus>(),
   titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
   images: json("images")
     .notNull()

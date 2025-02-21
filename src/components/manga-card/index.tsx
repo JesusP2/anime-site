@@ -6,12 +6,12 @@ import { AiringStatus } from "@/components/manga-card/airing-status";
 import type { MangaCardItem } from "@/lib/types";
 
 export function MangaCard({ data }: { data: MangaCardItem }) {
-  const animeTitle =
+  const mangaTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
     data.titles?.find((title) => title.type === "Default")?.title;
 
   return (
-    <a href={`/anime/${data.mal_id}`} className="cursor-pointer">
+    <a href={`/manga/${data.mal_id}`} className="cursor-pointer">
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
         gradientColor={"#A9A9A955"}
@@ -22,7 +22,7 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
               loading="lazy"
               className="duration-200 group-hover:scale-110 object-cover"
               src={data.images?.webp?.image_url || ""}
-              alt={animeTitle}
+              alt={mangaTitle}
             />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent" />
             <div className="absolute top-2 left-2">
@@ -36,8 +36,8 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
           </section>
           <div className="w-[13rem]">
             <section>
-              <h3 title={animeTitle} className="text-lg truncate font-bold dark:text-white">
-                {animeTitle}
+              <h3 title={mangaTitle} className="text-lg truncate font-bold dark:text-white">
+                {mangaTitle}
               </h3>
             </section>
             <section className="flex gap-x-2 my-2">
@@ -70,7 +70,7 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
               </div>
             </section>
             <section className="flex gap-x-2">
-              {data.genres?.slice(0, 2).map((genre) => (
+              {data.genres?.slice(0, 2).map?.((genre) => (
                 <Badge key={genre.mal_id} variant="outline" className="dark:border-gray-700 dark:text-gray-100">
                   <p className="text-ellipsis truncate max-w-24">
                     {genre.name}
@@ -86,7 +86,7 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
               )}
             </section>
             <section className="my-2 flex items-center justify-between">
-              <AiringStatus anime={data} />
+              <AiringStatus manga={data} />
             </section>
           </div>
         </article>

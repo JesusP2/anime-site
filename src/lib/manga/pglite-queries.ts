@@ -1,6 +1,6 @@
 import { and, count, eq } from "drizzle-orm";
 import { getLocalDB, pgliteMangaTable } from "../pglite";
-import type { MangaCardItem } from "@/lib/types";
+import type { EntityStatus, MangaCardItem } from "@/lib/types";
 import type { FullMangaRecord } from "../types";
 import { mangaFilters } from "./filters";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
@@ -35,7 +35,7 @@ async function getEmbedding(q: string) {
 
 export async function updateLocalManga(
   data: (MangaCardItem | FullMangaRecord) & { embedding: number[] },
-  entityStatus: string,
+  entityStatus: EntityStatus,
 ) {
   const { db } = await getLocalDB();
   const _data = {
@@ -83,7 +83,7 @@ export async function getMangaFromLocalDB(mal_id: number) {
 }
 
 export async function getMangasFromLocalDB(
-  entityStatus: string,
+  entityStatus: EntityStatus,
   searchParams: URLSearchParams,
 ) {
   const sanitizedSearchParams = sanitizeSearchParams(

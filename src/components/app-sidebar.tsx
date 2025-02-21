@@ -70,27 +70,27 @@ const data = {
       items: [
         {
           title: "Completed",
-          url: "/mangas/completed",
+          url: "/manga/completed",
           icon: CheckCircle,
         },
         {
           title: "Planned to Watch",
-          url: "/mangas/planned",
+          url: "/manga/planned",
           icon: CalendarCheck,
         },
         {
           title: "Dropped",
-          url: "/mangas/dropped",
+          url: "/manga/dropped",
           icon: Trash,
         },
         {
           title: "Watching",
-          url: "/mangas/watching",
+          url: "/manga/watching",
           icon: MonitorPlay,
         },
         {
           title: "On Hold",
-          url: "/mangas/on-hold",
+          url: "/manga/on-hold",
           icon: PauseCircle,
         },
       ],

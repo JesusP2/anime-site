@@ -1,4 +1,4 @@
-import { type AnimeCardItem } from "@/lib/types";
+import { type AnimeCardItem, type EntityStatus } from "@/lib/types";
 import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
@@ -20,7 +20,7 @@ export function AnimesWithStatusPage({
 }: {
   url: URL;
   records: Result<{ data: (AnimeCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
-  entityStatus: string;
+  entityStatus: EntityStatus;
   user: User | null;
   title: string;
 }) {

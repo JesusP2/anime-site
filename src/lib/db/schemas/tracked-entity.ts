@@ -1,3 +1,5 @@
+import { entityStatuses } from "@/lib/constants";
+import type { EntityStatus } from "@/lib/types";
 import {
   integer,
   pgTable,
@@ -16,11 +18,11 @@ export const trackedEntityTable = pgTable("tracked_entity", {
     length: 64,
   }).notNull(),
   entityType: varchar("user_type", {
-    enum: ["ANIME", "LIGHT-NOVEL", "MANGA"],
+    enum: ['ANIME', 'MANGA'],
   }).notNull(),
-  entityStatus: varchar("entity_status", {
-    length: 255,
-  }).notNull(),
+  entityStatus: varchar('entity_status', {
+    enum: entityStatuses,
+  }).notNull().$type<EntityStatus>(),
   mal_id: integer("mal_id").notNull(),
   userIdMalId: varchar("user_id_mal_id", {
     length: 255,

@@ -1,8 +1,8 @@
 import type { MangaCardItem } from "@/lib/types";
 
-export function AiringStatus({ anime }: { anime: MangaCardItem }) {
+export function AiringStatus({ manga }: { manga: MangaCardItem }) {
   const getStatusStyle = () => {
-    switch (anime.status?.toLowerCase()) {
+    switch (manga.status?.toLowerCase()) {
       case "publishing":
         return "border-green-600 text-green-600 dark:border-green-500 dark:bg-green-500/10 dark:text-green-400";
       case "finished":
@@ -20,7 +20,7 @@ export function AiringStatus({ anime }: { anime: MangaCardItem }) {
     <div
       className={`border px-2 py-1 inline-block rounded-md text-sm ${statusStyle}`}
     >
-      {anime.status}
+      {manga.status}
     </div>
   );
 }

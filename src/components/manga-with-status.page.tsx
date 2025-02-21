@@ -1,4 +1,4 @@
-import { type MangaCardItem } from "@/lib/types";
+import { type EntityStatus, type MangaCardItem } from "@/lib/types";
 import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
@@ -20,7 +20,7 @@ export function MangasWithStatusPage({
 }: {
   url: URL;
   records: Result<{ data: (MangaCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
-  entityStatus: string;
+  entityStatus: EntityStatus;
   user: User | null;
   title: string;
 }) {

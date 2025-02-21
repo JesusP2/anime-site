@@ -3,7 +3,7 @@ import { mangaTable, trackedEntityTable } from "../db/schemas";
 import { mangaSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { mangaFilters } from "./filters";
-import type { MangaCardItem } from "@/lib/types";
+import type { EntityStatus, MangaCardItem } from "@/lib/types";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullMangaRecord } from "../types";
 import { ActionError } from "astro:actions";
@@ -33,7 +33,7 @@ export async function getManga(
   mal_id: number,
   userId: string | undefined,
 ): Promise<
-  Result<FullMangaRecord & { entityStatus: string | null }, ActionError>
+  Result<FullMangaRecord & { entityStatus: EntityStatus | null }, ActionError>
 > {
   try {
     const selectKeys = {
@@ -164,7 +164,7 @@ export async function getMangas(
 }
 
 export async function getMangasWithStatus(
-  status: string,
+  entityStatus: EntityStatus,
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
@@ -178,8 +178,8 @@ export async function getMangasWithStatus(
       getEmbedding,
     );
   where = where
-    ? and(where, eq(trackedEntityTable.entityStatus, status))
-    : eq(trackedEntityTable.entityStatus, status);
+    ? and(where, eq(trackedEntityTable.entityStatus, entityStatus))
+    : eq(trackedEntityTable.entityStatus, entityStatus);
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {

@@ -3,7 +3,7 @@ import { animeTable, trackedEntityTable } from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
 import { animeFilters } from "./filters";
-import type { AnimeCardItem } from "@/lib/types";
+import type { AnimeCardItem, EntityStatus } from "@/lib/types";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullAnimeRecord } from "../types";
 import { ActionError } from "astro:actions";
@@ -32,7 +32,7 @@ export async function getAnime(
   mal_id: number,
   userId: string | undefined,
 ): Promise<
-  Result<FullAnimeRecord & { entityStatus: string | null }, ActionError>
+  Result<FullAnimeRecord & { entityStatus: EntityStatus | null }, ActionError>
 > {
   try {
     const selectKeys = {
@@ -161,7 +161,7 @@ export async function getAnimes(
 }
 
 export async function getAnimesWithStatus(
-  status: string,
+  entityStatus: EntityStatus,
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
@@ -175,8 +175,8 @@ export async function getAnimesWithStatus(
       getEmbedding,
     );
   where = where
-    ? and(where, eq(trackedEntityTable.entityStatus, status))
-    : eq(trackedEntityTable.entityStatus, status);
+    ? and(where, eq(trackedEntityTable.entityStatus, entityStatus))
+    : eq(trackedEntityTable.entityStatus, entityStatus);
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {

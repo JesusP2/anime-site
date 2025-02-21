@@ -1,4 +1,5 @@
 import type { components } from "./api/jikan.openapi";
+import type { entityStatuses } from "./constants";
 
 export type FullAnimeRecord = components["schemas"]["anime_full"] & {
   episodes_info: components["schemas"]["anime_episodes"]["data"];
@@ -47,3 +48,5 @@ export type MangaCardItem = Pick<
   | "popularity"
   | "favorites"
 >;
+
+export type EntityStatus = (typeof entityStatuses)[number];
