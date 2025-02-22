@@ -14,7 +14,7 @@
     "format:fix": "prettier --write ./src",
     "anime": "tsx ./src/scripts/anime.ts",
     "anime-vectors": "tsx --env-file=.env ./src/scripts/anime-vectors.ts",
-    "manga": "tsx ./src/scripts/manga.ts"
+    "manga": "tsx --env-file=.env ./src/scripts/manga.ts"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.2",

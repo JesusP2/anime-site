@@ -1,7 +1,6 @@
-import { type AnimeCardItem } from "@/lib/types";
+import { type AnimeCardItem, type MangaCardItem } from "@/lib/types";
 import { Pagination } from "@/components/pagination";
 import { SearchWithFilters } from "@/components/search";
-import { animeFilters } from "@/lib/anime/filters";
 import type { Result } from "@/lib/result";
 import type { ActionError } from "astro:actions";
 import { navigate } from "astro:transitions/client";
@@ -9,12 +8,14 @@ import { Grid } from "./grid";
 
 export function SearchAnimePage({
   url,
+  searchType,
   records,
   currentPage,
   recordsPerPage,
 }: {
   url: URL;
-  records: Result<{ data: AnimeCardItem[]; count: number; }, ActionError>;
+  searchType?: "Anime" | "Manga";
+  records: Result<{ data: AnimeCardItem[] | MangaCardItem[]; count: number; }, ActionError>;
   currentPage: number;
   recordsPerPage: number;
 }) {
@@ -22,9 +23,9 @@ export function SearchAnimePage({
     <>
       <SearchWithFilters
         url={url}
-        onSearch={(searchParams) => navigate(searchParams.toString() ? `/anime/search?${searchParams.toString()}` : '/anime/search')}
-        options={animeFilters}
-        title="Anime search"
+        onSearch={(searchParams) => navigate(searchParams.toString() ? `/search?${searchParams.toString()}` : '/search')}
+        entity={searchType ? searchType : "Anime"}
+        title="Search"
       />
       <Grid records={records} />
       <div className="flex-1" />

@@ -50,11 +50,11 @@ export const mangaTable = pgTable(
     background: varchar("background"),
     authors: json("authors"), //json
     serializations: json("serializations").$type<components["schemas"]["mal_url"][]>(), //json
-    // genres: json("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
-    genres: varchar("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+    genres: json("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+    // genres: varchar("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
     explicit_genres: json("explicit_genres").$type<components["schemas"]["mal_url"][]>(), //json
-    themes: varchar("themes").notNull().$type<components["schemas"]["mal_url"][]>(), //json
-    // themes: json("themes").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+    // themes: varchar("themes").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+    themes: json("themes").notNull().$type<components["schemas"]["mal_url"][]>(), //json
     demographics: json("demographics").notNull().$type<components["schemas"]["mal_url"][]>(), //json
     relations: json("relations").$type<components["schemas"]["relation"][]>(), //json
     external: json("external").$type<components["schemas"]["external_links"]>(), //json

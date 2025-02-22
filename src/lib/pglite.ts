@@ -65,8 +65,7 @@ export const pgliteMangaTable = pgTable("manga", {
   score: numeric("score"),
   scored_by: integer("scored_by"),
   rank: integer("rank"),
-  // genres: json("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
-  genres: varchar("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+  genres: json("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
   status: varchar("status", {
     length: 255,
   }).$type<components["schemas"]["manga_full"]["status"]>(),
@@ -141,7 +140,7 @@ export async function createLocalDB(client: PGlite) {
         score NUMERIC,
         scored_by INTEGER,
         rank INTEGER,
-        genres TEXT NOT NULL,
+        genres JSONB,
         status TEXT,
         popularity INTEGER,
         embedding vector(1536),

@@ -60,7 +60,7 @@ export function MangasWithStatusPage({
       <SearchWithFilters
         url={url}
         onSearch={onSearch}
-        options={mangaFilters}
+        entity="Manga"
         title={title}
       />
       <Grid records={_records} />

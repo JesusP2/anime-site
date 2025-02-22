@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FilterModal } from "./modal";
 import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
-import type { AnimeFilters } from "@/lib/anime/filters";
-import type { MangaFilters } from "@/lib/manga/filters";
+import { animeFilters, type AnimeFilters } from "@/lib/anime/filters";
+import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
@@ -34,17 +34,23 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   );
 }
 export function SearchWithFilters({
-  options,
+  entity,
   url,
   title,
   onSearch,
 }: {
-  options: AnimeFilters | MangaFilters;
+  entity: 'Anime' | 'Manga' | 'Both';
   url: URL;
   title: string;
   onSearch: (filters: URLSearchParams) => void;
 }) {
-  const [filters, setFilters] = useState(setupFilters(options, url));
+  const [filters, setFilters] = useState(setupFilters(entity === 'Manga' ? mangaFilters : animeFilters, url));
+  const [searchType, setSearchType] = useState<'Anime' | 'Manga'>(entity === 'Manga' ? 'Manga' : 'Anime');
+  const options = searchType === 'Manga' ? mangaFilters : animeFilters;
+
+  useEffect(() => {
+    setFilters(setupFilters(options, url))
+  }, [searchType])
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [key, value]) => {
@@ -73,47 +79,61 @@ export function SearchWithFilters({
         searchParams.append(key as string, value.toString());
       }
     });
+    searchParams.set('searchType', searchType);
     onSearch(searchParams)
   }
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">{title}</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">{title}</h1>
+      </div>
       <div className="flex flex-col space-y-1.5">
         <form onSubmit={(e) => {
           e.preventDefault();
           _onSearch();
         }}>
-        <div className="flex space-x-2">
-          <Input
-            id="search-query"
-            type="text"
-            placeholder="Enter your search query..."
-            className="flex-grow"
-            defaultValue={filters.q}
-            onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))}
-          />
-          <FilterModal
-            filters={filters}
-            options={options}
-            setFilters={setFilters}
-          >
+          <div className="flex space-x-2">
+            <Input
+              id="search-query"
+              type="text"
+              placeholder="Enter your search query..."
+              className="flex-grow"
+              defaultValue={filters.q}
+              onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))}
+            />
             <Button
-              type="button"
               variant="outline"
-              className="whitespace-nowrap"
+              type="button"
+              className="min-w-[4.5rem]"
+              onClick={() => {
+                const newType = searchType === 'Anime' ? 'Manga' : 'Anime';
+                setSearchType(newType);
+              }}
             >
-              <Funnel className="w-4 h-4 mr-2" />
-              Filters
-              {getActiveFiltersCount() > 0 && (
-                <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
-                  {getActiveFiltersCount()}
-                </span>
-              )}
+              {searchType}
             </Button>
-          </FilterModal>
-          <Button>Search</Button>
-        </div>
+            <FilterModal
+              filters={filters}
+              options={options}
+              setFilters={setFilters}
+            >
+              <Button
+                type="button"
+                variant="outline"
+                className="whitespace-nowrap"
+              >
+                <Funnel className="w-4 h-4 mr-2" />
+                Filters
+                {getActiveFiltersCount() > 0 && (
+                  <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
+                    {getActiveFiltersCount()}
+                  </span>
+                )}
+              </Button>
+            </FilterModal>
+            <Button>Search</Button>
+          </div>
         </form>
       </div>
     </div>

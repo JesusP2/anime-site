@@ -6,20 +6,25 @@ import {
   getRecordsPerPage,
   getCurrentPage,
 } from "@/lib/utils/records-per-page";
+import { getMangas } from "@/lib/manga/queries";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 
-const animesPerPage = getRecordsPerPage(Astro.url.searchParams);
+const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
 const searchParams = new URLSearchParams(Astro.url.searchParams);
-const records = await getAnimes(searchParams, animesPerPage);
+const records =
+  searchParams.get("searchType") === "Manga"
+    ? await getMangas(searchParams, recordsPerPage)
+    : await getAnimes(searchParams, recordsPerPage);
 ---
 
 <MainLayout title="Anime Search">
   <SearchAnimePage
     url={new URL(Astro.url.toString())}
+    searchType={searchParams.get("searchType") as "Anime" | "Manga"}
     records={records}
     currentPage={currentPage}
-    recordsPerPage={animesPerPage}
+    recordsPerPage={recordsPerPage}
     client:load
   />
 </MainLayout>

@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import { mangaTable, trackedEntityTable } from "../db/schemas";
 import { mangaSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { db } from "../db/pool";
@@ -8,20 +8,17 @@ import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
 import type { FullMangaRecord } from "../types";
 import { ActionError } from "astro:actions";
 import { err, ok, type Result } from "../result";
-import { getEmbedding } from "../semantic-search";
 import { mapScore } from "../utils/map-score";
+import { getSimilarity } from "../db/queries";
+import { getEmbedding } from "../semantic-search";
 
 const mangaCardKeys = {
   titles: mangaTable.titles,
   images: mangaTable.images,
   type: mangaTable.type,
-  // rating: mangaTable.rating,
-  // season: mangaTable.season,
-  // year: mangaTable.year,
-  // aired: mangaTable.aired,
   chapters: mangaTable.chapters,
   volumes: mangaTable.volumes,
-  score: mangaTable.score,
+  score: sql<number>`${mangaTable.score}`.mapWith((score) => mapScore(score)),
   scored_by: mangaTable.scored_by,
   rank: mangaTable.rank,
   genres: mangaTable.genres,
@@ -40,14 +37,11 @@ export async function getManga(
       titles: mangaTable.titles,
       images: mangaTable.images,
       type: mangaTable.type,
-      // rating: mangaTable.rating,
-      // season: mangaTable.season,
-      // year: mangaTable.year,
-      // aired: mangaTable.aired,
-      // episodes: mangaTable.episodes,
       chapters: mangaTable.chapters,
       volumes: mangaTable.volumes,
-      score: mangaTable.score,
+      score: sql<number>`${mangaTable.score}`.mapWith((score) =>
+        mapScore(score),
+      ),
       scored_by: mangaTable.scored_by,
       rank: mangaTable.rank,
       genres: mangaTable.genres,
@@ -57,45 +51,24 @@ export async function getManga(
       members: mangaTable.members,
       synopsis: mangaTable.synopsis,
       demographics: mangaTable.demographics,
-      // studios: mangaTable.studios,
-      // broadcast: mangaTable.broadcast,
-      // characters: mangaTable.characters,
-      // staff: mangaTable.staff,
-      // episodes_info: mangaTable.episodes_info,
-      // streaming: mangaTable.streaming,
       embedding: mangaTable.embedding,
     } as const;
-    if (userId) {
-      const [manga] = await db
-        .select({
-          ...selectKeys,
-          entityStatus: trackedEntityTable.entityStatus,
-        })
-        .from(mangaTable)
-        .where(eq(mangaTable.mal_id, mal_id))
-        .leftJoin(
-          trackedEntityTable,
-          and(
-            eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-            eq(trackedEntityTable.userId, userId),
-          ),
-        );
-      if (manga) {
-        return ok({ ...manga, score: mapScore(manga.score) });
-      }
-      return err(
-        new ActionError({
-          code: "NOT_FOUND",
-          message: "Could not get manga",
-        }),
-      );
-    }
     const [manga] = await db
-      .select(selectKeys)
+      .select({
+        ...selectKeys,
+        entityStatus: trackedEntityTable.entityStatus,
+      })
       .from(mangaTable)
-      .where(eq(mangaTable.mal_id, mal_id));
+      .where(eq(mangaTable.mal_id, mal_id))
+      .leftJoin(
+        trackedEntityTable,
+        and(
+          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
+          eq(trackedEntityTable.userId, userId ?? "0"),
+        ),
+      );
     if (manga) {
-      return ok({ ...manga, entityStatus: null, score: mapScore(manga.score) });
+      return ok(manga);
     }
     return err(
       new ActionError({
@@ -122,34 +95,56 @@ export async function getMangas(
     searchParams,
     mangaFilters,
   );
-  let { similarity, where, orderBy, offset } =
+  let { where, orderBy, offset } =
     await mangaSearchParamsToDrizzleQuery(
       sanitizedSearchParams,
       recordsPerPage,
       mangaTable,
-      getEmbedding,
     );
   try {
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
       .where(where);
-    const query = db
-      .select(similarity ? { ...mangaCardKeys, similarity } : mangaCardKeys)
-      .from(mangaTable)
-      .where(where)
-      .offset(offset)
-      .orderBy(...(orderBy as any))
-      .limit(recordsPerPage);
+    const similarity = await getSimilarity(
+      mangaTable.embedding,
+      sanitizedSearchParams.get("q"),
+      getEmbedding,
+    );
+    let query: any;
+    if (similarity) {
+      const sq = db
+        .select({
+          mal_id: mangaTable.mal_id,
+          similarity: similarity.as("similarity"),
+        })
+        .from(mangaTable)
+        .where(where)
+        .offset(offset)
+        .orderBy(t => desc(t.similarity))
+        .limit(recordsPerPage)
+        .as("sq");
+      query = db
+        .select(mangaCardKeys)
+        .from(mangaTable)
+        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id))
+    } else {
+      query = db
+        .select(mangaCardKeys)
+        .from(mangaTable)
+        .where(where)
+        .offset(offset)
+        .limit(recordsPerPage);
+    }
+    if (orderBy) {
+      query = query.orderBy(orderBy);
+    }
     const [mangaRecords, mangaCount] = await Promise.all([
       query,
       similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
     return ok({
-      data: mangaRecords.map((r) => ({
-        ...r,
-        score: mapScore(r.score),
-      })),
+      data: mangaRecords,
       count: mangaCount[0]?.count ?? 0,
     });
   } catch (_) {
@@ -169,13 +164,12 @@ export async function getMangasWithStatus(
   recordsPerPage: number,
   userId: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
-  const cleanedSearchParams = sanitizeSearchParams(searchParams, mangaFilters);
-  let { similarity, where, orderBy, offset } =
+  const sanitizedSearchParams = sanitizeSearchParams(searchParams, mangaFilters);
+  let { where, orderBy, offset } =
     await mangaSearchParamsToDrizzleQuery(
-      cleanedSearchParams,
+      sanitizedSearchParams,
       recordsPerPage,
       mangaTable,
-      getEmbedding,
     );
   where = where
     ? and(where, eq(trackedEntityTable.entityStatus, entityStatus))
@@ -191,26 +185,53 @@ export async function getMangasWithStatus(
         trackedEntityTable,
         eq(mangaTable.mal_id, trackedEntityTable.mal_id),
       );
-    const query = db
-      .select(similarity ? { ...mangaCardKeys, similarity } : mangaCardKeys)
-      .from(mangaTable)
-      .where(where)
-      .offset(offset)
-      .limit(recordsPerPage)
-      .orderBy(...(orderBy as any))
-      .leftJoin(
-        trackedEntityTable,
-        eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-      );
+    const similarity = await getSimilarity(
+      mangaTable.embedding,
+      sanitizedSearchParams.get("q"),
+      getEmbedding,
+    );
+    let query: any;
+    if (similarity) {
+      const sq = db
+        .select({
+          mal_id: mangaTable.mal_id,
+          similarity: similarity.as("similarity"),
+        })
+        .from(mangaTable)
+        .where(where)
+        .offset(offset)
+        .orderBy(t => desc(t.similarity))
+        .limit(recordsPerPage)
+        .as("sq");
+      query = db
+        .select(mangaCardKeys)
+        .from(mangaTable)
+        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id))
+        .leftJoin(
+          trackedEntityTable,
+          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
+        )
+    } else {
+      query = db
+        .select(mangaCardKeys)
+        .from(mangaTable)
+        .where(where)
+        .offset(offset)
+        .limit(recordsPerPage)
+        .leftJoin(
+          trackedEntityTable,
+          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
+        )
+    }
+    if (orderBy) {
+      query = query.orderBy(orderBy);
+    }
     const [mangaRecords, mangaCount] = await Promise.all([
       query,
       similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
     return ok({
-      data: mangaRecords.map((r) => ({
-        ...r,
-        score: mapScore(r.score),
-      })),
+      data: mangaRecords,
       count: mangaCount[0]?.count ?? 0,
     });
   } catch (_) {
@@ -242,7 +263,6 @@ export async function getCarouselMangas(
     sanitizedSearchParams,
     recordsPerPage,
     mangaTable,
-    getEmbedding,
   );
   try {
     const mangaRecords = await db

@@ -37,7 +37,7 @@ export function NavMain({
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton asChild>
-            <a href="/anime/search">
+            <a href="/search">
               <MagnifyingGlass />
               Search
             </a>

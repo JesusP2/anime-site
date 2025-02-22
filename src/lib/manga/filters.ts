@@ -5,26 +5,6 @@ const years = Array.from(
 );
 
 export const mangaFilters = {
-  year: {
-    label: "Year",
-    group: "basic",
-    options: [
-      ...years.map((year) => ({
-        label: year.toString(),
-        value: year.toString(),
-      })),
-    ],
-  },
-  season: {
-    label: "Season",
-    group: "basic",
-    options: [
-      { label: "Winter", value: "winter" },
-      { label: "Spring", value: "spring" },
-      { label: "Summer", value: "summer" },
-      { label: "Fall", value: "fall" },
-    ],
-  },
   status: {
     label: "Status",
     group: "basic",
@@ -44,24 +24,6 @@ export const mangaFilters = {
       { label: "Special", value: "Special" },
       { label: "ONA", value: "ONA" },
       { label: "Music", value: "Music" },
-    ],
-  },
-  rating: {
-    label: "Rating",
-    group: "content",
-    options: [
-      { label: "G - All Ages", value: "G - All Ages" },
-      { label: "PG - Children", value: "PG - Children" },
-      {
-        label: "PG-13 - Teens 13 or older",
-        value: "PG-13 - Teens 13 or older",
-      },
-      {
-        label: "R - 17+ (violence & profanity)",
-        value: "R - 17+ (violence & profanity)",
-      },
-      { label: "R+ - Mild Nudity", value: "R+ - Mild Nudity" },
-      { label: "Rx - Hentai", value: "Rx - Hentai" },
     ],
   },
   genre: {
@@ -146,15 +108,6 @@ export const mangaFilters = {
       { label: "Seinen", value: "Seinen" },
       { label: "Shoujo", value: "Shoujo" },
       { label: "Shounen", value: "Shounen" },
-    ],
-  },
-  sfw: {
-    label: "SFW",
-    type: "radio",
-    group: "display",
-    options: [
-      { label: "Yes", value: true },
-      { label: "No", value: false },
     ],
   },
   orderBy: {

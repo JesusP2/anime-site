@@ -28,13 +28,8 @@ export function MangaCard({ data }: { data: MangaCardItem }) {
             <div className="absolute top-2 left-2">
               {data.type && <MangaTypeBadge type={data.type} />}
             </div>
-            <div className="absolute bottom-2 left-2">
-              <p className="text-white border-l pl-2 leading-4">
-                {data.rating?.split(" ").at(0)}
-              </p>
-            </div>
           </section>
-          <div className="w-[13rem]">
+          <div className="w-[13rem] overflow-hidden">
             <section>
               <h3 title={mangaTitle} className="text-lg truncate font-bold dark:text-white">
                 {mangaTitle}

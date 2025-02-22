@@ -14,7 +14,6 @@ export async function animeSearchParamsToDrizzleQuery(
   searchParams: URLSearchParams,
   recordsPerPage: number,
   table: typeof animeTable | typeof pgliteAnimeTable,
-  getEmbedding: (q: string) => Promise<number[] | undefined>,
 ) {
   let where: SQL | undefined;
   if (searchParams.get("season")) {
@@ -52,25 +51,14 @@ export async function animeSearchParamsToDrizzleQuery(
   // }
 
   const nullsLast = (it: AnyPgColumn | SQLChunk) => sql<any>`${it} NULLS LAST`;
-  const orderBy: (SQL | PgColumn | ((t: { similarity: any }) => SQL))[] = [];
-  const q = searchParams.get("q");
-  let similarity: SQL<number> | undefined;
-  if (typeof q === "string" && q !== "") {
-    const embedding = await getEmbedding(q);
-    if (embedding) {
-      similarity = sql<number>`1 - (${cosineDistance(table.embedding, embedding)})`;
-      orderBy.push(t => desc(t.similarity));
-    }
-  }
-
+  let orderBy: SQL | undefined = undefined;
   if (searchParams.get("orderBy") && searchParams.get("orderBy") !== "none") {
-    const column =
-      table[searchParams.get("orderBy") as keyof typeof table];
+    const column = table[searchParams.get("orderBy") as keyof typeof table];
     if (column instanceof PgColumn) {
       if (searchParams.get("sort") === "desc") {
-        orderBy.push(nullsLast(desc(column)));
+        orderBy = nullsLast(desc(column));
       } else {
-        orderBy.push(nullsLast(column));
+        orderBy = nullsLast(column);
       }
     }
   }
@@ -82,5 +70,5 @@ export async function animeSearchParamsToDrizzleQuery(
     offset =
       (parseInt(searchParams.get("page") as string) - 1) * recordsPerPage;
   }
-  return { similarity, where, orderBy, offset };
+  return { where, orderBy, offset };
 }

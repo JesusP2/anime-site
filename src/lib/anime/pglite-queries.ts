@@ -1,5 +1,5 @@
-import { and, count, eq } from "drizzle-orm";
-import { getLocalDB, pgliteAnimeTable } from "../pglite";
+import { and, count, desc, eq, sql } from "drizzle-orm";
+import { getLocalDB, pgliteAnimeTable, pgliteMangaTable } from "../pglite";
 import type { AnimeCardItem, EntityStatus } from "@/lib/types";
 import type { FullAnimeRecord } from "../types";
 import { animeFilters } from "./filters";
@@ -8,6 +8,7 @@ import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { ActionError, actions } from "astro:actions";
 import { err, ok } from "../result";
 import { mapScore } from "../utils/map-score";
+import { getSimilarity } from "../db/queries";
 
 const animeCardKeys = {
   titles: pgliteAnimeTable.titles,
@@ -18,7 +19,9 @@ const animeCardKeys = {
   year: pgliteAnimeTable.year,
   aired: pgliteAnimeTable.aired,
   episodes: pgliteAnimeTable.episodes,
-  score: pgliteAnimeTable.score,
+  score: sql<number>`${pgliteAnimeTable.score}`.mapWith((score) =>
+    mapScore(score),
+  ),
   scored_by: pgliteAnimeTable.scored_by,
   rank: pgliteAnimeTable.rank,
   genres: pgliteAnimeTable.genres,
@@ -88,13 +91,11 @@ export async function getAnimesFromLocalDB(
   );
   const recordsPerPage = 25;
   try {
-    let { similarity, where, orderBy, offset } =
-      await animeSearchParamsToDrizzleQuery(
-        sanitizedSearchParams,
-        recordsPerPage,
-        pgliteAnimeTable,
-        getEmbedding,
-      );
+    let { where, orderBy, offset } = await animeSearchParamsToDrizzleQuery(
+      sanitizedSearchParams,
+      recordsPerPage,
+      pgliteAnimeTable,
+    );
     where = where
       ? and(where, eq(pgliteAnimeTable.entityStatus, entityStatus))
       : eq(pgliteAnimeTable.entityStatus, entityStatus);
@@ -103,22 +104,46 @@ export async function getAnimesFromLocalDB(
       .select({ count: count() })
       .from(pgliteAnimeTable)
       .where(where);
-    const query = db
-      .select(similarity ? { ...animeCardKeys, similarity } : animeCardKeys)
-      .from(pgliteAnimeTable)
-      .where(where)
-      .offset(offset)
-      .orderBy(...(orderBy as any))
-      .limit(recordsPerPage);
+
+    const similarity = await getSimilarity(
+      pgliteAnimeTable.embedding,
+      sanitizedSearchParams.get("q"),
+      getEmbedding,
+    );
+    let query: any;
+    if (similarity) {
+      const sq = db
+        .select({
+          mal_id: pgliteAnimeTable.mal_id,
+          similarity: similarity.as("similarity"),
+        })
+        .from(pgliteAnimeTable)
+        .where(where)
+        .offset(offset)
+        .orderBy((t) => desc(t.similarity))
+        .limit(recordsPerPage)
+        .as("sq");
+      query = db
+        .select(animeCardKeys)
+        .from(pgliteAnimeTable)
+        .innerJoin(sq, eq(pgliteAnimeTable.mal_id, sq.mal_id));
+    } else {
+      query = db
+        .select(similarity ? { ...animeCardKeys, similarity } : animeCardKeys)
+        .from(pgliteAnimeTable)
+        .where(where)
+        .offset(offset)
+        .limit(recordsPerPage);
+    }
+    if (orderBy) {
+      query = query.orderBy(orderBy);
+    }
     const [animeRecords, animeCount] = await Promise.all([
       query,
       similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
     return ok({
-      data: animeRecords.map((r) => ({
-        ...r,
-        score: mapScore(r.score),
-      })),
+      data: animeRecords,
       count: animeCount[0]?.count ?? 0,
     });
   } catch (_) {

@@ -60,7 +60,7 @@ export function AnimesWithStatusPage({
       <SearchWithFilters
         url={url}
         onSearch={onSearch}
-        options={animeFilters}
+        entity="Anime"
         title={title}
       />
       <Grid records={_records} />

@@ -8,3 +8,4 @@
 - update View more links
 - change genres and themes from varchar to json
 - add embedding index for local db
+- virtualize '...' in pagination

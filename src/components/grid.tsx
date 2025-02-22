@@ -6,7 +6,7 @@ import { AnimeCard } from "@/components/anime-card";
 import type { AnimeCardItem, MangaCardItem } from "@/lib/types";
 import { MangaCard } from "./manga-card";
 
-export function Grid<T extends AnimeCardItem | MangaCardItem>({ records }: { records: Result<{ data: T[]; count: number; }, ActionError> }) {
+export function Grid({ records }: { records: Result<{ data: AnimeCardItem[] | MangaCardItem[]; count: number; }, ActionError> }) {
   if (!records.success) {
     return <UnexpectedError />;
   } else if (records.value.data.length === 0) {
