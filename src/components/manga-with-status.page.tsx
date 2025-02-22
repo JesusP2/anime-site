@@ -6,7 +6,10 @@ import { SearchWithFilters } from "./search";
 import { mangaFilters } from "@/lib/manga/filters";
 import type { Result } from "@/lib/result";
 import { type ActionError } from "astro:actions";
-import { getCurrentPage, getRecordsPerPage } from "@/lib/utils/records-per-page";
+import {
+  getCurrentPage,
+  getRecordsPerPage,
+} from "@/lib/utils/records-per-page";
 import { Grid } from "./grid";
 import { getMangasFromLocalDB } from "@/lib/manga/pglite-queries";
 import { navigate } from "astro:transitions/client";
@@ -19,7 +22,10 @@ export function MangasWithStatusPage({
   title,
 }: {
   url: URL;
-  records: Result<{ data: (MangaCardItem & { entityStatus?: string; })[]; count: number; }, ActionError>;
+  records: Result<
+    { data: (MangaCardItem & { entityStatus?: string })[]; count: number },
+    ActionError
+  >;
   entityStatus: EntityStatus;
   user: User | null;
   title: string;
@@ -29,29 +35,33 @@ export function MangasWithStatusPage({
   const recordsPerPage = getRecordsPerPage(url.searchParams);
   useEffect(() => {
     if (user) return;
-    getMangasFromLocalDB(entityStatus, url.searchParams).then((recordsWithStatus) => {
-      if (!recordsWithStatus.success) {
-        _setRecords({ success: true, value: { data: [], count: 0 } });
-        return;
-      };
-      const { data, count } = recordsWithStatus.value;
-      _setRecords({ success: true, value: { data, count } });
-    })
-  }, []);
-
-  function onSearch(searchParams: URLSearchParams) {
-    searchParams.set('page', '1');
-    if (user) {
-      navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
-    } else {
-      getMangasFromLocalDB(entityStatus, searchParams).then((recordsWithStatus) => {
+    getMangasFromLocalDB(entityStatus, url.searchParams).then(
+      (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
-        };
+        }
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
-      })
+      },
+    );
+  }, []);
+
+  function onSearch(searchParams: URLSearchParams) {
+    searchParams.set("page", "1");
+    if (user) {
+      navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
+    } else {
+      getMangasFromLocalDB(entityStatus, searchParams).then(
+        (recordsWithStatus) => {
+          if (!recordsWithStatus.success) {
+            _setRecords({ success: true, value: { data: [], count: 0 } });
+            return;
+          }
+          const { data, count } = recordsWithStatus.value;
+          _setRecords({ success: true, value: { data, count } });
+        },
+      );
     }
   }
 

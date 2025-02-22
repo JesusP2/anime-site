@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
-import { Header } from "./header"
+import { Header } from "./header";
 import { Spotlight } from "../ui/spotlight-new";
 import { Carousel } from "../carousel";
 import type { Result } from "@/lib/result";
@@ -9,24 +9,38 @@ import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
 import { navigate } from "astro:transitions/client";
 
-type AnimeCard = Pick<FullAnimeRecord, 'mal_id' | 'titles' | 'images' | 'type'>
-type MangaCard = Pick<FullMangaRecord, 'mal_id' | 'titles' | 'images' | 'type'>
-export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThisSeasonAnimes, topMangas, isDarkMode, user }: { currentSeasonAnimes: Result<AnimeCard[], Error>, allTimeFavorites: Result<AnimeCard[], Error>; popularThisSeasonAnimes: Result<AnimeCard[], Error>; topMangas: Result<MangaCard[], Error>; isDarkMode: boolean; user: User | null }) {
-  const [showMainSearch, setShowMainSearch] = useState(true)
+type AnimeCard = Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
+type MangaCard = Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">;
+export function LandingPage({
+  currentSeasonAnimes,
+  allTimeFavorites,
+  popularThisSeasonAnimes,
+  topMangas,
+  isDarkMode,
+  user,
+}: {
+  currentSeasonAnimes: Result<AnimeCard[], Error>;
+  allTimeFavorites: Result<AnimeCard[], Error>;
+  popularThisSeasonAnimes: Result<AnimeCard[], Error>;
+  topMangas: Result<MangaCard[], Error>;
+  isDarkMode: boolean;
+  user: User | null;
+}) {
+  const [showMainSearch, setShowMainSearch] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
-      const searchField = document.getElementById("search-field")
+      const searchField = document.getElementById("search-field");
       if (searchField) {
-        const searchFieldPosition = searchField.getBoundingClientRect().top
-        const threshold = 120 // Same threshold as in StickyHeader
-        setShowMainSearch(searchFieldPosition > threshold)
+        const searchFieldPosition = searchField.getBoundingClientRect().top;
+        const threshold = 120; // Same threshold as in StickyHeader
+        setShowMainSearch(searchFieldPosition > threshold);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen dark:text-white text-gray-900">
@@ -45,22 +59,29 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
             <span className="inline-block ml-2">✨</span>
           </h1>
 
-          <p className={`max-w-2xl dark:text-gray-400 text-gray-600 text-lg mb-8`}>
-            Your gateway to the world of anime. Find your next favorite series with our
-            <span className="text-[#B46EE8]"> intelligent search</span> and personalized recommendations.
+          <p
+            className={`max-w-2xl dark:text-gray-400 text-gray-600 text-lg mb-8`}
+          >
+            Your gateway to the world of anime. Find your next favorite series
+            with our
+            <span className="text-[#B46EE8]"> intelligent search</span> and
+            personalized recommendations.
           </p>
 
-          <form onSubmit={async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target as HTMLFormElement);
-            const search = new URLSearchParams();
-            search.set('q', formData.get('q') as string ?? '');
-            await navigate(`/anime/search?${search.toString()}`);
-          }}>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              const search = new URLSearchParams();
+              search.set("q", (formData.get("q") as string) ?? "");
+              await navigate(`/anime/search?${search.toString()}`);
+            }}
+          >
             <div
               id="search-field"
-              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
+              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${
+                showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
             >
               <div className="relative flex-1">
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -80,65 +101,91 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
         <div className="w-full max-w-7xl mx-auto mt-16 space-y-16">
           {currentSeasonAnimes.success ? (
             <section>
-              <Carousel header={
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold font-gabarito font-medium">
-                    Current Season
-                  </h2>
-                  <a href="/search?" className={buttonVariants({ variant: "link" })}>
-                    View more
-                  </a>
-                </div>
-              } records={currentSeasonAnimes.value} type="ANIME" />
+              <Carousel
+                header={
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold font-gabarito font-medium">
+                      Current Season
+                    </h2>
+                    <a
+                      href="/search?"
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      View more
+                    </a>
+                  </div>
+                }
+                records={currentSeasonAnimes.value}
+                type="ANIME"
+              />
             </section>
           ) : null}
           {allTimeFavorites.success ? (
             <section>
-              <Carousel header={
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold font-gabarito font-medium">
-                    All Time Favorites
-                  </h2>
-                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
-                    View more
-                  </a>
-                </div>
-              } records={allTimeFavorites.value} type="ANIME" />
+              <Carousel
+                header={
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold font-gabarito font-medium">
+                      All Time Favorites
+                    </h2>
+                    <a
+                      href="/seasons/now"
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      View more
+                    </a>
+                  </div>
+                }
+                records={allTimeFavorites.value}
+                type="ANIME"
+              />
             </section>
           ) : null}
 
           {popularThisSeasonAnimes.success ? (
             <section>
-              <Carousel header={
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold font-gabarito font-medium">
-                    Popular this season
-                  </h2>
-                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
-                    View more
-                  </a>
-                </div>
-              } records={popularThisSeasonAnimes.value} type="ANIME" />
+              <Carousel
+                header={
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold font-gabarito font-medium">
+                      Popular this season
+                    </h2>
+                    <a
+                      href="/seasons/now"
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      View more
+                    </a>
+                  </div>
+                }
+                records={popularThisSeasonAnimes.value}
+                type="ANIME"
+              />
             </section>
           ) : null}
           {topMangas.success ? (
             <section>
-              <Carousel header={
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold font-gabarito font-medium">
-                    Top Mangas
-                  </h2>
-                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
-                    View more
-                  </a>
-                </div>
-              } records={topMangas.value} type="MANGA" />
+              <Carousel
+                header={
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold font-gabarito font-medium">
+                      Top Mangas
+                    </h2>
+                    <a
+                      href="/seasons/now"
+                      className={buttonVariants({ variant: "link" })}
+                    >
+                      View more
+                    </a>
+                  </div>
+                }
+                records={topMangas.value}
+                type="MANGA"
+              />
             </section>
           ) : null}
         </div>
       </main>
     </div>
-  )
+  );
 }
-
-

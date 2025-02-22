@@ -15,7 +15,10 @@ export function SearchAnimePage({
 }: {
   url: URL;
   searchType?: "Anime" | "Manga";
-  records: Result<{ data: AnimeCardItem[] | MangaCardItem[]; count: number; }, ActionError>;
+  records: Result<
+    { data: AnimeCardItem[] | MangaCardItem[]; count: number },
+    ActionError
+  >;
   currentPage: number;
   recordsPerPage: number;
 }) {
@@ -23,7 +26,13 @@ export function SearchAnimePage({
     <>
       <SearchWithFilters
         url={url}
-        onSearch={(searchParams) => navigate(searchParams.toString() ? `/search?${searchParams.toString()}` : '/search')}
+        onSearch={(searchParams) =>
+          navigate(
+            searchParams.toString()
+              ? `/search?${searchParams.toString()}`
+              : "/search",
+          )
+        }
         entity={searchType ? searchType : "Anime"}
         title="Search"
       />

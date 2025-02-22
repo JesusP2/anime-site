@@ -1,8 +1,4 @@
-import {
-  SealCheck,
-  CaretUpDown,
-  SignOut,
-} from "@phosphor-icons/react";
+import { SealCheck, CaretUpDown, SignOut } from "@phosphor-icons/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,11 +19,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import type { User } from "better-auth";
 
-export function NavUser({
-  user,
-}: {
-  user: User;
-}) {
+export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
 
   async function handleLogout() {

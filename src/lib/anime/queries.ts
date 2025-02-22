@@ -200,7 +200,10 @@ export async function getAnimesWithStatus(
   recordsPerPage: number,
   userId: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
-  const sanitizedSearchParams = sanitizeSearchParams(searchParams, animeFilters);
+  const sanitizedSearchParams = sanitizeSearchParams(
+    searchParams,
+    animeFilters,
+  );
   let { where, orderBy, offset } = await animeSearchParamsToDrizzleQuery(
     sanitizedSearchParams,
     recordsPerPage,

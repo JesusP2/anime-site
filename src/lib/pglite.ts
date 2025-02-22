@@ -16,9 +16,11 @@ import type { EntityStatus } from "./types";
 
 export const pgliteAnimeTable = pgTable("anime", {
   mal_id: integer("mal_id").unique().notNull(),
-  entityStatus: varchar('entity_status', {
+  entityStatus: varchar("entity_status", {
     enum: entityStatuses,
-  }).notNull().$type<EntityStatus>(),
+  })
+    .notNull()
+    .$type<EntityStatus>(),
   titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
   images: json("images")
     .notNull()
@@ -50,9 +52,11 @@ export const pgliteAnimeTable = pgTable("anime", {
 
 export const pgliteMangaTable = pgTable("manga", {
   mal_id: integer("mal_id").unique().notNull(),
-  entityStatus: varchar('entity_status', {
+  entityStatus: varchar("entity_status", {
     enum: entityStatuses,
-  }).notNull().$type<EntityStatus>(),
+  })
+    .notNull()
+    .$type<EntityStatus>(),
   titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
   images: json("images")
     .notNull()

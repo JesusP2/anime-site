@@ -95,12 +95,11 @@ export async function getMangas(
     searchParams,
     mangaFilters,
   );
-  let { where, orderBy, offset } =
-    await mangaSearchParamsToDrizzleQuery(
-      sanitizedSearchParams,
-      recordsPerPage,
-      mangaTable,
-    );
+  let { where, orderBy, offset } = await mangaSearchParamsToDrizzleQuery(
+    sanitizedSearchParams,
+    recordsPerPage,
+    mangaTable,
+  );
   try {
     const queryCount = db
       .select({ count: count() })
@@ -121,13 +120,13 @@ export async function getMangas(
         .from(mangaTable)
         .where(where)
         .offset(offset)
-        .orderBy(t => desc(t.similarity))
+        .orderBy((t) => desc(t.similarity))
         .limit(recordsPerPage)
         .as("sq");
       query = db
         .select(mangaCardKeys)
         .from(mangaTable)
-        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id))
+        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id));
     } else {
       query = db
         .select(mangaCardKeys)
@@ -164,13 +163,15 @@ export async function getMangasWithStatus(
   recordsPerPage: number,
   userId: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
-  const sanitizedSearchParams = sanitizeSearchParams(searchParams, mangaFilters);
-  let { where, orderBy, offset } =
-    await mangaSearchParamsToDrizzleQuery(
-      sanitizedSearchParams,
-      recordsPerPage,
-      mangaTable,
-    );
+  const sanitizedSearchParams = sanitizeSearchParams(
+    searchParams,
+    mangaFilters,
+  );
+  let { where, orderBy, offset } = await mangaSearchParamsToDrizzleQuery(
+    sanitizedSearchParams,
+    recordsPerPage,
+    mangaTable,
+  );
   where = where
     ? and(where, eq(trackedEntityTable.entityStatus, entityStatus))
     : eq(trackedEntityTable.entityStatus, entityStatus);
@@ -200,7 +201,7 @@ export async function getMangasWithStatus(
         .from(mangaTable)
         .where(where)
         .offset(offset)
-        .orderBy(t => desc(t.similarity))
+        .orderBy((t) => desc(t.similarity))
         .limit(recordsPerPage)
         .as("sq");
       query = db
@@ -210,7 +211,7 @@ export async function getMangasWithStatus(
         .leftJoin(
           trackedEntityTable,
           eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-        )
+        );
     } else {
       query = db
         .select(mangaCardKeys)
@@ -221,7 +222,7 @@ export async function getMangasWithStatus(
         .leftJoin(
           trackedEntityTable,
           eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-        )
+        );
     }
     if (orderBy) {
       query = query.orderBy(orderBy);

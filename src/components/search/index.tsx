@@ -9,8 +9,8 @@ import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
-    q: url.searchParams.get('q') ?? '',
-  }
+    q: url.searchParams.get("q") ?? "",
+  };
   return objectEntries(options).reduce(
     (acc, [key, value]) => {
       if ("type" in value && key === "sfw") {
@@ -27,10 +27,10 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-      | string[]
-      | string
-      | boolean;
-    } & { q: string; },
+        | string[]
+        | string
+        | boolean;
+    } & { q: string },
   );
 }
 export function SearchWithFilters({
@@ -39,26 +39,30 @@ export function SearchWithFilters({
   title,
   onSearch,
 }: {
-  entity: 'Anime' | 'Manga' | 'Both';
+  entity: "Anime" | "Manga" | "Both";
   url: URL;
   title: string;
   onSearch: (filters: URLSearchParams) => void;
 }) {
-  const [filters, setFilters] = useState(setupFilters(entity === 'Manga' ? mangaFilters : animeFilters, url));
-  const [searchType, setSearchType] = useState<'Anime' | 'Manga'>(entity === 'Manga' ? 'Manga' : 'Anime');
-  const options = searchType === 'Manga' ? mangaFilters : animeFilters;
+  const [filters, setFilters] = useState(
+    setupFilters(entity === "Manga" ? mangaFilters : animeFilters, url),
+  );
+  const [searchType, setSearchType] = useState<"Anime" | "Manga">(
+    entity === "Manga" ? "Manga" : "Anime",
+  );
+  const options = searchType === "Manga" ? mangaFilters : animeFilters;
 
   useEffect(() => {
-    setFilters(setupFilters(options, url))
-  }, [searchType])
+    setFilters(setupFilters(options, url));
+  }, [searchType]);
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [key, value]) => {
-      if (key === 'sort' || key === 'q') {
+      if (key === "sort" || key === "q") {
         return acc;
       }
       if (key === "orderBy") {
-        if (value === 'none') {
+        if (value === "none") {
           return acc;
         }
         return acc + 2;
@@ -79,8 +83,8 @@ export function SearchWithFilters({
         searchParams.append(key as string, value.toString());
       }
     });
-    searchParams.set('searchType', searchType);
-    onSearch(searchParams)
+    searchParams.set("searchType", searchType);
+    onSearch(searchParams);
   }
 
   return (
@@ -89,10 +93,12 @@ export function SearchWithFilters({
         <h1 className="text-2xl font-bold">{title}</h1>
       </div>
       <div className="flex flex-col space-y-1.5">
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          _onSearch();
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            _onSearch();
+          }}
+        >
           <div className="flex space-x-2">
             <Input
               id="search-query"
@@ -100,14 +106,16 @@ export function SearchWithFilters({
               placeholder="Enter your search query..."
               className="flex-grow"
               defaultValue={filters.q}
-              onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, q: e.target.value }))
+              }
             />
             <Button
               variant="outline"
               type="button"
               className="min-w-[4.5rem]"
               onClick={() => {
-                const newType = searchType === 'Anime' ? 'Manga' : 'Anime';
+                const newType = searchType === "Anime" ? "Manga" : "Anime";
                 setSearchType(newType);
               }}
             >

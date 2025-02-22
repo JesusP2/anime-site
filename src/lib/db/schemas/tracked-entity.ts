@@ -1,11 +1,6 @@
 import { entityStatuses } from "@/lib/constants";
 import type { EntityStatus } from "@/lib/types";
-import {
-  integer,
-  pgTable,
-  varchar,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
 import { ulid } from "ulidx";
 
 export const trackedEntityTable = pgTable("tracked_entity", {
@@ -18,11 +13,13 @@ export const trackedEntityTable = pgTable("tracked_entity", {
     length: 64,
   }).notNull(),
   entityType: varchar("user_type", {
-    enum: ['ANIME', 'MANGA'],
+    enum: ["ANIME", "MANGA"],
   }).notNull(),
-  entityStatus: varchar('entity_status', {
+  entityStatus: varchar("entity_status", {
     enum: entityStatuses,
-  }).notNull().$type<EntityStatus>(),
+  })
+    .notNull()
+    .$type<EntityStatus>(),
   mal_id: integer("mal_id").notNull(),
   userIdMalId: varchar("user_id_mal_id", {
     length: 255,
@@ -32,4 +29,3 @@ export const trackedEntityTable = pgTable("tracked_entity", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
-

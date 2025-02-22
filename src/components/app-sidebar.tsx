@@ -26,7 +26,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
-import type { User } from 'better-auth';
+import type { User } from "better-auth";
 import { ThemeButton } from "./theme-button";
 
 const data = {
@@ -109,7 +109,6 @@ export function AppSidebar({
   isDarkMode: boolean;
   user: User | null;
 }) {
-
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
       <Sidebar collapsible="icon" {...props} variant="floating">
@@ -120,7 +119,9 @@ export function AppSidebar({
                 <a href="/">
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
-                    <span className="sm:block hidden text-lg font-semibold">AniSearch</span>
+                    <span className="sm:block hidden text-lg font-semibold">
+                      AniSearch
+                    </span>
                   </div>
                 </a>
               </SidebarMenuButton>
@@ -151,6 +152,6 @@ export function AppSidebar({
         <SidebarTrigger />
         {children}
       </SidebarInset>
-    </SidebarProvider >
+    </SidebarProvider>
   );
 }

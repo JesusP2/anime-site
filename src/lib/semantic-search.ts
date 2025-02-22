@@ -26,4 +26,3 @@ export async function semanticSearch(
     return res.results.map(({ id }) => Number(id));
   }
 }
-

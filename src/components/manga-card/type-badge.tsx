@@ -1,8 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  PlayCircle,
-  Book,
-} from "@phosphor-icons/react";
+import { PlayCircle, Book } from "@phosphor-icons/react";
 
 interface MangaTypeBadgeProps {
   type: string;

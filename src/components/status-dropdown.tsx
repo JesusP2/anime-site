@@ -19,40 +19,67 @@ import {
 import { actions } from "astro:actions";
 import { useEffect, useState } from "react";
 import type { User } from "better-auth";
-import type { EntityStatus, FullAnimeRecord, FullMangaRecord } from "@/lib/types";
-import { deleteAnimeFromLocalDB, getAnimeFromLocalDB, updateLocalAnime } from "@/lib/anime/pglite-queries";
-import { deleteMangaFromLocalDB, getMangaFromLocalDB, updateLocalManga } from "@/lib/manga/pglite-queries";
+import type {
+  EntityStatus,
+  FullAnimeRecord,
+  FullMangaRecord,
+} from "@/lib/types";
+import {
+  deleteAnimeFromLocalDB,
+  getAnimeFromLocalDB,
+  updateLocalAnime,
+} from "@/lib/anime/pglite-queries";
+import {
+  deleteMangaFromLocalDB,
+  getMangaFromLocalDB,
+  updateLocalManga,
+} from "@/lib/manga/pglite-queries";
 import { entityStatuses } from "@/lib/constants";
 
 type Props = {
   user: User | null;
-} & ({ entityType: 'ANIME'; data: FullAnimeRecord & { entityStatus?: EntityStatus, embedding: number[] }; } | { entityType: 'MANGA'; data: FullMangaRecord & { entityStatus?: EntityStatus, embedding: number[] }; });
+} & (
+  | {
+      entityType: "ANIME";
+      data: FullAnimeRecord & {
+        entityStatus?: EntityStatus;
+        embedding: number[];
+      };
+    }
+  | {
+      entityType: "MANGA";
+      data: FullMangaRecord & {
+        entityStatus?: EntityStatus;
+        embedding: number[];
+      };
+    }
+);
 
-export function StatusDropdown({
-  data,
-  entityType,
-  user,
-}: Props) {
+export function StatusDropdown({ data, entityType, user }: Props) {
   const [status, setStatus] = useState(data.entityStatus);
 
   useEffect(() => {
     if (!user) {
-      if (entityType === 'ANIME') {
-        getAnimeFromLocalDB(data.mal_id!).then((record) => {
-          if (record) {
-            setStatus(record.entityStatus);
-          } else {
-            setStatus('not-started');
-          }
-        }).catch(console.error);
+      if (entityType === "ANIME") {
+        getAnimeFromLocalDB(data.mal_id!)
+          .then((record) => {
+            if (record) {
+              setStatus(record.entityStatus);
+            } else {
+              setStatus("not-started");
+            }
+          })
+          .catch(console.error);
       } else {
-        getMangaFromLocalDB(data.mal_id!).then((record) => {
-          if (record) {
-            setStatus(record.entityStatus);
-          } else {
-            setStatus('not-started');
-          }
-        }).catch(console.error);
+        getMangaFromLocalDB(data.mal_id!)
+          .then((record) => {
+            if (record) {
+              setStatus(record.entityStatus);
+            } else {
+              setStatus("not-started");
+            }
+          })
+          .catch(console.error);
       }
     }
   }, []);
@@ -74,14 +101,14 @@ export function StatusDropdown({
       return;
     }
     if (newStatus === "not-started") {
-      if (entityType === 'ANIME') {
+      if (entityType === "ANIME") {
         await deleteAnimeFromLocalDB(data.mal_id!);
       } else {
         await deleteMangaFromLocalDB(data.mal_id!);
       }
       return;
     }
-    if (entityType === 'ANIME') {
+    if (entityType === "ANIME") {
       await updateLocalAnime(data, newStatus);
     } else {
       await updateLocalManga(data, newStatus);
@@ -99,7 +126,7 @@ export function StatusDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={status}
-          onValueChange={value => handleStatusChange(value as EntityStatus)}
+          onValueChange={(value) => handleStatusChange(value as EntityStatus)}
         >
           {entityStatuses.map((status) => (
             <DropdownMenuRadioItem

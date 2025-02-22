@@ -1,8 +1,4 @@
-import {
-  SealCheck,
-  CaretUpDown,
-  SignOut,
-} from "@phosphor-icons/react";
+import { SealCheck, CaretUpDown, SignOut } from "@phosphor-icons/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,12 +19,7 @@ import { authClient } from "@/lib/auth-client";
 import type { User } from "better-auth";
 import { Button } from "./ui/button";
 
-export function UserDropdown({
-  user,
-}: {
-  user: User;
-}) {
-
+export function UserDropdown({ user }: { user: User }) {
   async function handleLogout() {
     await authClient.signOut();
     window.location.reload();
@@ -78,4 +69,3 @@ export function UserDropdown({
     </DropdownMenu>
   );
 }
-

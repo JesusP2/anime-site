@@ -2,7 +2,7 @@ import { Moon, Sun } from "@phosphor-icons/react";
 import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
-export function ThemeButton(props: { isDarkMode: boolean; }) {
+export function ThemeButton(props: { isDarkMode: boolean }) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
@@ -11,19 +11,19 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
     setIsDarkMode(isDarkMode);
     document.documentElement.classList[isDarkMode ? "add" : "remove"]("dark");
     const maxAge = 60 * 60 * 24 * 7;
-    document.cookie = `theme=${isDarkMode ? 'dark' : 'light'}; path=/; max-age=${maxAge}`;
+    document.cookie = `theme=${isDarkMode ? "dark" : "light"}; path=/; max-age=${maxAge}`;
   }
 
   async function toggleTheme(isDarkMode: boolean) {
     if (!document.startViewTransition || !ref.current) {
-      setTheme(isDarkMode)
+      setTheme(isDarkMode);
       return;
     }
     await document.startViewTransition(() => {
       flushSync(() => {
-        setTheme(isDarkMode)
-      })
-    }).ready
+        setTheme(isDarkMode);
+      });
+    }).ready;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const x = left + width / 2;
     const y = top + height / 2;
@@ -40,9 +40,9 @@ export function ThemeButton(props: { isDarkMode: boolean; }) {
       },
       {
         duration: duration,
-        easing: 'ease-in-out',
-        pseudoElement: '::view-transition-new(root)',
-      }
+        easing: "ease-in-out",
+        pseudoElement: "::view-transition-new(root)",
+      },
     );
   }
 

@@ -6,11 +6,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -53,15 +49,31 @@ export function Pagination({
         </PaginationItem>
         {tabs.map((tab, idx) => (
           <PaginationItem key={tab + idx.toString()}>
-            {tab === '...' ? (
-              <Select onValueChange={(value) => window.location.href = createLink(url, value, lastVisiblePage)}>
+            {tab === "..." ? (
+              <Select
+                onValueChange={(value) =>
+                  (window.location.href = createLink(
+                    url,
+                    value,
+                    lastVisiblePage,
+                  ))
+                }
+              >
                 <SelectPrimitive.Trigger
-                  className={cn(buttonVariants({ variant: 'ghost' }), 'w-9 p-0')}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "w-9 p-0",
+                  )}
                 >
                   ...
                 </SelectPrimitive.Trigger>
                 <SelectContent className="min-w-[60px] w-[60px] overflow-hidden">
-                  <HiddenTabs idx={idx} lastVisiblePage={lastVisiblePage} tabs={tabs} currentPage={currentPage} />
+                  <HiddenTabs
+                    idx={idx}
+                    lastVisiblePage={lastVisiblePage}
+                    tabs={tabs}
+                    currentPage={currentPage}
+                  />
                 </SelectContent>
               </Select>
             ) : (
@@ -96,28 +108,52 @@ function createLink(url: URL, page: number | string, lastVisiblePage: number) {
   return newUrl.toString();
 }
 
-function HiddenTabs({ idx, lastVisiblePage, tabs, currentPage }: { idx: number; lastVisiblePage: number, tabs: (string | number)[]; currentPage: number }) {
+function HiddenTabs({
+  idx,
+  lastVisiblePage,
+  tabs,
+  currentPage,
+}: {
+  idx: number;
+  lastVisiblePage: number;
+  tabs: (string | number)[];
+  currentPage: number;
+}) {
   const hiddenTabs = Array.from(
     { length: lastVisiblePage },
-    (_, i) => i + 1
-  ).filter(num => {
+    (_, i) => i + 1,
+  ).filter((num) => {
     const prevTabValue = tabs[idx - 1];
     const nextTabValue = tabs[idx + 1];
-    if (idx < currentPage && typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
+    if (
+      idx < currentPage &&
+      typeof prevTabValue === "number" &&
+      typeof nextTabValue === "number"
+    ) {
       return num > prevTabValue && num < nextTabValue;
-    } else if (typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
+    } else if (
+      typeof prevTabValue === "number" &&
+      typeof nextTabValue === "number"
+    ) {
       return num > prevTabValue && num < nextTabValue;
     }
-  })
+  });
 
-  const HiddenTabsItem = useCallback(({ index, style }: { index: number; data: number; style: any }) => {
-    if (hiddenTabs[index] === undefined) return null;
-    return (
-      <SelectItem value={hiddenTabs[index].toString()} style={{ ...style, width: '50px' }} key={hiddenTabs[index]}>
-        {hiddenTabs[index]}
-      </SelectItem>
-    )
-  }, []);
+  const HiddenTabsItem = useCallback(
+    ({ index, style }: { index: number; data: number; style: any }) => {
+      if (hiddenTabs[index] === undefined) return null;
+      return (
+        <SelectItem
+          value={hiddenTabs[index].toString()}
+          style={{ ...style, width: "50px" }}
+          key={hiddenTabs[index]}
+        >
+          {hiddenTabs[index]}
+        </SelectItem>
+      );
+    },
+    [],
+  );
   return (
     <List
       height={290}
@@ -128,5 +164,5 @@ function HiddenTabs({ idx, lastVisiblePage, tabs, currentPage }: { idx: number; 
     >
       {HiddenTabsItem}
     </List>
-  )
+  );
 }

@@ -7,7 +7,16 @@ const gapBetweenCards = 16;
 
 type Props = {
   header: ReactNode;
-} & ({ type: "ANIME"; records: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[]; } | { type: "MANGA"; records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[]; });
+} & (
+  | {
+      type: "ANIME";
+      records: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[];
+    }
+  | {
+      type: "MANGA";
+      records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[];
+    }
+);
 export function Carousel({ records, header, type }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
@@ -29,7 +38,7 @@ export function Carousel({ records, header, type }: Props) {
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
     setTotalTranslate(
       (pages - 1) * translateWindow +
-      ((records.length - pages * minTotal) / minTotal) * translateWindow,
+        ((records.length - pages * minTotal) / minTotal) * translateWindow,
     );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
@@ -73,20 +82,17 @@ export function Carousel({ records, header, type }: Props) {
           className="flex gap-x-4 my-2 transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${calculateTranslate()}%)` }}
         >
-          {type === 'ANIME' ? (
-            records.map((anime, idx) => (
-              <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-                <CarouselAnimeCard record={anime} width={width} />
-              </div>
-            ))
-          ) : (
-            records.map((manga, idx) => (
-              <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
-                <CarouselMangaCard record={manga} width={width} />
-              </div>
-            ))
-          )
-          }
+          {type === "ANIME"
+            ? records.map((anime, idx) => (
+                <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
+                  <CarouselAnimeCard record={anime} width={width} />
+                </div>
+              ))
+            : records.map((manga, idx) => (
+                <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
+                  <CarouselMangaCard record={manga} width={width} />
+                </div>
+              ))}
         </div>
       </div>
       <button
