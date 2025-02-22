@@ -10,11 +10,12 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
 } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { FixedSizeList as List } from "react-window";
+import { useCallback } from "react";
 
 export function Pagination({
   currentPage,
@@ -40,6 +41,7 @@ export function Pagination({
   if (currentPage > 2) {
     tabs.splice(1, currentPage - 3 < 0 ? 0 : currentPage - 3, "...");
   }
+
   return (
     <BasePagination>
       <PaginationContent>
@@ -58,23 +60,8 @@ export function Pagination({
                 >
                   ...
                 </SelectPrimitive.Trigger>
-                <SelectContent>
-                  {Array.from(
-                    { length: lastVisiblePage },
-                    (_, i) => i + 1
-                  ).filter(num => {
-                    const prevTabValue = tabs[idx - 1];
-                    const nextTabValue = tabs[idx + 1];
-                    if (idx < currentPage && typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
-                      return num > prevTabValue && num < nextTabValue;
-                    } else if (typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
-                      return num > prevTabValue && num < nextTabValue;
-                    }
-                  }).map((pageNum) => (
-                    <SelectItem key={pageNum} value={pageNum.toString()}>
-                      {pageNum}
-                    </SelectItem>
-                  ))}
+                <SelectContent className="min-w-[60px] w-[60px] overflow-hidden">
+                  <HiddenTabs idx={idx} lastVisiblePage={lastVisiblePage} tabs={tabs} currentPage={currentPage} />
                 </SelectContent>
               </Select>
             ) : (
@@ -107,4 +94,39 @@ function createLink(url: URL, page: number | string, lastVisiblePage: number) {
   const newUrl = new URL(url);
   newUrl.searchParams.set("page", page.toString());
   return newUrl.toString();
+}
+
+function HiddenTabs({ idx, lastVisiblePage, tabs, currentPage }: { idx: number; lastVisiblePage: number, tabs: (string | number)[]; currentPage: number }) {
+  const hiddenTabs = Array.from(
+    { length: lastVisiblePage },
+    (_, i) => i + 1
+  ).filter(num => {
+    const prevTabValue = tabs[idx - 1];
+    const nextTabValue = tabs[idx + 1];
+    if (idx < currentPage && typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
+      return num > prevTabValue && num < nextTabValue;
+    } else if (typeof prevTabValue === 'number' && typeof nextTabValue === 'number') {
+      return num > prevTabValue && num < nextTabValue;
+    }
+  })
+
+  const HiddenTabsItem = useCallback(({ index, style }: { index: number; data: number; style: any }) => {
+    if (hiddenTabs[index] === undefined) return null;
+    return (
+      <SelectItem value={hiddenTabs[index].toString()} style={{ ...style, width: '50px' }} key={hiddenTabs[index]}>
+        {hiddenTabs[index]}
+      </SelectItem>
+    )
+  }, []);
+  return (
+    <List
+      height={290}
+      width={60}
+      itemCount={hiddenTabs.length}
+      itemSize={32}
+      className="overflow-hidden pagination-scrollbar"
+    >
+      {HiddenTabsItem}
+    </List>
+  )
 }
