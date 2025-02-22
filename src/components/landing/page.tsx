@@ -19,10 +19,22 @@ export function LandingPage({
   isDarkMode,
   user,
 }: {
-  currentSeasonAnimes: Result<AnimeCard[], Error>;
-  allTimeFavorites: Result<AnimeCard[], Error>;
-  popularThisSeasonAnimes: Result<AnimeCard[], Error>;
-  topMangas: Result<MangaCard[], Error>;
+  currentSeasonAnimes: {
+    data: Result<AnimeCard[], Error>;
+    searchParams: string;
+  };
+  allTimeFavorites: {
+    data: Result<AnimeCard[], Error>;
+    searchParams: string;
+  };
+  popularThisSeasonAnimes: {
+    data: Result<AnimeCard[], Error>;
+    searchParams: string;
+  };
+  topMangas: {
+    data: Result<MangaCard[], Error>;
+    searchParams: string;
+  };
   isDarkMode: boolean;
   user: User | null;
 }) {
@@ -79,9 +91,8 @@ export function LandingPage({
           >
             <div
               id="search-field"
-              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${
-                showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
             >
               <div className="relative flex-1">
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -99,7 +110,7 @@ export function LandingPage({
           </form>
         </div>
         <div className="w-full max-w-7xl mx-auto mt-16 space-y-16">
-          {currentSeasonAnimes.success ? (
+          {currentSeasonAnimes.data.success ? (
             <section>
               <Carousel
                 header={
@@ -108,19 +119,19 @@ export function LandingPage({
                       Current Season
                     </h2>
                     <a
-                      href="/search?"
+                      href={`/search?${currentSeasonAnimes.searchParams}`}
                       className={buttonVariants({ variant: "link" })}
                     >
                       View more
                     </a>
                   </div>
                 }
-                records={currentSeasonAnimes.value}
+                records={currentSeasonAnimes.data.value}
                 type="ANIME"
               />
             </section>
           ) : null}
-          {allTimeFavorites.success ? (
+          {allTimeFavorites.data.success ? (
             <section>
               <Carousel
                 header={
@@ -129,20 +140,20 @@ export function LandingPage({
                       All Time Favorites
                     </h2>
                     <a
-                      href="/seasons/now"
+                      href={`/search?${allTimeFavorites.searchParams}`}
                       className={buttonVariants({ variant: "link" })}
                     >
                       View more
                     </a>
                   </div>
                 }
-                records={allTimeFavorites.value}
+                records={allTimeFavorites.data.value}
                 type="ANIME"
               />
             </section>
           ) : null}
 
-          {popularThisSeasonAnimes.success ? (
+          {popularThisSeasonAnimes.data.success ? (
             <section>
               <Carousel
                 header={
@@ -151,19 +162,19 @@ export function LandingPage({
                       Popular this season
                     </h2>
                     <a
-                      href="/seasons/now"
+                      href={`/search?${popularThisSeasonAnimes.searchParams}`}
                       className={buttonVariants({ variant: "link" })}
                     >
                       View more
                     </a>
                   </div>
                 }
-                records={popularThisSeasonAnimes.value}
+                records={popularThisSeasonAnimes.data.value}
                 type="ANIME"
               />
             </section>
           ) : null}
-          {topMangas.success ? (
+          {topMangas.data.success ? (
             <section>
               <Carousel
                 header={
@@ -172,14 +183,14 @@ export function LandingPage({
                       Top Mangas
                     </h2>
                     <a
-                      href="/seasons/now"
+                      href={`/search?${topMangas.searchParams}`}
                       className={buttonVariants({ variant: "link" })}
                     >
                       View more
                     </a>
                   </div>
                 }
-                records={topMangas.value}
+                records={topMangas.data.value}
                 type="MANGA"
               />
             </section>

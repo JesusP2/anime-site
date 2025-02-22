@@ -21,14 +21,27 @@ const popularThisSeasonSearch = new URLSearchParams([
   ["page", "1"],
 ]);
 const topMangasSearch = new URLSearchParams([
+  ["searchType", "Manga"],
   ["orderBy", "score"],
   ["sort", "desc"],
   ["page", "1"],
 ]);
-const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
-const allTimeFavoritesAnimes = await getCarouselAnimes(allTimeFavoritesSearch, 15);
-const popularThisSeasonAnimes = await getCarouselAnimes(popularThisSeasonSearch, 15);
-const topMangas = await getCarouselMangas(topMangasSearch, 15);
+// const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
+// const allTimeFavoritesAnimes = await getCarouselAnimes(
+//   allTimeFavoritesSearch,
+//   15,
+// );
+// const popularThisSeasonAnimes = await getCarouselAnimes(
+//   popularThisSeasonSearch,
+//   15,
+// );
+// const topMangas = await getCarouselMangas(topMangasSearch, 15);
+const [currentSeasonAnimes, allTimeFavoritesAnimes, popularThisSeasonAnimes, topMangas] = await Promise.all([
+  getCarouselAnimes(currentSeasonSearch, 15),
+  getCarouselAnimes(allTimeFavoritesSearch, 15),
+  getCarouselAnimes(popularThisSeasonSearch, 15),
+  getCarouselMangas(topMangasSearch, 15),
+]);
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
@@ -37,11 +50,25 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
   <body class="overflow-x-hidden">
     <LandingPage
       isDarkMode={isDarkMode}
-      currentSeasonAnimes={currentSeasonAnimes}
-      popularThisSeasonAnimes={popularThisSeasonAnimes}
-      topMangas={topMangas}
+      currentSeasonAnimes={{
+        data: currentSeasonAnimes,
+        searchParams: currentSeasonSearch.toString(),
+      }}
+      }}
+      popularThisSeasonAnimes={{
+        data: popularThisSeasonAnimes,
+        searchParams: popularThisSeasonSearch.toString(),
+      }}
+      }}
+      topMangas={{
+        data: topMangas,
+        searchParams: topMangasSearch.toString(),
+      }}
       user={Astro.locals.user}
-      allTimeFavorites={allTimeFavoritesAnimes}
+      allTimeFavorites={{
+        data: allTimeFavoritesAnimes,
+        searchParams: allTimeFavoritesSearch.toString(),
+      }}
       client:load
     />
   </body>
