@@ -300,7 +300,7 @@ export async function getCarouselAnimes(
     animeTable,
   );
   try {
-    const animeRecords = await db
+    const query = db
       .select({
         mal_id: animeTable.mal_id,
         titles: animeTable.titles,
@@ -310,9 +310,12 @@ export async function getCarouselAnimes(
       .from(animeTable)
       .where(where)
       .offset(offset)
-      .orderBy(...(orderBy as any))
       .limit(recordsPerPage);
-    return ok(animeRecords);
+    if (orderBy) {
+      return ok(await query.orderBy(orderBy));
+    } else {
+      return ok(await query);
+    }
   } catch (_) {
     console.error(_);
     return err(

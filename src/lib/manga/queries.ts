@@ -265,7 +265,7 @@ export async function getCarouselMangas(
     mangaTable,
   );
   try {
-    const mangaRecords = await db
+    const query = db
       .select({
         mal_id: mangaTable.mal_id,
         titles: mangaTable.titles,
@@ -275,9 +275,12 @@ export async function getCarouselMangas(
       .from(mangaTable)
       .where(where)
       .offset(offset)
-      .orderBy(...(orderBy as any))
       .limit(recordsPerPage);
-    return ok(mangaRecords);
+    if (orderBy) {
+      return ok(await query.orderBy(orderBy));
+    } else {
+      return ok(await query);
+    }
   } catch (_) {
     console.error(_);
     return err(

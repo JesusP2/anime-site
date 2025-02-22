@@ -85,7 +85,7 @@ export function LandingPage({ currentSeasonAnimes, allTimeFavorites, popularThis
                   <h2 className="text-xl font-bold font-gabarito font-medium">
                     Current Season
                   </h2>
-                  <a href="/seasons/now" className={buttonVariants({ variant: "link" })}>
+                  <a href="/search?" className={buttonVariants({ variant: "link" })}>
                     View more
                   </a>
                 </div>
