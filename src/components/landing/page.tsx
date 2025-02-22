@@ -83,6 +83,7 @@ export function LandingPage({
           </p>
 
           <form
+            className="w-full"
             onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.target as HTMLFormElement);
@@ -93,7 +94,7 @@ export function LandingPage({
           >
             <div
               id="search-field"
-              className={`flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
+              className={`mx-auto flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
             >
               <div className="relative flex-1">
@@ -198,6 +199,18 @@ export function LandingPage({
             </section>
           ) : null}
         </div>
+        <footer className="mt-24 pb-8 text-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="border-t border-gray-200 dark:border-gray-800 pt-8">
+              <p>© {new Date().getFullYear()} AnimeSearch. All rights reserved.</p>
+              <div className="mt-2 space-x-4">
+                <a href="/about" className="hover:text-gray-700 dark:hover:text-gray-300">About</a>
+                <a href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300">Privacy</a>
+                <a href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300">Terms</a>
+              </div>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );
