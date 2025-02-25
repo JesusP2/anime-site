@@ -27,7 +27,7 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
-      R2_BUCKET: envField.string({ context: "server", access: "public" }),
+      R2_BUCKET: envField.string({ context: "server", access: "secret" }),
       GOOGLE_CLIENT_ID: envField.string({
         context: "server",
         access: "secret",
