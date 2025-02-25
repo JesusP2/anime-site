@@ -6,8 +6,6 @@ import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import path from "path";
 
-import node from "@astrojs/node";
-
 import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
@@ -20,10 +18,10 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
-      R2_ENDPOINT: envField.string({ context: "server", access: "public" }),
+      R2_ENDPOINT: envField.string({ context: "server", access: "secret" }),
       R2_ACCESS_KEY_ID: envField.string({
         context: "server",
-        access: "public",
+        access: "secret",
       }),
       R2_SECRET_ACCESS_KEY: envField.string({
         context: "server",
@@ -40,7 +38,7 @@ export default defineConfig({
       }),
       GOOGLE_REDIRECT_URI: envField.string({
         context: "server",
-        access: "public",
+        access: "secret",
       }),
       OPENAI_API_KEY: envField.string({
         context: "server",
