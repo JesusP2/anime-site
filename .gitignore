@@ -27,3 +27,4 @@ pnpm-debug.log*
 scripts/
 chromadb/
 chroma.log
+.wrangler
