@@ -1,12 +1,13 @@
 import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 
-let currentSeason = {
-  year: 2025,
-  season: "winter",
-  ttl: Date.now() + 1000 * 60 * 60 * 24 * 7,
-};
 export const onRequest = defineMiddleware(async (context, next) => {
+  // NOTE: move this to the db
+  let currentSeason = {
+    year: 2025,
+    season: "winter",
+    ttl: Date.now() + 1000 * 60 * 60 * 24 * 7,
+  };
   if (currentSeason.ttl < Date.now()) {
     const res = await fetch("https://api.jikan.moe/v4/seasons/now?limit=1");
     const data = await res.json();
