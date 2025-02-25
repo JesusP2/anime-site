@@ -21,7 +21,7 @@ export function MangasWithStatusPage({
   user,
   title,
 }: {
-  url: URL;
+  url: string;
   records: Result<
     { data: (MangaCardItem & { entityStatus?: string })[]; count: number },
     ActionError
@@ -30,12 +30,13 @@ export function MangasWithStatusPage({
   user: User | null;
   title: string;
 }) {
+  const _url = new URL(url);
   const [_records, _setRecords] = useState(records);
-  const currentPage = getCurrentPage(url.searchParams);
-  const recordsPerPage = getRecordsPerPage(url.searchParams);
+  const currentPage = getCurrentPage(_url.searchParams);
+  const recordsPerPage = getRecordsPerPage(_url.searchParams);
   useEffect(() => {
     if (user) return;
-    getMangasFromLocalDB(entityStatus, url.searchParams).then(
+    getMangasFromLocalDB(entityStatus, _url.searchParams).then(
       (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
@@ -77,7 +78,7 @@ export function MangasWithStatusPage({
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
-          url={url}
+          url={_url}
           lastVisiblePage={Math.ceil(
             (_records.success ? _records.value.count : 1) / recordsPerPage,
           )}

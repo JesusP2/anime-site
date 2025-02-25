@@ -46,7 +46,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
-  <Head title={"title"} description={"description"} />
+  <Head title={"Anisearch"} description={"description"} />
   <body class="overflow-x-hidden">
     <LandingPage
       isDarkMode={isDarkMode}

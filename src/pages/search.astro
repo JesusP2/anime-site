@@ -20,7 +20,7 @@ const records =
 
 <MainLayout title="Anime Search">
   <SearchAnimePage
-    url={new URL(Astro.url.toString())}
+    url={Astro.url.toString()}
     searchType={searchParams.get("searchType") as "Anime" | "Manga"}
     records={records}
     currentPage={currentPage}

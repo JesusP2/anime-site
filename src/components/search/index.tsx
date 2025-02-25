@@ -40,12 +40,12 @@ export function SearchWithFilters({
   onSearch,
 }: {
   entity: "Anime" | "Manga" | "Both";
-  url: URL;
+  url: string;
   title: string;
   onSearch: (filters: URLSearchParams) => void;
 }) {
   const [filters, setFilters] = useState(
-    setupFilters(entity === "Manga" ? mangaFilters : animeFilters, url),
+    setupFilters(entity === "Manga" ? mangaFilters : animeFilters, new URL(url)),
   );
   const [searchType, setSearchType] = useState<"Anime" | "Manga">(
     entity === "Manga" ? "Manga" : "Anime",
@@ -53,7 +53,7 @@ export function SearchWithFilters({
   const options = searchType === "Manga" ? mangaFilters : animeFilters;
 
   useEffect(() => {
-    setFilters(setupFilters(options, url));
+    setFilters(setupFilters(options, new URL(url)));
   }, [searchType]);
 
   const getActiveFiltersCount = () => {

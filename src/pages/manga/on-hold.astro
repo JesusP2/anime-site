@@ -19,7 +19,7 @@ const records = Astro.locals.user
 <MainLayout title="Mangas on hold">
   <MangasWithStatusPage
     title="Mangas on hold"
-    url={new URL(Astro.url)}
+    url={Astro.url.toString()}
     records={records}
     entityStatus={entityStatus}
     user={Astro.locals.user}

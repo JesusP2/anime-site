@@ -21,7 +21,7 @@ export function AnimesWithStatusPage({
   user,
   title,
 }: {
-  url: URL;
+  url: string;
   records: Result<
     { data: (AnimeCardItem & { entityStatus?: string })[]; count: number },
     ActionError
@@ -30,12 +30,13 @@ export function AnimesWithStatusPage({
   user: User | null;
   title: string;
 }) {
+  const _url = new URL(url);
   const [_records, _setRecords] = useState(records);
-  const currentPage = getCurrentPage(url.searchParams);
-  const recordsPerPage = getRecordsPerPage(url.searchParams);
+  const currentPage = getCurrentPage(_url.searchParams);
+  const recordsPerPage = getRecordsPerPage(_url.searchParams);
   useEffect(() => {
     if (user) return;
-    getAnimesFromLocalDB(entityStatus, url.searchParams).then(
+    getAnimesFromLocalDB(entityStatus, _url.searchParams).then(
       (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
@@ -77,7 +78,7 @@ export function AnimesWithStatusPage({
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
-          url={url}
+          url={_url}
           lastVisiblePage={Math.ceil(
             (_records.success ? _records.value.count : 1) / recordsPerPage,
           )}

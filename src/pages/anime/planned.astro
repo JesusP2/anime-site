@@ -21,7 +21,7 @@ const records = Astro.locals.user
 <MainLayout title="Animes planned to watch">
   <AnimesWithStatusPage
     title="Animes planned to watch"
-    url={new URL(Astro.url)}
+    url={Astro.url.toString()}
     records={records}
     entityStatus={entityStatus}
     user={Astro.locals.user}
