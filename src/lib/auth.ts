@@ -12,10 +12,10 @@ import {
 import { sendEmail } from "./email";
 import { magicLinkTemplate } from "./email/templates/magic-link";
 import { forgotPasswordTemplate } from "./email/templates/otp";
-import { z } from "astro:schema";
 
 export const auth = betterAuth({
   plugins: [
+    username(),
     passkey(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {

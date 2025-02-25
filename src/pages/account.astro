@@ -1,0 +1,12 @@
+---
+import "@/styles/global.css";
+import { AccountPage } from "@/components/account.page";
+const user = Astro.locals.user;
+const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
+---
+
+<html lang="en" class={isDarkMode ? "dark" : ""}>
+  <body>
+    <AccountPage user={user} client:load />
+  </body>
+</html>

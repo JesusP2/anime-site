@@ -24,7 +24,7 @@ if (Astro.locals.user) {
           "w-full flex gap-x-2",
         )}
       >
-        <img src="/public/google.svg" />
+        <img src="/google.svg" />
         Login with Google
       </button>
     </section>
@@ -51,6 +51,7 @@ if (Astro.locals.user) {
             id="email"
             name="email"
             placeholder="example@gmail.com"
+            autocomplete="email webauthn"
             required
           />
         </div>
@@ -73,6 +74,7 @@ if (Astro.locals.user) {
             id="password"
             name="password"
             type="password"
+            autocomplete="current-password webauthn"
             required
           />
         </div>

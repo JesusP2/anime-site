@@ -55,10 +55,12 @@ export function UserDropdown({ user }: { user: User }) {
         <DropdownMenuSeparator />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <a href="/account">
           <DropdownMenuItem>
             <SealCheck weight="bold" />
             Account
           </DropdownMenuItem>
+          </a>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
