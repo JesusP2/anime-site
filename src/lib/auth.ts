@@ -7,11 +7,11 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
-  BASE_URL,
 } from "astro:env/server";
 import { sendEmail } from "./email";
 import { magicLinkTemplate } from "./email/templates/magic-link";
 import { forgotPasswordTemplate } from "./email/templates/otp";
+import { BASE_URL } from "astro:env/client";
 
 export const auth = betterAuth({
   plugins: [

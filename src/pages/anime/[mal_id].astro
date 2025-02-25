@@ -6,9 +6,14 @@ import { getAnime } from "@/lib/anime/queries";
 const mal_id = parseInt(Astro.params.mal_id || "0");
 const userId = Astro.locals.user?.id;
 const anime = await getAnime(Number(mal_id), userId);
+const animeTitle =
+  (anime.success &&
+    anime.value.titles?.find((title) => title.type === "English")?.title) ||
+  (anime.success &&
+    anime.value.titles?.find((title) => title.type === "Default")?.title);
 ---
 
-<MainLayout title="title">
+<MainLayout title={animeTitle} description={animeTitle}>
   {
     anime.success ? (
       <AnimePage anime={anime.value} user={Astro.locals.user} />

@@ -1,22 +1,25 @@
 ---
 import "@/styles/global.css";
-import '@fontsource/geist-sans/100.css';
-import '@fontsource/geist-sans/200.css';
-import '@fontsource/geist-sans/300.css';
-import '@fontsource/geist-sans/400.css';
-import '@fontsource/geist-sans/500.css';
-import '@fontsource/geist-sans/600.css';
-import '@fontsource/geist-sans/700.css';
-import '@fontsource/geist-sans/800.css';
-import '@fontsource/geist-sans/900.css';
-import '@fontsource-variable/gabarito';
+import "@fontsource/geist-sans/100.css";
+import "@fontsource/geist-sans/200.css";
+import "@fontsource/geist-sans/300.css";
+import "@fontsource/geist-sans/400.css";
+import "@fontsource/geist-sans/500.css";
+import "@fontsource/geist-sans/600.css";
+import "@fontsource/geist-sans/700.css";
+import "@fontsource/geist-sans/800.css";
+import "@fontsource/geist-sans/900.css";
+import "@fontsource-variable/gabarito";
 import { ClientRouter } from "astro:transitions";
+import { BASE_URL } from "astro:env/client";
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  path?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image, path } = Astro.props;
 ---
 
 <head>
@@ -27,5 +30,26 @@ const { title, description } = Astro.props;
   <meta name="title" content={title} />
   <meta name="description" content={description} />
   <title>{title}</title>
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content={path ? BASE_URL + path : BASE_URL} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta
+    property="og:image"
+    content={image || '/favicon.svg'}
+  />
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="twitter:domain" content="notmyanimelist.com" />
+  <meta property="twitter:url" content={path ? BASE_URL + path : BASE_URL} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta
+    name="twitter:image"
+    content={image || '/favicon.svg'}
+  />
   <ClientRouter />
 </head>

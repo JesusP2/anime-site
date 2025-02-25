@@ -5,9 +5,14 @@ import { getManga } from "@/lib/manga/queries";
 const mal_id = parseInt(Astro.params.mal_id || "0");
 const userId = Astro.locals.user?.id;
 const manga = await getManga(Number(mal_id), userId);
+const mangaTitle =
+  (manga.success &&
+    manga.value.titles?.find((title) => title.type === "English")?.title) ||
+  (manga.success &&
+    manga.value.titles?.find((title) => title.type === "Default")?.title);
 ---
 
-<MainLayout title="title">
+<MainLayout title={mangaTitle} description={mangaTitle}>
   {
     manga.success ? (
       <MangaPage manga={manga.value} user={Astro.locals.user} />

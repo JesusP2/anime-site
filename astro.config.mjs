@@ -55,7 +55,7 @@ export default defineConfig({
       }),
       RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       EMAIL_FROM: envField.string({ context: "server", access: "public" }),
-      BASE_URL: envField.string({ context: "server", access: "public" }),
+      BASE_URL: envField.string({ context: "client", access: "public" }),
     },
   },
   integrations: [react(), tailwind({ applyBaseStyles: false })],
