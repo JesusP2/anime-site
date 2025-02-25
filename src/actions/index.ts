@@ -1,5 +1,4 @@
 import { ActionError, defineAction } from "astro:actions";
-import { auth } from "./auth";
 import { z } from "astro:schema";
 import { db } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
@@ -7,13 +6,12 @@ import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
 
 export const server = {
-  auth,
   updateEntity: defineAction({
     accept: "json",
     input: z.object({
       mal_id: z.number(),
       entityType: z.enum(["ANIME", "MANGA"]),
-      status: z.string(),
+      status: z.enum(['watching', 'completed', 'on-hold', 'dropped']),
     }),
     handler: async ({ mal_id, entityType, status }, context) => {
       const userId = context.locals.user?.id;
