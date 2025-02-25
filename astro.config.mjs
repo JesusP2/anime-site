@@ -7,14 +7,14 @@ import tailwind from "@astrojs/tailwind";
 
 import node from "@astrojs/node";
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   env: {
     schema: {
       ANIME_API: envField.string({ context: "client", access: "public" }),
-      DATABASE_URL: envField.string({ context: "server", access: "secret" }),
-      DATABASE_TOKEN: envField.string({ context: "server", access: "secret" }),
       CLOUDFLARE_TOKEN: envField.string({
         context: "server",
         access: "secret",
@@ -45,14 +45,6 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
-      ZILLIZ_TOKEN: envField.string({
-        context: "server",
-        access: "secret",
-      }),
-      ZILLIZ_ENDPOINT: envField.string({
-        context: "server",
-        access: "secret",
-      }),
       RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       EMAIL_FROM: envField.string({ context: "server", access: "public" }),
       BASE_URL: envField.string({ context: "client", access: "public" }),
@@ -62,9 +54,7 @@ export default defineConfig({
   image: {
     domains: ["cdn.myanimelist.net"],
   },
-  adapter: node({
-    mode: "standalone",
-  }),
+  adapter: cloudflare(),
   vite: {
     optimizeDeps: {
       exclude: ["@electric-sql/pglite"],
