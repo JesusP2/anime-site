@@ -16,9 +16,13 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={title} description={description} />
   <body>
-      <AppSidebar isDarkMode={isDarkMode} isSidebarOpen={isSidebarOpen} user={user} client:load>
-        <slot />
-      </AppSidebar>
-    </main>
+    <AppSidebar
+      isDarkMode={isDarkMode}
+      isSidebarOpen={isSidebarOpen}
+      user={user}
+      client:load
+    >
+      <slot />
+    </AppSidebar>
   </body>
 </html>

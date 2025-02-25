@@ -1,0 +1,124 @@
+---
+import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { labelVariants } from "@/components/ui/label";
+import { inputVariants } from "@/components/ui/input";
+import AuthLayout from "@/layout/auth.astro";
+const token = Astro.params.id;
+if (Astro.locals.user) {
+  return Astro.redirect("/");
+}
+---
+
+<AuthLayout title="Login">
+  <h1 slot="card-title">Reset password</h1>
+  <Fragment slot="card-content">
+    <form method="POST">
+      <section class="grid gap-4">
+        <span id="form-error" class="text-sm text-red-500"></span>
+        <input type="hidden" name="token" value={token} />
+        <div class="grid gap-2">
+          <div class="flex items-center gap-x-1">
+            <label class={labelVariants()} for="password">Password</label>
+            <button class="eye-btn" type="button" class="hover:text-gray-600">
+              <Eye className="eye-line" size={17} />
+              <EyeSlash className="eye-off-line hidden" size={17} />
+            </button>
+          </div>
+          <input
+            transition:persist
+            class={inputVariants()}
+            type="password"
+            id="password"
+            name="password"
+            required
+          />
+        </div>
+        <div class="grid gap-2">
+          <div class="flex items-center gap-x-1">
+            <label class={labelVariants()} for="confirmPassword"
+              >Confirm Password</label
+            >
+            <button class="eye-btn-2" type="button" class="hover:text-gray-600">
+              <Eye className="eye-line-2" size={17} />
+              <EyeSlash className="eye-off-line-2 hidden" size={17} />
+            </button>
+          </div>
+          <input
+            transition:persist
+            class={inputVariants()}
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+        </div>
+
+        <button
+          id="button"
+          class={cn(buttonVariants({ variant: "default" }), "w-full")}
+        >
+          Reset password
+        </button>
+      </section>
+    </form>
+  </Fragment>
+</AuthLayout>
+
+<script>
+  const eyeBtn = document.querySelector(".eye-btn");
+  if (eyeBtn) {
+    const eyeLineIcon = eyeBtn.querySelector(".eye-line");
+    const eyeOffLineIcon = eyeBtn.querySelector(".eye-off-line");
+    const passwordInput = document.querySelector<HTMLInputElement>("#password");
+    eyeBtn?.addEventListener("click", () => {
+      if (!eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
+      eyeLineIcon.classList.toggle("hidden");
+      eyeOffLineIcon.classList.toggle("hidden");
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+    });
+  }
+
+  const eyeBtn2 = document.querySelector(".eye-btn-2");
+  if (eyeBtn2) {
+    const eyeLineIcon = eyeBtn2.querySelector(".eye-line-2");
+    const eyeOffLineIcon = eyeBtn2.querySelector(".eye-off-line-2");
+    const passwordInput =
+      document.querySelector<HTMLInputElement>("#confirmPassword");
+    eyeBtn2?.addEventListener("click", () => {
+      if (!eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
+      eyeLineIcon.classList.toggle("hidden");
+      eyeOffLineIcon.classList.toggle("hidden");
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+    });
+  }
+</script>
+<script>
+  import { authClient } from "@/lib/auth-client";
+  const form = document.querySelector("form");
+  const formError = document.querySelector<HTMLSpanElement>("#form-error");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    if (!formError) return;
+    if (!formData.get("password") || !formData.get("token")) {
+      formError.innerText = "Please fill in all fields";
+      return;
+    } else if (formData.get("password") !== formData.get("confirmPassword")) {
+      formError.innerText = "Passwords do not match";
+      return;
+    }
+    const { error } = await authClient.resetPassword({
+      newPassword: formData.get("password") as string,
+      token: formData.get("token") as string,
+    });
+    if (error?.message) {
+      formError.innerText = error.message;
+    } else if (!error) {
+      window.location.href = "/auth/signin";
+    }
+  });
+</script>

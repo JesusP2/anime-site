@@ -1,0 +1,19 @@
+---
+import AuthLayout from "@/layout/auth.astro";
+import { CardTitle, CardContent } from "@/components/ui/card";
+import { EggCrack } from "@phosphor-icons/react";
+const email = Astro.url.searchParams.get("email");
+---
+
+<AuthLayout title="Login">
+  <Fragment slot="card-title">
+    <CardTitle className="text-2xl text-center">
+      Email sent to {email}
+    </CardTitle>
+  </Fragment>
+  <Fragment slot="card-content">
+    <CardContent className="grid place-items-center">
+      <EggCrack size={50} />
+    </CardContent>
+  </Fragment>
+</AuthLayout>

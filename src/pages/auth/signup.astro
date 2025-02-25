@@ -1,18 +1,14 @@
 ---
 import "@/styles/global.css";
-import { actions, isInputError } from "astro:actions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { labelVariants } from "@/components/ui/label";
 import { inputVariants } from "@/components/ui/input";
 import AuthLayout from "@/layout/auth.astro";
-import AuthLink from '@/components/auth-link.astro'
-import { Eye, EyeSlash } from '@phosphor-icons/react';
-const result = Astro.getActionResult(actions.auth.signUp);
-const inputErrors = isInputError(result?.error) ? result.error.fields : {};
-const formError = isInputError(result?.error) ? null : result?.error?.message;
+import AuthLink from "@/components/auth-link.astro";
+import { Eye, EyeSlash } from "@phosphor-icons/react";
 if (Astro.locals.user) {
-  return Astro.redirect('/')
+  return Astro.redirect("/");
 }
 ---
 
@@ -34,7 +30,7 @@ if (Astro.locals.user) {
     </section>
     <section class="relative py-4">
       <div class="absolute inset-0 flex items-center">
-        <span class="w-full border-t" />
+        <span class="w-full border-t"></span>
       </div>
       <div class="relative flex justify-center text-xs uppercase">
         <span
@@ -44,9 +40,9 @@ if (Astro.locals.user) {
         </span>
       </div>
     </section>
-    <form method="POST" action={actions.auth.signUp}>
+    <form method="POST">
+      <span class="text-sm text-red-500" id="form-error"></span>
       <section class="grid gap-4">
-        <span class="text-sm text-red-500">{formError}</span>
         <div class="grid gap-2">
           <label class={labelVariants()} for="email">Email</label>
           <input
@@ -58,7 +54,6 @@ if (Astro.locals.user) {
             required
             class=""
           />
-          <span class="text-sm text-red-500">{inputErrors.email?.join(',')}</span>
         </div>
         <div class="grid gap-2">
           <div class="flex items-center">
@@ -78,7 +73,6 @@ if (Astro.locals.user) {
             type="password"
             required
           />
-          <span class="text-sm text-red-500">{inputErrors.password?.join(',')}</span>
         </div>
         <button class={cn(buttonVariants({ variant: "default" }), "w-full")}>
           Sign up
@@ -87,9 +81,7 @@ if (Astro.locals.user) {
     </form>
     <section class="mt-4 text-center text-sm">
       Don&apos;t have an account?{" "}
-      <AuthLink href="/auth/signin">
-        Login
-      </AuthLink>
+      <AuthLink href="/auth/signin"> Login </AuthLink>
     </section>
   </Fragment>
 </AuthLayout>
@@ -106,12 +98,31 @@ if (Astro.locals.user) {
   if (eyeBtn) {
     const eyeLineIcon = eyeBtn.querySelector(".eye-line");
     const eyeOffLineIcon = eyeBtn.querySelector(".eye-off-line");
-    const passwordInput = document.querySelector<HTMLInputElement>('#password')
+    const passwordInput = document.querySelector<HTMLInputElement>("#password");
     eyeBtn?.addEventListener("click", () => {
       if (!eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
       eyeLineIcon.classList.toggle("hidden");
       eyeOffLineIcon.classList.toggle("hidden");
-      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
     });
   }
+
+  const form = document.querySelector("form");
+  const formError = document.querySelector<HTMLSpanElement>("#form-error");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const { error } = await authClient.signUp.email({
+      name: formData.get("email") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      callbackURL: "/",
+    });
+    if (error?.message && formError) {
+      formError.innerText = error.message;
+    } else if (!error) {
+      window.location.href = "/";
+    }
+  });
 </script>
