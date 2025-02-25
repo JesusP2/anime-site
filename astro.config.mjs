@@ -37,8 +37,8 @@ export default defineConfig({
         access: "secret",
       }),
       GOOGLE_REDIRECT_URI: envField.string({
-        context: "server",
-        access: "secret",
+        context: "client",
+        access: "public",
       }),
       OPENAI_API_KEY: envField.string({
         context: "server",
