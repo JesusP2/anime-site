@@ -1,7 +1,7 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
 import { mangaTable, trackedEntityTable } from "../db/schemas";
 import { mangaSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
-import { db } from "../db/pool";
+import { getDb } from "../db/pool";
 import { mangaFilters } from "./filters";
 import type { EntityStatus, MangaCardItem } from "@/lib/types";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
@@ -53,6 +53,7 @@ export async function getManga(
       demographics: mangaTable.demographics,
       embedding: mangaTable.embedding,
     } as const;
+    const db = getDb();
     const [manga] = await db
       .select({
         ...selectKeys,
@@ -101,6 +102,7 @@ export async function getMangas(
     mangaTable,
   );
   try {
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -178,6 +180,7 @@ export async function getMangasWithStatus(
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -266,6 +269,7 @@ export async function getCarouselMangas(
     mangaTable,
   );
   try {
+    const db = getDb();
     const query = db
       .select({
         mal_id: mangaTable.mal_id,

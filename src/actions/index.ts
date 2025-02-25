@@ -1,6 +1,6 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
-import { db } from "@/lib/db/pool";
+import { getDb } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
 import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
@@ -21,6 +21,7 @@ export const server = {
           message: "Unauthorized",
         });
       }
+      const db = getDb();
       await db
         .insert(trackedEntityTable)
         .values({

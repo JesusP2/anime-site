@@ -1,7 +1,7 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
 import { animeTable, trackedEntityTable } from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
-import { db } from "../db/pool";
+import { getDb } from "../db/pool";
 import { animeFilters } from "./filters";
 import type { AnimeCardItem, EntityStatus } from "@/lib/types";
 import { sanitizeSearchParams } from "../utils/sanitize-searchparams";
@@ -66,6 +66,7 @@ export async function getAnime(
       embedding: animeTable.embedding,
     } as const;
     if (userId) {
+      const db = getDb();
       const [anime] = await db
         .select({
           ...selectKeys,
@@ -90,6 +91,7 @@ export async function getAnime(
         }),
       );
     }
+    const db = getDb();
     const [anime] = await db
       .select({
         ...selectKeys,
@@ -138,6 +140,7 @@ export async function getAnimes(
     animeTable,
   );
   try {
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(animeTable)
@@ -215,6 +218,7 @@ export async function getAnimesWithStatus(
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(animeTable)
@@ -303,6 +307,7 @@ export async function getCarouselAnimes(
     animeTable,
   );
   try {
+    const db = getDb();
     const query = db
       .select({
         mal_id: animeTable.mal_id,

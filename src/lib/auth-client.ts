@@ -5,9 +5,10 @@ import {
   passkeyClient,
   usernameClient,
 } from "better-auth/client/plugins";
+import { BASE_URL } from "astro:env/client";
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:4321",
+  baseURL: BASE_URL,
   plugins: [
     magicLinkClient(),
     emailOTPClient(),
