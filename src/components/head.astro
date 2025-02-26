@@ -38,7 +38,7 @@ const { title, description, image, path } = Astro.props;
   <meta property="og:description" content={description} />
   <meta
     property="og:image"
-    content={image || '/favicon.svg'}
+    content={image || BASE_URL + '/favicon.svg'}
   />
 
   <!-- Twitter Meta Tags -->
@@ -49,7 +49,7 @@ const { title, description, image, path } = Astro.props;
   <meta name="twitter:description" content={description} />
   <meta
     name="twitter:image"
-    content={image || '/favicon.svg'}
+    content={image || BASE_URL + '/favicon.svg'}
   />
   <ClientRouter />
 </head>

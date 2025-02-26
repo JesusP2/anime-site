@@ -15,7 +15,7 @@ const mangaTitle =
 <MainLayout title={mangaTitle} description={mangaTitle}>
   {
     manga.success ? (
-      <MangaDetailsPage manga={manga.value} user={Astro.locals.user} />
+      <MangaDetailsPage manga={manga.value} user={Astro.locals.user} client:load />
     ) : (
       <div>Error</div>
     )
