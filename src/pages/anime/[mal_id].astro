@@ -1,7 +1,7 @@
 ---
 import MainLayout from "@/layout/main.astro";
 
-import AnimePage from "@/components/anime.page.astro";
+import { AnimeDetailsPage } from "@/components/anime.page.tsx";
 import { getAnime } from "@/lib/anime/queries";
 const mal_id = parseInt(Astro.params.mal_id || "0");
 const userId = Astro.locals.user?.id;
@@ -16,7 +16,7 @@ const animeTitle =
 <MainLayout title={animeTitle} description={animeTitle}>
   {
     anime.success ? (
-      <AnimePage anime={anime.value} user={Astro.locals.user} />
+      <AnimeDetailsPage anime={anime.value} user={Astro.locals.user} client:load />
     ) : (
       <div>Error</div>
     )

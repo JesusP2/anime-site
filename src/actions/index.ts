@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db/pool";
 import { trackedEntityTable } from "@/lib/db/schemas";
 import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
+import { entityStatuses } from "@/lib/constants";
 
 export const server = {
   updateEntity: defineAction({
@@ -11,7 +12,7 @@ export const server = {
     input: z.object({
       mal_id: z.number(),
       entityType: z.enum(["ANIME", "MANGA"]),
-      status: z.enum(['watching', 'completed', 'on-hold', 'dropped']),
+      status: z.enum(entityStatuses),
     }),
     handler: async ({ mal_id, entityType, status }, context) => {
       const userId = context.locals.user?.id;

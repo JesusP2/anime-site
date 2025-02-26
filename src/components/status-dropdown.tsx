@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { actions } from "astro:actions";
-import { useEffect, useState } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { User } from "better-auth";
 import type {
   EntityStatus,
@@ -35,9 +35,13 @@ import {
   updateLocalManga,
 } from "@/lib/manga/pglite-queries";
 import { entityStatuses } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 type Props = {
   user: User | null;
+  className?: string;
+  status?: EntityStatus;
+  setStatus: Dispatch<SetStateAction<EntityStatus>>;
 } & (
   | {
       entityType: "ANIME";
@@ -55,8 +59,7 @@ type Props = {
     }
 );
 
-export function StatusDropdown({ data, entityType, user }: Props) {
-  const [status, setStatus] = useState(data.entityStatus);
+export function StatusDropdown({ data, entityType, user, className, status, setStatus }: Props) {
 
   useEffect(() => {
     if (!user) {
@@ -117,7 +120,7 @@ export function StatusDropdown({ data, entityType, user }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-sm mr-2">
+        <Button className={cn("rounded-sm mr-2", className)}>
           <RenderStatus status={status} />
         </Button>
       </DropdownMenuTrigger>

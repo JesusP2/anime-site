@@ -1,6 +1,6 @@
 ---
 import MainLayout from "@/layout/main.astro";
-import MangaPage from "@/components/manga.page.astro";
+import { MangaDetailsPage } from "@/components/manga.page.tsx";
 import { getManga } from "@/lib/manga/queries";
 const mal_id = parseInt(Astro.params.mal_id || "0");
 const userId = Astro.locals.user?.id;
@@ -15,7 +15,7 @@ const mangaTitle =
 <MainLayout title={mangaTitle} description={mangaTitle}>
   {
     manga.success ? (
-      <MangaPage manga={manga.value} user={Astro.locals.user} />
+      <MangaDetailsPage manga={manga.value} user={Astro.locals.user} />
     ) : (
       <div>Error</div>
     )
