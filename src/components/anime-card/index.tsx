@@ -79,7 +79,7 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
               </div>
             </section>
             <section className="flex gap-x-2">
-              {data.genres?.slice(0, 2).map((genre) => (
+              {data.genres?.slice(0, 1).map((genre) => (
                 <Badge
                   key={genre.mal_id}
                   variant="outline"
@@ -90,13 +90,13 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
                   </p>
                 </Badge>
               ))}
-              {data.genres?.length && data.genres?.length > 2 && (
+              {data.genres?.length && data.genres?.length > 1 && (
                 <Badge
                   variant="outline"
                   className="dark:border-gray-700 dark:text-gray-100"
                 >
                   <p className="text-ellipsis truncate max-w-24">
-                    + {data.genres?.length - 2}
+                    + {data.genres?.length - 1}
                   </p>
                 </Badge>
               )}
