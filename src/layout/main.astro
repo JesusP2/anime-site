@@ -6,15 +6,17 @@ import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  path?: string;
 }
-const { title, description } = Astro.props;
+const { title, description, image, path } = Astro.props;
 const user = Astro.locals.user;
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
-  <Head title={title} description={description} />
+  <Head title={title} description={description} image={image} path={path} />
   <body>
     <AppSidebar
       isDarkMode={isDarkMode}
