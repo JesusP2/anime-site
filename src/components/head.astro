@@ -19,7 +19,9 @@ interface Props {
   path?: string;
 }
 
-const { title, description, image, path } = Astro.props;
+const { title, path } = Astro.props;
+const description = Astro.props.description || "Anisearch is a search engine for anime and manga.";
+const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
 ---
 
 <head>

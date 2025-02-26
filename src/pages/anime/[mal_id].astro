@@ -13,7 +13,7 @@ const animeTitle =
     anime.value.titles?.find((title) => title.type === "Default")?.title);
 ---
 
-<MainLayout title={animeTitle} description={animeTitle}>
+<MainLayout title={`Anisearch - ${animeTitle}` || ''} description={animeTitle || ''} image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>
   {
     anime.success ? (
       <AnimeDetailsPage anime={anime.value} user={Astro.locals.user} client:load />
