@@ -61,7 +61,7 @@ export function Header({
                   const formData = new FormData(e.target as HTMLFormElement);
                   const search = new URLSearchParams();
                   search.set("q", (formData.get("q") as string) ?? "");
-                  await navigate(`/anime/search?${search.toString()}`);
+                  await navigate(`/search?${search.toString()}`);
                 }}
               >
                 <input
