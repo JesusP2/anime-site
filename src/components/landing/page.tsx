@@ -57,7 +57,6 @@ export function LandingPage({
   return (
     <div className="min-h-screen dark:text-white text-gray-900">
       <Header isDarkMode={isDarkMode} user={user} />
-      <Spotlight />
       <main>
         <div className="flex flex-col items-center justify-center px-4 text-center h-screen">
           <div className="mb-8 relative">

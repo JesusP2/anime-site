@@ -48,9 +48,8 @@ export function Header({
           </div>
 
           <div
-            className={`transform transition-all duration-500 ${
-              showSearch ? "w-[50%] opacity-100" : "w-0 opacity-0"
-            }`}
+            className={`transform transition-all duration-500 ${showSearch ? "w-[50%] opacity-100" : "w-0 opacity-0"
+              }`}
           >
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -76,12 +75,12 @@ export function Header({
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="hidden sm:flex items-center gap-6">
+            <div className="flex items-center gap-6">
               <a href="/anime/completed">
                 <span className="text-netrual-400">My Animes</span>
               </a>
             </div>
-            <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-6">
               <ThemeButton isDarkMode={isDarkMode} />
               {user ? (
                 <UserDropdown user={user} />
@@ -91,9 +90,6 @@ export function Header({
                 </a>
               )}
             </div>
-            <button className="md:hidden text-gray-400 hover:text-white">
-              <List className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>
