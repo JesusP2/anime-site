@@ -43,6 +43,20 @@
       "when": 1740163770258,
       "tag": "0005_fantastic_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1741329884126,
+      "tag": "0006_spicy_boom_boom",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1741332738336,
+      "tag": "0007_medical_lester",
+      "breakpoints": true
     }
   ]
 }

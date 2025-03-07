@@ -3,11 +3,11 @@ import {
   integer,
   pgTable,
   varchar,
-  json,
   boolean,
   vector,
   timestamp,
   numeric,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { ulid } from "ulidx";
 import type { components } from "@/lib/api/jikan.openapi";
@@ -22,12 +22,12 @@ export const animeTable = pgTable(
       .$defaultFn(ulid),
     mal_id: integer("mal_id").unique().notNull(),
     url: varchar("url"),
-    images: json("images")
+    images: jsonb("images")
       .notNull()
-      .$type<components["schemas"]["anime_images"]>(), //json
-    trailer: json("trailer").$type<components["schemas"]["trailer"]>(), //json
+      .$type<components["schemas"]["anime_images"]>(),
+    trailer: jsonb("trailer").$type<components["schemas"]["trailer"]>(),
     approved: boolean("approved"), //boolean
-    titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
+    titles: jsonb("titles").notNull().$type<components["schemas"]["title"][]>(),
     // convert anime_full type to drizzle-orm type
     type: varchar("type", {
       length: 255,
@@ -36,14 +36,14 @@ export const animeTable = pgTable(
       length: 255,
     }),
     episodes: integer("episodes"),
-    episodes_info: json("episodes_info")
+    episodes_info: jsonb("episodes_info")
       .notNull()
-      .$type<components["schemas"]["anime_episodes"]["data"]>(), //json
+      .$type<components["schemas"]["anime_episodes"]["data"]>(),
     status: varchar("status", {
       length: 255,
     }).$type<components["schemas"]["anime_full"]["status"]>(),
     airing: boolean("airing"), //boolean
-    aired: json("aired").notNull().$type<components["schemas"]["daterange"]>(), //json
+    aired: jsonb("aired").notNull().$type<components["schemas"]["daterange"]>(),
     duration: varchar("duration", {
       length: 255,
     }),
@@ -62,50 +62,50 @@ export const animeTable = pgTable(
       length: 255,
     }).$type<components["schemas"]["anime_full"]["season"]>(),
     year: integer("year"),
-    broadcast: json("broadcast")
+    broadcast: jsonb("broadcast")
       .notNull()
       .$type<components["schemas"]["broadcast"]>(),
-    producers: json("producers")
+    producers: jsonb("producers")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    licensors: json("licensors")
+      .$type<components["schemas"]["mal_url"][]>(),
+    licensors: jsonb("licensors")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    studios: json("studios")
+      .$type<components["schemas"]["mal_url"][]>(),
+    studios: jsonb("studios")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    genres: json("genres")
+      .$type<components["schemas"]["mal_url"][]>(),
+    genres: jsonb("genres")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    explicit_genres: json("explicit_genres")
+      .$type<components["schemas"]["mal_url"][]>(),
+    explicit_genres: jsonb("explicit_genres")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    themes: json("themes")
+      .$type<components["schemas"]["mal_url"][]>(),
+    themes: jsonb("themes")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    demographics: json("demographics")
+      .$type<components["schemas"]["mal_url"][]>(),
+    demographics: jsonb("demographics")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    relations: json("relations")
+      .$type<components["schemas"]["mal_url"][]>(),
+    relations: jsonb("relations")
       .notNull()
-      .$type<components["schemas"]["relation"][]>(), //json
-    theme: json("theme").notNull().$type<{
+      .$type<components["schemas"]["relation"][]>(),
+    theme: jsonb("theme").notNull().$type<{
       openings: string[];
       endings: string[];
-    }>(), //json
-    external: json("external").notNull().$type<{
+    }>(),
+    external: jsonb("external").notNull().$type<{
       name?: string;
       url?: string;
-    }>(), //json
-    streaming: json("streaming")
+    }>(),
+    streaming: jsonb("streaming")
       .notNull()
-      .$type<components["schemas"]["external_links"]["data"]>(), //json
-    characters: json("characters")
+      .$type<components["schemas"]["external_links"]["data"]>(),
+    characters: jsonb("characters")
       .notNull()
-      .$type<components["schemas"]["anime_characters"]["data"]>(), //json
-    staff: json("staff")
+      .$type<components["schemas"]["anime_characters"]["data"]>(),
+    staff: jsonb("staff")
       .notNull()
-      .$type<components["schemas"]["anime_staff"]["data"]>(), //json
+      .$type<components["schemas"]["anime_staff"]["data"]>(),
     embedding: vector("embedding", { dimensions: 1536 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),

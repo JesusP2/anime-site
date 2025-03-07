@@ -1,29 +1,27 @@
-const initialYear = 1961;
-const years = Array.from(
-  { length: new Date().getFullYear() - initialYear + 1 },
-  (_, i) => initialYear + i,
-);
-
 export const mangaFilters = {
   status: {
     label: "Status",
     group: "basic",
     options: [
-      { label: "Airing", value: "Currently Airing" },
-      { label: "Completed", value: "Finished Airing" },
-      { label: "Upcoming", value: "Not yet aired" },
+      { label: 'Finished Airing', value: 'Finished' },
+      { label: "Publishing", value: "Publishing" },
+      { label: 'On Hiatus', value: 'On Hiatus' },
+      { label: 'Discontinued', value: 'Discontinued' },
+      { label: 'Not yet published', value: 'Not yet published' },
     ],
   },
   type: {
     label: "Type",
     group: "content",
     options: [
-      { label: "TV", value: "TV" },
-      { label: "Movie", value: "Movie" },
-      { label: "OVA", value: "OVA" },
-      { label: "Special", value: "Special" },
-      { label: "ONA", value: "ONA" },
-      { label: "Music", value: "Music" },
+      { label: "Manga", value: "Manga" },
+      { label: "Novel", value: "Novel" },
+      { label: "Light Novel", value: "Light Novel" },
+      { label: "One-shot", value: "One-shot" },
+      { label: "Doujinshi", value: "Doujinshi" },
+      { label: "Manhua", value: "Manhua" },
+      { label: "Manhwa", value: "Manhwa" },
+      { label: "OEL", value: "OEL" },
     ],
   },
   genre: {
@@ -116,7 +114,7 @@ export const mangaFilters = {
     group: "display",
     options: [
       { label: "None", value: "none" },
-      { label: "Episodes", value: "episodes" },
+      { label: "Chapters / Volumes", value: "chapters_volumes" },
       { label: "Score", value: "score" },
       { label: "Scored By", value: "scored_by" },
       { label: "Rank", value: "rank" },

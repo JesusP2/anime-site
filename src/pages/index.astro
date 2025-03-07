@@ -26,16 +26,6 @@ const topMangasSearch = new URLSearchParams([
   ["sort", "desc"],
   ["page", "1"],
 ]);
-// const currentSeasonAnimes = await getCarouselAnimes(currentSeasonSearch, 15);
-// const allTimeFavoritesAnimes = await getCarouselAnimes(
-//   allTimeFavoritesSearch,
-//   15,
-// );
-// const popularThisSeasonAnimes = await getCarouselAnimes(
-//   popularThisSeasonSearch,
-//   15,
-// );
-// const topMangas = await getCarouselMangas(topMangasSearch, 15);
 const [currentSeasonAnimes, allTimeFavoritesAnimes, popularThisSeasonAnimes, topMangas] = await Promise.all([
   getCarouselAnimes(currentSeasonSearch, 15),
   getCarouselAnimes(allTimeFavoritesSearch, 15),

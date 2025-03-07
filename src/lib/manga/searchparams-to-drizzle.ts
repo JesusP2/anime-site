@@ -1,8 +1,9 @@
 import {
+  and,
   cosineDistance,
   desc,
+  SQL,
   sql,
-  type SQL,
   type SQLChunk,
 } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
@@ -16,39 +17,23 @@ export async function mangaSearchParamsToDrizzleQuery(
   table: typeof mangaTable | typeof pgliteMangaTable,
 ) {
   let where: SQL | undefined;
-  // if (searchParams.get("season")) {
-  //   where = createWhereClause(where, table, "season", searchParams);
-  // }
-  // if (searchParams.get("year")) {
-  //   where = createWhereClause(where, table, "year", searchParams);
-  // }
   if (searchParams.get("status")) {
     where = createWhereClause(where, table, "status", searchParams);
   }
   if (searchParams.get("type")) {
     where = createWhereClause(where, table, "type", searchParams);
   }
-  // if (searchParams.get("rating") || searchParams.get("ratings_filtered")) {
-  //   where = createWhereClause(where, table, "rating", searchParams);
-  // }
-  // if (searchParams.get("genre")) {
-  //   let genreWhere: SQL | undefined = undefined;
-  //   for (const genre of searchParams.getAll("genre")) {
-  //     if (genreWhere) {
-  //       genreWhere = or(
-  //         genreWhere,
-  //         like(table.genres, `%"name":"${genre}"%%`),
-  //       );
-  //     } else {
-  //       genreWhere = like(table.genres, `%"name":"${genre}"%`);
-  //     }
-  //   }
-  //   if (where) {
-  //     where = and(where, genreWhere);
-  //   } else {
-  //     where = genreWhere;
-  //   }
-  // }
+  if (searchParams.get("genre")) {
+    let str = "$[*].name ? (";
+    const chunks: string[] = [];
+    for (const genre of searchParams.getAll("genre")) {
+      chunks.push(`@ == "${genre}"`);
+    }
+    const joined = chunks.join(" || ");
+    str += joined + ")";
+    const query = sql`jsonb_path_exists(${table.genres}, ${str})`;
+    where = where ? and(where, query) : query;
+  }
 
   const nullsLast = (it: AnyPgColumn | SQLChunk) => sql<any>`${it} NULLS LAST`;
   let orderBy: SQL | undefined = undefined;

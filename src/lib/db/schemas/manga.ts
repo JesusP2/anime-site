@@ -3,12 +3,12 @@ import {
   integer,
   pgTable,
   varchar,
-  json,
   boolean,
   vector,
   timestamp,
   index,
   numeric,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import type { components } from "@/lib/api/jikan.openapi";
 
@@ -24,12 +24,12 @@ export const mangaTable = pgTable(
     url: varchar("url", {
       length: 255,
     }),
-    images: json("images")
+    images: jsonb("images")
       .notNull()
-      .$type<components["schemas"]["manga_images"]>(), //json
+      .$type<components["schemas"]["manga_images"]>(),
     approved: boolean("approved"), //boolean
-    titles: json("titles").notNull().$type<components["schemas"]["title"][]>(), //json
-    title_synonyms: json("title_synonyms"), //json
+    titles: jsonb("titles").notNull().$type<components["schemas"]["title"][]>(),
+    title_synonyms: jsonb("title_synonyms"),
     type: varchar("type", {
       length: 255,
     }).$type<components["schemas"]["manga_full"]["type"]>(),
@@ -39,7 +39,7 @@ export const mangaTable = pgTable(
       length: 255,
     }).$type<components["schemas"]["manga_full"]["status"]>(),
     publishing: boolean("publishing"), //boolean
-    published: boolean("published").$type<components["schemas"]["daterange"]>(), //json
+    published: boolean("published").$type<components["schemas"]["daterange"]>(),
     score: numeric("score"),
     scored_by: integer("scored_by"),
     rank: integer("rank"),
@@ -48,24 +48,22 @@ export const mangaTable = pgTable(
     favorites: integer("favorites"),
     synopsis: varchar("synopsis"),
     background: varchar("background"),
-    authors: json("authors"), //json
+    authors: jsonb("authors"),
     serializations:
-      json("serializations").$type<components["schemas"]["mal_url"][]>(), //json
-    genres: json("genres")
+      jsonb("serializations").$type<components["schemas"]["mal_url"][]>(),
+    genres: jsonb("genres")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    // genres: varchar("genres").notNull().$type<components["schemas"]["mal_url"][]>(), //json
+      .$type<components["schemas"]["mal_url"][]>(),
     explicit_genres:
-      json("explicit_genres").$type<components["schemas"]["mal_url"][]>(), //json
-    // themes: varchar("themes").notNull().$type<components["schemas"]["mal_url"][]>(), //json
-    themes: json("themes")
+      jsonb("explicit_genres").$type<components["schemas"]["mal_url"][]>(),
+    themes: jsonb("themes")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    demographics: json("demographics")
+      .$type<components["schemas"]["mal_url"][]>(),
+    demographics: jsonb("demographics")
       .notNull()
-      .$type<components["schemas"]["mal_url"][]>(), //json
-    relations: json("relations").$type<components["schemas"]["relation"][]>(), //json
-    external: json("external").$type<components["schemas"]["external_links"]>(), //json
+      .$type<components["schemas"]["mal_url"][]>(),
+    relations: jsonb("relations").$type<components["schemas"]["relation"][]>(),
+    external: jsonb("external").$type<components["schemas"]["external_links"]>(),
     embedding: vector("embedding", { dimensions: 1536 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),

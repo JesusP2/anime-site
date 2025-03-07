@@ -1,0 +1,19 @@
+ALTER TABLE "anime" ALTER COLUMN "images" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "trailer" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "titles" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "episodes_info" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "aired" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "broadcast" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "producers" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "licensors" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "studios" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "genres" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "explicit_genres" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "themes" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "demographics" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "relations" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "theme" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "external" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "streaming" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "characters" SET DATA TYPE jsonb;--> statement-breakpoint
+ALTER TABLE "anime" ALTER COLUMN "staff" SET DATA TYPE jsonb;

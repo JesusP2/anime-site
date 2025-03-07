@@ -1,5 +1,5 @@
 import {
-  cosineDistance,
+    and,
   desc,
   sql,
   type SQL,
@@ -31,24 +31,17 @@ export async function animeSearchParamsToDrizzleQuery(
   if (searchParams.get("rating") || searchParams.get("ratings_filtered")) {
     where = createWhereClause(where, table, "rating", searchParams);
   }
-  // if (searchParams.get("genre")) {
-  //   let genreWhere: SQL | undefined = undefined;
-  //   for (const genre of searchParams.getAll("genre")) {
-  //     if (genreWhere) {
-  //       genreWhere = or(
-  //         genreWhere,
-  //         like(table.genres, `%"name":"${genre}"%%`),
-  //       );
-  //     } else {
-  //       genreWhere = like(table.genres, `%"name":"${genre}"%`);
-  //     }
-  //   }
-  //   if (where) {
-  //     where = and(where, genreWhere);
-  //   } else {
-  //     where = genreWhere;
-  //   }
-  // }
+
+  if (searchParams.get("genre")) {
+    let str = "$[*].name ? (";
+    const chunks: string[] = [];
+    for (const genre of searchParams.getAll("genre")) {
+      chunks.push(`@ == "${genre}"`);
+    }
+    const idk = chunks.join(" || ");
+    str += idk + ")";
+    where = and(where, sql`jsonb_path_exists(${table.genres}, ${str})`);
+  }
 
   const nullsLast = (it: AnyPgColumn | SQLChunk) => sql<any>`${it} NULLS LAST`;
   let orderBy: SQL | undefined = undefined;
