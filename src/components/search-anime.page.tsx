@@ -5,6 +5,7 @@ import type { Result } from "@/lib/result";
 import type { ActionError } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { Grid } from "./grid";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 export function SearchAnimePage({
   url,
@@ -13,7 +14,7 @@ export function SearchAnimePage({
   currentPage,
   recordsPerPage,
 }: {
-  url: URL;
+  url: string;
   searchType?: "Anime" | "Manga";
   records: Result<
     { data: AnimeCardItem[] | MangaCardItem[]; count: number },
@@ -26,13 +27,12 @@ export function SearchAnimePage({
     <>
       <SearchWithFilters
         url={url}
-        onSearch={(searchParams) =>
-          navigate(
-            searchParams.toString()
-              ? `/search?${searchParams.toString()}`
-              : "/search",
-          )
-        }
+        onSearch={async (searchParams) => {
+          const path = searchParams.toString()
+            ? `/search?${searchParams.toString()}`
+            : "/search";
+          safeStartViewTransition(() => navigate(path));
+        }}
         entity={searchType ? searchType : "Anime"}
         title="Search"
       />
@@ -40,7 +40,7 @@ export function SearchAnimePage({
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
-          url={url}
+          url={new URL(url)}
           lastVisiblePage={Math.ceil(
             (records.success ? records.value.count : 1) / recordsPerPage,
           )}

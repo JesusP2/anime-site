@@ -3,7 +3,6 @@ import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
 import { SearchWithFilters } from "./search";
-import { animeFilters } from "@/lib/anime/filters";
 import type { Result } from "@/lib/result";
 import { type ActionError } from "astro:actions";
 import {
@@ -13,6 +12,7 @@ import {
 import { Grid } from "./grid";
 import { getAnimesFromLocalDB } from "@/lib/anime/pglite-queries";
 import { navigate } from "astro:transitions/client";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 export function AnimesWithStatusPage({
   url,
@@ -51,7 +51,7 @@ export function AnimesWithStatusPage({
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set("page", "1");
     if (user) {
-      navigate(`/anime/${entityStatus}?${searchParams.toString()}`);
+      safeStartViewTransition(() => navigate(`/anime/${entityStatus}?${searchParams.toString()}`));
     } else {
       getAnimesFromLocalDB(entityStatus, searchParams).then(
         (recordsWithStatus) => {

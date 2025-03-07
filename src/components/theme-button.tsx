@@ -19,11 +19,12 @@ export function ThemeButton(props: { isDarkMode: boolean }) {
       setTheme(isDarkMode);
       return;
     }
-    await document.startViewTransition(() => {
-      flushSync(() => {
-        setTheme(isDarkMode);
-      });
-    }).ready;
+    document.querySelectorAll('[style*="view-transition-name"]').forEach(_el => {
+      const el = _el as HTMLElement;
+      el.dataset.savedTransition = el.style.viewTransitionName;
+      el.style.viewTransitionName = '';
+    });
+
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const x = left + width / 2;
     const y = top + height / 2;
@@ -31,6 +32,19 @@ export function ThemeButton(props: { isDarkMode: boolean }) {
     const screenHeight = window.innerHeight;
     const diagonal = Math.sqrt(screenWidth ** 2 + screenHeight ** 2);
     const duration = diagonal / 3;
+
+    await document.startViewTransition(() => {
+      flushSync(() => {
+        setTheme(isDarkMode);
+        setTimeout(() => {
+          document.querySelectorAll('[data-saved-transition]').forEach(_el => {
+            const el = _el as HTMLElement;
+            el.style.viewTransitionName = el.dataset.savedTransition as string;
+            delete el.dataset.savedTransition;
+          });
+        }, duration);
+      });
+    }).ready;
     document.documentElement.animate(
       {
         clipPath: [
@@ -39,7 +53,7 @@ export function ThemeButton(props: { isDarkMode: boolean }) {
         ],
       },
       {
-        duration: duration,
+        duration,
         easing: "ease-in-out",
         pseudoElement: "::view-transition-new(root)",
       },

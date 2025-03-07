@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { Header } from "./header";
-import { Spotlight } from "../ui/spotlight-new";
 import { Carousel } from "../carousel";
 import type { Result } from "@/lib/result";
 import type { FullAnimeRecord, FullMangaRecord } from "@/lib/types";
 import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
 import { navigate } from "astro:transitions/client";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 type AnimeCard = Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
 type MangaCard = Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">;
@@ -88,7 +88,7 @@ export function LandingPage({
               const formData = new FormData(e.target as HTMLFormElement);
               const search = new URLSearchParams();
               search.set("q", (formData.get("q") as string) ?? "");
-              await navigate(`/search?${search.toString()}`);
+              safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
             }}
           >
             <div

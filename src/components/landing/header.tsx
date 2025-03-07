@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { List, MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import type { User } from "better-auth";
 import { buttonVariants } from "../ui/button";
 import { UserDropdown } from "../user-dropdown";
 import { cn } from "@/lib/utils";
 import { navigate } from "astro:transitions/client";
 import { ThemeButton } from "../theme-button";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 export function Header({
   isDarkMode,
@@ -61,7 +62,7 @@ export function Header({
                   const formData = new FormData(e.target as HTMLFormElement);
                   const search = new URLSearchParams();
                   search.set("q", (formData.get("q") as string) ?? "");
-                  await navigate(`/search?${search.toString()}`);
+                  safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
                 }}
               >
                 <input

@@ -3,7 +3,6 @@ import type { User } from "better-auth";
 import { useEffect, useState } from "react";
 import { Pagination } from "./pagination";
 import { SearchWithFilters } from "./search";
-import { mangaFilters } from "@/lib/manga/filters";
 import type { Result } from "@/lib/result";
 import { type ActionError } from "astro:actions";
 import {
@@ -13,6 +12,7 @@ import {
 import { Grid } from "./grid";
 import { getMangasFromLocalDB } from "@/lib/manga/pglite-queries";
 import { navigate } from "astro:transitions/client";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 export function MangasWithStatusPage({
   url,
@@ -51,7 +51,9 @@ export function MangasWithStatusPage({
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set("page", "1");
     if (user) {
-      navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
+      safeStartViewTransition(() => {
+        navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
+      });
     } else {
       getMangasFromLocalDB(entityStatus, searchParams).then(
         (recordsWithStatus) => {

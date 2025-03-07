@@ -11,7 +11,7 @@ export function AnimeCard({ data }: { data: AnimeCardItem }) {
     data.titles?.find((title) => title.type === "Default")?.title;
 
   return (
-    <a href={`/anime/${data.mal_id}`} className="cursor-pointer">
+    <a href={`/anime/${data.mal_id}`} className="cursor-pointer" style={{ viewTransitionName: `anime-card-${data.mal_id}`, contain: 'paint' }}>
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
         gradientColor={"#A9A9A955"}
