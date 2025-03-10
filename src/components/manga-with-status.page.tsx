@@ -56,12 +56,12 @@ export function MangasWithStatusPage({
 
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set("page", "1");
+    setIsLoading(true);
     if (user) {
       safeStartViewTransition(() => {
         navigate(`/manga/${entityStatus}?${searchParams.toString()}`);
       });
     } else {
-      setIsLoading(true);
       getMangasFromLocalDB(entityStatus, searchParams).then(
         (recordsWithStatus) => {
           if (!recordsWithStatus.success) {

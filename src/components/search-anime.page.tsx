@@ -6,6 +6,8 @@ import type { ActionError } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { Grid } from "./grid";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
+import { useState } from "react";
+import { LoadingCardGrid } from "./loading-card-grid";
 
 export function SearchAnimePage({
   url,
@@ -23,11 +25,13 @@ export function SearchAnimePage({
   currentPage: number;
   recordsPerPage: number;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <>
       <SearchWithFilters
         url={url}
         onSearch={async (searchParams) => {
+          setIsLoading(true);
           const path = searchParams.toString()
             ? `/search?${searchParams.toString()}`
             : "/search";
@@ -36,7 +40,7 @@ export function SearchAnimePage({
         entity={searchType ? searchType : "Anime"}
         title="Search"
       />
-      <Grid records={records} />
+      {isLoading ? <LoadingCardGrid /> : <Grid records={records} />}
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
