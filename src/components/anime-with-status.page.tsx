@@ -35,11 +35,10 @@ export function AnimesWithStatusPage({
   const [_records, _setRecords] = useState(records);
   const currentPage = getCurrentPage(_url.searchParams);
   const recordsPerPage = getRecordsPerPage(_url.searchParams);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(user ? false : true);
 
   useEffect(() => {
     if (user) return;
-  console.log('am I running?')
     setIsLoading(true);
     getAnimesFromLocalDB(entityStatus, _url.searchParams).then(
       (recordsWithStatus) => {
@@ -81,7 +80,7 @@ export function AnimesWithStatusPage({
         entity="Anime"
         title={title}
       />
-      {isLoading && !user ? <LoadingCardGrid /> : <Grid records={_records} />}
+      {isLoading ? <LoadingCardGrid /> : <Grid records={_records} />}
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination
