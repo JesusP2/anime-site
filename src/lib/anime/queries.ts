@@ -244,15 +244,15 @@ export async function getAnimesWithStatus(
         .offset(offset)
         .orderBy((t) => desc(t.similarity))
         .limit(recordsPerPage)
+        .leftJoin(
+          trackedEntityTable,
+          eq(animeTable.mal_id, trackedEntityTable.mal_id),
+        )
         .as("sq");
       query = db
         .select(animeCardKeys)
         .from(animeTable)
-        .innerJoin(sq, eq(animeTable.mal_id, sq.mal_id))
-        .leftJoin(
-          trackedEntityTable,
-          eq(animeTable.mal_id, trackedEntityTable.mal_id),
-        );
+        .innerJoin(sq, eq(animeTable.mal_id, sq.mal_id));
     } else {
       query = db
         .select(animeCardKeys)

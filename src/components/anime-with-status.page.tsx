@@ -13,6 +13,7 @@ import { Grid } from "./grid";
 import { getAnimesFromLocalDB } from "@/lib/anime/pglite-queries";
 import { navigate } from "astro:transitions/client";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
+import { LoadingCardGrid } from "./loading-card-grid";
 
 export function AnimesWithStatusPage({
   url,
@@ -34,8 +35,12 @@ export function AnimesWithStatusPage({
   const [_records, _setRecords] = useState(records);
   const currentPage = getCurrentPage(_url.searchParams);
   const recordsPerPage = getRecordsPerPage(_url.searchParams);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     if (user) return;
+  console.log('am I running?')
+    setIsLoading(true);
     getAnimesFromLocalDB(entityStatus, _url.searchParams).then(
       (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
@@ -45,7 +50,7 @@ export function AnimesWithStatusPage({
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
       },
-    );
+    ).finally(() => setIsLoading(false));
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
@@ -62,7 +67,9 @@ export function AnimesWithStatusPage({
           const { data, count } = recordsWithStatus.value;
           _setRecords({ success: true, value: { data, count } });
         },
-      );
+      ).finally(() => {
+        setIsLoading(false);
+      });
     }
   }
 
@@ -74,7 +81,7 @@ export function AnimesWithStatusPage({
         entity="Anime"
         title={title}
       />
-      <Grid records={_records} />
+      {isLoading && !user ? <LoadingCardGrid /> : <Grid records={_records} />}
       <div className="flex-1" />
       <div className="flex justify-center my-6">
         <Pagination

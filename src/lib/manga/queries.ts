@@ -206,15 +206,15 @@ export async function getMangasWithStatus(
         .offset(offset)
         .orderBy((t) => desc(t.similarity))
         .limit(recordsPerPage)
+        .leftJoin(
+          trackedEntityTable,
+          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
+        )
         .as("sq");
       query = db
         .select(mangaCardKeys)
         .from(mangaTable)
-        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id))
-        .leftJoin(
-          trackedEntityTable,
-          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-        );
+        .innerJoin(sq, eq(mangaTable.mal_id, sq.mal_id));
     } else {
       query = db
         .select(mangaCardKeys)
