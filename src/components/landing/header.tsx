@@ -35,8 +35,7 @@ export function Header({
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        showSearch ? "bg-background" : "bg-background/10",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background",
       )}
     >
       <div className="container mx-auto max-w-7xl">
@@ -69,18 +68,13 @@ export function Header({
                   type="search"
                   name="q"
                   placeholder="Search anime..."
-                  className="w-full text-gray-900 dark:bg-[#1A1B26] border border-gray-200 dark:border-gray-800 rounded-lg py-2 pl-10 pr-4 text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 animate-liquid-merge"
+                  className="w-full text-gray-900 dark:bg-[#1A1B26] border border-gray-200 dark:border-gray-800 rounded-lg py-2 pl-10 pr-2 text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 animate-liquid-merge"
                 />
               </form>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-6">
-              <a href="/anime/completed">
-                <span className="text-netrual-400">My Animes</span>
-              </a>
-            </div>
             <div className="flex items-center gap-6">
               <ThemeButton isDarkMode={isDarkMode} />
               {user ? (

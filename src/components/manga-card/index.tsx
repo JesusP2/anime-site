@@ -19,8 +19,11 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number; }) 
         <article className="p-[0.5rem] flex gap-x-[1rem]">
           <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative">
             <img
+              style={{
+                viewTransitionName: `manga-card-img-${data.mal_id}`,
+              }}
               loading="lazy"
-              className="duration-200 group-hover:scale-110 object-cover"
+              className="duration-200 group-hover:scale-110 object-cover h-[11rem] w-[12rem] rounded-xl"
               src={data.images?.webp?.image_url || ""}
               alt={mangaTitle}
             />
@@ -32,6 +35,9 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number; }) 
           <div className="w-[13rem] overflow-hidden">
             <section>
               <h3
+                style={{
+                  viewTransitionName: `manga-card-title-${data.mal_id}`,
+                }}
                 title={mangaTitle}
                 className="text-lg truncate font-bold dark:text-white"
               >

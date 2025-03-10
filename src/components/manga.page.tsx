@@ -20,7 +20,15 @@ export function MangaDetailsPage({ manga, user }: Props) {
     return mangaTitle;
   };
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto py-8 space-y-8" style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}>
+      <StatusDropdown
+        data={manga}
+        status={status}
+        setStatus={setStatus}
+        className="fixed bottom-4 right-4 z-50 lg:hidden"
+        entityType="MANGA"
+        user={user}
+      />
       {/* Hero Section - Using flex instead of grid for better control */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Anime Image - with fixed width constraints */}
@@ -28,15 +36,10 @@ export function MangaDetailsPage({ manga, user }: Props) {
           <Card>
             <CardContent className="p-4">
               <div className="aspect-[2/3] relative overflow-hidden rounded-md">
-                <StatusDropdown
-                  data={manga}
-                  status={status}
-                  setStatus={setStatus}
-                  className="absolute top-4 right-4 lg:hidden"
-                  entityType="MANGA"
-                  user={user}
-                />
                 <img
+                  style={{
+                    viewTransitionName: `manga-card-img-${manga.mal_id}`,
+                  }}
                   src={manga.images?.jpg?.large_image_url || "/placeholder-anime.jpg"}
                   alt={getMainTitle()}
                   className="object-cover w-full h-full"
@@ -62,7 +65,11 @@ export function MangaDetailsPage({ manga, user }: Props) {
             <CardHeader>
               <div className="flex justify-between items-start flex-wrap gap-4">
                 <div>
-                  <CardTitle className="text-3xl font-bold">{getMainTitle()}</CardTitle>
+                  <CardTitle
+                    style={{
+                      viewTransitionName: `manga-card-title-${manga.mal_id}`,
+                    }}
+                    className="text-3xl font-bold">{getMainTitle()}</CardTitle>
                   {manga.titles?.filter(t => ['English', 'Default', 'Japanese'].includes(t.type)).map((title, index) => (
                     <CardDescription key={index} className="text-lg">
                       {title.title} {title.type && <span className="text-xs">({title.type})</span>}
