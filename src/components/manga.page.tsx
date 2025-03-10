@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
 import { StatusDropdown } from "./status-dropdown";
 import { useState } from "react";
+import { StatusSelector } from "./status-selector";
 
 type Props = {
   manga: FullMangaRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -21,14 +22,6 @@ export function MangaDetailsPage({ manga, user }: Props) {
   };
   return (
     <div className="container mx-auto py-8 space-y-8" style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}>
-      <StatusDropdown
-        data={manga}
-        status={status}
-        setStatus={setStatus}
-        className="fixed bottom-4 right-4 z-50 lg:hidden"
-        entityType="MANGA"
-        user={user}
-      />
       {/* Hero Section - Using flex instead of grid for better control */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Anime Image - with fixed width constraints */}
@@ -45,8 +38,8 @@ export function MangaDetailsPage({ manga, user }: Props) {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <div className="mt-4 space-y-2 hidden lg:block">
-                <StatusDropdown
+              <div className="mt-4 space-y-2">
+                <StatusSelector
                   data={manga}
                   status={status}
                   setStatus={setStatus}

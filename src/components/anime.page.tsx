@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Award, CalendarIcon, Clock, Globe, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
 import { StatusDropdown } from "./status-dropdown";
 import { useState } from "react";
+import { StatusSelector } from "./status-selector";
 
 type Props = {
   anime: FullAnimeRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -41,14 +42,6 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
   return (
     <div className="container mx-auto" style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}>
-      <StatusDropdown
-        data={anime}
-        status={status}
-        setStatus={setStatus}
-        className="fixed bottom-4 right-4 z-50 lg:hidden"
-        entityType="ANIME"
-        user={user}
-      />
       {/* Hero Section - Using flex instead of grid for better control */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Anime Image - with fixed width constraints */}
@@ -65,8 +58,8 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <div className="mt-4 space-y-2 hidden lg:block">
-                <StatusDropdown
+              <div className="mt-4 space-y-2">
+                <StatusSelector
                   data={anime}
                   status={status}
                   setStatus={setStatus}
