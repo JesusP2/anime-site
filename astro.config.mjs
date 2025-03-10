@@ -8,6 +8,7 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   output: "server",
   env: {
+    validateSecrets: true,
     schema: {
       ANIME_API: envField.string({ context: "client", access: "public" }),
       CLOUDFLARE_TOKEN: envField.string({
