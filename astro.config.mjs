@@ -1,23 +1,20 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
-
 import react from "@astrojs/react";
-
 import tailwind from "@astrojs/tailwind";
-import path from "path";
 
 import cloudflare from "@astrojs/cloudflare";
 
-// https://astro.build/config
+console.log(process.env);
 export default defineConfig({
   output: "server",
   env: {
     schema: {
       ANIME_API: envField.string({ context: "client", access: "public" }),
-      // CLOUDFLARE_TOKEN: envField.string({
-      //   context: "server",
-      //   access: "secret",
-      // }),
+      CLOUDFLARE_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       R2_ENDPOINT: envField.string({ context: "server", access: "secret" }),
       R2_ACCESS_KEY_ID: envField.string({
         context: "server",
