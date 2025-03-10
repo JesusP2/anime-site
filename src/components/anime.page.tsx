@@ -124,12 +124,12 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                       </div>
                     </div>
                   )}
-                  <MediaReviews 
+                  <MediaReviews
                     title={getMainTitle() || anime.title || "this anime"}
                     reviews={reviews}
                     isLoading={isLoadingReviews}
-                    open={reviewsOpen} 
-                    onOpenChange={setReviewsOpen} 
+                    open={reviewsOpen}
+                    onOpenChange={setReviewsOpen}
                   />
                 </div>
               </div>

@@ -2,21 +2,22 @@ import { CarouselAnimeCard } from "./anime-card";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { FullAnimeRecord, FullMangaRecord } from "@/lib/types";
 import { CarouselMangaCard } from "./manga-card";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 const cardWidth = 225;
 const gapBetweenCards = 16;
 
 type Props = {
   header: ReactNode;
 } & (
-  | {
+    | {
       type: "ANIME";
       records: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[];
     }
-  | {
+    | {
       type: "MANGA";
       records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[];
     }
-);
+  );
 export function Carousel({ records, header, type }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
@@ -38,7 +39,7 @@ export function Carousel({ records, header, type }: Props) {
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
     setTotalTranslate(
       (pages - 1) * translateWindow +
-        ((records.length - pages * minTotal) / minTotal) * translateWindow,
+      ((records.length - pages * minTotal) / minTotal) * translateWindow,
     );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
@@ -71,7 +72,7 @@ export function Carousel({ records, header, type }: Props) {
   }
 
   return (
-    <div className="relative w-full mx-auto">
+    <div className="relative w-full mx-auto [&>button]:hover:opacity-100">
       {header}
       <div className="w-full h-[1px] bg-neutral-300" />
       <div
@@ -84,30 +85,30 @@ export function Carousel({ records, header, type }: Props) {
         >
           {type === "ANIME"
             ? records.map((anime, idx) => (
-                <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-                  <CarouselAnimeCard record={anime} width={width} />
-                </div>
-              ))
+              <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
+                <CarouselAnimeCard record={anime} width={width} />
+              </div>
+            ))
             : records.map((manga, idx) => (
-                <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
-                  <CarouselMangaCard record={manga} width={width} />
-                </div>
-              ))}
+              <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
+                <CarouselMangaCard record={manga} width={width} />
+              </div>
+            ))}
         </div>
       </div>
       <button
         onClick={handlePrevious}
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"
+        className="absolute left-0 top-[calc(50%+18px)] -translate-y-1/2 z-40 bg-black/50 p-2 rounded-full opacity-0 transition-opacity"
         aria-label="Previous slide"
       >
-        ←
+        <CaretLeft className="w-5 h-5 text-white" weight="bold" />
       </button>
       <button
         onClick={handleNext}
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"
+        className="absolute right-0 top-[calc(50%+18px)] -translate-y-1/2 z-40 bg-black/50 p-2 rounded-full opacity-0 transition-opacity"
         aria-label="Next slide"
       >
-        →
+        <CaretRight className="w-5 h-5 text-white" weight="bold" />
       </button>
     </div>
   );

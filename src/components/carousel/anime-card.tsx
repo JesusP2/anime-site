@@ -16,10 +16,13 @@ export function CarouselAnimeCard({
       <article className="group">
         <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
           <img
+            style={{
+              width,
+              viewTransitionName: `anime-card-img-${record.mal_id}`
+            }}
             loading="lazy"
-            width={width}
             className="duration-200 group-hover:scale-125 object-cover"
-            style={{ width }}
+            width={width}
             src={record.images?.webp?.large_image_url || ""}
             alt={animeTitle}
           />
