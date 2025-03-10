@@ -13,7 +13,7 @@ export default defineConfig({
       ANIME_API: envField.string({ context: "client", access: "public" }),
       CLOUDFLARE_TOKEN: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       R2_ENDPOINT: envField.string({ context: "server", access: "secret" }),
       R2_ACCESS_KEY_ID: envField.string({
