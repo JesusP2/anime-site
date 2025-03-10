@@ -2,9 +2,11 @@ import { AnimeTypeBadge } from "@/components/anime-card/type-badge";
 import type { FullAnimeRecord } from "@/lib/types";
 
 export function CarouselAnimeCard({
+  carouselId,
   record,
   width,
 }: {
+  carouselId?: string;
   record: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">;
   width: number;
 }) {
@@ -18,7 +20,7 @@ export function CarouselAnimeCard({
           <img
             style={{
               width,
-              viewTransitionName: `anime-card-img-${record.mal_id}`
+              viewTransitionName: `anime-card-img-${record.mal_id}-${carouselId}`
             }}
             loading="lazy"
             className="duration-200 group-hover:scale-125 object-cover"

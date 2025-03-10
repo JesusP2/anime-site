@@ -8,6 +8,7 @@ const gapBetweenCards = 16;
 
 type Props = {
   header: ReactNode;
+  carouselId?: string;
 } & (
     | {
       type: "ANIME";
@@ -18,7 +19,7 @@ type Props = {
       records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[];
     }
   );
-export function Carousel({ records, header, type }: Props) {
+export function Carousel({ records, header, type, carouselId }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,7 +87,7 @@ export function Carousel({ records, header, type }: Props) {
           {type === "ANIME"
             ? records.map((anime, idx) => (
               <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-                <CarouselAnimeCard record={anime} width={width} />
+                <CarouselAnimeCard record={anime} width={width} carouselId={carouselId} />
               </div>
             ))
             : records.map((manga, idx) => (

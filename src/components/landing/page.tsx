@@ -115,6 +115,7 @@ export function LandingPage({
           {currentSeasonAnimes.data.success ? (
             <section>
               <Carousel
+                carouselId="current-season"
                 header={
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold font-gabarito font-medium">
@@ -136,6 +137,7 @@ export function LandingPage({
           {allTimeFavorites.data.success ? (
             <section>
               <Carousel
+                carouselId="all-time-favorites"
                 header={
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold font-gabarito font-medium">
@@ -158,6 +160,7 @@ export function LandingPage({
           {popularThisSeasonAnimes.data.success ? (
             <section>
               <Carousel
+                carouselId="popular-this-season"
                 header={
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold font-gabarito font-medium">
@@ -179,6 +182,7 @@ export function LandingPage({
           {topMangas.data.success ? (
             <section>
               <Carousel
+                carouselId="top-mangas"
                 header={
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold font-gabarito font-medium">
