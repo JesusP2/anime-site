@@ -6,15 +6,15 @@ import { POSTGRES_URL } from "astro:env/server";
 
 type DbType = PostgresJsDatabase<typeof schema>;
 
-declare global {
-  var db: DbType | undefined;
-}
+// declare global {
+//   var db: DbType | undefined;
+// }
 export function getDb() {
   const client = postgres(POSTGRES_URL);
-  if (globalThis.db) {
-    return globalThis.db;
-  }
+  // if (globalThis.db) {
+  //   return globalThis.db;
+  // }
   const db = drizzle(client, { schema });
-  globalThis.db = db;
+  // globalThis.db = db;
   return db;
 }

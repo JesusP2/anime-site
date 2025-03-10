@@ -5,7 +5,6 @@ import tailwind from "@astrojs/tailwind";
 
 import cloudflare from "@astrojs/cloudflare";
 
-console.log(process.env);
 export default defineConfig({
   output: "server",
   env: {
