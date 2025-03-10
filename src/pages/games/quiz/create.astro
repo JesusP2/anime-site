@@ -1,0 +1,13 @@
+---
+import Head from "@/components/head.astro";
+import MainLayout from "@/layout/main.astro";
+import { CreateQuiz } from "@/components/games/quiz/create-quiz";
+
+const title = "Create Quiz | Guess the Anime Opening";
+const description = "Create your own anime opening guessing quiz!";
+---
+
+<MainLayout title={title}>
+  <Head title={title} description={description} />
+  <CreateQuiz client:load />
+</MainLayout> 

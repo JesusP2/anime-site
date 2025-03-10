@@ -1,0 +1,15 @@
+---
+import Head from "@/components/head.astro";
+import MainLayout from "@/layout/main.astro";
+import { QuizResults } from "@/components/games/quiz/quiz-results";
+
+const title = "Challenge Results | Guess the Anime Opening";
+const description = "See how well you did on the anime opening quiz!";
+---
+
+<MainLayout title={title}>
+  <Head title={title} description={description} />
+  <QuizResults client:load />
+</MainLayout>
+
+

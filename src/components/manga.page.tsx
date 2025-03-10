@@ -87,7 +87,7 @@ export function MangaDetailsPage({ manga, user }: Props) {
                       viewTransitionName: `manga-card-title-${manga.mal_id}`,
                     }}
                     className="text-3xl font-bold">{getMainTitle()}</CardTitle>
-                  {manga.titles?.filter(t => ['English', 'Default', 'Japanese'].includes(t.type)).map((title, index) => (
+                  {manga.titles?.filter(t => ['English', 'Default', 'Japanese'].includes(t.type ?? '')).map((title, index) => (
                     <CardDescription key={index} className="text-lg">
                       {title.title} {title.type && <span className="text-xs">({title.type})</span>}
                     </CardDescription>

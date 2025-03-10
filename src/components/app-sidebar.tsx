@@ -8,6 +8,8 @@ import {
   TelevisionSimple,
   Book,
   SignIn,
+  GameController,
+  MusicNote,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -92,6 +94,33 @@ const data = {
           title: "On Hold",
           url: "/manga/on-hold",
           icon: PauseCircle,
+        },
+      ],
+    },
+    {
+      title: "Anime Quizzes",
+      url: "#",
+      icon: MusicNote,
+      items: [
+        {
+          title: 'Home',
+          url: '/games/quiz',
+          icon: MusicNote,
+        },
+        {
+          title: "Play",
+          url: "/games/quiz/play",
+          icon: GameController,
+        },
+        {
+          title: "Create Quiz",
+          url: "/games/quiz/create",
+          icon: MusicNote,
+        },
+        {
+          title: "My Quizzes",
+          url: "/games/quiz/my-quizzes",
+          icon: CalendarCheck,
         },
       ],
     },
