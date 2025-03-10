@@ -3,9 +3,9 @@ import type { User } from "better-auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
-import { StatusDropdown } from "./status-dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
+import { MediaReviews } from "./media-reviews";
 
 type Props = {
   manga: FullMangaRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -14,12 +14,36 @@ type Props = {
 
 export function MangaDetailsPage({ manga, user }: Props) {
   const [status, setStatus] = useState(manga.entityStatus as EntityStatus);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [reviewsOpen, setReviewsOpen] = useState(false);
+
   const getMainTitle = () => {
     const mangaTitle =
       manga.titles?.find((title) => title.type === "English")?.title ||
-      manga.titles?.find((title) => title.type === "Default")?.title;
+      manga.titles?.find((title) => title.type === "Default")?.title || 'Title';
     return mangaTitle;
   };
+
+  useEffect(() => {
+    if (reviewsOpen && reviews.length === 0) {
+      fetchMangaReviews();
+    }
+  }, [reviewsOpen]);
+
+  const fetchMangaReviews = async () => {
+    try {
+      setIsLoadingReviews(true);
+      const response = await fetch(`https://api.jikan.moe/v4/manga/${manga.mal_id}/reviews`);
+      const data = await response.json();
+      setReviews(data.data || []);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setIsLoadingReviews(false);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 space-y-8" style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}>
       {/* Hero Section - Using flex instead of grid for better control */}
@@ -81,6 +105,13 @@ export function MangaDetailsPage({ manga, user }: Props) {
                       </div>
                     </div>
                   )}
+                  <MediaReviews
+                    title={getMainTitle()}
+                    reviews={reviews}
+                    isLoading={isLoadingReviews}
+                    open={reviewsOpen}
+                    onOpenChange={setReviewsOpen}
+                  />
                 </div>
               </div>
             </CardHeader>

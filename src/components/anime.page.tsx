@@ -9,9 +9,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Award, CalendarIcon, Clock, Globe, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
-import { StatusDropdown } from "./status-dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
+import { MediaReviews } from "./media-reviews";
 
 type Props = {
   anime: FullAnimeRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -20,10 +20,14 @@ type Props = {
 
 export function AnimeDetailsPage({ anime, user }: Props) {
   const [status, setStatus] = useState(anime.entityStatus as EntityStatus);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [reviewsOpen, setReviewsOpen] = useState(false);
+
   const getMainTitle = () => {
     const animeTitle =
       anime.titles?.find((title) => title.type === "English")?.title ||
-      anime.titles?.find((title) => title.type === "Default")?.title;
+      anime.titles?.find((title) => title.type === "Default")?.title || 'Title';
     return animeTitle;
   };
 
@@ -37,6 +41,25 @@ export function AnimeDetailsPage({ anime, user }: Props) {
       });
     } catch {
       return dateString;
+    }
+  };
+
+  useEffect(() => {
+    if (reviewsOpen && reviews.length === 0) {
+      fetchAnimeReviews();
+    }
+  }, [reviewsOpen]);
+
+  const fetchAnimeReviews = async () => {
+    try {
+      setIsLoadingReviews(true);
+      const response = await fetch(`https://api.jikan.moe/v4/anime/${anime.mal_id}/reviews`);
+      const data = await response.json();
+      setReviews(data.data || []);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setIsLoadingReviews(false);
     }
   };
 
@@ -101,6 +124,13 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                       </div>
                     </div>
                   )}
+                  <MediaReviews 
+                    title={getMainTitle() || anime.title || "this anime"}
+                    reviews={reviews}
+                    isLoading={isLoadingReviews}
+                    open={reviewsOpen} 
+                    onOpenChange={setReviewsOpen} 
+                  />
                 </div>
               </div>
             </CardHeader>
