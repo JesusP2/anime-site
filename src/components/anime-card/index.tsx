@@ -17,11 +17,12 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
         gradientColor={"#A9A9A955"}
       >
         <article className="p-[0.5rem] flex gap-x-[1rem]">
-          <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative">
+          <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
+            style={{
+              viewTransitionName: `anime-card-img-${data.mal_id}`,
+            }}
+          >
             <img
-              style={{
-                viewTransitionName: `anime-card-img-${data.mal_id}`,
-              }}
               loading="lazy"
               className="duration-200 group-hover:scale-110 object-cover h-[11rem] w-[12rem] rounded-xl"
               src={data.images?.webp?.image_url || ""}

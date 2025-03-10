@@ -14,14 +14,17 @@ export function CarouselMangaCard({
   return (
     <a href={`/manga/${record.mal_id}`}>
       <article className="group">
-        <section className="h-[15rem] overflow-hidden rounded-md relative text-black">
+        <section className="h-[15rem] overflow-hidden rounded-md relative text-black"
+          style={{
+            viewTransitionName: `manga-card-img-${record.mal_id}`
+          }}
+        >
           <img
             loading="lazy"
             width={width}
             className="duration-200 group-hover:scale-125 object-cover"
             style={{
               width,
-              viewTransitionName: `manga-card-img-${record.mal_id}`
             }}
             src={record.images?.webp?.large_image_url || ""}
             alt={mangaTitle}
