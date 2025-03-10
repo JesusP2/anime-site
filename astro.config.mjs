@@ -15,23 +15,23 @@ export default defineConfig({
         context: "server",
         access: "public",
       }),
-      R2_ENDPOINT: envField.string({ context: "server", access: "secret" }),
+      R2_ENDPOINT: envField.string({ context: "server", access: "public" }),
       R2_ACCESS_KEY_ID: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       R2_SECRET_ACCESS_KEY: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
-      R2_BUCKET: envField.string({ context: "server", access: "secret" }),
+      R2_BUCKET: envField.string({ context: "server", access: "public" }),
       GOOGLE_CLIENT_ID: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       GOOGLE_CLIENT_SECRET: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       GOOGLE_REDIRECT_URI: envField.string({
         context: "server",
@@ -39,18 +39,18 @@ export default defineConfig({
       }),
       OPENAI_API_KEY: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       BETTER_AUTH_SECRET: envField.string({
         context: "server",
-        access: "secret",
+        access: "public",
       }),
       BETTER_AUTH_URL: envField.string({
         context: "server",
         access: "public",
       }),
-      POSTGRES_URL: envField.string({ context: "server", access: "secret" }),
-      RESEND_API_KEY: envField.string({ context: "server", access: "secret" }),
+      POSTGRES_URL: envField.string({ context: "server", access: "public" }),
+      RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       EMAIL_FROM: envField.string({ context: "server", access: "public" }),
       BASE_URL: envField.string({ context: "client", access: "public" }),
     },
