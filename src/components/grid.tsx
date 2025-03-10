@@ -21,11 +21,11 @@ export function Grid({
   }
   return (
     <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-      {records.value.data.map((item) =>
+      {records.value.data.map((item, idx) =>
         "rating" in item ? (
-          <AnimeCard key={item.mal_id} data={item} />
+          <AnimeCard idx={idx} key={item.mal_id} data={item} />
         ) : "chapters" in item ? (
-          <MangaCard key={item.mal_id} data={item} />
+          <MangaCard idx={idx} data={item} key={item.mal_id} />
         ) : null,
       )}
     </div>

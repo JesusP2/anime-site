@@ -5,13 +5,13 @@ import { AnimeTypeBadge } from "@/components/anime-card/type-badge";
 import { AiringStatus } from "@/components/anime-card/airing-status";
 import type { AnimeCardItem } from "@/lib/types";
 
-export function AnimeCard({ data }: { data: AnimeCardItem }) {
+export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
   const animeTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
     data.titles?.find((title) => title.type === "Default")?.title;
 
   return (
-    <a href={`/anime/${data.mal_id}`} className="cursor-pointer" style={{ viewTransitionName: `anime-card-${data.mal_id}`, contain: 'paint' }}>
+    <a href={`/anime/${data.mal_id}`} className="cursor-pointer w-full" style={{ viewTransitionName: `anime-card-${data.mal_id}` }}>
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
         gradientColor={"#A9A9A955"}

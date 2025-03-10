@@ -5,13 +5,13 @@ import { MangaTypeBadge } from "@/components/manga-card/type-badge";
 import { AiringStatus } from "@/components/manga-card/airing-status";
 import type { MangaCardItem } from "@/lib/types";
 
-export function MangaCard({ data }: { data: MangaCardItem }) {
+export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number; }) {
   const mangaTitle =
     data.titles?.find((title) => title.type === "English")?.title ||
     data.titles?.find((title) => title.type === "Default")?.title;
 
   return (
-    <a href={`/manga/${data.mal_id}`} className="cursor-pointer" style={{ viewTransitionName: `manga-card-${data.mal_id}`, contain: 'paint' }}>
+    <a href={`/manga/${data.mal_id}`} className="cursor-pointer w-full" style={{ viewTransitionName: `manga-card-${data.mal_id}` }}>
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
         gradientColor={"#A9A9A955"}
