@@ -1,5 +1,3 @@
-import { Star } from "@phosphor-icons/react";
-import { MagicCard } from "./ui/magic-card";
 import { Skeleton } from "./ui/skeleton";
 
 function MangaCardSkeleton() {
@@ -37,7 +35,7 @@ function MangaCardSkeleton() {
 
 export function LoadingCardGrid() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
       {Array(6).fill(0).map((_, i) => (
         <MangaCardSkeleton key={i} />
       ))}

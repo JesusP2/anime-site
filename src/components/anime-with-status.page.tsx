@@ -57,6 +57,7 @@ export function AnimesWithStatusPage({
     if (user) {
       safeStartViewTransition(() => navigate(`/anime/${entityStatus}?${searchParams.toString()}`));
     } else {
+      setIsLoading(true);
       getAnimesFromLocalDB(entityStatus, searchParams).then(
         (recordsWithStatus) => {
           if (!recordsWithStatus.success) {
