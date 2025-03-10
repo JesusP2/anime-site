@@ -205,7 +205,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
       {/* The rest of your code remains the same */}
       {/* Tabs Section */}
-      <Tabs defaultValue="details" className="w-full">
+      <Tabs defaultValue="details" className="w-full mt-2">
         <TabsList className="grid grid-cols-5 max-w-2xl mx-auto">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="episodes">Episodes</TabsTrigger>
