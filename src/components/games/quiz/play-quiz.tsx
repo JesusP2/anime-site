@@ -1,5 +1,5 @@
 import * as React from "react";
-import { OpeningQuizLayout } from "./layout";
+import { QuizLayout } from "./layout";
 import { 
   Card, 
   CardContent, 
@@ -31,7 +31,7 @@ export function PlayQuiz() {
   
   // Mock quiz data
   const quiz = {
-    title: "Popular 2010s Anime Openings",
+    title: "Popular 2010s Anime Themes",
     creator: "AnimeGuru",
     difficulty: "Medium",
     questions: [
@@ -115,7 +115,7 @@ export function PlayQuiz() {
   const currentQuizQuestion = quiz.questions[currentQuestion];
   
   return (
-    <OpeningQuizLayout title={quiz.title}>
+    <QuizLayout title={quiz.title}>
       <div className="max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
@@ -233,6 +233,6 @@ export function PlayQuiz() {
           </CardContent>
         </Card>
       </div>
-    </OpeningQuizLayout>
+    </QuizLayout>
   );
 } 

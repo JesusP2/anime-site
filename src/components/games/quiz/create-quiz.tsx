@@ -1,5 +1,5 @@
 import * as React from "react";
-import { OpeningQuizLayout } from "./layout";
+import { QuizLayout } from "./layout";
 import { 
   Card, 
   CardContent, 
@@ -61,7 +61,7 @@ export function CreateQuiz() {
   };
   
   return (
-    <OpeningQuizLayout title="Create a Quiz">
+    <QuizLayout title="Create a Quiz">
       <div className="max-w-3xl mx-auto">
         <Card className="mb-6">
           <CardHeader>
@@ -115,7 +115,7 @@ export function CreateQuiz() {
         
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Add Anime Openings</CardTitle>
+            <CardTitle>Add Anime Themes</CardTitle>
             <CardDescription>
               Add at least 5 openings to your quiz (maximum 20)
             </CardDescription>
@@ -165,7 +165,7 @@ export function CreateQuiz() {
             )}
             
             <div>
-              <h3 className="text-sm font-medium mb-2">Selected Openings ({songs.length}/20)</h3>
+              <h3 className="text-sm font-medium mb-2">Selected Themes ({songs.length}/20)</h3>
               <ul className="space-y-2">
                 {songs.map((song, index) => (
                   <li key={song.id} className="flex items-center justify-between p-3 border rounded-md">
@@ -197,6 +197,6 @@ export function CreateQuiz() {
           </CardFooter>
         </Card>
       </div>
-    </OpeningQuizLayout>
+    </QuizLayout>
   );
 } 

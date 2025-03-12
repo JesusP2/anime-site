@@ -1,8 +1,7 @@
-export type OpeningQuizDifficulty = "easy" | "medium" | "hard";
+export type QuizDifficulty = "easy" | "medium" | "hard";
+export type QuizMode = "solo" | "multiplayer";
 
-export type OpeningQuizMode = "solo" | "multiplayer";
-
-export type AnimeOpening = {
+export type AnimeScene = {
   id: number;
   title: string;
   animeId: number;
@@ -10,7 +9,7 @@ export type AnimeOpening = {
   audioUrl: string;
 };
 
-export type OpeningQuizQuestion = {
+export type QuizQuestion = {
   id: number;
   audioUrl: string;
   correctAnime: number;
@@ -20,21 +19,21 @@ export type OpeningQuizQuestion = {
   }[];
 };
 
-export type OpeningQuizQuiz = {
+export type Quiz = {
   id: string;
   title: string;
   description?: string;
   creatorId: string;
   creatorName: string;
-  difficulty: OpeningQuizDifficulty;
+  difficulty: QuizDifficulty;
   isPublic: boolean;
   plays: number;
   rating: number;
-  questions: OpeningQuizQuestion[];
+  questions: QuizQuestion[];
   createdAt: string;
 };
 
-export type OpeningQuizResult = {
+export type QuizResult = {
   id: string;
   quizId: string;
   userId?: string;

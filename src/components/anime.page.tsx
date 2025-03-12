@@ -294,7 +294,6 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                 )}
               </div>
 
-              {/* Openings & Endings */}
               {(anime.theme?.openings?.length || anime.theme?.endings?.length) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {anime.theme?.openings && anime.theme.openings.length > 0 && (

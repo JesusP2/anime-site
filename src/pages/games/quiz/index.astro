@@ -1,13 +1,13 @@
 ---
 import Head from "@/components/head.astro";
-import MainLayout from "@/layout/main.astro";
-import { OpeningQuizHub } from "@/components/games/quiz/hub";
+import QuizLayout from "@/layout/quiz.astro";
+import { QuizHub } from "@/components/games/quiz/hub";
 
-const title = "Guess the Anime Opening";
+const title = "Guess the Anime Theme";
 const description = "Test your anime knowledge by guessing the anime from its opening theme!";
 ---
 
-<MainLayout title={title}>
+<QuizLayout title={title}>
   <Head title={title} description={description} />
-  <OpeningQuizHub client:load />
-</MainLayout> 
+  <QuizHub client:load />
+</QuizLayout> 

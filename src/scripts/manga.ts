@@ -1,5 +1,5 @@
 import { jikanClient } from "@/lib/api/jikan.client";
-import { db } from "@/lib/db/pool";
+import { getDb } from "@/lib/db/pool";
 import { mangaTable } from "@/lib/db/schemas";
 import { eq } from "drizzle-orm";
 
@@ -9,8 +9,9 @@ const failed = [];
 const BATCH_SIZE = 1024;
 const recordsNums = 72894;
 const batches = Math.floor(recordsNums / BATCH_SIZE);
+const db = getDb();
 
-for (let i = 0; i < batches; i++) {
+for (let i = batches; i <= batches; i++) {
   const start = i * BATCH_SIZE;
   const end = Math.min(BATCH_SIZE, recordsNums - start);
   const records = await db

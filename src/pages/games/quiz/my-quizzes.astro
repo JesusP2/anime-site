@@ -1,7 +1,6 @@
 ---
 import Head from "@/components/head.astro";
 import QuizLayout from "@/layout/quiz.astro";
-import { QuizResults } from "@/components/games/quiz/quiz-results";
 
 const title = "Challenge Results | Guess the Anime Theme";
 const description = "See how well you did on the anime theme quiz!";
@@ -9,5 +8,4 @@ const description = "See how well you did on the anime theme quiz!";
 
 <QuizLayout title={title}>
   <Head title={title} description={description} />
-  <QuizResults client:load />
 </QuizLayout>

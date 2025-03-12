@@ -1,9 +1,7 @@
-import * as React from "react";
-import { OpeningQuizLayout } from "./layout";
+import { QuizLayout } from "./layout";
 import { 
   Card, 
   CardContent, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
@@ -12,17 +10,14 @@ import {
   Trophy, 
   ArrowClockwise, 
   ShareNetwork, 
-  ChartLine,
   Star,
   House
 } from "@phosphor-icons/react";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function QuizResults() {
   // Mock results data
   const results = {
-    quizTitle: "Popular 2010s Anime Openings",
+    quizTitle: "Popular 2010s Anime Themes",
     creator: "AnimeGuru",
     score: 780,
     totalPossible: 1000,
@@ -58,7 +53,7 @@ export function QuizResults() {
   const accuracy = (results.correctAnswers / results.totalQuestions) * 100;
   
   return (
-    <OpeningQuizLayout title="Quiz Results">
+    <QuizLayout title="Quiz Results">
       <div className="max-w-3xl mx-auto">
         <Card className="mb-6 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-24 flex items-center justify-center">
@@ -146,6 +141,6 @@ export function QuizResults() {
           </Button>
         </div>
       </div>
-    </OpeningQuizLayout>
+    </QuizLayout>
   );
 } 

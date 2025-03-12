@@ -108,11 +108,6 @@ const data = {
           icon: MusicNote,
         },
         {
-          title: "Play",
-          url: "/games/quiz/play",
-          icon: GameController,
-        },
-        {
           title: "Create Quiz",
           url: "/games/quiz/create",
           icon: MusicNote,

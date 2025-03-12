@@ -1,13 +1,12 @@
 import * as React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MusicNote, GameController } from "@phosphor-icons/react";
+import { MusicNote } from "@phosphor-icons/react";
 
-type OpeningQuizLayoutProps = {
+type ThemeQuizLayoutProps = {
   title: string;
   children: React.ReactNode;
 };
 
-export function OpeningQuizLayout({ title, children }: OpeningQuizLayoutProps) {
+export function QuizLayout({ title, children }: ThemeQuizLayoutProps) {
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center gap-3 mb-6">
@@ -16,7 +15,6 @@ export function OpeningQuizLayout({ title, children }: OpeningQuizLayoutProps) {
         </div>
         <h1 className="text-3xl font-bold">{title}</h1>
       </div>
-      
       {children}
     </div>
   );

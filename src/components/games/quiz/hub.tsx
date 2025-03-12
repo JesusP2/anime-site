@@ -1,15 +1,14 @@
-import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { OpeningQuizLayout } from "./layout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuizLayout } from "./layout";
 import { GameController, PlusCircle, Trophy, UsersThree, Shuffle } from "@phosphor-icons/react";
 
-export function OpeningQuizHub() {
+export function QuizHub() {
   return (
-    <OpeningQuizLayout title="Guess the Anime Opening">
+    <QuizLayout title="Guess the Anime Theme">
       <div className="max-w-3xl mx-auto">
         <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-          Test your anime knowledge by guessing which anime each opening theme song belongs to. 
+          Test your anime knowledge by guessing which scene this belongs to.
           Create your own quizzes or play against others!
         </p>
         
@@ -51,10 +50,6 @@ export function OpeningQuizHub() {
                 <PlusCircle className="mr-2 w-5 h-5" />
                 Create New Quiz
               </Button>
-              <Button className="w-full" variant="outline" size="lg">
-                <UsersThree className="mr-2 w-5 h-5" />
-                Multiplayer Game
-              </Button>
             </CardContent>
           </Card>
         </div>
@@ -86,6 +81,6 @@ export function OpeningQuizHub() {
           </CardContent>
         </Card>
       </div>
-    </OpeningQuizLayout>
+    </QuizLayout>
   );
 } 
