@@ -1,6 +1,12 @@
 import type { EntityStatus, FullMangaRecord } from "@/lib/types";
 import type { User } from "better-auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -21,7 +27,8 @@ export function MangaDetailsPage({ manga, user }: Props) {
   const getMainTitle = () => {
     const mangaTitle =
       manga.titles?.find((title) => title.type === "English")?.title ||
-      manga.titles?.find((title) => title.type === "Default")?.title || 'Title';
+      manga.titles?.find((title) => title.type === "Default")?.title ||
+      "Title";
     return mangaTitle;
   };
 
@@ -34,7 +41,9 @@ export function MangaDetailsPage({ manga, user }: Props) {
   const fetchMangaReviews = async () => {
     try {
       setIsLoadingReviews(true);
-      const response = await fetch(`https://api.jikan.moe/v4/manga/${manga.mal_id}/reviews`);
+      const response = await fetch(
+        `https://api.jikan.moe/v4/manga/${manga.mal_id}/reviews`,
+      );
       const data = await response.json();
       setReviews(data.data || []);
     } catch (error) {
@@ -45,7 +54,10 @@ export function MangaDetailsPage({ manga, user }: Props) {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-8" style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}>
+    <div
+      className="container mx-auto py-8 space-y-8"
+      style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}
+    >
       {/* Hero Section - Using flex instead of grid for better control */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Anime Image - with fixed width constraints */}
@@ -57,7 +69,10 @@ export function MangaDetailsPage({ manga, user }: Props) {
                   style={{
                     viewTransitionName: `manga-card-img-${manga.mal_id}`,
                   }}
-                  src={manga.images?.jpg?.large_image_url || "/placeholder-anime.jpg"}
+                  src={
+                    manga.images?.jpg?.large_image_url ||
+                    "/placeholder-anime.jpg"
+                  }
                   alt={getMainTitle()}
                   className="object-cover w-full h-full"
                 />
@@ -86,22 +101,36 @@ export function MangaDetailsPage({ manga, user }: Props) {
                     style={{
                       viewTransitionName: `manga-card-title-${manga.mal_id}`,
                     }}
-                    className="text-3xl font-bold">{getMainTitle()}</CardTitle>
-                  {manga.titles?.filter(t => ['English', 'Default', 'Japanese'].includes(t.type ?? '')).map((title, index) => (
-                    <CardDescription key={index} className="text-lg">
-                      {title.title} {title.type && <span className="text-xs">({title.type})</span>}
-                    </CardDescription>
-                  ))}
+                    className="text-3xl font-bold"
+                  >
+                    {getMainTitle()}
+                  </CardTitle>
+                  {manga.titles
+                    ?.filter((t) =>
+                      ["English", "Default", "Japanese"].includes(t.type ?? ""),
+                    )
+                    .map((title, index) => (
+                      <CardDescription key={index} className="text-lg">
+                        {title.title}{" "}
+                        {title.type && (
+                          <span className="text-xs">({title.type})</span>
+                        )}
+                      </CardDescription>
+                    ))}
                 </div>
                 <div className="flex items-center space-x-4">
                   {manga.score && (
                     <div className="text-center">
                       <div className="flex items-center">
                         <Star className="text-yellow-500 mr-1" size={20} />
-                        <span className="text-xl font-bold">{manga.score.toFixed(2)}</span>
+                        <span className="text-xl font-bold">
+                          {manga.score.toFixed(2)}
+                        </span>
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {manga.scored_by ? `${manga.scored_by.toLocaleString()} users` : "No ratings"}
+                        {manga.scored_by
+                          ? `${manga.scored_by.toLocaleString()} users`
+                          : "No ratings"}
                       </div>
                     </div>
                   )}
@@ -118,7 +147,9 @@ export function MangaDetailsPage({ manga, user }: Props) {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
                 {manga.type && <Badge>{manga.type}</Badge>}
-                {manga.status && <Badge variant="outline">{manga.status}</Badge>}
+                {manga.status && (
+                  <Badge variant="outline">{manga.status}</Badge>
+                )}
               </div>
 
               {/* Stats Grid - Added rank and popularity */}

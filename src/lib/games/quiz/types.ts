@@ -48,4 +48,4 @@ export type QuizResult = {
     correct: boolean;
     timeTaken: number; // seconds
   }[];
-}; 
+};

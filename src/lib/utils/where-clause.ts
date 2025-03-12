@@ -4,7 +4,11 @@ import type { pgliteAnimeTable, pgliteMangaTable } from "../pglite";
 import { PgColumn } from "drizzle-orm/pg-core";
 
 export function createWhereClause<
-  T extends typeof animeTable | typeof mangaTable | typeof pgliteAnimeTable | typeof pgliteMangaTable,
+  T extends
+    | typeof animeTable
+    | typeof mangaTable
+    | typeof pgliteAnimeTable
+    | typeof pgliteMangaTable,
 >(
   where: SQL | undefined,
   table: T,

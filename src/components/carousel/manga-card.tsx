@@ -14,9 +14,10 @@ export function CarouselMangaCard({
   return (
     <a href={`/manga/${record.mal_id}`}>
       <article className="group">
-        <section className="h-[15rem] overflow-hidden rounded-md relative text-black"
+        <section
+          className="h-[15rem] overflow-hidden rounded-md relative text-black"
           style={{
-            viewTransitionName: `manga-card-img-${record.mal_id}`
+            viewTransitionName: `manga-card-img-${record.mal_id}`,
           }}
         >
           <img

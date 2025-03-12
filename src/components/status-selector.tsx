@@ -68,7 +68,14 @@ type Props = {
     }
 );
 
-export function StatusSelector({ data, entityType, user, className, status, setStatus }: Props) {
+export function StatusSelector({
+  data,
+  entityType,
+  user,
+  className,
+  status,
+  setStatus,
+}: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -100,7 +107,7 @@ export function StatusSelector({ data, entityType, user, className, status, setS
   async function handleStatusChange(newStatus: EntityStatus) {
     setStatus(newStatus);
     setOpen(false);
-    
+
     if (!data.mal_id) return;
     if (user) {
       if (newStatus === "not-started") {
@@ -139,7 +146,9 @@ export function StatusSelector({ data, entityType, user, className, status, setS
           onClick={() => handleStatusChange(statusOption)}
           className={cn(
             "flex w-full items-center gap-2 px-3 py-2 text-left text-sm rounded-md",
-            status === statusOption ? "bg-accent text-accent-foreground" : "hover:bg-muted"
+            status === statusOption
+              ? "bg-accent text-accent-foreground"
+              : "hover:bg-muted",
           )}
         >
           <RenderStatus status={statusOption} />
@@ -147,7 +156,7 @@ export function StatusSelector({ data, entityType, user, className, status, setS
       ))}
     </>
   );
-  
+
   // Create the trigger button that's common to both components
   const triggerButton = (
     <Button className={cn("rounded-sm mr-2", className)}>
@@ -160,15 +169,15 @@ export function StatusSelector({ data, entityType, user, className, status, setS
       {/* Show Dropdown on medium and larger screens */}
       <div className="hidden md:block">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            {triggerButton}
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Status</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup
               value={status}
-              onValueChange={(value) => handleStatusChange(value as EntityStatus)}
+              onValueChange={(value) =>
+                handleStatusChange(value as EntityStatus)
+              }
             >
               {entityStatuses.map((statusOption) => (
                 <DropdownMenuRadioItem
@@ -187,9 +196,7 @@ export function StatusSelector({ data, entityType, user, className, status, setS
       {/* Show Drawer on small screens */}
       <div className="md:hidden">
         <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger asChild>
-            {triggerButton}
-          </DrawerTrigger>
+          <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Change Status</DrawerTitle>
@@ -251,4 +258,4 @@ function RenderStatus({ status }: { status?: string }) {
     default:
       return <>Not started</>;
   }
-} 
+}

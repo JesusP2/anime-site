@@ -40,36 +40,38 @@ export function AnimesWithStatusPage({
   useEffect(() => {
     if (user) return;
     setIsLoading(true);
-    getAnimesFromLocalDB(entityStatus, _url.searchParams).then(
-      (recordsWithStatus) => {
+    getAnimesFromLocalDB(entityStatus, _url.searchParams)
+      .then((recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
         }
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
-      },
-    ).finally(() => setIsLoading(false));
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
     searchParams.set("page", "1");
     if (user) {
-      safeStartViewTransition(() => navigate(`/anime/${entityStatus}?${searchParams.toString()}`));
+      safeStartViewTransition(() =>
+        navigate(`/anime/${entityStatus}?${searchParams.toString()}`),
+      );
     } else {
       setIsLoading(true);
-      getAnimesFromLocalDB(entityStatus, searchParams).then(
-        (recordsWithStatus) => {
+      getAnimesFromLocalDB(entityStatus, searchParams)
+        .then((recordsWithStatus) => {
           if (!recordsWithStatus.success) {
             _setRecords({ success: true, value: { data: [], count: 0 } });
             return;
           }
           const { data, count } = recordsWithStatus.value;
           _setRecords({ success: true, value: { data, count } });
-        },
-      ).finally(() => {
-        setIsLoading(false);
-      });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }
 

@@ -1,10 +1,4 @@
-import {
-    and,
-  desc,
-  sql,
-  type SQL,
-  type SQLChunk,
-} from "drizzle-orm";
+import { and, desc, sql, type SQL, type SQLChunk } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 import type { animeTable } from "../db/schemas";

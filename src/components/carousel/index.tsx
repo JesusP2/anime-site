@@ -10,15 +10,15 @@ type Props = {
   header: ReactNode;
   carouselId?: string;
 } & (
-    | {
+  | {
       type: "ANIME";
       records: Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[];
     }
-    | {
+  | {
       type: "MANGA";
       records: Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[];
     }
-  );
+);
 export function Carousel({ records, header, type, carouselId }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(8);
@@ -40,7 +40,7 @@ export function Carousel({ records, header, type, carouselId }: Props) {
     setWidth((containerWidth - (minTotal - 1) * gapBetweenCards) / minTotal);
     setTotalTranslate(
       (pages - 1) * translateWindow +
-      ((records.length - pages * minTotal) / minTotal) * translateWindow,
+        ((records.length - pages * minTotal) / minTotal) * translateWindow,
     );
     if (currentIndex > pages) {
       setCurrentIndex(pages - 1);
@@ -86,15 +86,19 @@ export function Carousel({ records, header, type, carouselId }: Props) {
         >
           {type === "ANIME"
             ? records.map((anime, idx) => (
-              <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
-                <CarouselAnimeCard record={anime} width={width} carouselId={carouselId} />
-              </div>
-            ))
+                <div key={`${anime.mal_id}-${idx}`} className="flex-shrink-0">
+                  <CarouselAnimeCard
+                    record={anime}
+                    width={width}
+                    carouselId={carouselId}
+                  />
+                </div>
+              ))
             : records.map((manga, idx) => (
-              <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
-                <CarouselMangaCard record={manga} width={width} />
-              </div>
-            ))}
+                <div key={`${manga.mal_id}-${idx}`} className="flex-shrink-0">
+                  <CarouselMangaCard record={manga} width={width} />
+                </div>
+              ))}
         </div>
       </div>
       <button

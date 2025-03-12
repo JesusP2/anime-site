@@ -1,7 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { QuizLayout } from "./layout";
-import { GameController, PlusCircle, Trophy, UsersThree, Shuffle } from "@phosphor-icons/react";
+import {
+  GameController,
+  PlusCircle,
+  Trophy,
+  UsersThree,
+  Shuffle,
+} from "@phosphor-icons/react";
 
 export function QuizHub() {
   return (
@@ -11,7 +23,7 @@ export function QuizHub() {
           Test your anime knowledge by guessing which scene this belongs to.
           Create your own quizzes or play against others!
         </p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="border-2 border-purple-200 dark:border-purple-900">
             <CardHeader>
@@ -34,7 +46,7 @@ export function QuizHub() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -53,7 +65,7 @@ export function QuizHub() {
             </CardContent>
           </Card>
         </div>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>How to Play</CardTitle>
@@ -68,14 +80,26 @@ export function QuizHub() {
                 <li>Quiz friends with your own curated song list</li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-lg mb-1">Game Modes:</h3>
               <ul className="list-disc pl-5 space-y-1">
-                <li><span className="font-medium">Solo:</span> Test your own knowledge at your pace</li>
-                <li><span className="font-medium">Multiplayer:</span> Compete in real-time with friends</li>
-                <li><span className="font-medium">Custom Quizzes:</span> Create and share your own collections</li>
-                <li><span className="font-medium">Random:</span> Adjust difficulty and get a surprise selection</li>
+                <li>
+                  <span className="font-medium">Solo:</span> Test your own
+                  knowledge at your pace
+                </li>
+                <li>
+                  <span className="font-medium">Multiplayer:</span> Compete in
+                  real-time with friends
+                </li>
+                <li>
+                  <span className="font-medium">Custom Quizzes:</span> Create
+                  and share your own collections
+                </li>
+                <li>
+                  <span className="font-medium">Random:</span> Adjust difficulty
+                  and get a surprise selection
+                </li>
               </ul>
             </div>
           </CardContent>
@@ -83,4 +107,4 @@ export function QuizHub() {
       </div>
     </QuizLayout>
   );
-} 
+}

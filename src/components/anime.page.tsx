@@ -1,14 +1,41 @@
 import type { EntityStatus, FullAnimeRecord } from "@/lib/types";
 import type { User } from "better-auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, CalendarIcon, Clock, Globe, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Award,
+  CalendarIcon,
+  Clock,
+  Globe,
+  PlayCircle,
+  Star,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
@@ -27,7 +54,8 @@ export function AnimeDetailsPage({ anime, user }: Props) {
   const getMainTitle = () => {
     const animeTitle =
       anime.titles?.find((title) => title.type === "English")?.title ||
-      anime.titles?.find((title) => title.type === "Default")?.title || 'Title';
+      anime.titles?.find((title) => title.type === "Default")?.title ||
+      "Title";
     return animeTitle;
   };
 
@@ -53,7 +81,9 @@ export function AnimeDetailsPage({ anime, user }: Props) {
   const fetchAnimeReviews = async () => {
     try {
       setIsLoadingReviews(true);
-      const response = await fetch(`https://api.jikan.moe/v4/anime/${anime.mal_id}/reviews`);
+      const response = await fetch(
+        `https://api.jikan.moe/v4/anime/${anime.mal_id}/reviews`,
+      );
       const data = await response.json();
       setReviews(data.data || []);
     } catch (error) {
@@ -64,7 +94,10 @@ export function AnimeDetailsPage({ anime, user }: Props) {
   };
 
   return (
-    <div className="container mx-auto" style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}>
+    <div
+      className="container mx-auto"
+      style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}
+    >
       {/* Hero Section - Using flex instead of grid for better control */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Anime Image - with fixed width constraints */}
@@ -76,7 +109,10 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                   style={{
                     viewTransitionName: `anime-card-img-${anime.mal_id}`,
                   }}
-                  src={anime.images?.jpg?.large_image_url || "/placeholder-anime.jpg"}
+                  src={
+                    anime.images?.jpg?.large_image_url ||
+                    "/placeholder-anime.jpg"
+                  }
                   alt={getMainTitle()}
                   className="object-cover w-full h-full"
                 />
@@ -105,22 +141,38 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                     style={{
                       viewTransitionName: `anime-card-title-${anime.mal_id}`,
                     }}
-                    className="text-3xl font-bold">{getMainTitle()}</CardTitle>
-                  {anime.titles?.filter(t => ['English', 'Default', 'Japanese'].includes(t.type as any)).map((title, index) => (
-                    <CardDescription key={index} className="text-lg">
-                      {title.title} {title.type && <span className="text-xs">({title.type})</span>}
-                    </CardDescription>
-                  ))}
+                    className="text-3xl font-bold"
+                  >
+                    {getMainTitle()}
+                  </CardTitle>
+                  {anime.titles
+                    ?.filter((t) =>
+                      ["English", "Default", "Japanese"].includes(
+                        t.type as any,
+                      ),
+                    )
+                    .map((title, index) => (
+                      <CardDescription key={index} className="text-lg">
+                        {title.title}{" "}
+                        {title.type && (
+                          <span className="text-xs">({title.type})</span>
+                        )}
+                      </CardDescription>
+                    ))}
                 </div>
                 <div className="flex items-center space-x-4">
                   {anime.score && (
                     <div className="text-center">
                       <div className="flex items-center">
                         <Star className="text-yellow-500 mr-1" size={20} />
-                        <span className="text-xl font-bold">{anime.score.toFixed(2)}</span>
+                        <span className="text-xl font-bold">
+                          {anime.score.toFixed(2)}
+                        </span>
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {anime.scored_by ? `${anime.scored_by.toLocaleString()} users` : "No ratings"}
+                        {anime.scored_by
+                          ? `${anime.scored_by.toLocaleString()} users`
+                          : "No ratings"}
                       </div>
                     </div>
                   )}
@@ -137,8 +189,12 @@ export function AnimeDetailsPage({ anime, user }: Props) {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
                 {anime.type && <Badge>{anime.type}</Badge>}
-                {anime.status && <Badge variant="outline">{anime.status}</Badge>}
-                {anime.rating && <Badge variant="secondary">{anime.rating}</Badge>}
+                {anime.status && (
+                  <Badge variant="outline">{anime.status}</Badge>
+                )}
+                {anime.rating && (
+                  <Badge variant="secondary">{anime.rating}</Badge>
+                )}
                 {anime.season && anime.year && (
                   <Badge variant="outline" className="capitalize">
                     {anime.season} {anime.year}
@@ -294,11 +350,14 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                 )}
               </div>
 
-              {(anime.theme?.openings?.length || anime.theme?.endings?.length) && (
+              {(anime.theme?.openings?.length ||
+                anime.theme?.endings?.length) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {anime.theme?.openings && anime.theme.openings.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-medium mb-2">Opening Themes</h3>
+                      <h3 className="text-lg font-medium mb-2">
+                        Opening Themes
+                      </h3>
                       <ul className="text-sm space-y-1">
                         {anime.theme.openings.map((opening, index) => (
                           <li key={index}>{opening}</li>
@@ -309,7 +368,9 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
                   {anime.theme?.endings && anime.theme.endings.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-medium mb-2">Ending Themes</h3>
+                      <h3 className="text-lg font-medium mb-2">
+                        Ending Themes
+                      </h3>
                       <ul className="text-sm space-y-1">
                         {anime.theme.endings.map((ending, index) => (
                           <li key={index}>{ending}</li>
@@ -331,9 +392,14 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                         <AccordionContent>
                           <ul className="space-y-2">
                             {relation.entry?.map((entry) => (
-                              <li key={entry.mal_id} className="flex items-center">
+                              <li
+                                key={entry.mal_id}
+                                className="flex items-center"
+                              >
                                 <span>{entry.name}</span>
-                                <Badge variant="outline" className="ml-2">{entry.type}</Badge>
+                                <Badge variant="outline" className="ml-2">
+                                  {entry.type}
+                                </Badge>
                               </li>
                             ))}
                           </ul>
@@ -353,7 +419,9 @@ export function AnimeDetailsPage({ anime, user }: Props) {
             <CardHeader>
               <CardTitle>Episodes</CardTitle>
               <CardDescription>
-                {anime.episodes ? `Total of ${anime.episodes} episodes` : "Episode information not available"}
+                {anime.episodes
+                  ? `Total of ${anime.episodes} episodes`
+                  : "Episode information not available"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -365,25 +433,35 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                         <TableHead className="w-16">Ep.</TableHead>
                         <TableHead>Title</TableHead>
                         <TableHead className="w-32">Aired</TableHead>
-                        <TableHead className="w-24 text-right">Duration</TableHead>
+                        <TableHead className="w-24 text-right">
+                          Duration
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {anime.episodes_info.map((episode) => (
                         <TableRow key={episode.mal_id}>
-                          <TableCell className="font-medium">{episode.mal_id}</TableCell>
+                          <TableCell className="font-medium">
+                            {episode.mal_id}
+                          </TableCell>
                           <TableCell>
                             {episode.title}
                             {(episode.filler || episode.recap) && (
                               <div className="flex gap-1 mt-1">
-                                {episode.filler && <Badge variant="destructive">Filler</Badge>}
-                                {episode.recap && <Badge variant="secondary">Recap</Badge>}
+                                {episode.filler && (
+                                  <Badge variant="destructive">Filler</Badge>
+                                )}
+                                {episode.recap && (
+                                  <Badge variant="secondary">Recap</Badge>
+                                )}
                               </div>
                             )}
                           </TableCell>
                           <TableCell>{formatDate(episode.aired)}</TableCell>
                           <TableCell className="text-right">
-                            {episode.duration ? `${Math.floor(episode.duration / 60)}m` : "-"}
+                            {episode.duration
+                              ? `${Math.floor(episode.duration / 60)}m`
+                              : "-"}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -412,39 +490,65 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                       <CardContent className="p-4">
                         <div className="flex gap-4">
                           <Avatar className="h-16 w-16">
-                            <AvatarImage src={character.character?.images?.jpg?.image_url || ""} />
+                            <AvatarImage
+                              src={
+                                character.character?.images?.jpg?.image_url ||
+                                ""
+                              }
+                            />
                             <AvatarFallback>
                               {character.character?.name?.substring(0, 2)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <h4 className="font-medium">{character.character?.name}</h4>
-                            <p className="text-sm text-muted-foreground">{character.role}</p>
+                            <h4 className="font-medium">
+                              {character.character?.name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {character.role}
+                            </p>
                           </div>
                         </div>
 
-                        {character.voice_actors && character.voice_actors.length > 0 && (
-                          <div className="mt-4">
-                            <Separator className="my-2" />
-                            <div className="text-sm font-medium mb-2">Voice Actors</div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {character.voice_actors.slice(0, 4).map((va, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                  <Avatar className="h-8 w-8">
-                                    <AvatarImage src={va.person?.images?.jpg?.image_url || ""} />
-                                    <AvatarFallback>
-                                      {va.person?.name?.substring(0, 2)}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="text-xs overflow-hidden">
-                                    <div className="truncate">{va.person?.name}</div>
-                                    <div className="text-muted-foreground">{va.language}</div>
-                                  </div>
-                                </div>
-                              ))}
+                        {character.voice_actors &&
+                          character.voice_actors.length > 0 && (
+                            <div className="mt-4">
+                              <Separator className="my-2" />
+                              <div className="text-sm font-medium mb-2">
+                                Voice Actors
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                {character.voice_actors
+                                  .slice(0, 4)
+                                  .map((va, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-center gap-2"
+                                    >
+                                      <Avatar className="h-8 w-8">
+                                        <AvatarImage
+                                          src={
+                                            va.person?.images?.jpg?.image_url ||
+                                            ""
+                                          }
+                                        />
+                                        <AvatarFallback>
+                                          {va.person?.name?.substring(0, 2)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <div className="text-xs overflow-hidden">
+                                        <div className="truncate">
+                                          {va.person?.name}
+                                        </div>
+                                        <div className="text-muted-foreground">
+                                          {va.language}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                       </CardContent>
                     </Card>
                   ))}
@@ -471,13 +575,19 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                       <CardContent className="p-4">
                         <div className="flex gap-4">
                           <Avatar className="h-16 w-16">
-                            <AvatarImage src={staffMember.person?.images?.jpg?.image_url || ""} />
+                            <AvatarImage
+                              src={
+                                staffMember.person?.images?.jpg?.image_url || ""
+                              }
+                            />
                             <AvatarFallback>
                               {staffMember.person?.name?.substring(0, 2)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h4 className="font-medium">{staffMember.person?.name}</h4>
+                            <h4 className="font-medium">
+                              {staffMember.person?.name}
+                            </h4>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {staffMember.positions?.map((position, idx) => (
                                 <Badge key={idx} variant="outline">
@@ -534,7 +644,9 @@ export function AnimeDetailsPage({ anime, user }: Props) {
               {/* External links */}
               {anime.external && anime.external.length > 0 && (
                 <>
-                  <h3 className="text-lg font-medium mt-6 mb-2">External Links</h3>
+                  <h3 className="text-lg font-medium mt-6 mb-2">
+                    External Links
+                  </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {anime.external.map((link, index) => (
                       <a

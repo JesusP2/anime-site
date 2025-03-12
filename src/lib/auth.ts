@@ -4,7 +4,7 @@ import { getDb } from "./db/pool";
 import { magicLink, emailOTP, username } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import {
-    BETTER_AUTH_SECRET,
+  BETTER_AUTH_SECRET,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,

@@ -11,13 +11,18 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
     data.titles?.find((title) => title.type === "Default")?.title;
 
   return (
-    <a href={`/anime/${data.mal_id}`} className="cursor-pointer w-full" style={{ viewTransitionName: `anime-card-${data.mal_id}` }}>
+    <a
+      href={`/anime/${data.mal_id}`}
+      className="cursor-pointer w-full"
+      style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
+    >
       <MagicCard
         className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
         gradientColor={"#A9A9A955"}
       >
         <article className="p-[0.5rem] flex gap-x-[1rem]">
-          <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
+          <section
+            className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
             style={{
               viewTransitionName: `anime-card-img-${data.mal_id}`,
             }}

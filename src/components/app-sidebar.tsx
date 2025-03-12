@@ -103,8 +103,8 @@ const data = {
       icon: MusicNote,
       items: [
         {
-          title: 'Home',
-          url: '/games/quiz',
+          title: "Home",
+          url: "/games/quiz",
           icon: MusicNote,
         },
         {

@@ -3,11 +3,11 @@ export const mangaFilters = {
     label: "Status",
     group: "basic",
     options: [
-      { label: 'Finished Airing', value: 'Finished' },
+      { label: "Finished Airing", value: "Finished" },
       { label: "Publishing", value: "Publishing" },
-      { label: 'On Hiatus', value: 'On Hiatus' },
-      { label: 'Discontinued', value: 'Discontinued' },
-      { label: 'Not yet published', value: 'Not yet published' },
+      { label: "On Hiatus", value: "On Hiatus" },
+      { label: "Discontinued", value: "Discontinued" },
+      { label: "Not yet published", value: "Not yet published" },
     ],
   },
   type: {

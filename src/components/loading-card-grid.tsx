@@ -2,11 +2,8 @@ import { Skeleton } from "./ui/skeleton";
 
 function MangaCardSkeleton() {
   return (
-
     <div className="cursor-pointer w-full">
-      <div
-        className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto rounded-xl"
-      >
+      <div className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto rounded-xl">
         <article className="p-[0.5rem] flex gap-x-[1rem]">
           <section className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative">
             <Skeleton className="h-[11rem] w-[12rem] rounded-xl" />
@@ -36,9 +33,11 @@ function MangaCardSkeleton() {
 export function LoadingCardGrid() {
   return (
     <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-      {Array(6).fill(0).map((_, i) => (
-        <MangaCardSkeleton key={i} />
-      ))}
+      {Array(6)
+        .fill(0)
+        .map((_, i) => (
+          <MangaCardSkeleton key={i} />
+        ))}
     </div>
   );
 }

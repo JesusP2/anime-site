@@ -428,4 +428,3 @@ export const forgotPasswordTemplate = (url: string) => `
   </body>
 </html>
 `;
-

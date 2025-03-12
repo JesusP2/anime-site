@@ -45,7 +45,10 @@ export function SearchWithFilters({
   onSearch: (filters: URLSearchParams) => void;
 }) {
   const [filters, setFilters] = useState(
-    setupFilters(entity === "Manga" ? mangaFilters : animeFilters, new URL(url)),
+    setupFilters(
+      entity === "Manga" ? mangaFilters : animeFilters,
+      new URL(url),
+    ),
   );
   const [searchType, setSearchType] = useState<"Anime" | "Manga">(
     entity === "Manga" ? "Manga" : "Anime",

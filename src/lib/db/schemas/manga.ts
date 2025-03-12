@@ -63,7 +63,8 @@ export const mangaTable = pgTable(
       .notNull()
       .$type<components["schemas"]["mal_url"][]>(),
     relations: jsonb("relations").$type<components["schemas"]["relation"][]>(),
-    external: jsonb("external").$type<components["schemas"]["external_links"]>(),
+    external:
+      jsonb("external").$type<components["schemas"]["external_links"]>(),
     embedding: vector("embedding", { dimensions: 1536 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),

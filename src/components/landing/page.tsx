@@ -61,7 +61,9 @@ export function LandingPage({
         <div className="flex flex-col items-center justify-center px-4 text-center h-screen">
           <div className="mb-8 relative">
             <div className="w-32 h-32 bg-gradient-to-br from-pink-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform rotate-12 mb-4">
-              <span className="text-6xl font-bold text-white transform -rotate-12">A</span>
+              <span className="text-6xl font-bold text-white transform -rotate-12">
+                A
+              </span>
             </div>
             <div className="absolute -top-4 -right-4 w-12 h-12 bg-pink-500/20 rounded-full blur-xl"></div>
             <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-purple-500/20 rounded-full blur-xl"></div>
@@ -88,13 +90,16 @@ export function LandingPage({
               const formData = new FormData(e.target as HTMLFormElement);
               const search = new URLSearchParams();
               search.set("q", (formData.get("q") as string) ?? "");
-              safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
+              safeStartViewTransition(() =>
+                navigate(`/search?${search.toString()}`),
+              );
             }}
           >
             <div
               id="search-field"
-              className={`mx-auto flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
+              className={`mx-auto flex flex-col sm:flex-row gap-4 mb-12 w-full max-w-2xl px-4 transition-opacity duration-300 ${
+                showMainSearch ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
             >
               <div className="relative flex-1">
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -205,11 +210,28 @@ export function LandingPage({
         <footer className="mt-24 pb-8 text-center text-sm text-gray-500 dark:text-gray-400">
           <div className="max-w-7xl mx-auto px-4">
             <div className="border-t border-gray-200 dark:border-gray-800 pt-8">
-              <p>© {new Date().getFullYear()} AnimeSearch. All rights reserved.</p>
+              <p>
+                © {new Date().getFullYear()} AnimeSearch. All rights reserved.
+              </p>
               <div className="mt-2 space-x-4">
-                <a href="/about" className="hover:text-gray-700 dark:hover:text-gray-300">About</a>
-                <a href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300">Privacy</a>
-                <a href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300">Terms</a>
+                <a
+                  href="/about"
+                  className="hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  About
+                </a>
+                <a
+                  href="/privacy"
+                  className="hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  Privacy
+                </a>
+                <a
+                  href="/terms"
+                  className="hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  Terms
+                </a>
               </div>
             </div>
           </div>

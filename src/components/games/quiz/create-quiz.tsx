@@ -1,36 +1,43 @@
 import * as React from "react";
 import { QuizLayout } from "./layout";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { 
-  MagnifyingGlass, 
-  Plus, 
-  MinusCircle, 
+import {
+  MagnifyingGlass,
+  Plus,
+  MinusCircle,
   Share,
-  Globe
+  Globe,
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 
 export function CreateQuiz() {
-  const [songs, setSongs] = React.useState<Array<{id: string, animeId: number, title: string, animeTitle: string}>>([
-    { id: '1', animeId: 1, title: "Cruel Angel's Thesis", animeTitle: "Neon Genesis Evangelion" }
+  const [songs, setSongs] = React.useState<
+    Array<{ id: string; animeId: number; title: string; animeTitle: string }>
+  >([
+    {
+      id: "1",
+      animeId: 1,
+      title: "Cruel Angel's Thesis",
+      animeTitle: "Neon Genesis Evangelion",
+    },
   ]);
-  
+
   const [searchResults, setSearchResults] = React.useState<any[]>([]);
   const [isSearching, setIsSearching] = React.useState(false);
-  
+
   // Mock search function
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,51 +47,59 @@ export function CreateQuiz() {
       setSearchResults([
         { id: 101, title: "Tank!", animeTitle: "Cowboy Bebop" },
         { id: 102, title: "Unravel", animeTitle: "Tokyo Ghoul" },
-        { id: 103, title: "Again", animeTitle: "Fullmetal Alchemist: Brotherhood" },
+        {
+          id: 103,
+          title: "Again",
+          animeTitle: "Fullmetal Alchemist: Brotherhood",
+        },
       ]);
       setIsSearching(false);
     }, 1000);
   };
-  
+
   const addSong = (song: any) => {
-    setSongs([...songs, { 
-      id: Date.now().toString(),
-      animeId: song.id,
-      title: song.title,
-      animeTitle: song.animeTitle
-    }]);
+    setSongs([
+      ...songs,
+      {
+        id: Date.now().toString(),
+        animeId: song.id,
+        title: song.title,
+        animeTitle: song.animeTitle,
+      },
+    ]);
     setSearchResults([]);
   };
-  
+
   const removeSong = (id: string) => {
-    setSongs(songs.filter(song => song.id !== id));
+    setSongs(songs.filter((song) => song.id !== id));
   };
-  
+
   return (
     <QuizLayout title="Create a Quiz">
       <div className="max-w-3xl mx-auto">
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Quiz Details</CardTitle>
-            <CardDescription>
-              Set up your quiz
-            </CardDescription>
+            <CardDescription>Set up your quiz</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Quiz Title</Label>
-              <Input id="title" placeholder="Enter a catchy title for your quiz" />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea 
-                id="description" 
-                placeholder="Describe your quiz (optional)" 
-                className="min-h-[100px]" 
+              <Input
+                id="title"
+                placeholder="Enter a catchy title for your quiz"
               />
             </div>
-            
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                placeholder="Describe your quiz (optional)"
+                className="min-h-[100px]"
+              />
+            </div>
+
             <div className="space-y-2">
               <Label>Difficulty</Label>
               <RadioGroup defaultValue="medium" className="flex space-x-4">
@@ -102,7 +117,7 @@ export function CreateQuiz() {
                 </div>
               </RadioGroup>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch id="public" />
               <Label htmlFor="public" className="flex items-center gap-2">
@@ -112,7 +127,7 @@ export function CreateQuiz() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Add Anime Themes</CardTitle>
@@ -125,8 +140,8 @@ export function CreateQuiz() {
               <div className="flex gap-2">
                 <div className="relative flex-grow">
                   <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input 
-                    type="search" 
+                  <Input
+                    type="search"
                     placeholder="Search for anime openings..."
                     className="pl-10"
                   />
@@ -136,7 +151,7 @@ export function CreateQuiz() {
                 </Button>
               </div>
             </form>
-            
+
             {searchResults.length > 0 && (
               <Card>
                 <CardHeader className="py-2">
@@ -144,14 +159,19 @@ export function CreateQuiz() {
                 </CardHeader>
                 <CardContent className="p-2">
                   <ul className="divide-y">
-                    {searchResults.map(result => (
-                      <li key={result.id} className="py-2 flex justify-between items-center">
+                    {searchResults.map((result) => (
+                      <li
+                        key={result.id}
+                        className="py-2 flex justify-between items-center"
+                      >
                         <div>
                           <p className="font-medium">{result.title}</p>
-                          <p className="text-sm text-gray-500">{result.animeTitle}</p>
+                          <p className="text-sm text-gray-500">
+                            {result.animeTitle}
+                          </p>
                         </div>
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => addSong(result)}
                         >
@@ -163,12 +183,17 @@ export function CreateQuiz() {
                 </CardContent>
               </Card>
             )}
-            
+
             <div>
-              <h3 className="text-sm font-medium mb-2">Selected Themes ({songs.length}/20)</h3>
+              <h3 className="text-sm font-medium mb-2">
+                Selected Themes ({songs.length}/20)
+              </h3>
               <ul className="space-y-2">
                 {songs.map((song, index) => (
-                  <li key={song.id} className="flex items-center justify-between p-3 border rounded-md">
+                  <li
+                    key={song.id}
+                    className="flex items-center justify-between p-3 border rounded-md"
+                  >
                     <div>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline">{index + 1}</Badge>
@@ -176,8 +201,8 @@ export function CreateQuiz() {
                       </div>
                       <p className="text-sm text-gray-500">{song.animeTitle}</p>
                     </div>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
                       onClick={() => removeSong(song.id)}
                     >
@@ -199,4 +224,4 @@ export function CreateQuiz() {
       </div>
     </QuizLayout>
   );
-} 
+}

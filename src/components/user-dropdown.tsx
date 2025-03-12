@@ -56,10 +56,10 @@ export function UserDropdown({ user }: { user: User }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <a href="/account">
-          <DropdownMenuItem>
-            <SealCheck weight="bold" />
-            Account
-          </DropdownMenuItem>
+            <DropdownMenuItem>
+              <SealCheck weight="bold" />
+              Account
+            </DropdownMenuItem>
           </a>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

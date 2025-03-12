@@ -40,18 +40,18 @@ export function MangasWithStatusPage({
   useEffect(() => {
     if (user) return;
     setIsLoading(true);
-    getMangasFromLocalDB(entityStatus, _url.searchParams).then(
-      (recordsWithStatus) => {
+    getMangasFromLocalDB(entityStatus, _url.searchParams)
+      .then((recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
         }
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
-      },
-    ).finally(() => {
-      setIsLoading(false);
-    });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   function onSearch(searchParams: URLSearchParams) {
@@ -62,18 +62,18 @@ export function MangasWithStatusPage({
       });
     } else {
       setIsLoading(true);
-      getMangasFromLocalDB(entityStatus, searchParams).then(
-        (recordsWithStatus) => {
+      getMangasFromLocalDB(entityStatus, searchParams)
+        .then((recordsWithStatus) => {
           if (!recordsWithStatus.success) {
             _setRecords({ success: true, value: { data: [], count: 0 } });
             return;
           }
           const { data, count } = recordsWithStatus.value;
           _setRecords({ success: true, value: { data, count } });
-        },
-      ).finally(() => {
-        setIsLoading(false);
-      });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }
 

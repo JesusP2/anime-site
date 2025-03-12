@@ -1,7 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import type { User } from "better-auth";
 import { authClient } from "@/lib/auth-client";
-import { Pencil, Check, X, Key, SignOut, Trash, ArrowLeft } from "@phosphor-icons/react";
+import {
+  Pencil,
+  Check,
+  X,
+  Key,
+  SignOut,
+  Trash,
+  ArrowLeft,
+} from "@phosphor-icons/react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -118,19 +126,20 @@ export function AccountPage({ user }: { user: User }) {
         </Button>
         <h1 className="text-3xl font-bold">Account Management</h1>
       </div>
-      
+
       <div className="grid gap-8">
         {/* Profile Information */}
         <Card>
           <CardHeader>
             <CardTitle>Profile Information</CardTitle>
-            <CardDescription>
-              Update your profile information
-            </CardDescription>
+            <CardDescription>Update your profile information</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col md:flex-row gap-8 items-start">
             <div className="flex flex-col items-center gap-2">
-              <Avatar className="h-24 w-24 cursor-pointer" onClick={handleAvatarClick}>
+              <Avatar
+                className="h-24 w-24 cursor-pointer"
+                onClick={handleAvatarClick}
+              >
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
                 <AvatarFallback className="text-xl">
                   {user.name.charAt(0)}
@@ -211,9 +220,7 @@ export function AccountPage({ user }: { user: User }) {
         <Card>
           <CardHeader>
             <CardTitle>Security</CardTitle>
-            <CardDescription>
-              Manage your password and sessions
-            </CardDescription>
+            <CardDescription>Manage your password and sessions</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <ChangePasswordDialog />
@@ -234,7 +241,7 @@ export function AccountPage({ user }: { user: User }) {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Toast provider */}
       <Toaster />
     </div>
@@ -272,7 +279,7 @@ function ChangePasswordDialog() {
         newPassword,
         revokeOtherSessions: true,
       });
-      
+
       toast({
         title: "Success",
         description: "Password changed successfully",
@@ -302,7 +309,8 @@ function ChangePasswordDialog() {
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
           <DialogDescription>
-            Enter your current password and a new password to update your credentials.
+            Enter your current password and a new password to update your
+            credentials.
           </DialogDescription>
         </DialogHeader>
 
@@ -345,7 +353,11 @@ function ChangePasswordDialog() {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
@@ -441,7 +453,7 @@ function DeleteAccountDialog() {
       await authClient.deleteUser({
         password,
       });
-      
+
       toast({
         title: "Account deleted",
         description: "Your account has been permanently deleted",
@@ -467,7 +479,8 @@ function DeleteAccountDialog() {
         <DialogHeader>
           <DialogTitle>Delete Your Account</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
 
@@ -489,7 +502,8 @@ function DeleteAccountDialog() {
 
           <div className="space-y-2">
             <Label htmlFor="confirm-delete">
-              Type <span className="font-semibold">delete my account</span> to confirm
+              Type <span className="font-semibold">delete my account</span> to
+              confirm
             </Label>
             <Input
               id="confirm-delete"

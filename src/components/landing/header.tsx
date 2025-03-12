@@ -48,8 +48,9 @@ export function Header({
           </div>
 
           <div
-            className={`transform transition-all duration-500 ${showSearch ? "w-[50%] opacity-100" : "w-0 opacity-0"
-              }`}
+            className={`transform transition-all duration-500 ${
+              showSearch ? "w-[50%] opacity-100" : "w-0 opacity-0"
+            }`}
           >
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -61,7 +62,9 @@ export function Header({
                   const formData = new FormData(e.target as HTMLFormElement);
                   const search = new URLSearchParams();
                   search.set("q", (formData.get("q") as string) ?? "");
-                  safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
+                  safeStartViewTransition(() =>
+                    navigate(`/search?${search.toString()}`),
+                  );
                 }}
               >
                 <input

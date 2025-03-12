@@ -19,11 +19,13 @@ export function ThemeButton(props: { isDarkMode: boolean }) {
       setTheme(isDarkMode);
       return;
     }
-    document.querySelectorAll('[style*="view-transition-name"]').forEach(_el => {
-      const el = _el as HTMLElement;
-      el.dataset.savedTransition = el.style.viewTransitionName;
-      el.style.viewTransitionName = '';
-    });
+    document
+      .querySelectorAll('[style*="view-transition-name"]')
+      .forEach((_el) => {
+        const el = _el as HTMLElement;
+        el.dataset.savedTransition = el.style.viewTransitionName;
+        el.style.viewTransitionName = "";
+      });
 
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const x = left + width / 2;
@@ -37,11 +39,14 @@ export function ThemeButton(props: { isDarkMode: boolean }) {
       flushSync(() => {
         setTheme(isDarkMode);
         setTimeout(() => {
-          document.querySelectorAll('[data-saved-transition]').forEach(_el => {
-            const el = _el as HTMLElement;
-            el.style.viewTransitionName = el.dataset.savedTransition as string;
-            delete el.dataset.savedTransition;
-          });
+          document
+            .querySelectorAll("[data-saved-transition]")
+            .forEach((_el) => {
+              const el = _el as HTMLElement;
+              el.style.viewTransitionName = el.dataset
+                .savedTransition as string;
+              delete el.dataset.savedTransition;
+            });
         }, duration);
       });
     }).ready;
