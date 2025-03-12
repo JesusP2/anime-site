@@ -76,8 +76,7 @@ export function CreateQuiz() {
 
   return (
     <QuizLayout title="Create a Quiz">
-      <div className="max-w-3xl mx-auto">
-        <Card className="mb-6">
+        <Card className="mb-6 w-[30rem]">
           <CardHeader>
             <CardTitle>Quiz Details</CardTitle>
             <CardDescription>Set up your quiz</CardDescription>
@@ -221,7 +220,6 @@ export function CreateQuiz() {
             </Button>
           </CardFooter>
         </Card>
-      </div>
     </QuizLayout>
   );
 }

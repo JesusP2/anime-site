@@ -8,7 +8,7 @@ type ThemeQuizLayoutProps = {
 
 export function QuizLayout({ title, children }: ThemeQuizLayoutProps) {
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <div className="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
           <MusicNote
