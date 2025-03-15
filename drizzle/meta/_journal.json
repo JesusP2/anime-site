@@ -61,36 +61,22 @@
     {
       "idx": 8,
       "version": "7",
-      "when": 1741672691107,
-      "tag": "0008_worthless_thena",
+      "when": 1741917061262,
+      "tag": "0008_clammy_steel_serpent",
       "breakpoints": true
     },
     {
       "idx": 9,
       "version": "7",
-      "when": 1741717257384,
-      "tag": "0009_useful_fallen_one",
+      "when": 1741917370936,
+      "tag": "0009_daffy_mac_gargan",
       "breakpoints": true
     },
     {
       "idx": 10,
       "version": "7",
-      "when": 1741717376710,
-      "tag": "0010_true_johnny_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1741781409264,
-      "tag": "0011_ambitious_elektra",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "7",
-      "when": 1741783224308,
-      "tag": "0012_flippant_blazing_skull",
+      "when": 1741921631598,
+      "tag": "0010_awesome_talisman",
       "breakpoints": true
     }
   ]

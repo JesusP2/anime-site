@@ -26,19 +26,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Award,
-  CalendarIcon,
-  Clock,
-  Globe,
-  PlayCircle,
-  Star,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Medal, PlayCircle, Star, TrendUp, Users, Clock, Calendar, Globe } from '@phosphor-icons/react';
 import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
+import { getRecordTitle } from "@/lib/anime-title";
 
 type Props = {
   anime: FullAnimeRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -50,14 +42,6 @@ export function AnimeDetailsPage({ anime, user }: Props) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
-
-  const getMainTitle = () => {
-    const animeTitle =
-      anime.titles?.find((title) => title.type === "English")?.title ||
-      anime.titles?.find((title) => title.type === "Default")?.title ||
-      "Title";
-    return animeTitle;
-  };
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "Unknown";
@@ -113,7 +97,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                     anime.images?.jpg?.large_image_url ||
                     "/placeholder-anime.jpg"
                   }
-                  alt={getMainTitle()}
+                  alt={getRecordTitle(anime.titles)}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -143,7 +127,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                     }}
                     className="text-3xl font-bold"
                   >
-                    {getMainTitle()}
+                    {getRecordTitle(anime.titles)}
                   </CardTitle>
                   {anime.titles
                     ?.filter((t) =>
@@ -177,7 +161,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                     </div>
                   )}
                   <MediaReviews
-                    title={getMainTitle() || anime.title || "this anime"}
+                    title={getRecordTitle(anime.titles)}
                     reviews={reviews}
                     isLoading={isLoadingReviews}
                     open={reviewsOpen}
@@ -216,7 +200,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                 )}
                 {anime.broadcast?.string && (
                   <div className="flex items-center">
-                    <CalendarIcon className="mr-2" size={16} />
+                    <Calendar className="mr-2" size={16} />
                     <span>{anime.broadcast.string}</span>
                   </div>
                 )}
@@ -228,13 +212,13 @@ export function AnimeDetailsPage({ anime, user }: Props) {
                 )}
                 {anime.rank && (
                   <div className="flex items-center">
-                    <Award className="mr-2" size={16} />
+                    <Medal className="mr-2" size={16} />
                     <span>Ranked #{anime.rank.toLocaleString()}</span>
                   </div>
                 )}
                 {anime.popularity && (
                   <div className="flex items-center">
-                    <TrendingUp className="mr-2" size={16} />
+                    <TrendUp className="mr-2" size={16} />
                     <span>Popularity #{anime.popularity.toLocaleString()}</span>
                   </div>
                 )}

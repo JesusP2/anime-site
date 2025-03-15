@@ -5,8 +5,10 @@ import { trackedEntityTable } from "@/lib/db/schemas";
 import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
+import { gameActions } from "./games";
 
 export const server = {
+  games: gameActions,
   updateEntity: defineAction({
     accept: "json",
     input: z.object({

@@ -50,3 +50,25 @@ export const validateResetTokenSchema = z.object({
 export const magicLinkTokenSchema = z.object({
   token: z.string().max(255),
 });
+
+export const createQuizInfoSectionSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters long."),
+  description: z.string(),
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  public: z.boolean(),
+});
+
+export const createQuizSongSelectionSectionSchema = z.object({
+  songs: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        animeTitle: z.string(),
+      }),
+    )
+    .min(5, "You must select at least 5 songs."),
+});
+export type SongSelectionSection = z.infer<
+  typeof createQuizSongSelectionSectionSchema
+>;

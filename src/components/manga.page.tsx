@@ -8,10 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Award, PlayCircle, Star, TrendingUp, Users } from "lucide-react";
+import { Medal, PlayCircle, Star, TrendUp, Users } from '@phosphor-icons/react';
 import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
+import { getRecordTitle } from "@/lib/anime-title";
 
 type Props = {
   manga: FullMangaRecord & { entityStatus?: EntityStatus; embedding: number[] };
@@ -23,14 +24,6 @@ export function MangaDetailsPage({ manga, user }: Props) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
-
-  const getMainTitle = () => {
-    const mangaTitle =
-      manga.titles?.find((title) => title.type === "English")?.title ||
-      manga.titles?.find((title) => title.type === "Default")?.title ||
-      "Title";
-    return mangaTitle;
-  };
 
   useEffect(() => {
     if (reviewsOpen && reviews.length === 0) {
@@ -73,7 +66,7 @@ export function MangaDetailsPage({ manga, user }: Props) {
                     manga.images?.jpg?.large_image_url ||
                     "/placeholder-anime.jpg"
                   }
-                  alt={getMainTitle()}
+                  alt={getRecordTitle(manga.titles)}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -103,7 +96,7 @@ export function MangaDetailsPage({ manga, user }: Props) {
                     }}
                     className="text-3xl font-bold"
                   >
-                    {getMainTitle()}
+                    {getRecordTitle(manga.titles)}
                   </CardTitle>
                   {manga.titles
                     ?.filter((t) =>
@@ -135,7 +128,7 @@ export function MangaDetailsPage({ manga, user }: Props) {
                     </div>
                   )}
                   <MediaReviews
-                    title={getMainTitle()}
+                    title={getRecordTitle(manga.titles)}
                     reviews={reviews}
                     isLoading={isLoadingReviews}
                     open={reviewsOpen}
@@ -174,13 +167,13 @@ export function MangaDetailsPage({ manga, user }: Props) {
                 )}
                 {manga.rank && (
                   <div className="flex items-center">
-                    <Award className="mr-2" size={16} />
+                    <Medal className="mr-2" size={16} />
                     <span>Ranked #{manga.rank.toLocaleString()}</span>
                   </div>
                 )}
                 {manga.popularity && (
                   <div className="flex items-center">
-                    <TrendingUp className="mr-2" size={16} />
+                    <TrendUp className="mr-2" size={16} />
                     <span>Popularity #{manga.popularity.toLocaleString()}</span>
                   </div>
                 )}

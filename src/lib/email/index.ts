@@ -17,6 +17,5 @@ export async function sendEmail(email: string, subject: string, html: string) {
 
   if (res.ok) {
     const data = await res.json();
-    console.log(data);
   }
 }

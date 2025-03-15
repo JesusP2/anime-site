@@ -1,5 +1,6 @@
 import { pgTable } from "drizzle-orm/pg-core";
 import { themeTable } from "./theme";
+import { quizTable } from "./quiz";
 
 export const gameTable = pgTable("game", (t) => ({
   id: t.text("id").primaryKey(),
@@ -7,7 +8,7 @@ export const gameTable = pgTable("game", (t) => ({
   quizId: t
     .text("quiz_id")
     .notNull()
-    .references(() => themeTable.id),
+    .references(() => quizTable.id),
   createdAt: t.timestamp("created_at").defaultNow(),
   updatedAt: t.timestamp("updated_at").defaultNow(),
 }));

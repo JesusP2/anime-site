@@ -1,0 +1,7 @@
+---
+import { getQuiz } from "@/lib/games/quiz/queries";
+const quizId = Astro.params.quiz_id;
+const quiz = await getQuiz(quizId as string);
+---
+<div>
+</div>
