@@ -1,9 +1,30 @@
 ---
+import { MusicNote } from "@phosphor-icons/react";
 import MainLayout from "@/layout/main.astro";
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	path?: string;
+}
+const { title, description, image, path } = Astro.props;
 ---
 
-<MainLayout title="Quizzes">
+<MainLayout title={title} description={description} image={image} path={path}>
 	<div class="max-w-3xl mx-auto">
-  		<slot />
-	<div class="max-w-3xl mx-auto">
+		<div class="container mx-auto">
+			<div class="flex items-center gap-3 mb-6">
+				<div
+					class="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center"
+				>
+					<MusicNote
+						weight="fill"
+						className="text-purple-600 dark:text-purple-300 w-6 h-6"
+					/>
+				</div>
+				<h1 class="text-3xl font-bold">{title}</h1>
+			</div>
+			<slot />
+		</div>
+	</div>
 </MainLayout>

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Clock, UsersThree, Calendar } from "@phosphor-icons/react";
 import { formatDistanceToNow } from "date-fns";
 import { navigate } from "astro:transitions/client";
+import { actions } from "astro:actions";
 
 type QuizInfo = {
   quizId: string;
@@ -26,28 +27,15 @@ export function CreateGame(props: QuizInfo) {
   const [isCreatingGame, setIsCreatingGame] = React.useState(false);
 
   const handleCreateGame = async () => {
-    setIsCreatingGame(true);
-    try {
-      // Call API to create a game
-      const response = await fetch("/api/games", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          quizId: props.quizId,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create game");
-
-      const { gameId } = await response.json();
-      navigate(`/games/quiz/play/${gameId}`);
-    } catch (error) {
-      console.error("Error creating game:", error);
-    } finally {
-      setIsCreatingGame(false);
+    const result = await actions.games.createGame({
+      quizId: props.quizId,
+    });
+    if (result.error) {
+      console.error(result.error);
+      return;
     }
+    const gameId = result.data;
+    navigate(`/themes/games/${gameId}`);
   };
 
   return (
@@ -94,16 +82,6 @@ export function CreateGame(props: QuizInfo) {
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5 text-muted-foreground" />
                 <span>{props.themesLength} questions</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-muted-foreground" />
-                <span>
-                  {props.difficulty === "easy"
-                    ? "Beginner friendly"
-                    : props.difficulty === "medium"
-                      ? "Anime fans"
-                      : "For otakus only"}
-                </span>
               </div>
             </div>
           </div>

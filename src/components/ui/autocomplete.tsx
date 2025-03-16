@@ -17,7 +17,7 @@ type Props<T extends string> = {
   onSelectedValueChange: (value: T) => void;
   searchValue: string;
   onSearchValueChange: (value: string) => void;
-  items: { value: T; label: string; key: string; }[];
+  items: { value: T; label: string; key: string }[];
   isLoading?: boolean;
   emptyMessage?: string;
   placeholder?: string;
@@ -37,11 +37,14 @@ export function AutoComplete<T extends string>({
 
   const labels = useMemo(
     () =>
-      items.reduce((acc, item) => {
-        acc[item.value] = item.label;
-        return acc;
-      }, {} as Record<string, string>),
-    [items]
+      items.reduce(
+        (acc, item) => {
+          acc[item.value] = item.label;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+    [items],
   );
 
   const reset = () => {
@@ -115,7 +118,9 @@ export function AutoComplete<T extends string>({
                     >
                       <div className="flex flex-col gap-0.5">
                         <span className="font-medium">{option.value}</span>
-                        <span className="text-xs text-muted-foreground">{option.label}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {option.label}
+                        </span>
                       </div>
                       {option.value === selectedValue && (
                         <Check className="h-4 w-4 text-primary" />

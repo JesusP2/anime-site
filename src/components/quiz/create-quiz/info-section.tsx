@@ -13,15 +13,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Globe,
-  ArrowRight,
-} from "@phosphor-icons/react";
+import { Globe, ArrowRight } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { FieldInfo } from "@/components/field-info";
 import type { z } from "astro:content";
 
-export function InfoSection({ onCompleted, hide }: {
+export function InfoSection({
+  onCompleted,
+  hide,
+}: {
   onCompleted: (values: z.infer<typeof createQuizInfoSectionSchema>) => void;
   hide: boolean;
 }) {
@@ -37,23 +37,25 @@ export function InfoSection({ onCompleted, hide }: {
     },
     onSubmit: ({ value }) => {
       onCompleted(value as any);
-    }
+    },
   });
   if (hide) return null;
   return (
-    <form onSubmit={e => {
-      e.preventDefault();
-      e.stopPropagation();
-      form.handleSubmit(e);
-    }}>
-      <Card>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit(e);
+      }}
+    >
+      <Card className="w-96 mx-auto">
         <CardHeader>
           <CardTitle>Quiz Details</CardTitle>
           <CardDescription>
             Enter the basic information about your quiz
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4 w-[25rem]">
+        <CardContent className="space-y-4 w-96">
           <form.Field
             name="title"
             children={(field) => (
@@ -63,7 +65,7 @@ export function InfoSection({ onCompleted, hide }: {
                   id="title"
                   placeholder="Enter a catchy title for your quiz"
                   value={field.state.value}
-                  onChange={e => field.handleChange(e.target.value)}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
                 <FieldInfo field={field} />
               </div>
@@ -80,7 +82,7 @@ export function InfoSection({ onCompleted, hide }: {
                   placeholder="Describe what your quiz is about"
                   value={field.state.value}
                   className="min-h-[100px]"
-                  onChange={e => field.handleChange(e.target.value)}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
                 <FieldInfo field={field} />
               </div>
@@ -91,7 +93,11 @@ export function InfoSection({ onCompleted, hide }: {
             children={(field) => (
               <div className="space-y-2">
                 <Label>Difficulty</Label>
-                <RadioGroup value={field.state.value} onValueChange={field.handleChange} className="flex space-x-4">
+                <RadioGroup
+                  value={field.state.value}
+                  onValueChange={field.handleChange}
+                  className="flex space-x-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="easy" id="easy" />
                     <Label htmlFor="easy">Easy</Label>
@@ -113,7 +119,11 @@ export function InfoSection({ onCompleted, hide }: {
             name="public"
             children={(field) => (
               <div className="flex items-center space-x-2">
-                <Switch id="public" checked={field.state.value} onCheckedChange={field.handleChange} />
+                <Switch
+                  id="public"
+                  checked={field.state.value}
+                  onCheckedChange={field.handleChange}
+                />
                 <Label htmlFor="public" className="flex items-center gap-2">
                   <Globe className="w-4 h-4" />
                   Make quiz public
@@ -131,5 +141,5 @@ export function InfoSection({ onCompleted, hide }: {
         </CardFooter>
       </Card>
     </form>
-  )
+  );
 }

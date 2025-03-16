@@ -8,7 +8,30 @@ import {
 } from "@/lib/db/schemas";
 import { eq } from "drizzle-orm";
 
-export async function getQuiz(quizId: string) {
+export async function getQuizInfo(quizId: string) {
+  const db = getDb();
+  const result = await db
+    .select({
+      quizTitle: quizTable.title,
+      difficulty: quizTable.difficulty,
+      public: quizTable.public,
+      createdAt: quizTable.createdAt,
+      themeId: quizToThemeTable.themeId,
+    })
+    .from(quizTable)
+    .where(eq(quizTable.id, quizId))
+    .leftJoin(quizToThemeTable, eq(quizTable.id, quizToThemeTable.quizId));
+  const quizInfo = {
+    title: result[0]?.quizTitle,
+    difficulty: result[0]?.difficulty,
+    public: result[0]?.public,
+    createdAt: result[0]?.createdAt,
+    themesLength: result.length,
+  };
+  return quizInfo;
+}
+
+export async function getQuizCompleteInfo(quizId: string) {
   const db = getDb();
   const result = await db
     .select({
@@ -39,6 +62,5 @@ export async function getQuiz(quizId: string) {
     createdAt: result[0]?.createdAt,
     themes,
   };
-  console.log('quiz info:', quizInfo.themes)
   return quizInfo;
 }

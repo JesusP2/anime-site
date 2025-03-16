@@ -15,7 +15,8 @@
     "anime": "tsx ./src/scripts/anime.ts",
     "anime-vectors": "tsx --env-file=.env ./src/scripts/anime-vectors.ts",
     "openings": "tsx --env-file=.env ./src/scripts/openings.ts",
-    "themes": "tsx --env-file=.env ./src/scripts/idk.ts"
+    "themes": "tsx --env-file=.env ./src/scripts/idk.ts",
+    "ws": "tsx --watch src/server/index.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.2",
@@ -62,6 +63,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.38.3",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.0.0-alpha.1",

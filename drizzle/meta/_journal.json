@@ -78,6 +78,13 @@
       "when": 1741921631598,
       "tag": "0010_awesome_talisman",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1742100498527,
+      "tag": "0011_cultured_warstar",
+      "breakpoints": true
     }
   ]
 }

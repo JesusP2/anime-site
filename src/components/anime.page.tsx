@@ -26,7 +26,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Medal, PlayCircle, Star, TrendUp, Users, Clock, Calendar, Globe } from '@phosphor-icons/react';
+import {
+  Medal,
+  PlayCircle,
+  Star,
+  TrendUp,
+  Users,
+  Clock,
+  Calendar,
+  Globe,
+} from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";

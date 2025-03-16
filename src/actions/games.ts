@@ -7,7 +7,7 @@ import {
   createQuizSongSelectionSectionSchema,
 } from "@/lib/schemas";
 import { ulid } from "ulidx";
-import { quizTable, quizToThemeTable } from "@/lib/db/schemas";
+import { gameTable, quizTable, quizToThemeTable } from "@/lib/db/schemas";
 
 export const gameActions = {
   createQuiz: defineAction({
@@ -35,6 +35,26 @@ export const gameActions = {
         }
       });
       return quizId;
+    },
+  }),
+
+  createGame: defineAction({
+    accept: "json",
+    input: z.object({
+      quizId: z.string(),
+    }),
+    handler: async (data) => {
+      const db = getDb();
+      const { quizId } = data;
+
+      const gameId = ulid();
+      await db.insert(gameTable).values({
+        id: gameId,
+        quizId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      return gameId;
     },
   }),
 };

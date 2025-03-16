@@ -3,6 +3,7 @@ import { themeTable } from "./theme";
 
 export const quizTable = pgTable("quiz", (t) => ({
   id: t.text("id").primaryKey(),
+  creatorId: t.text("creator_id"),
   title: t.text("title").notNull(),
   description: t.text("description"),
   difficulty: t.text("difficulty").notNull(),

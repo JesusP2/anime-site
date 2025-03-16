@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Medal, PlayCircle, Star, TrendUp, Users } from '@phosphor-icons/react';
+import { Medal, PlayCircle, Star, TrendUp, Users } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";

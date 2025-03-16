@@ -1,10 +1,9 @@
 import { pgTable } from "drizzle-orm/pg-core";
-import { themeTable } from "./theme";
 import { quizTable } from "./quiz";
 
 export const gameTable = pgTable("game", (t) => ({
   id: t.text("id").primaryKey(),
-  creatorId: t.text("creator_id").notNull(),
+  creatorId: t.text("creator_id"),
   quizId: t
     .text("quiz_id")
     .notNull()

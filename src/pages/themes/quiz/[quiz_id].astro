@@ -1,0 +1,20 @@
+---
+import { getQuizInfo } from "@/lib/games/quiz/queries";
+import QuizLayout from "@/layout/quiz.astro";
+import { CreateGame } from '@/components/quiz/[quiz_id]'
+const quizId = Astro.params.quiz_id as string;
+const quiz = await getQuizInfo(quizId);
+
+const title = "Create Quiz | Guess the Anime Theme";
+const description = "Create your own anime opening guessing quiz!";
+---
+<QuizLayout title={title} description={description}>
+  <CreateGame
+    quizId={quizId}
+    title={quiz.title}
+    difficulty={quiz.difficulty}
+    public={quiz.public}
+    createdAt={quiz.createdAt}
+    themesLength={quiz.themesLength}
+  />
+</QuizLayout>

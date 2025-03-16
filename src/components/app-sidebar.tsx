@@ -8,7 +8,6 @@ import {
   TelevisionSimple,
   Book,
   SignIn,
-  GameController,
   MusicNote,
 } from "@phosphor-icons/react";
 
@@ -104,17 +103,17 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "/games/quiz",
+          url: "/themes/quiz",
           icon: MusicNote,
         },
         {
           title: "Create Quiz",
-          url: "/games/quiz/create",
+          url: "/themes/quiz/create",
           icon: MusicNote,
         },
         {
           title: "My Quizzes",
-          url: "/games/quiz/my-quizzes",
+          url: "/themes/quiz/my-quizzes",
           icon: CalendarCheck,
         },
       ],

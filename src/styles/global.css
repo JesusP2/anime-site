@@ -131,14 +131,12 @@ body {
   }
 }
 
-
-
-
 .react-aria-SearchField {
   display: grid;
-  grid-template-areas: "label label"
-                       "input button"
-                       "help  help";
+  grid-template-areas:
+    "label label"
+    "input button"
+    "help  help";
   grid-template-columns: 1fr auto;
   align-items: center;
   width: fit-content;

@@ -54,7 +54,7 @@ export const magicLinkTokenSchema = z.object({
 export const createQuizInfoSectionSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
   description: z.string(),
-  difficulty: z.enum(["easy", "medium", "hard"]),
+  difficulty: z.enum(["easy", "medium", "hard", "impossible", "custom"]),
   public: z.boolean(),
 });
 

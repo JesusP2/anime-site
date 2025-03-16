@@ -1,0 +1,10 @@
+---
+import QuizLayout from "@/layout/quiz.astro";
+import { CreateQuiz } from "@/components/quiz/create-quiz/index";
+
+const title = "Create Quiz | Guess the Anime Theme";
+---
+
+<QuizLayout title={title}>
+  <CreateQuiz client:load />
+</QuizLayout>
