@@ -36,7 +36,7 @@ export function SongAutocomplete({
       }
       if (cache.current[debouncedSearch]) {
         const filtered = cache.current[debouncedSearch].filter(
-          (d) => !songs.some((s) => s.id === d.key),
+          (data) => !songs.some((song) => song.id === data.key),
         );
         setItems(filtered);
         setIsLoading(false);
@@ -51,15 +51,13 @@ export function SongAutocomplete({
         link: string;
         songName: string;
       }[];
-      const filtered = data.filter((d) => !songs.some((s) => s.id === d.id));
+      const filtered = data.filter((data) => !songs.some((song) => song.id === data.id));
       cache.current[debouncedSearch] = filtered.map((d) => ({
         label: `${d.animeTitle} - ${d.link.toLowerCase()}`,
         value: d.songName,
         key: d.id,
       }));
-      if (Array.isArray(data)) {
-        setItems(cache.current[debouncedSearch]);
-      }
+      setItems(cache.current[debouncedSearch]);
       setIsLoading(false);
     });
     return () => controller.abort("cancelling request");
@@ -74,6 +72,7 @@ export function SongAutocomplete({
         const item = items.find((item) => item.key === value);
         if (!item) return;
         onSelectedValueChange(item);
+        setItems([]);
       }}
       isLoading={isLoading}
     />

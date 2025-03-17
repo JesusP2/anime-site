@@ -62,6 +62,9 @@ export function SongsSection({
                 <SongAutocomplete
                   songs={field.state.value}
                   onSelectedValueChange={({ key, value, label }) => {
+                    if (field.state.value.some((song) => song.id === key)) {
+                      return;
+                    }
                     const values = [
                       ...field.state.value,
                       {
@@ -77,7 +80,7 @@ export function SongsSection({
 
                 <div className="mt-4">
                   <h3 className="text-sm font-medium mb-2">
-                    Selected Themes ({form.getFieldValue("songs").length}/100)
+                    Selected Themes ({field.state.value.length}/100)
                   </h3>
                   <ul className="space-y-2">
                     {field.state.value.map((song, index) => (
