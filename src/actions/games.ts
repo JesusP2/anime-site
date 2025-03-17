@@ -123,14 +123,17 @@ export const gameActions = {
     accept: "json",
     input: z.object({
       quizId: z.string(),
+      gameType: z.enum(['solo', 'multiplayer']),
     }),
     handler: async (data) => {
       const db = getDb();
       const { quizId } = data;
 
       const gameId = ulid();
+      console.log(gameId, data)
       await db.insert(gameTable).values({
         id: gameId,
+        gameType: data.gameType,
         quizId,
         createdAt: new Date(),
         updatedAt: new Date(),

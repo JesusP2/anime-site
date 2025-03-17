@@ -23,9 +23,10 @@ type QuizInfo = {
 };
 
 export function CreateGame(props: QuizInfo) {
-  const handleCreateGame = async () => {
+  const handleCreateGame = async (gameType: 'solo' | 'multiplayer') => {
     const result = await actions.games.createGame({
       quizId: props.quizId,
+      gameType,
     });
     if (result.error) {
       console.error(result.error);
@@ -84,11 +85,11 @@ export function CreateGame(props: QuizInfo) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between space-x-6">
-          <Button className="w-full" size="lg" onClick={handleCreateGame}>
+          <Button className="w-full" size="lg" onClick={() => handleCreateGame('solo')}>
             <UsersThree className="w-5 h-5 mr-2" />
             Create Single Player Game
           </Button>
-          <Button className="w-full" size="lg" onClick={handleCreateGame}>
+          <Button className="w-full" size="lg" onClick={() => handleCreateGame('multiplayer')}>
             <UsersThree className="w-5 h-5 mr-2" />
             Create Multiplayer Game
           </Button>

@@ -9,6 +9,7 @@ export const gameTable = pgTable("game", (t) => ({
     .notNull()
     .references(() => quizTable.id),
   gameType: t.text("game_type").notNull(),
+  public: t.boolean("public").notNull(),
   createdAt: t.timestamp("created_at").defaultNow(),
   updatedAt: t.timestamp("updated_at").defaultNow(),
 }));

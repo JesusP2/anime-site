@@ -1,0 +1,8 @@
+---
+import { getGameInfo } from "@/lib/games/queries";
+
+const gameId = Astro.params.game_id as string;
+const gameInfo = await getGameInfo(gameId);
+---
+
+<div>hiiii</div>

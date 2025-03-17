@@ -85,6 +85,20 @@
       "when": 1742100498527,
       "tag": "0011_cultured_warstar",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1742189925750,
+      "tag": "0012_panoramic_johnny_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1742193098500,
+      "tag": "0013_dizzy_nekra",
+      "breakpoints": true
     }
   ]
 }
