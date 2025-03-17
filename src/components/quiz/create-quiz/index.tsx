@@ -79,19 +79,21 @@ export function CreateQuiz() {
         {Array.from({ length: totalSteps }).map((_, index) => (
           <React.Fragment key={index}>
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${index + 1 === currentStep
-                ? "bg-primary text-primary-foreground"
-                : index + 1 < currentStep
-                  ? "bg-primary/20 text-primary"
-                  : "bg-muted text-muted-foreground"
-                }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                index + 1 === currentStep
+                  ? "bg-primary text-primary-foreground"
+                  : index + 1 < currentStep
+                    ? "bg-primary/20 text-primary"
+                    : "bg-muted text-muted-foreground"
+              }`}
             >
               {index + 1}
             </div>
             {index < totalSteps - 1 && (
               <div
-                className={`h-1 flex-1 mx-2 ${index + 1 < currentStep ? "bg-primary" : "bg-muted"
-                  }`}
+                className={`h-1 flex-1 mx-2 ${
+                  index + 1 < currentStep ? "bg-primary" : "bg-muted"
+                }`}
               />
             )}
           </React.Fragment>

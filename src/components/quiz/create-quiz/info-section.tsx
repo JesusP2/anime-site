@@ -32,7 +32,7 @@ export function InfoSection({
       description: "",
       public: false,
       isRandom: false,
-      themeType: 'opening',
+      themeType: "opening",
       difficulty: "custom",
       themeCount: 10,
     } as z.infer<typeof createQuizInfoSectionSchema>,
@@ -104,11 +104,11 @@ export function InfoSection({
                     checked={field.state.value}
                     onCheckedChange={(value) => {
                       if (value) {
-                        form.setFieldValue("difficulty", "easy")
+                        form.setFieldValue("difficulty", "easy");
                       } else {
-                        form.setFieldValue("difficulty", "custom")
+                        form.setFieldValue("difficulty", "custom");
                       }
-                      field.handleChange(value)
+                      field.handleChange(value);
                     }}
                     className="mt-0"
                   />

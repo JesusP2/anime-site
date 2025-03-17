@@ -9,7 +9,7 @@ export async function animeSearchParamsToDrizzleQuery(
   recordsPerPage: number,
   table: typeof animeTable | typeof pgliteAnimeTable,
 ) {
-  let where: SQL | undefined = gt(table.rank, 0)
+  let where: SQL | undefined = gt(table.rank, 0);
   if (searchParams.get("season")) {
     where = createWhereClause(where, table, "season", searchParams);
   }

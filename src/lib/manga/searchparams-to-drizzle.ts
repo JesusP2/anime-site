@@ -1,11 +1,4 @@
-import {
-  and,
-  desc,
-  gt,
-  SQL,
-  sql,
-  type SQLChunk,
-} from "drizzle-orm";
+import { and, desc, gt, SQL, sql, type SQLChunk } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 import type { mangaTable } from "../db/schemas";
@@ -16,7 +9,7 @@ export async function mangaSearchParamsToDrizzleQuery(
   recordsPerPage: number,
   table: typeof mangaTable | typeof pgliteMangaTable,
 ) {
-  let where: SQL | undefined = gt(table.rank, 0)
+  let where: SQL | undefined = gt(table.rank, 0);
   if (searchParams.get("status")) {
     where = createWhereClause(where, table, "status", searchParams);
   }

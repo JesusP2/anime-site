@@ -7,12 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  Check,
-  Globe,
-  Lock,
-} from "@phosphor-icons/react";
+import { ArrowLeft, Check, Globe, Lock } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import type { CreateQuiz, SongSelectionSection } from "@/lib/schemas";
 
