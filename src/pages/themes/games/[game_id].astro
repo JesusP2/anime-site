@@ -1,8 +1,15 @@
 ---
+import { GameManager } from "@/components/games/[game_id]/index";
+import MainLayout from "@/layout/main.astro";
 import { getGameInfo } from "@/lib/games/queries";
 
 const gameId = Astro.params.game_id as string;
 const gameInfo = await getGameInfo(gameId);
+if (!gameInfo.success) {
+	return Astro.redirect("/");
+}
 ---
 
-<div>hiiii</div>
+<MainLayout title="Game">
+	<GameManager {...gameInfo} gameId={gameId} client:load />
+</MainLayout>

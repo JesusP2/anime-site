@@ -13,6 +13,8 @@ import {
 } from "@/lib/db/schemas";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as schema from "@/lib/db/schemas";
+import { err, ok } from "@/lib/result";
+import { error } from "node_modules/astro/dist/core/logger/core";
 
 function getThemePoolNumber(
   difficulty: Omit<z.infer<typeof createQuizSchema>["difficulty"], "custom">,
@@ -123,22 +125,57 @@ export const gameActions = {
     accept: "json",
     input: z.object({
       quizId: z.string(),
-      gameType: z.enum(['solo', 'multiplayer']),
+      gameType: z.enum(["solo", "multiplayer"]),
     }),
     handler: async (data) => {
       const db = getDb();
       const { quizId } = data;
 
       const gameId = ulid();
-      console.log(gameId, data)
       await db.insert(gameTable).values({
         id: gameId,
         gameType: data.gameType,
+        public: true,
         quizId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
       return gameId;
+    },
+  }),
+  getNextTheme: defineAction({
+    accept: "json",
+    input: z.object({
+      gameId: z.string(),
+      themePosition: z.number(),
+    }),
+    handler: async (data) => {
+      const db = getDb();
+      const { gameId } = data;
+      const [theme] = await db
+        .select({
+          id: themeTable.id,
+          url: themeTable.url,
+        })
+        .from(gameTable)
+        .innerJoin(
+          quizToThemeTable,
+          eq(gameTable.quizId, quizToThemeTable.quizId),
+        )
+        .innerJoin(themeTable, eq(quizToThemeTable.themeId, themeTable.id))
+        .where(eq(gameTable.id, gameId))
+        .offset(data.themePosition)
+        .limit(1);
+      if (!theme) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "Theme not found",
+        });
+      }
+      return {
+        url: theme.url as string[],
+        nextPosition: data.themePosition + 1,
+      };
     },
   }),
 };
