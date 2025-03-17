@@ -17,6 +17,7 @@ import { Globe, ArrowRight } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { FieldInfo } from "@/components/field-info";
 import type { z } from "astro:content";
+import { JollyNumberField } from "@/components/ui/jolly/numberfield";
 
 export function InfoSection({
   onCompleted,
@@ -29,9 +30,12 @@ export function InfoSection({
     defaultValues: {
       title: "",
       description: "",
-      difficulty: "medium",
       public: false,
-    },
+      isRandom: false,
+      themeType: 'opening',
+      difficulty: "custom",
+      themeCount: 10,
+    } as z.infer<typeof createQuizInfoSectionSchema>,
     validators: {
       onSubmit: createQuizInfoSectionSchema,
     },
@@ -39,6 +43,7 @@ export function InfoSection({
       onCompleted(value as any);
     },
   });
+
   if (hide) return null;
   return (
     <form
@@ -48,7 +53,7 @@ export function InfoSection({
         form.handleSubmit(e);
       }}
     >
-      <Card className="w-96 mx-auto">
+      <Card className="w-[25rem] mx-auto">
         <CardHeader>
           <CardTitle>Quiz Details</CardTitle>
           <CardDescription>
@@ -89,30 +94,110 @@ export function InfoSection({
             )}
           />
           <form.Field
-            name="difficulty"
+            name="isRandom"
             children={(field) => (
-              <div className="space-y-2">
-                <Label>Difficulty</Label>
-                <RadioGroup
-                  value={field.state.value}
-                  onValueChange={field.handleChange}
-                  className="flex space-x-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="easy" id="easy" />
-                    <Label htmlFor="easy">Easy</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="medium" id="medium" />
-                    <Label htmlFor="medium">Medium</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="hard" id="hard" />
-                    <Label htmlFor="hard">Hard</Label>
-                  </div>
-                </RadioGroup>
-                <FieldInfo field={field} />
-              </div>
+              <>
+                <div className="space-x-2 items-center flex">
+                  <Label htmlFor="isRandom">Random Quiz</Label>
+                  <Switch
+                    id="isRandom"
+                    checked={field.state.value}
+                    onCheckedChange={(value) => {
+                      if (value) {
+                        form.setFieldValue("difficulty", "easy")
+                      } else {
+                        form.setFieldValue("difficulty", "custom")
+                      }
+                      field.handleChange(value)
+                    }}
+                    className="mt-0"
+                  />
+                  <FieldInfo field={field} />
+                </div>
+                {field.state.value && (
+                  <>
+                    <form.Field
+                      name="themeType"
+                      children={(field) => (
+                        <div className="space-y-2">
+                          <Label htmlFor="themeType">Quiz Type</Label>
+                          <RadioGroup
+                            value={field.state.value}
+                            onValueChange={field.handleChange as any}
+                            className="space-y-2"
+                          >
+                            <div className="flex space-x-4">
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="opening" id="opening" />
+                                <Label htmlFor="opening">Opening</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="ending" id="ending" />
+                                <Label htmlFor="ending">Ending</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="all" id="all" />
+                                <Label htmlFor="all">All</Label>
+                              </div>
+                            </div>
+                          </RadioGroup>
+                          <FieldInfo field={field} />
+                        </div>
+                      )}
+                    />
+                    <form.Field
+                      name="difficulty"
+                      children={(field) => (
+                        <div className="space-y-2">
+                          <Label>Difficulty</Label>
+                          <RadioGroup
+                            value={field.state.value}
+                            onValueChange={field.handleChange as any}
+                            className="space-y-2"
+                          >
+                            <div className="flex space-x-4">
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="easy" id="easy" />
+                                <Label htmlFor="easy">Easy</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="medium" id="medium" />
+                                <Label htmlFor="medium">Medium</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="hard" id="hard" />
+                                <Label htmlFor="hard">Hard</Label>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem
+                                value="impossible"
+                                id="impossible"
+                              />
+                              <Label htmlFor="impossible">Impossible</Label>
+                            </div>
+                          </RadioGroup>
+                          <FieldInfo field={field} />
+                        </div>
+                      )}
+                    />
+
+                    <form.Field
+                      name="themeCount"
+                      children={(field) => (
+                        <JollyNumberField
+                          className="w-24"
+                          label="Theme Count"
+                          minValue={1}
+                          maxValue={100}
+                          value={field.state.value}
+                          onChange={field.handleChange}
+                        />
+                      )}
+                    />
+                  </>
+                )}
+              </>
             )}
           />
           <form.Field

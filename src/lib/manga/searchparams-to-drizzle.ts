@@ -1,7 +1,7 @@
 import {
   and,
-  cosineDistance,
   desc,
+  gt,
   SQL,
   sql,
   type SQLChunk,
@@ -16,7 +16,7 @@ export async function mangaSearchParamsToDrizzleQuery(
   recordsPerPage: number,
   table: typeof mangaTable | typeof pgliteMangaTable,
 ) {
-  let where: SQL | undefined;
+  let where: SQL | undefined = gt(table.rank, 0)
   if (searchParams.get("status")) {
     where = createWhereClause(where, table, "status", searchParams);
   }

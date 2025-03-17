@@ -51,12 +51,31 @@ export const magicLinkTokenSchema = z.object({
   token: z.string().max(255),
 });
 
-export const createQuizInfoSectionSchema = z.object({
+export const createQuizInfoSectionBaseSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
   description: z.string(),
-  difficulty: z.enum(["easy", "medium", "hard", "impossible", "custom"]),
   public: z.boolean(),
 });
+
+export const createQuizInfoSectionSchema = z.discriminatedUnion("isRandom", [
+  z
+    .object({
+      isRandom: z.literal(true),
+      themeType: z.enum(["opening", "ending", "all"]),
+      difficulty: z.enum(["easy", "medium", "hard", "impossible"]),
+      themeCount: z
+        .number()
+        .min(5, "Theme count must be at least 5")
+        .max(100, "Theme count cannot exceeed 100"),
+    })
+    .merge(createQuizInfoSectionBaseSchema),
+  z
+    .object({
+      isRandom: z.literal(false),
+      difficulty: z.literal("custom"),
+    })
+    .merge(createQuizInfoSectionBaseSchema),
+]);
 
 export const createQuizSongSelectionSectionSchema = z.object({
   songs: z
@@ -69,6 +88,29 @@ export const createQuizSongSelectionSectionSchema = z.object({
     )
     .min(5, "You must select at least 5 songs."),
 });
+
 export type SongSelectionSection = z.infer<
   typeof createQuizSongSelectionSectionSchema
 >;
+
+export const createQuizSchema = z.discriminatedUnion("isRandom", [
+  z
+    .object({
+      isRandom: z.literal(true),
+      difficulty: z.enum(["easy", "medium", "hard", "impossible"]),
+      themeType: z.enum(["opening", "ending", "all"]),
+      themeCount: z
+        .number()
+        .min(5, "Theme count must be at least 5")
+        .max(100, "Theme count cannot exceeed 100"),
+    })
+    .merge(createQuizInfoSectionBaseSchema),
+  z
+    .object({
+      isRandom: z.literal(false),
+      difficulty: z.literal("custom"),
+    })
+    .merge(createQuizInfoSectionBaseSchema)
+    .merge(createQuizSongSelectionSectionSchema),
+]);
+export type CreateQuiz = z.infer<typeof createQuizSchema>;

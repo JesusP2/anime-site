@@ -1,4 +1,4 @@
-import { and, desc, sql, type SQL, type SQLChunk } from "drizzle-orm";
+import { and, desc, gt, sql, type SQL, type SQLChunk } from "drizzle-orm";
 import { createWhereClause } from "../utils/where-clause";
 import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 import type { animeTable } from "../db/schemas";
@@ -9,7 +9,7 @@ export async function animeSearchParamsToDrizzleQuery(
   recordsPerPage: number,
   table: typeof animeTable | typeof pgliteAnimeTable,
 ) {
-  let where: SQL | undefined;
+  let where: SQL | undefined = gt(table.rank, 0)
   if (searchParams.get("season")) {
     where = createWhereClause(where, table, "season", searchParams);
   }
