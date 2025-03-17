@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   Card,
   CardContent,
@@ -9,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Clock, UsersThree, Calendar } from "@phosphor-icons/react";
+import { Clock, UsersThree, Calendar } from "@phosphor-icons/react";
 import { formatDistanceToNow } from "date-fns";
 import { navigate } from "astro:transitions/client";
 import { actions } from "astro:actions";
@@ -24,8 +23,6 @@ type QuizInfo = {
 };
 
 export function CreateGame(props: QuizInfo) {
-  const [isCreatingGame, setIsCreatingGame] = React.useState(false);
-
   const handleCreateGame = async () => {
     const result = await actions.games.createGame({
       quizId: props.quizId,
@@ -91,7 +88,6 @@ export function CreateGame(props: QuizInfo) {
             className="w-full"
             size="lg"
             onClick={handleCreateGame}
-            disabled={isCreatingGame}
           >
             <UsersThree className="w-5 h-5 mr-2" />
             Create Single Player Game
@@ -100,7 +96,6 @@ export function CreateGame(props: QuizInfo) {
             className="w-full"
             size="lg"
             onClick={handleCreateGame}
-            disabled={isCreatingGame}
           >
             <UsersThree className="w-5 h-5 mr-2" />
             Create Multiplayer Game
