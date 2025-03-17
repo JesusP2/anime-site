@@ -145,7 +145,9 @@ export function SoloGameView({
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen></iframe>
+                allowFullScreen
+                className="w-full h-full"
+                style={{ display: 'block' }}></iframe>
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white">
