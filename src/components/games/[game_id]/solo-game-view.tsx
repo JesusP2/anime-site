@@ -17,7 +17,7 @@ type Theme = {
   nextPosition: number;
 };
 
-function embedUrl(_url: string) {
+function embedUrl(_url?: string) {
   const url = new URL(_url);
   const v = url.searchParams.get("v");
   return `https://www.youtube-nocookie.com/embed/${v}`;
@@ -60,8 +60,8 @@ export function SoloGameView({
         console.error(nextTheme.error);
         return;
       }
-      console.log(nextTheme);
       setTheme(nextTheme.data);
+      handleStartPlaying();
       setLoading(false);
     });
   }, []);
@@ -135,7 +135,6 @@ export function SoloGameView({
             <CardTitle>{quizTitle}</CardTitle>
             <CardDescription>
               Theme {currentThemeIndex + 1} of {totalThemes}
-              {theme.url?.[0]}
             </CardDescription>
           </div>
           <div className="text-right">
@@ -147,32 +146,22 @@ export function SoloGameView({
       <CardContent className="space-y-6">
         {/* Video Player */}
         <div className="aspect-video bg-black rounded-md overflow-hidden">
-          {Array.isArray(theme.url) ? (
+          {loading || !Array.isArray(theme.url) ? (
+            <div className="w-full h-full flex items-center justify-center text-white">
+              Loading theme...
+            </div>
+          ) : (
             <>
               <iframe
                 src={embedUrl(theme.url[0])}
                 title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 className="w-full h-full"
                 style={{ display: "block" }}
               ></iframe>
             </>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-white">
-              Loading theme...
-            </div>
-          )}
-        </div>
-
-        {/* Controls */}
-        <div className="flex justify-center">
-          {!isPlaying && !guessed && (
-            <Button onClick={handleStartPlaying} disabled={loading}>
-              <PlayCircle className="mr-2 w-5 h-5" />
-              Play Theme
-            </Button>
           )}
         </div>
 
