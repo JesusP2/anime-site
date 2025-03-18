@@ -81,7 +81,7 @@ export const createQuizSongSelectionSectionSchema = z.object({
   songs: z
     .array(
       z.object({
-        id: z.string(),
+        id: z.string().ulid(),
         title: z.string(),
         animeTitle: z.string(),
       }),
