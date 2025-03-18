@@ -44,6 +44,7 @@ export function GameManager(props: Props) {
       return (
         <WaitingRoom
           quizTitle={props.title}
+          quizDescription={props.description}
           players={players}
           isHost={players.find((p) => p.id === "currentUser")?.isHost || false}
           gameType={props.gameType}

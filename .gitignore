@@ -29,3 +29,4 @@ scripts/
 chromadb/
 chroma.log
 .wrangler
+.cursor
