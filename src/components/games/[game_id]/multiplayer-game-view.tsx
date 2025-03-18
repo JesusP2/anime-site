@@ -186,7 +186,10 @@ export function MultiPlayerGameView({
         {isPlaying && !guessed && (
           <div>
             <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete ignoreThemes={[]} onSelectedValueChange={handleGuess} />
+            <SongAutocomplete
+              ignoreThemes={[]}
+              onSelectedValueChange={handleGuess}
+            />
           </div>
         )}
 
@@ -220,4 +223,3 @@ export function MultiPlayerGameView({
     </Card>
   );
 }
-

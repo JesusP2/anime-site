@@ -4,12 +4,11 @@ import type { Player } from "./types";
 import { WaitingRoom } from "./waiting-room";
 import { MultiPlayerGameView } from "./multiplayer-game-view";
 import { ResultView } from "./result-view";
-
-type GameState = "waiting" | "solo" | "multiplayer" | "results";
+import type { GameState } from "@/lib/types";
 
 type Props = {
   gameId: string;
-  gameType: 'solo' | 'multiplayer';
+  gameType: "solo" | "multiplayer";
   title: string;
   description: string;
   difficulty: string;
@@ -47,6 +46,7 @@ export function GameManager(props: Props) {
           quizTitle={props.title}
           players={players}
           isHost={players.find((p) => p.id === "currentUser")?.isHost || false}
+          gameType={props.gameType}
           onStartGame={handleStartGame}
         />
       );

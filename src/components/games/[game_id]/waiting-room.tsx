@@ -10,23 +10,28 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import type { GameType } from "@/lib/types";
 
 export function WaitingRoom({
   quizTitle,
   players,
   isHost,
+  gameType,
   onStartGame,
 }: {
   quizTitle: string;
   players: Player[];
   isHost: boolean;
+  gameType: GameType;
   onStartGame: () => void;
 }) {
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
         <CardTitle>{quizTitle}</CardTitle>
-        <CardDescription>Waiting for players to join...</CardDescription>
+        {gameType === "multiplayer" && (
+          <CardDescription>Waiting for players to join...</CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         <h3 className="text-lg font-medium mb-4">Players ({players.length})</h3>

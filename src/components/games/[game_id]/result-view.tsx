@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy } from "@phosphor-icons/react";
 import { Table } from "lucide-react";
@@ -89,4 +84,3 @@ export function ResultView({
     </Card>
   );
 }
-

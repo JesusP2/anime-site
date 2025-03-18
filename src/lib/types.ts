@@ -50,3 +50,6 @@ export type MangaCardItem = Pick<
 >;
 
 export type EntityStatus = (typeof entityStatuses)[number];
+
+export type GameState = "waiting" | "solo" | "multiplayer" | "results";
+export type GameType = "solo" | "multiplayer";
