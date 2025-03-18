@@ -1,5 +1,11 @@
 import { useState, useEffect, startTransition } from "react";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SongAutocomplete } from "@/components/song-autocomplete";
 import { PlayCircle } from "@phosphor-icons/react";
@@ -13,8 +19,8 @@ type Theme = {
 
 function embedUrl(_url: string) {
   const url = new URL(_url);
-  const v = url.searchParams.get('v');
-  return `https://www.youtube-nocookie.com/embed/${v}`
+  const v = url.searchParams.get("v");
+  return `https://www.youtube-nocookie.com/embed/${v}`;
 }
 export function SoloGameView({
   gameId,
@@ -33,7 +39,10 @@ export function SoloGameView({
   const [timeLeft, setTimeLeft] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guessed, setGuessed] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{ id: string, correct: boolean } | null>(null);
+  const [currentAnswer, setCurrentAnswer] = useState<{
+    id: string;
+    correct: boolean;
+  } | null>(null);
   const [theme, setTheme] = useState<Theme>({
     url: null,
     nextPosition: 0,
@@ -46,15 +55,15 @@ export function SoloGameView({
       const nextTheme = await actions.games.getNextTheme({
         gameId,
         themePosition: theme.nextPosition,
-      })
+      });
       if (nextTheme.error) {
         console.error(nextTheme.error);
         return;
       }
-      console.log(nextTheme)
-      setTheme(nextTheme.data)
+      console.log(nextTheme);
+      setTheme(nextTheme.data);
       setLoading(false);
-    })
+    });
   }, []);
 
   // Timer effect
@@ -97,7 +106,7 @@ export function SoloGameView({
 
     if (isCorrect) {
       // Update player score
-      const updatedPlayers = players.map(player => {
+      const updatedPlayers = players.map((player) => {
         if (player.id === currentPlayerId) {
           return { ...player, score: player.score + timeLeft };
         }
@@ -110,7 +119,7 @@ export function SoloGameView({
     if (currentThemeIndex >= totalThemes - 1) {
       onGameComplete();
     } else {
-      setCurrentThemeIndex(prev => prev + 1);
+      setCurrentThemeIndex((prev) => prev + 1);
       setIsPlaying(false);
       setGuessed(false);
       setCurrentAnswer(null);
@@ -147,7 +156,8 @@ export function SoloGameView({
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 className="w-full h-full"
-                style={{ display: 'block' }}></iframe>
+                style={{ display: "block" }}
+              ></iframe>
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white">
@@ -170,21 +180,22 @@ export function SoloGameView({
         {isPlaying && !guessed && (
           <div>
             <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete
-              songs={[]}
-              onSelectedValueChange={handleGuess}
-            />
+            <SongAutocomplete songs={[]} onSelectedValueChange={handleGuess} />
           </div>
         )}
 
         {/* Result */}
         {currentAnswer && (
-          <div className={`p-4 rounded-md ${currentAnswer.correct ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'}`}>
+          <div
+            className={`p-4 rounded-md ${currentAnswer.correct ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"}`}
+          >
             <h3 className="font-bold text-lg mb-1">
-              {currentAnswer.correct ? 'Correct!' : 'Wrong!'}
+              {currentAnswer.correct ? "Correct!" : "Wrong!"}
             </h3>
             <p>
-              {currentAnswer.correct ? `You earned ${timeLeft} points!` : 'Better luck next time!'}
+              {currentAnswer.correct
+                ? `You earned ${timeLeft} points!`
+                : "Better luck next time!"}
             </p>
           </div>
         )}
@@ -194,11 +205,15 @@ export function SoloGameView({
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-muted-foreground">Your Score</p>
-              <p className="text-xl font-bold">{players.find(p => p.id === currentPlayerId)?.score || 0}</p>
+              <p className="text-xl font-bold">
+                {players.find((p) => p.id === currentPlayerId)?.score || 0}
+              </p>
             </div>
             {guessed && (
               <Button onClick={handleNextTheme}>
-                {currentThemeIndex >= totalThemes - 1 ? 'See Results' : 'Next Theme'}
+                {currentThemeIndex >= totalThemes - 1
+                  ? "See Results"
+                  : "Next Theme"}
               </Button>
             )}
           </div>

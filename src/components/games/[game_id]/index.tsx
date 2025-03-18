@@ -1,6 +1,13 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +28,7 @@ type Props = {
   description: string;
   difficulty: string;
   public: boolean;
-}
+};
 
 export function GameManager(props: Props) {
   const [gameState, setGameState] = React.useState<GameState>("waiting");
@@ -39,12 +46,12 @@ export function GameManager(props: Props) {
 
   function handleGameComplete() {
     // Convert players to results format
-    const gameResults = players.map(player => ({
+    const gameResults = players.map((player) => ({
       id: player.id,
       name: player.name,
-      score: player.score
+      score: player.score,
     }));
-    
+
     setResults(gameResults);
     setGameState("results");
   }
@@ -82,12 +89,7 @@ export function GameManager(props: Props) {
       );
 
     case "results":
-      return (
-        <ResultView
-          quizTitle={props.title}
-          results={results}
-        />
-      );
+      return <ResultView quizTitle={props.title} results={results} />;
 
     default:
       return null;
@@ -109,15 +111,16 @@ function WaitingRoom({
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
         <CardTitle>{quizTitle}</CardTitle>
-        <CardDescription>
-          Waiting for players to join...
-        </CardDescription>
+        <CardDescription>Waiting for players to join...</CardDescription>
       </CardHeader>
       <CardContent>
         <h3 className="text-lg font-medium mb-4">Players ({players.length})</h3>
         <div className="space-y-2">
           {players.map((player) => (
-            <div key={player.id} className="flex items-center justify-between p-3 border rounded-md">
+            <div
+              key={player.id}
+              className="flex items-center justify-between p-3 border rounded-md"
+            >
               <div className="flex items-center gap-3">
                 <Avatar>
                   <AvatarImage src={player.avatar} />
@@ -162,8 +165,11 @@ function MultiPlayerGameView({
   const [timeLeft, setTimeLeft] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guessed, setGuessed] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{id: string, correct: boolean} | null>(null);
-  const [themes, setThemes] = useState<Array<{id: string, url: string}>>([]);
+  const [currentAnswer, setCurrentAnswer] = useState<{
+    id: string;
+    correct: boolean;
+  } | null>(null);
+  const [themes, setThemes] = useState<Array<{ id: string; url: string }>>([]);
   const [loading, setLoading] = useState(true);
   const totalThemes = 5; // This would come from the API
 
@@ -180,14 +186,14 @@ function MultiPlayerGameView({
         setLoading(false);
       }
     };
-    
+
     fetchThemes();
   }, []);
 
   // Timer effect
   useEffect(() => {
     if (!isPlaying || guessed) return;
-    
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -198,7 +204,7 @@ function MultiPlayerGameView({
         return prev - 1;
       });
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, [isPlaying, guessed]);
 
@@ -216,14 +222,14 @@ function MultiPlayerGameView({
   const handleGuess = (item: { key: string; value: string; label: string }) => {
     setGuessed(true);
     setIsPlaying(false);
-    
+
     // In a real implementation, this would check against the actual answer
     const isCorrect = Math.random() > 0.5; // Simulate a check
     setCurrentAnswer({ id: item.key, correct: isCorrect });
-    
+
     if (isCorrect) {
       // Update player score - in a real implementation this would update via API
-      const updatedPlayers = players.map(player => {
+      const updatedPlayers = players.map((player) => {
         if (player.id === currentPlayerId) {
           return { ...player, score: player.score + timeLeft };
         }
@@ -236,7 +242,7 @@ function MultiPlayerGameView({
     if (currentThemeIndex >= totalThemes - 1) {
       onGameComplete();
     } else {
-      setCurrentThemeIndex(prev => prev + 1);
+      setCurrentThemeIndex((prev) => prev + 1);
       setIsPlaying(false);
       setGuessed(false);
       setCurrentAnswer(null);
@@ -267,7 +273,9 @@ function MultiPlayerGameView({
             <div
               key={player.id}
               className={`p-3 rounded-md border ${
-                player.id === currentPlayerId ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''
+                player.id === currentPlayerId
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  : ""
               }`}
             >
               <div className="flex items-center gap-2">
@@ -283,10 +291,12 @@ function MultiPlayerGameView({
             </div>
           ))}
         </div>
-        
+
         {/* Video Player */}
         <div className="aspect-video bg-black rounded-md overflow-hidden">
-          {!loading && themes.length > 0 && currentThemeIndex < themes.length ? (
+          {!loading &&
+          themes.length > 0 &&
+          currentThemeIndex < themes.length ? (
             <iframe
               src={themes[currentThemeIndex]?.url}
               className="w-full h-full"
@@ -299,7 +309,7 @@ function MultiPlayerGameView({
             </div>
           )}
         </div>
-        
+
         {/* Controls */}
         <div className="flex justify-center">
           {!isPlaying && !guessed && (
@@ -309,35 +319,38 @@ function MultiPlayerGameView({
             </Button>
           )}
         </div>
-        
+
         {/* Guess Input */}
         {isPlaying && !guessed && (
           <div>
             <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete
-              songs={[]}
-              onSelectedValueChange={handleGuess}
-            />
+            <SongAutocomplete songs={[]} onSelectedValueChange={handleGuess} />
           </div>
         )}
-        
+
         {/* Result */}
         {currentAnswer && (
-          <div className={`p-4 rounded-md ${currentAnswer.correct ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'}`}>
+          <div
+            className={`p-4 rounded-md ${currentAnswer.correct ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"}`}
+          >
             <h3 className="font-bold text-lg mb-1">
-              {currentAnswer.correct ? 'Correct!' : 'Wrong!'}
+              {currentAnswer.correct ? "Correct!" : "Wrong!"}
             </h3>
             <p>
-              {currentAnswer.correct ? `You earned ${timeLeft} points!` : 'Better luck next time!'}
+              {currentAnswer.correct
+                ? `You earned ${timeLeft} points!`
+                : "Better luck next time!"}
             </p>
           </div>
         )}
-        
+
         {/* Next */}
         {guessed && (
           <div className="flex justify-end">
             <Button onClick={handleNextTheme}>
-              {currentThemeIndex >= totalThemes - 1 ? 'See Results' : 'Next Theme'}
+              {currentThemeIndex >= totalThemes - 1
+                ? "See Results"
+                : "Next Theme"}
             </Button>
           </div>
         )}
@@ -355,7 +368,7 @@ function ResultView({
 }) {
   // Sort results by score (highest first)
   const sortedResults = [...results].sort((a, b) => b.score - a.score);
-  
+
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
@@ -369,11 +382,15 @@ function ResultView({
               <div className="inline-flex items-center justify-center p-4 bg-yellow-100 rounded-full mb-2">
                 <Trophy className="w-8 h-8 text-yellow-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-1">{sortedResults[0]?.name} Wins!</h2>
-              <p className="text-lg font-medium">{sortedResults[0]?.score} points</p>
+              <h2 className="text-2xl font-bold mb-1">
+                {sortedResults[0]?.name} Wins!
+              </h2>
+              <p className="text-lg font-medium">
+                {sortedResults[0]?.score} points
+              </p>
             </div>
           )}
-          
+
           {/* All Results */}
           <div className="border rounded-md overflow-hidden">
             <Table>
@@ -409,7 +426,7 @@ function ResultView({
               </TableBody>
             </Table>
           </div>
-          
+
           {/* Play Again Button */}
           <div className="flex justify-center mt-6">
             <Button asChild>
