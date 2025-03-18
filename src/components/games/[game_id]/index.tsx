@@ -3,12 +3,13 @@ import { SoloGameView } from "./solo-game-view";
 import type { Player } from "./types";
 import { WaitingRoom } from "./waiting-room";
 import { MultiPlayerGameView } from "./multiplayer-game-view";
+import { ResultView } from "./result-view";
 
-type GameState = "waiting" | "solo-game" | "multiplayer-game" | "results";
+type GameState = "waiting" | "solo" | "multiplayer" | "results";
 
 type Props = {
   gameId: string;
-  gameType: string;
+  gameType: 'solo' | 'multiplayer';
   title: string;
   description: string;
   difficulty: string;
@@ -25,12 +26,10 @@ export function GameManager(props: Props) {
   >([]);
 
   function handleStartGame() {
-    const isSoloGame = players.length === 1;
-    setGameState(isSoloGame ? "solo-game" : "multiplayer-game");
+    setGameState(props.gameType);
   }
 
   function handleGameComplete() {
-    // Convert players to results format
     const gameResults = players.map((player) => ({
       id: player.id,
       name: player.name,
@@ -52,7 +51,7 @@ export function GameManager(props: Props) {
         />
       );
 
-    case "solo-game":
+    case "solo":
       return (
         <SoloGameView
           gameId={props.gameId}
@@ -63,7 +62,7 @@ export function GameManager(props: Props) {
         />
       );
 
-    case "multiplayer-game":
+    case "multiplayer":
       return (
         <MultiPlayerGameView
           quizTitle={props.title}
