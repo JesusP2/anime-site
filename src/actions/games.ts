@@ -40,9 +40,9 @@ async function getThemePool(
   themeCount: number,
 ) {
   const [offset, limit] = getThemePoolNumber(difficulty) as [number, number];
-  const themePositions = [];
+  let themePositions: number[] = [];
   for (let i = 0; i < themeCount; i++) {
-    themePositions.push(Math.floor(Math.random() * (limit - offset)));
+    themePositions.push(Math.floor(Math.random() * (limit - offset)) + offset);
   }
   let where: SQL | undefined = gt(animeTable.popularity, 0);
   if (type !== "all") {
@@ -63,9 +63,7 @@ async function getThemePool(
   const themes = await db
     .select()
     .from(sq)
-    .where(inArray(sq.position, themePositions))
-    .offset(offset)
-    .limit(limit);
+    .where(inArray(sq.position, themePositions));
   return themes;
 }
 export const gameActions = {
@@ -124,7 +122,7 @@ export const gameActions = {
   createGame: defineAction({
     accept: "json",
     input: z.object({
-      quizId: z.string(),
+      quizId: z.string().ulid(),
       gameType: z.enum(["solo", "multiplayer"]),
     }),
     handler: async (data) => {
@@ -146,7 +144,7 @@ export const gameActions = {
   getNextTheme: defineAction({
     accept: "json",
     input: z.object({
-      gameId: z.string(),
+      gameId: z.string().ulid(),
       themePosition: z.number(),
     }),
     handler: async (data) => {
