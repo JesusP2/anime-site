@@ -169,7 +169,7 @@ export function SoloGameView({
         {isPlaying && !guessed && (
           <div>
             <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete songs={[]} onSelectedValueChange={handleGuess} />
+            <SongAutocomplete ignoreThemes={[]} onSelectedValueChange={handleGuess} />
           </div>
         )}
 

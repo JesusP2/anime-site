@@ -9,10 +9,10 @@ type Item = {
 };
 
 export function SongAutocomplete({
-  songs,
+  ignoreThemes,
   onSelectedValueChange,
 }: {
-  songs: {
+  ignoreThemes: {
     id: string;
     title: string;
     animeTitle: string;
@@ -36,7 +36,7 @@ export function SongAutocomplete({
       }
       if (cache.current[debouncedSearch]) {
         const filtered = cache.current[debouncedSearch].filter(
-          (data) => !songs.some((song) => song.id === data.key),
+          (data) => !ignoreThemes.some((theme) => theme.id === data.key),
         );
         setItems(filtered);
         setIsLoading(false);
@@ -52,7 +52,7 @@ export function SongAutocomplete({
         songName: string;
       }[];
       const filtered = data.filter(
-        (data) => !songs.some((song) => song.id === data.id),
+        (data) => !ignoreThemes.some((theme) => theme.id === data.id),
       );
       cache.current[debouncedSearch] = filtered.map((d) => ({
         label: `${d.animeTitle} - ${d.link.toLowerCase()}`,
