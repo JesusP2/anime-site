@@ -1,9 +1,6 @@
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Trophy } from "@phosphor-icons/react";
-import { Table } from "lucide-react";
-import { TableBody, TableHeader } from "react-aria-components";
-import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function ResultView({
   quizTitle,
@@ -12,7 +9,6 @@ export function ResultView({
   quizTitle: string;
   results: Array<{ id: string; name: string; score: number }>;
 }) {
-  // Sort results by score (highest first)
   const sortedResults = [...results].sort((a, b) => b.score - a.score);
 
   return (
@@ -71,13 +67,6 @@ export function ResultView({
                 ))}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Play Again Button */}
-          <div className="flex justify-center mt-6">
-            <Button asChild>
-              <a href="/themes/quiz">Play Again</a>
-            </Button>
           </div>
         </div>
       </CardContent>

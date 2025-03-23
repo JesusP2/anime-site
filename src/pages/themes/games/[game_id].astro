@@ -8,8 +8,9 @@ const gameInfo = await getGameInfo(gameId);
 if (!gameInfo.success) {
 	return Astro.redirect("/");
 }
+const user = Astro.locals.user;
 ---
 
 <MainLayout title="Game">
-	<GameManager {...gameInfo} gameId={gameId} client:load />
+	<GameManager {...gameInfo.value} gameId={gameId} user={user} client:load />
 </MainLayout>

@@ -3,6 +3,7 @@ import Head from "@/components/head.astro";
 import { LandingPage } from "@/components/landing/page";
 import { getCarouselAnimes } from "@/lib/anime/queries";
 import { getCarouselMangas } from "@/lib/manga/queries";
+
 const currentSeasonSearch = new URLSearchParams([
   ["season", Astro.locals.currentSeason.season],
   ["year", Astro.locals.currentSeason.year.toString()],

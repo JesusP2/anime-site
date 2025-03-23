@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { SongAutocomplete } from "@/components/song-autocomplete";
 import type { Player } from "./types";
 import { actions } from "astro:actions";
+import { useToast } from "@/hooks/use-toast";
 
-type Theme = {
-  url: string[] | null;
+type SongTheme = {
+  id: string | null;
+  url: string | null;
   nextPosition: number;
 };
 
@@ -22,6 +24,8 @@ function embedUrl(_url?: string) {
   const v = url.searchParams.get("v");
   return `https://www.youtube-nocookie.com/embed/${v}`;
 }
+
+const totalThemes = 5;
 export function SoloGameView({
   gameId,
   quizTitle,
@@ -35,40 +39,39 @@ export function SoloGameView({
   currentPlayerId: string;
   onGameComplete: () => void;
 }) {
-  const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
+  const { toast } = useToast();
   const [timeLeft, setTimeLeft] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [guessed, setGuessed] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{
-    id: string;
-    correct: boolean;
-  } | null>(null);
-  const [theme, setTheme] = useState<Theme>({
+  const [songTheme, setSongTheme] = useState<SongTheme>({
+    id: null,
     url: null,
     nextPosition: 0,
   });
-  const [loading, setLoading] = useState(true);
-  const totalThemes = 5;
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     startTransition(async () => {
-      setLoading(true);
+      setIsLoading(true);
       const nextTheme = await actions.games.getNextTheme({
         gameId,
-        themePosition: theme.nextPosition,
+        themePosition: songTheme.nextPosition,
       });
       if (nextTheme.error) {
         console.error(nextTheme.error);
         return;
       }
-      setTheme(nextTheme.data);
+      setSongTheme({
+        id: nextTheme.data.id,
+        url: nextTheme.data.url[0] ?? null,
+        nextPosition: nextTheme.data.nextPosition,
+      });
       handleStartPlaying();
-      setLoading(false);
+      setIsLoading(false);
     });
   }, []);
 
   // Timer effect
   useEffect(() => {
-    if (!isPlaying || guessed) return;
+    if (!isPlaying) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -82,7 +85,7 @@ export function SoloGameView({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isPlaying, guessed]);
+  }, [isPlaying]);
 
   const handleStartPlaying = () => {
     setIsPlaying(true);
@@ -90,19 +93,30 @@ export function SoloGameView({
   };
 
   const handleTimerEnd = () => {
-    setGuessed(true);
     setIsPlaying(false);
-    // Wrong answer by default when time runs out
-    setCurrentAnswer({ id: "timeout", correct: false });
+    toast({
+      title: "Time's up!",
+      description: "Better luck next time!",
+      variant: "destructive",
+    });
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
-    setGuessed(true);
     setIsPlaying(false);
 
     // In a real implementation, this would check against the actual answer
-    const isCorrect = Math.random() > 0.5; // Simulate a check
-    setCurrentAnswer({ id: item.key, correct: isCorrect });
+    const isCorrect = item.key === songTheme.id;
+    const correctAnswer = {
+      title: "Correct!",
+      description: "You earned " + timeLeft + " points!",
+      variant: "default" as const,
+    };
+    const wrongAnswer = {
+      title: "Wrong!",
+      description: "Better luck next time!",
+      variant: "destructive" as const,
+    };
+    toast(isCorrect ? correctAnswer : wrongAnswer);
 
     if (isCorrect) {
       // Update player score
@@ -115,14 +129,26 @@ export function SoloGameView({
     }
   };
 
-  const handleNextTheme = () => {
-    if (currentThemeIndex >= totalThemes - 1) {
+  const handleNextTheme = async () => {
+    if (songTheme.nextPosition >= totalThemes - 1) {
       onGameComplete();
     } else {
-      setCurrentThemeIndex((prev) => prev + 1);
-      setIsPlaying(false);
-      setGuessed(false);
-      setCurrentAnswer(null);
+      setIsLoading(true);
+      const nextTheme = await actions.games.getNextTheme({
+        gameId,
+        themePosition: songTheme.nextPosition,
+      });
+      if (nextTheme.error) {
+        console.error(nextTheme.error);
+        return;
+      }
+      setSongTheme({
+        id: nextTheme.data.id,
+        url: nextTheme.data.url[0] ?? null,
+        nextPosition: nextTheme.data.nextPosition,
+      });
+      setIsLoading(false);
+      setIsPlaying(true);
       setTimeLeft(30);
     }
   };
@@ -134,7 +160,7 @@ export function SoloGameView({
           <div>
             <CardTitle>{quizTitle}</CardTitle>
             <CardDescription>
-              Theme {currentThemeIndex + 1} of {totalThemes}
+              Theme {songTheme.nextPosition} of {totalThemes}
             </CardDescription>
           </div>
           <div className="text-right">
@@ -146,14 +172,14 @@ export function SoloGameView({
       <CardContent className="space-y-6">
         {/* Video Player */}
         <div className="aspect-video bg-black rounded-md overflow-hidden">
-          {loading || !Array.isArray(theme.url) ? (
+          {isLoading || !songTheme.url ? (
             <div className="w-full h-full flex items-center justify-center text-white">
               Loading theme...
             </div>
           ) : (
             <>
               <iframe
-                src={embedUrl(theme.url[0])}
+                src={embedUrl(songTheme.url)}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -165,30 +191,13 @@ export function SoloGameView({
           )}
         </div>
 
-        {/* Guess Input */}
-        {isPlaying && !guessed && (
+        {isPlaying && (
           <div>
             <h3 className="font-medium mb-2">Guess the Anime:</h3>
             <SongAutocomplete
               ignoreThemes={[]}
               onSelectedValueChange={handleGuess}
             />
-          </div>
-        )}
-
-        {/* Result */}
-        {currentAnswer && (
-          <div
-            className={`p-4 rounded-md ${currentAnswer.correct ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"}`}
-          >
-            <h3 className="font-bold text-lg mb-1">
-              {currentAnswer.correct ? "Correct!" : "Wrong!"}
-            </h3>
-            <p>
-              {currentAnswer.correct
-                ? `You earned ${timeLeft} points!`
-                : "Better luck next time!"}
-            </p>
           </div>
         )}
 
@@ -201,9 +210,9 @@ export function SoloGameView({
                 {players.find((p) => p.id === currentPlayerId)?.score || 0}
               </p>
             </div>
-            {guessed && (
+            {!isPlaying && (
               <Button onClick={handleNextTheme}>
-                {currentThemeIndex >= totalThemes - 1
+                {songTheme.nextPosition >= totalThemes - 1
                   ? "See Results"
                   : "Next Theme"}
               </Button>

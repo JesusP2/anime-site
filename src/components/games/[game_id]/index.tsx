@@ -5,10 +5,14 @@ import { WaitingRoom } from "./waiting-room";
 import { MultiPlayerGameView } from "./multiplayer-game-view";
 import { ResultView } from "./result-view";
 import type { GameState } from "@/lib/types";
+import { useUser } from "@/hooks/use-user";
+import type { User } from "better-auth";
+import { Toaster } from "@/components/ui/toaster";
 
 type Props = {
   gameId: string;
   gameType: "solo" | "multiplayer";
+  host: User | null;
   title: string;
   description: string;
   difficulty: string;
@@ -17,8 +21,15 @@ type Props = {
 
 export function GameManager(props: Props) {
   const [gameState, setGameState] = React.useState<GameState>("waiting");
-  const [players, _] = React.useState<Player[]>([
-    { id: "currentUser", name: "You", isHost: true, score: 0 },
+  const currentUser = useUser(props.host);
+  // TODO: get this list from the server
+  const [players, setPlayers] = React.useState<Player[]>(currentUser.isLoading ? [] : [
+    {
+      id: currentUser.user.id,
+      name: currentUser.user.name,
+      isHost: true,
+      score: 0,
+    }
   ]);
   const [results, setResults] = React.useState<
     Array<{ id: string; name: string; score: number }>
@@ -39,42 +50,76 @@ export function GameManager(props: Props) {
     setGameState("results");
   }
 
+  // TODO: this should be done on the server
+  React.useEffect(() => {
+    if (!players.length && !currentUser.isLoading) {
+      setPlayers([
+        {
+          id: currentUser.user.id,
+          name: currentUser.user.name,
+          isHost: true,
+          score: 0,
+        }
+      ]);
+    }
+  }, [currentUser])
+
+  if (currentUser.isLoading) {
+    return <div>Loading...</div>;
+  }
+
   switch (gameState) {
     case "waiting":
       return (
-        <WaitingRoom
-          quizTitle={props.title}
-          quizDescription={props.description}
-          players={players}
-          isHost={players.find((p) => p.id === "currentUser")?.isHost || false}
-          gameType={props.gameType}
-          onStartGame={handleStartGame}
-        />
+        <>
+          <WaitingRoom
+            quizTitle={props.title}
+            quizDescription={props.description}
+            players={players}
+            isHost={players.find((p) => p.id === currentUser.user?.id)?.isHost || false}
+            gameType={props.gameType}
+            onStartGame={handleStartGame}
+          />
+          <Toaster />
+        </>
       );
 
     case "solo":
       return (
-        <SoloGameView
-          gameId={props.gameId}
-          quizTitle={props.title}
-          players={players}
-          currentPlayerId="currentUser"
-          onGameComplete={handleGameComplete}
-        />
+        <>
+          <SoloGameView
+            gameId={props.gameId}
+            quizTitle={props.title}
+            players={players}
+            currentPlayerId={currentUser.user?.id}
+            onGameComplete={handleGameComplete}
+          />
+
+          <Toaster />
+        </>
       );
 
     case "multiplayer":
       return (
-        <MultiPlayerGameView
-          quizTitle={props.title}
-          players={players}
-          currentPlayerId="currentUser"
-          onGameComplete={handleGameComplete}
-        />
+        <>
+          <MultiPlayerGameView
+            quizTitle={props.title}
+            players={players}
+            currentPlayerId={currentUser.user?.id}
+            onGameComplete={handleGameComplete}
+          />
+
+          <Toaster />
+        </>
       );
 
     case "results":
-      return <ResultView quizTitle={props.title} results={results} />;
+      return (
+        <>
+          <ResultView quizTitle={props.title} results={results} />
+          <Toaster />
+        </>
+      );
 
     default:
       return null;

@@ -60,7 +60,7 @@ export function SongsSection({
             children={(field) => (
               <>
                 <SongAutocomplete
-                  songs={field.state.value}
+                  ignoreThemes={field.state.value}
                   onSelectedValueChange={({ key, value, label }) => {
                     if (field.state.value.some((song) => song.id === key)) {
                       return;

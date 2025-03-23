@@ -171,6 +171,7 @@ export const gameActions = {
         });
       }
       return {
+        id: theme.id,
         url: theme.url as string[],
         nextPosition: data.themePosition + 1,
       };
