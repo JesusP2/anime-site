@@ -48,6 +48,7 @@ export function SoloGameView({
     nextPosition: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     startTransition(async () => {
       setIsLoading(true);
@@ -64,7 +65,8 @@ export function SoloGameView({
         url: nextTheme.data.url[0] ?? null,
         nextPosition: nextTheme.data.nextPosition,
       });
-      handleStartPlaying();
+      setIsPlaying(true);
+      setTimeLeft(30);
       setIsLoading(false);
     });
   }, []);
@@ -86,11 +88,6 @@ export function SoloGameView({
 
     return () => clearInterval(timer);
   }, [isPlaying]);
-
-  const handleStartPlaying = () => {
-    setIsPlaying(true);
-    setTimeLeft(30);
-  };
 
   const handleTimerEnd = () => {
     setIsPlaying(false);
@@ -130,7 +127,7 @@ export function SoloGameView({
   };
 
   const handleNextTheme = async () => {
-    if (songTheme.nextPosition >= totalThemes - 1) {
+    if (songTheme.nextPosition >= totalThemes) {
       onGameComplete();
     } else {
       setIsLoading(true);
@@ -212,7 +209,7 @@ export function SoloGameView({
             </div>
             {!isPlaying && (
               <Button onClick={handleNextTheme}>
-                {songTheme.nextPosition >= totalThemes - 1
+                {songTheme.nextPosition >= totalThemes
                   ? "See Results"
                   : "Next Theme"}
               </Button>

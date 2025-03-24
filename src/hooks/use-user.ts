@@ -11,7 +11,7 @@ type UserData =
       isLoading: false;
       user: User;
     };
-export function useUser(user?: User) {
+export function useUser(user?: User | null) {
   const [userData, setUserData] = useState<UserData>(
     user
       ? {

@@ -39,7 +39,10 @@ export function GameManager(props: Props) {
     setGameState(props.gameType);
   }
 
-  function handleGameComplete() {
+  function handleGameComplete(data: {
+    id: string;
+    score: number;
+  }) {
     const gameResults = players.map((player) => ({
       id: player.id,
       name: player.name,
