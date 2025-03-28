@@ -3,7 +3,7 @@ import { defineConfig, envField } from "astro/config";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 
-import cloudflare from "@astrojs/cloudflare";
+import node from "@astrojs/node";
 
 export default defineConfig({
   output: "server",
@@ -59,7 +59,13 @@ export default defineConfig({
   image: {
     domains: ["cdn.myanimelist.net"],
   },
-  adapter: cloudflare(),
+  adapter: node({
+    mode: "standalone",
+  }),
+  server: {
+    host: '0.0.0.0',
+    port: 4321,
+  },
   vite: {
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.

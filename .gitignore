@@ -30,3 +30,5 @@ chromadb/
 chroma.log
 .wrangler
 .cursor
+deploy.sh
+docker-compose.yaml
