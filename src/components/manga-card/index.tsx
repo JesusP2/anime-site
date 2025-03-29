@@ -4,11 +4,10 @@ import { Star } from "@phosphor-icons/react";
 import { MangaTypeBadge } from "@/components/manga-card/type-badge";
 import { AiringStatus } from "@/components/manga-card/airing-status";
 import type { MangaCardItem } from "@/lib/types";
+import { getRecordTitle } from "@/lib/anime-title";
 
 export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
-  const mangaTitle =
-    data.titles?.find((title) => title.type === "English")?.title ||
-    data.titles?.find((title) => title.type === "Default")?.title;
+  const mangaTitle = getRecordTitle(data.titles);
 
   return (
     <a

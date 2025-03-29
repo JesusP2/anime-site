@@ -33,6 +33,7 @@ const [currentSeasonAnimes, allTimeFavoritesAnimes, popularThisSeasonAnimes, top
   getCarouselAnimes(popularThisSeasonSearch, 15),
   getCarouselMangas(topMangasSearch, 15),
 ]);
+console.log(currentSeasonAnimes);
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 

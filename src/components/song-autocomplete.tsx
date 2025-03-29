@@ -11,6 +11,7 @@ type Item = {
 export function SongAutocomplete({
   ignoreThemes,
   onSelectedValueChange,
+  disabled,
 }: {
   ignoreThemes: {
     id: string;
@@ -18,6 +19,7 @@ export function SongAutocomplete({
     animeTitle: string;
   }[];
   onSelectedValueChange: (value: Item) => void;
+    disabled?: boolean;
 }) {
   const cache = useRef<{ [key: string]: Item[] }>({});
   const [items, setItems] = useState<Item[]>([]);
@@ -67,6 +69,7 @@ export function SongAutocomplete({
   return (
     <AutoComplete
       items={items}
+      disabled={disabled}
       searchValue={search}
       onSearchValueChange={setSearch}
       selectedValue={selectedValue}

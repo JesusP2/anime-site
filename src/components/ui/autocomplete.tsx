@@ -21,6 +21,7 @@ type Props<T extends string> = {
   isLoading?: boolean;
   emptyMessage?: string;
   placeholder?: string;
+  disabled?: boolean;
 };
 
 export function AutoComplete<T extends string>({
@@ -32,6 +33,7 @@ export function AutoComplete<T extends string>({
   isLoading,
   emptyMessage = "No items.",
   placeholder = "Search...",
+  disabled,
 }: Props<T>) {
   const [open, setOpen] = useState(false);
 
@@ -74,6 +76,7 @@ export function AutoComplete<T extends string>({
           <PopoverAnchor asChild>
             <CommandPrimitive.Input
               asChild
+              disabled={disabled}
               value={searchValue}
               onValueChange={onSearchValueChange}
               onKeyDown={(e) => setOpen(e.key !== "Escape")}

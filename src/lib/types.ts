@@ -53,3 +53,10 @@ export type EntityStatus = (typeof entityStatuses)[number];
 
 export type GameState = "waiting" | "solo" | "multiplayer" | "results";
 export type GameType = "solo" | "multiplayer";
+
+export type Song = {
+  id: string;
+  name: string;
+  url: string,
+  animeName: string;
+}

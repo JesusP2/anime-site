@@ -15,7 +15,7 @@ export const themeTable = pgTable("theme", (t) => ({
     .$type<"opening" | "ending">(),
   number: t.integer("number").notNull(),
   name: t.text("name").notNull(),
-  url: t.jsonb("url").notNull(),
+  url: t.jsonb("url").$type<string[]>().notNull(),
   text_search: t.text("text_search"),
   youtubeQuery: t.text("youtube_query").notNull(),
   createdAt: t.timestamp("created_at").defaultNow(),

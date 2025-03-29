@@ -9,6 +9,7 @@ if (!gameInfo.success) {
 	return Astro.redirect("/");
 }
 const user = Astro.locals.user;
+console.log(gameInfo.value);
 ---
 
 <MainLayout title="Game">

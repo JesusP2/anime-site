@@ -1,120 +1,61 @@
-import { useState, useEffect, startTransition } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
 import type { Player } from "./types";
-import { actions } from "astro:actions";
-import { useToast } from "@/hooks/use-toast";
-
-type SongTheme = {
-  id: string | null;
-  url: string | null;
-  nextPosition: number;
-};
+import { cn } from "@/lib/utils";
+import type { Song } from "@/lib/types";
 
 function embedUrl(_url?: string) {
   if (!_url) return "";
   const url = new URL(_url);
   const v = url.searchParams.get("v");
-  return `https://www.youtube-nocookie.com/embed/${v}`;
+  return `https://www.youtube-nocookie.com/embed/${v}?autoplay=1`;
 }
 
-const totalThemes = 5;
+const TIMEOUT = 5;
 export function SoloGameView({
-  gameId,
-  quizTitle,
+  songs,
   players,
   currentPlayerId,
   onGameComplete,
 }: {
-  gameId: string;
-  quizTitle: string;
+  songs: Song[];
   players: Player[];
   currentPlayerId: string;
-  onGameComplete: () => void;
+  onGameComplete: (props: { id: string; score: number; }) => void;
 }) {
-  const { toast } = useToast();
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [songTheme, setSongTheme] = useState<SongTheme>({
-    id: null,
-    url: null,
-    nextPosition: 0,
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [songIdx, setSongIdx] = useState(0);
+  const currentSong = songs[songIdx];
 
   useEffect(() => {
-    startTransition(async () => {
-      setIsLoading(true);
-      const nextTheme = await actions.games.getNextTheme({
-        gameId,
-        themePosition: songTheme.nextPosition,
-      });
-      if (nextTheme.error) {
-        console.error(nextTheme.error);
+    const timer = setInterval(() => {
+      const newTimeLeft = timeLeft - 1;
+      if (newTimeLeft <= 0) {
+        clearInterval(timer);
+        handleNextTheme();
         return;
       }
-      setSongTheme({
-        id: nextTheme.data.id,
-        url: nextTheme.data.url[0] ?? null,
-        nextPosition: nextTheme.data.nextPosition,
-      });
-      setIsPlaying(true);
-      setTimeLeft(30);
-      setIsLoading(false);
-    });
-  }, []);
+      if (newTimeLeft <= TIMEOUT && isPlaying) {
+        handleTimerEnd();
+      }
+      setTimeLeft(newTimeLeft);
+    }, 1_000);
 
-  // Timer effect
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleTimerEnd();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isPlaying]);
+    return () => {
+      clearInterval(timer);
+    }
+  }, [isPlaying, timeLeft]);
 
   const handleTimerEnd = () => {
     setIsPlaying(false);
-    toast({
-      title: "Time's up!",
-      description: "Better luck next time!",
-      variant: "destructive",
-    });
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
     setIsPlaying(false);
 
     // In a real implementation, this would check against the actual answer
-    const isCorrect = item.key === songTheme.id;
-    const correctAnswer = {
-      title: "Correct!",
-      description: "You earned " + timeLeft + " points!",
-      variant: "default" as const,
-    };
-    const wrongAnswer = {
-      title: "Wrong!",
-      description: "Better luck next time!",
-      variant: "destructive" as const,
-    };
-    toast(isCorrect ? correctAnswer : wrongAnswer);
-
+    const isCorrect = item.key === currentSong?.id;
     if (isCorrect) {
       // Update player score
       const updatedPlayers = players.map((player) => {
@@ -127,96 +68,55 @@ export function SoloGameView({
   };
 
   const handleNextTheme = async () => {
-    if (songTheme.nextPosition >= totalThemes) {
-      onGameComplete();
-    } else {
-      setIsLoading(true);
-      const nextTheme = await actions.games.getNextTheme({
-        gameId,
-        themePosition: songTheme.nextPosition,
-      });
-      if (nextTheme.error) {
-        console.error(nextTheme.error);
-        return;
+    if (songIdx >= songs.length - 1) {
+      const player = players[0];
+      if (player) {
+        onGameComplete({
+          id: player.id,
+          score: player.score,
+        });
       }
-      setSongTheme({
-        id: nextTheme.data.id,
-        url: nextTheme.data.url[0] ?? null,
-        nextPosition: nextTheme.data.nextPosition,
-      });
-      setIsLoading(false);
-      setIsPlaying(true);
-      setTimeLeft(30);
+      return;
     }
+    setSongIdx(songIdx + 1);
+    setIsPlaying(true);
+    setTimeLeft(TIMEOUT * 2);
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>{quizTitle}</CardTitle>
-            <CardDescription>
-              Theme {songTheme.nextPosition} of {totalThemes}
-            </CardDescription>
+    <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full">
+      <div className="h-[6rem] text-center py-2">
+        {songIdx + 1} / {songs.length} - {timeLeft} - {timeLeft - TIMEOUT}
+        {!isPlaying && <>
+          <h1 className="text-x3 text-center">{currentSong?.animeName}</h1>
+          <h1 className="text-x3 text-center">{currentSong?.name}</h1>
+        </>}
+      </div>
+      <div className="w-full h-[calc(100%-20rem)]">
+        <div className="relative h-full w-full">
+          <div className={cn('absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center', isPlaying ? 'opacity-100' : 'hidden')}>
+            {(timeLeft - TIMEOUT) === 0 ? <div>The answer is...</div> : (timeLeft - TIMEOUT)}
           </div>
-          <div className="text-right">
-            <p className="text-sm text-muted-foreground">Time Left</p>
-            <p className="text-2xl font-bold">{timeLeft}s</p>
-          </div>
+          <iframe
+            src={embedUrl(currentSong?.url)}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            className="w-full h-full"
+            style={{ display: "block" }}
+          ></iframe>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Video Player */}
-        <div className="aspect-video bg-black rounded-md overflow-hidden">
-          {isLoading || !songTheme.url ? (
-            <div className="w-full h-full flex items-center justify-center text-white">
-              Loading theme...
-            </div>
-          ) : (
-            <>
-              <iframe
-                src={embedUrl(songTheme.url)}
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                className="w-full h-full"
-                style={{ display: "block" }}
-              ></iframe>
-            </>
-          )}
+      </div>
+      <div className="h-[6rem]">
+        <div className="mt-4 w-[90%] mx-auto">
+          <SongAutocomplete
+            ignoreThemes={[]}
+            disabled={!isPlaying}
+            onSelectedValueChange={handleGuess}
+          />
         </div>
-
-        {isPlaying && (
-          <div>
-            <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete
-              ignoreThemes={[]}
-              onSelectedValueChange={handleGuess}
-            />
-          </div>
-        )}
-
-        {/* Score & Next */}
-        <div className="border-t pt-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-muted-foreground">Your Score</p>
-              <p className="text-xl font-bold">
-                {players.find((p) => p.id === currentPlayerId)?.score || 0}
-              </p>
-            </div>
-            {!isPlaying && (
-              <Button onClick={handleNextTheme}>
-                {songTheme.nextPosition >= totalThemes
-                  ? "See Results"
-                  : "Next Theme"}
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

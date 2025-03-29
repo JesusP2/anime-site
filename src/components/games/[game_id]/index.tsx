@@ -4,14 +4,14 @@ import type { Player } from "./types";
 import { WaitingRoom } from "./waiting-room";
 import { MultiPlayerGameView } from "./multiplayer-game-view";
 import { ResultView } from "./result-view";
-import type { GameState } from "@/lib/types";
+import type { GameState, GameType, Song } from "@/lib/types";
 import { useUser } from "@/hooks/use-user";
 import type { User } from "better-auth";
 import { Toaster } from "@/components/ui/toaster";
 
 type Props = {
-  gameId: string;
-  gameType: "solo" | "multiplayer";
+  gameType: GameType;
+  songs: Song[];
   host: User | null;
   title: string;
   description: string;
@@ -43,13 +43,12 @@ export function GameManager(props: Props) {
     id: string;
     score: number;
   }) {
-    const gameResults = players.map((player) => ({
-      id: player.id,
-      name: player.name,
-      score: player.score,
-    }));
-
-    setResults(gameResults);
+    console.log("handleGameComplete");
+    setResults([{
+      id: currentUser.user?.id,
+      name: currentUser.user?.name,
+      score: data.score,
+    }]);
     setGameState("results");
   }
 
@@ -91,8 +90,7 @@ export function GameManager(props: Props) {
       return (
         <>
           <SoloGameView
-            gameId={props.gameId}
-            quizTitle={props.title}
+            songs={props.songs}
             players={players}
             currentPlayerId={currentUser.user?.id}
             onGameComplete={handleGameComplete}

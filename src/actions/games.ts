@@ -13,8 +13,6 @@ import {
 } from "@/lib/db/schemas";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as schema from "@/lib/db/schemas";
-import { err, ok } from "@/lib/result";
-import { error } from "node_modules/astro/dist/core/logger/core";
 
 function getThemePoolNumber(
   difficulty: Omit<z.infer<typeof createQuizSchema>["difficulty"], "custom">,
@@ -139,42 +137,6 @@ export const gameActions = {
         updatedAt: new Date(),
       });
       return gameId;
-    },
-  }),
-  getNextTheme: defineAction({
-    accept: "json",
-    input: z.object({
-      gameId: z.string().ulid(),
-      themePosition: z.number(),
-    }),
-    handler: async (data) => {
-      const db = getDb();
-      const { gameId } = data;
-      const [theme] = await db
-        .select({
-          id: themeTable.id,
-          url: themeTable.url,
-        })
-        .from(gameTable)
-        .innerJoin(
-          quizToThemeTable,
-          eq(gameTable.quizId, quizToThemeTable.quizId),
-        )
-        .innerJoin(themeTable, eq(quizToThemeTable.themeId, themeTable.id))
-        .where(eq(gameTable.id, gameId))
-        .offset(data.themePosition)
-        .limit(1);
-      if (!theme) {
-        throw new ActionError({
-          code: "NOT_FOUND",
-          message: "Theme not found",
-        });
-      }
-      return {
-        id: theme.id,
-        url: theme.url as string[],
-        nextPosition: data.themePosition + 1,
-      };
     },
   }),
 };

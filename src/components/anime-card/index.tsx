@@ -4,11 +4,10 @@ import { Star } from "@phosphor-icons/react";
 import { AnimeTypeBadge } from "@/components/anime-card/type-badge";
 import { AiringStatus } from "@/components/anime-card/airing-status";
 import type { AnimeCardItem } from "@/lib/types";
+import { getRecordTitle } from "@/lib/anime-title";
 
 export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
-  const animeTitle =
-    data.titles?.find((title) => title.type === "English")?.title ||
-    data.titles?.find((title) => title.type === "Default")?.title;
+  const animeTitle = getRecordTitle(data.titles);
 
   return (
     <a

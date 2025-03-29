@@ -1,12 +1,19 @@
 import { count, eq } from "drizzle-orm";
 import { getDb } from "../db/pool";
-import { gameTable, quizTable, quizToThemeTable } from "../db/schemas";
+import {
+  animeTable,
+  gameTable,
+  quizTable,
+  quizToThemeTable,
+  themeTable,
+} from "../db/schemas";
 import { err, ok } from "../result";
 import { ActionError } from "astro:actions";
+import { getRecordTitle } from "../anime-title";
 
 export async function getGameInfo(gameId: string) {
   const db = getDb();
-  const [gameInfo] = await db
+  const [_gameInfo] = await db
     .select({
       quizId: quizTable.id,
       gameType: gameTable.gameType,
@@ -19,7 +26,7 @@ export async function getGameInfo(gameId: string) {
     .leftJoin(quizTable, eq(gameTable.quizId, quizTable.id))
     .where(eq(gameTable.id, gameId))
     .limit(1);
-  if (!gameInfo?.quizId) {
+  if (!_gameInfo?.quizId) {
     return err(
       new ActionError({
         code: "NOT_FOUND",
@@ -27,11 +34,25 @@ export async function getGameInfo(gameId: string) {
       }),
     );
   }
-  const themesCount = await db
+  const songs = await db
     .select({
-      count: count(),
+      id: themeTable.id,
+      name: themeTable.name,
+      url: themeTable.url,
+      titles: animeTable.titles,
     })
-    .from(quizToThemeTable)
-    .where(eq(quizToThemeTable.quizId, gameInfo.quizId));
-  return ok({ ...gameInfo, themesCount: themesCount[0]?.count as number });
+    .from(animeTable)
+    .innerJoin(themeTable, eq(animeTable.id, themeTable.animeId))
+    .innerJoin(quizToThemeTable, eq(themeTable.id, quizToThemeTable.themeId))
+    .innerJoin(gameTable, eq(quizToThemeTable.quizId, gameTable.quizId))
+    .where(eq(gameTable.id, gameId));
+
+  return ok({
+    ..._gameInfo,
+    songs: songs.map((song) => ({
+      ...song,
+      url: song.url[0] as string,
+      animeName: getRecordTitle(song.titles),
+    })),
+  });
 }

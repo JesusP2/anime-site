@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { Trophy } from "@phosphor-icons/react";
+import { Check, Trophy } from "@phosphor-icons/react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function ResultView({
@@ -40,7 +40,7 @@ export function ResultView({
                 <TableRow>
                   <TableHead className="w-12">Rank</TableHead>
                   <TableHead>Player</TableHead>
-                  <TableHead className="text-right">Score</TableHead>
+                  <TableHead className="text-right"><Check /></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
