@@ -1,0 +1,31 @@
+---
+import Head from "@/components/head.astro";
+import { NewLandingPage } from "@/components/landing/new-landing-page";
+const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
+---
+
+<html lang="en" class={isDarkMode ? "dark" : ""}>
+  <Head title={"Anisearch"} description={"description"} />
+  <body class="overflow-x-hidden">
+    <NewLandingPage />
+  </body>
+</html>
+<style is:global>
+  body {
+    background-image: url("/landing-background2.png");
+    /* background-image: url("/chatgpt-combined-upscaledx2.png"); */
+    background-repeat: no-repeat;
+    background-size: 100%;
+  }
+  .input-field-bg {
+    background-image: url("/input-field-bg.png");
+  }
+  .input-btn-bg {
+    background-image: url("/input-btn-bg.png");
+  }
+  .stroked-text {
+    -webkit-text-stroke: 0.5px oklch(0.145 0 0); /* Width and color of the stroke */
+    color: #fef3c7; /* Color of the text itself */
+    text-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
+  }
+</style>

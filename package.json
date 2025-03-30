@@ -29,6 +29,7 @@
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
     "@electric-sql/pglite": "^0.2.17",
+    "@fontsource-variable/crimson-pro": "^5.2.5",
     "@fontsource-variable/gabarito": "^5.1.1",
     "@fontsource/geist-sans": "^5.1.0",
     "@libsql/client": "^0.14.0",

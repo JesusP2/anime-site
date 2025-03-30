@@ -35,6 +35,9 @@ importers:
       '@electric-sql/pglite':
         specifier: ^0.2.17
         version: 0.2.17
+      '@fontsource-variable/crimson-pro':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@fontsource-variable/gabarito':
         specifier: ^5.1.1
         version: 5.1.1
@@ -1445,6 +1448,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource-variable/crimson-pro@5.2.5':
+    resolution: {integrity: sha512-+F/8QxteTDMYjVomoX0NsEfEw7bT0BnNS6R8D/l7nUbiuALcfV0MDmhb4hY4IVgyvAtlFGPJkLQMuKBtyaxBJQ==}
 
   '@fontsource-variable/gabarito@5.1.1':
     resolution: {integrity: sha512-qiVssXMWQMu7pS5N4DaCCN9wlzvRgHJonjPU88kSE90Xmt+Ir9DPV6acA0/A6SpXGsf2uR5yjwDdyyLoBMCsDA==}
@@ -7291,6 +7297,8 @@ snapshots:
       react-dom: 19.0.0(react@19.0.0)
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource-variable/crimson-pro@5.2.5': {}
 
   '@fontsource-variable/gabarito@5.1.1': {}
 
