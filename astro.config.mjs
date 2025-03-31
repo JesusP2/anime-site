@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
 
 import node from "@astrojs/node";
 
@@ -55,7 +54,7 @@ export default defineConfig({
       BASE_URL: envField.string({ context: "client", access: "public" }),
     },
   },
-  integrations: [react(), tailwind({ applyBaseStyles: false })],
+  integrations: [react()],
   image: {
     domains: ["cdn.myanimelist.net"],
   },
