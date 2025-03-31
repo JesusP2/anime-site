@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
+import tailwindcss from '@tailwindcss/vite'
 import react from "@astrojs/react";
 
 import node from "@astrojs/node";
@@ -66,6 +67,7 @@ export default defineConfig({
     port: 4321,
   },
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
