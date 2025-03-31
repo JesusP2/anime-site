@@ -1,5 +1,6 @@
 import { ThemeButton } from "../theme-button";
-import { Button } from "../ui/neobrutalism/button";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export function NewLandingPage(props: { isDarkMode: boolean }) {
   return (
@@ -13,9 +14,9 @@ export function NewLandingPage(props: { isDarkMode: boolean }) {
           <h2 className="stroked-text text-center text-xl md:text-2xl font-semibold z-10">
             Explore a vast collection of anime, manga, and more.
           </h2>
-          <div className="bg-[url('/input-field-bg-light.png')] dark:bg-[url('/input-field-bg-night.png')] flex ring-1 ring-[#847858] p-2 space-x-2 rounded-lg inline-block max-w-xl w-full z-10 focus-within:ring-2 hover:ring-2">
+          <div className="bg-background flex ring-1 ring-[#847858] p-2 space-x-2 rounded-lg inline-block max-w-xl w-full z-10 focus-within:ring-2 hover:ring-2">
             <input className="bg-inherit font-geist text-neutral-700 dark:text-neutral-300 w-full placeholder:text-neutral-700 dark:placeholder:text-neutral-300 outline-none focus:outline-none" placeholder="Search for anime, manga..." />
-            <Button className="bg-[url('/input-btn-bg-light.png')] dark:bg-[url('/input-btn-bg-night.png')] font-crimson text-md border-[1px] text-neutral-700 dark:text-neutral-300 border-neutral-700">
+            <Button variant="outline">
               Search
             </Button>
           </div>
