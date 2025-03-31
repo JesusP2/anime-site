@@ -7,46 +7,239 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"Anisearch"} description={"description"} />
   <body
-    class="overflow-x-hidden bg-[url('/landing-background-light.jpg')] dark:bg-[url('/landing-background-night.png')]"
+    class="bg-[url('/landing-background-light-4.jpg')] dark:bg-[url('/landing-background-night.png')] bg-no-repeat bg-cover overflow-hidden"
   >
-    <div class="relative top-0 h-24">
-      <img src="/plane.png" alt="Animated Plane" class="plane absolute top-0" />
+    <div class="relative top-[25rem] plane-right-container"></div>
+    <div class="relative top-[10rem] plane-left-container"></div>
+    <div
+      class="bg-[url('/landing-background-light-5.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10"
+    >
+      <NewLandingPage isDarkMode={isDarkMode} client:load />
     </div>
-    <NewLandingPage isDarkMode={isDarkMode} client:load />
   </body>
 </html>
 <style>
   body {
     background-repeat: no-repeat;
     background-size: 100%;
+    overflow: hidden;
+  }
+  .plane-left-container {
+    position: absolute;
+    transform: translateY(-50%);
+    left: -250px;
+    width: 200px;
+    height: 100px; /* Adjust height as needed */
+    background-image: url("/plane-left-1.png"); /* Initial image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: fly-left 16s linear infinite; /* Reduced duration for faster swap */
+    animation-delay: 2s;
   }
 
-  .plane {
-    position: absolute; /* Position the plane within the container */
-    top: 50%; /* Vertically center the plane */
-    transform: translateY(-50%); /* Adjust for centering */
-    left: -200px; /* Start the plane off-screen to the left */
-    width: 300px; /* Adjust the size of the plane */
-    animation: fly 10s linear infinite; /* Apply the animation */
+  .plane-right-container {
+    position: absolute;
+    transform: translateY(-50%);
+    left: -250px;
+    width: 250px;
+    height: 150px; /* Adjust height as needed */
+    background-image: url("/plane-right-1.png"); /* Initial image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: fly-right 13s linear infinite; /* Reduced duration for faster swap */
+    animation-delay: 4s;
   }
 
-  @keyframes fly {
+  @keyframes fly-right {
     0% {
-      left: -200px; /* Start off-screen */
-      transform: translateY(-50%) translateY(0px); /* Initial position */
+      left: -250px;
+      background-image: url("/plane-right-1.png");
+      transform: translateY(-50%) translateY(0px);
     }
-    25% {
-      transform: translateY(-50%) translateY(-20px); /* Move up slightly */
+    2%,
+    6%,
+    10%,
+    14%,
+    18%,
+    22%,
+    26%,
+    30%,
+    34%,
+    38%,
+    42%,
+    46%,
+    50%,
+    54%,
+    58%,
+    62%,
+    66%,
+    70%,
+    74%,
+    78%,
+    82%,
+    86%,
+    90%,
+    94%,
+    98% {
+      background-image: url("/plane-right-2.png"); /* Swap to the second image */
     }
-    50% {
-      transform: translateY(-50%) translateY(0px); /* Back to center */
+    4%,
+    8%,
+    12%,
+    16%,
+    20%,
+    24%,
+    28%,
+    32%,
+    36%,
+    40%,
+    44%,
+    48%,
+    52%,
+    56%,
+    60%,
+    64%,
+    68%,
+    72%,
+    76%,
+    80%,
+    84%,
+    88%,
+    92%,
+    96% {
+      background-image: url("/plane-right-1.png"); /* Swap to the first image */
     }
-    75% {
-      transform: translateY(-50%) translateY(20px); /* Move down slightly */
+    16% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    20% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    32% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    36% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    48% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    52% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    64% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    68% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    80% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    84% {
+      transform: translateY(-50%) translateY(-50px);
     }
     100% {
-      left: 100%; /* Move off-screen to the right */
-      transform: translateY(-50%) translateY(0px); /* Back to center */
+      left: 100%;
+      background-image: url("/plane-right-1.png"); /* Back to the first image */
+      transform: translateY(-50%) translateY(0px);
+    }
+  }
+
+  @keyframes fly-left {
+    0% {
+      left: 100%;
+      background-image: url("/plane-left-1.png");
+      transform: translateY(-50%) translateY(0px);
+    }
+    2%,
+    6%,
+    10%,
+    14%,
+    18%,
+    22%,
+    26%,
+    30%,
+    34%,
+    38%,
+    42%,
+    46%,
+    50%,
+    54%,
+    58%,
+    62%,
+    66%,
+    70%,
+    74%,
+    78%,
+    82%,
+    86%,
+    90%,
+    94%,
+    98% {
+      background-image: url("/plane-left-2.png"); /* Swap to the second image */
+    }
+    4%,
+    8%,
+    12%,
+    16%,
+    20%,
+    24%,
+    28%,
+    32%,
+    36%,
+    40%,
+    44%,
+    48%,
+    52%,
+    56%,
+    60%,
+    64%,
+    68%,
+    72%,
+    76%,
+    80%,
+    84%,
+    88%,
+    92%,
+    96% {
+      background-image: url("/plane-left-1.png"); /* Swap to the first image */
+    }
+    16% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    20% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    32% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    36% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    48% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    52% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    64% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    68% {
+      transform: translateY(-50%) translateY(0px);
+    }
+    80% {
+      transform: translateY(-50%) translateY(-50px);
+    }
+    84% {
+      left: -400px;
+      transform: translateY(-50%) translateY(-50px);
+    }
+    100% {
+      left: -400px;
+      background-image: url("/plane-left-1.png"); /* Back to the first image */
+      transform: translateY(-50%) translateY(0px);
     }
   }
 </style>
