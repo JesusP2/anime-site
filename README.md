@@ -6,3 +6,8 @@
 - Create a header-like container for the filters
 - Add search bar in main page
 - update carousel cards
+
+landing page:
+- fix image connection;
+- add grass at the bottom of the girl animation
+- make girl hair better

@@ -2,12 +2,13 @@ import { Moon, Sun } from "@phosphor-icons/react";
 import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
-export function ThemeButton(props: { isDarkMode: boolean }) {
+export function ThemeButton(props: { isDarkMode: boolean; onThemeChange?: (isDarkMode: boolean) => void; }) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
 
   function setTheme(isDarkMode: boolean) {
+    props.onThemeChange?.(isDarkMode);
     setIsDarkMode(isDarkMode);
     document.documentElement.classList[isDarkMode ? "add" : "remove"]("dark");
     const maxAge = 60 * 60 * 24 * 7;

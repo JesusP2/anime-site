@@ -6,26 +6,47 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"Anisearch"} description={"description"} />
-  <body class="overflow-x-hidden">
-    <NewLandingPage />
+  <body
+    class="overflow-x-hidden bg-[url('/landing-background-light.jpg')] dark:bg-[url('/landing-background-night.png')]"
+  >
+    <div class="relative top-0 h-24">
+      <img src="/plane.png" alt="Animated Plane" class="plane absolute top-0" />
+    </div>
+    <NewLandingPage isDarkMode={isDarkMode} client:load />
   </body>
 </html>
-<style is:global>
+<style>
   body {
-    background-image: url("/landing-background2.png");
-    /* background-image: url("/chatgpt-combined-upscaledx2.png"); */
     background-repeat: no-repeat;
     background-size: 100%;
   }
-  .input-field-bg {
-    background-image: url("/input-field-bg.png");
+
+  .plane {
+    position: absolute; /* Position the plane within the container */
+    top: 50%; /* Vertically center the plane */
+    transform: translateY(-50%); /* Adjust for centering */
+    left: -200px; /* Start the plane off-screen to the left */
+    width: 300px; /* Adjust the size of the plane */
+    animation: fly 10s linear infinite; /* Apply the animation */
   }
-  .input-btn-bg {
-    background-image: url("/input-btn-bg.png");
-  }
-  .stroked-text {
-    -webkit-text-stroke: 0.5px oklch(0.145 0 0); /* Width and color of the stroke */
-    color: #fef3c7; /* Color of the text itself */
-    text-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
+
+  @keyframes fly {
+    0% {
+      left: -200px; /* Start off-screen */
+      transform: translateY(-50%) translateY(0px); /* Initial position */
+    }
+    25% {
+      transform: translateY(-50%) translateY(-20px); /* Move up slightly */
+    }
+    50% {
+      transform: translateY(-50%) translateY(0px); /* Back to center */
+    }
+    75% {
+      transform: translateY(-50%) translateY(20px); /* Move down slightly */
+    }
+    100% {
+      left: 100%; /* Move off-screen to the right */
+      transform: translateY(-50%) translateY(0px); /* Back to center */
+    }
   }
 </style>

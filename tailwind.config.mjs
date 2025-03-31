@@ -11,12 +11,38 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        base: "6px",
       },
       fontFamily: {
         gabarito: ["Gabarito Variable"],
         crimson: ["Crimon Pro"],
       },
+      boxShadow: {
+        shadow: "var(--shadow)",
+      },
+      translate: {
+        boxShadowX: "2px",
+        boxShadowY: "1px",
+        reverseBoxShadowX: "-2px",
+        reverseBoxShadowY: "-1px",
+      },
+      fontWeight: {
+        base: "500",
+        heading: "700",
+      },
       colors: {
+        main: "var(--main)",
+        overlay: "var(--overlay)",
+        bg: "var(--bg)",
+        bw: "var(--bw)",
+        blank: "var(--blank)",
+        text: "var(--text)",
+        mtext: "var(--mtext)",
+        border: "var(--border)",
+        ring: "var(--ring)",
+        ringOffset: "var(--ring-offset)",
+        secondaryBlack: "#212121",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
