@@ -3,19 +3,21 @@ const DESIGN_MAX_TOP = 600;
 const screenWidth = window.innerWidth; // Get screen width for responsive movement
 
 const defaultConfig = {
-  planeWidth: 250,
-  durationMovement: 13_000,
   frameTime: 1_000 / 24,
-  minLoopDelay: 3_000,
-  maxLoopDelay: 10_000,
+  minLoopDelay: 5_000,
+  maxLoopDelay: 20_000,
+  sizeOptions: [50, 100, 150, 200],
+  minDurationMovement: 10_000,
+  maxDurationMovement: 20_000,
 };
 
 type Config = {
-  planeWidth: number;
-  durationMovement: number;
   frameTime: number;
   minLoopDelay: number;
   maxLoopDelay: number;
+  sizeOptions: number[];
+  minDurationMovement: number;
+  maxDurationMovement: number;
 };
 function calculateMaxTop() {
   const resizeRatio = window.innerWidth / DESIGN_WINDOW_WIDTH;
@@ -27,19 +29,42 @@ export function createPlaneAnimations(
   direction: "LTR" | "RTL",
   config?: Partial<Config>,
 ) {
-  if (!config) config = defaultConfig;
-  const {
-    planeWidth,
-    durationMovement,
-    frameTime,
-    minLoopDelay,
-    maxLoopDelay,
-  }: Config = {
+  if (!plane) return;
+
+  const mergedConfig: Config = {
     ...defaultConfig,
     ...config,
   };
+  if (screenWidth < 768) {
+    mergedConfig.sizeOptions = [50, 100, 150];
+  } else if (screenWidth < 1024) {
+    mergedConfig.sizeOptions = [50, 100, 150, 200];
+  }
+  const {
+    frameTime,
+    minLoopDelay,
+    maxLoopDelay,
+    sizeOptions,
+    minDurationMovement,
+    maxDurationMovement,
+  } = mergedConfig;
+  const planeWidth = sizeOptions[
+    Math.floor(Math.random() * sizeOptions.length)
+  ] as number;
   const planeHeight = (280 / 810) * planeWidth;
-  if (!plane) return;
+  const minWidth = Math.min(...sizeOptions);
+  const maxWidth = Math.max(...sizeOptions);
+  let durationMovement = minDurationMovement; // Default to min duration
+
+  if (maxWidth > minWidth) {
+    // Normalize the selected width (0 for minWidth, 1 for maxWidth)
+    const widthRatio = (planeWidth - minWidth) / (maxWidth - minWidth);
+    // Interpolate duration: smaller width (widthRatio closer to 0) -> longer duration (closer to maxDuration)
+    durationMovement =
+      maxDurationMovement -
+      widthRatio * (maxDurationMovement - minDurationMovement);
+  }
+
   plane.style.height = `${planeHeight}px`;
   plane.style.width = `${planeWidth}px`;
   // Set initial vertical alignment
@@ -51,9 +76,10 @@ export function createPlaneAnimations(
     plane.style.left = `${screenWidth}px`;
   }
 
-  const movementKeyframes = getKeyFrames(direction === "LTR" ? "RTL" : "LTR", {
+  const movementKeyframes = getKeyFrames(
+    direction === "LTR" ? "RTL" : "LTR",
     planeWidth,
-  });
+  );
 
   const movementTiming = {
     duration: durationMovement,
@@ -94,21 +120,18 @@ export function createPlaneAnimations(
 
 function getKeyFrames(
   movement: "LTR" | "RTL", // "left" = RTL movement, "right" = LTR movement
-  config: Pick<Config, "planeWidth">,
+  planeWidth: number,
 ) {
-  const totalHorizontalDistance = screenWidth + config.planeWidth;
+  const totalHorizontalDistance = screenWidth + planeWidth;
 
   if (movement === "RTL") {
-    const offset1 =
-      (config.planeWidth + screenWidth * 0.25) / totalHorizontalDistance;
-    const offset2 =
-      (config.planeWidth + screenWidth * 0.5) / totalHorizontalDistance;
-    const offset3 =
-      (config.planeWidth + screenWidth * 0.75) / totalHorizontalDistance;
+    const offset1 = (planeWidth + screenWidth * 0.25) / totalHorizontalDistance;
+    const offset2 = (planeWidth + screenWidth * 0.5) / totalHorizontalDistance;
+    const offset3 = (planeWidth + screenWidth * 0.75) / totalHorizontalDistance;
 
     const movementKeyframes = [
       {
-        left: `-${config.planeWidth}px`,
+        left: `-${planeWidth}px`,
         transform: "translateY(-50%)",
         offset: 0,
       },
@@ -154,7 +177,7 @@ function getKeyFrames(
     },
     // End off-screen left
     {
-      left: `-${config.planeWidth}px`,
+      left: `-${planeWidth}px`,
       transform: "translateY(-50%)",
       offset: 1,
     },
