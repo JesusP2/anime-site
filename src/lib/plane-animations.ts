@@ -51,7 +51,7 @@ export function createPlaneAnimations(
   const planeWidth = sizeOptions[
     Math.floor(Math.random() * sizeOptions.length)
   ] as number;
-  const planeHeight = (280 / 810) * planeWidth;
+  const planeHeight = (139 / 404) * planeWidth;
   const minWidth = Math.min(...sizeOptions);
   const maxWidth = Math.max(...sizeOptions);
   let durationMovement = minDurationMovement; // Default to min duration
