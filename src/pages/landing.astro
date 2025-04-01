@@ -9,18 +9,18 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"Anisearch"} description={"description"} />
   <body
-    class="bg-[url('/landing-background-light-4.jpg')] dark:bg-[url('/landing-background-night.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
+    class="bg-[url('/landing-background-light.jpg')] dark:bg-[url('/landing-background-night.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-30">
       <Planes />
     </div>
     <ThemeButton isDarkMode={isDarkMode} client:load />
     <div
-      class="bg-[url('/clouds.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10"
+      class="bg-[url('/clouds.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 dark:hidden"
     >
     </div>
     <div
-      class="bg-[url('/landing-background-light-5.png')] dark:bg-[url('/landing-background-night.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
+      class="bg-[url('/landing-background-light-top.png')] dark:bg-[url('/landing-background-night-top.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
     >
       <NewLandingPage isDarkMode={isDarkMode} client:load />
     </div>
