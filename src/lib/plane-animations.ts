@@ -129,19 +129,20 @@ function getKeyFrames(
     ];
     return movementKeyframes;
   }
-  const offset1 = config.planeWidth / config.totalDistance; // Distance from right edge to screen edge
+
+  const offset1 = (config.totalDistance - screenWidth) / config.totalDistance;
   const offset2 =
-    (config.planeWidth + screenWidth * 0.25) / config.totalDistance;
+    (config.totalDistance - screenWidth * 0.75) / config.totalDistance;
   const offset3 =
-    (config.planeWidth + screenWidth * 0.5) / config.totalDistance;
+    (config.totalDistance - screenWidth * 0.5) / config.totalDistance;
   const offset4 =
-    (config.planeWidth + screenWidth * 0.75) / config.totalDistance;
+    (config.totalDistance - screenWidth * 0.25) / config.totalDistance;
 
   const movementKeyframes = [
     // Start off-screen right
     { transform: `translate(${config.totalDistance}px, -50%)`, offset: 0 },
     // Move across the screen (right-to-left) with vertical wave motion
-    { transform: `translate(${screenWidth}px, -40%)`, offset: offset1 }, // Reached left edge of screen
+    { transform: `translate(${screenWidth}px, -40%)`, offset: offset1 },
     {
       transform: `translate(${screenWidth * 0.75}px, -60%)`,
       offset: offset2,
