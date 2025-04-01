@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
 import type { User } from "better-auth";
-import { ThemeButton } from "./theme-button";
+import { ThemeButton } from "./theme-button/main";
 
 const data = {
   navMain: [

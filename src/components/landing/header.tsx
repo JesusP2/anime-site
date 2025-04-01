@@ -5,7 +5,7 @@ import { buttonVariants } from "../ui/button";
 import { UserDropdown } from "../user-dropdown";
 import { cn } from "@/lib/utils";
 import { navigate } from "astro:transitions/client";
-import { ThemeButton } from "../theme-button";
+import { ThemeButton } from "../theme-button/main";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 export function Header({
