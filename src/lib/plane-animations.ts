@@ -36,9 +36,13 @@ export function createPlaneAnimations(
     ...config,
   };
   if (screenWidth < 768) {
-    mergedConfig.sizeOptions = [50, 100, 150];
+    mergedConfig.sizeOptions = mergedConfig.sizeOptions.filter((size) => {
+      return size <= 150;
+    });
   } else if (screenWidth < 1024) {
-    mergedConfig.sizeOptions = [50, 100, 150, 200];
+    mergedConfig.sizeOptions = mergedConfig.sizeOptions.filter((size) => {
+      return size <= 200;
+    });
   }
   const {
     frameTime,
