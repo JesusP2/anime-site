@@ -2,16 +2,16 @@
 
 ---
 
-<div class="top-[15rem] plane-container plane" />
-<div class="top-[15rem] plane-container plane" />
-<div class="top-[15rem] plane-container plane" />
-<div class="top-[15rem] plane-container plane" />
-<div class="top-[15rem] plane-container plane" />
+<div class="top-[15rem] plane-container plane"></div>
+<div class="top-[15rem] plane-container plane"></div>
+<div class="top-[15rem] plane-container plane"></div>
+<div class="top-[15rem] plane-container plane"></div>
+<div class="top-[15rem] plane-container plane"></div>
 <script>
   import { createPlaneAnimations } from "@/lib/plane-animations";
-  const plane = document.querySelectorAll(".plane");
-  plane.forEach((plane) => {
-    const direction = ['left', 'right'][Math.floor(Math.random() * 2)]
+  const planes = document.querySelectorAll(".plane");
+  planes.forEach((plane) => {
+    const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)];
     createPlaneAnimations(plane, direction);
   });
 </script>

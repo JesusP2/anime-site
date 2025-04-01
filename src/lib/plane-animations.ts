@@ -4,7 +4,6 @@ const screenWidth = window.innerWidth; // Get screen width for responsive moveme
 
 const defaultConfig = {
   planeWidth: 250,
-  totalDistance: screenWidth + 100,
   durationMovement: 13_000,
   frameTime: 1_000 / 24,
   minLoopDelay: 3_000,
@@ -13,7 +12,6 @@ const defaultConfig = {
 
 type Config = {
   planeWidth: number;
-  totalDistance: number;
   durationMovement: number;
   frameTime: number;
   minLoopDelay: number;
@@ -26,13 +24,12 @@ function calculateMaxTop() {
 
 export function createPlaneAnimations(
   plane: HTMLElement | null,
-  direction: "left" | "right",
+  direction: "LTR" | "RTL",
   config?: Partial<Config>,
 ) {
   if (!config) config = defaultConfig;
   const {
     planeWidth,
-    totalDistance,
     durationMovement,
     frameTime,
     minLoopDelay,
@@ -42,23 +39,25 @@ export function createPlaneAnimations(
     ...config,
   };
   const planeHeight = (280 / 810) * planeWidth;
-  // plane can be null but typescript is not removing it for some reason
   if (!plane) return;
   plane.style.height = `${planeHeight}px`;
   plane.style.width = `${planeWidth}px`;
-  if (direction === "left") {
+  // Set initial vertical alignment
+  plane.style.transform = "translateY(-50%)";
+
+  if (direction === "LTR") {
     plane.style.left = `-${planeWidth}px`;
   } else {
-    plane.style.left = `-${planeWidth}px`;
+    plane.style.left = `${screenWidth}px`;
   }
-  const movementKeyframes = getKeyFrames(direction, {
+
+  const movementKeyframes = getKeyFrames(direction === "LTR" ? "RTL" : "LTR", {
     planeWidth,
-    totalDistance,
   });
 
   const movementTiming = {
     duration: durationMovement,
-    iterations: 1, // Run only once per call
+    iterations: 1,
     easing: "linear",
   };
 
@@ -76,7 +75,6 @@ export function createPlaneAnimations(
         setTimeout(runMovement, delay);
       })
       .catch((e) => {
-        // Handle potential errors like animation cancellation
         if (e.name !== "AbortError") {
           console.error("Movement animation failed:", e);
         }
@@ -86,7 +84,7 @@ export function createPlaneAnimations(
   const swapKeyframes = getBladeSwapKeyframes(direction);
   const swapTiming = {
     duration: frameTime * 2,
-    iterations: Infinity, // Keep this running continuously
+    iterations: Infinity,
     easing: "steps(2, start)",
   };
   plane.animate(swapKeyframes, swapTiming);
@@ -95,82 +93,85 @@ export function createPlaneAnimations(
 }
 
 function getKeyFrames(
-  movement: "left" | "right",
-  config: Pick<Config, "planeWidth" | "totalDistance">,
+  movement: "LTR" | "RTL", // "left" = RTL movement, "right" = LTR movement
+  config: Pick<Config, "planeWidth">,
 ) {
-  if (movement === "right") {
-    const offset1 = (screenWidth * 0.25) / config.totalDistance;
-    const offset2 = (screenWidth * 0.5) / config.totalDistance;
-    const offset3 = (screenWidth * 0.75) / config.totalDistance;
-    const offset4 = screenWidth / config.totalDistance;
+  const totalHorizontalDistance = screenWidth + config.planeWidth;
+
+  if (movement === "RTL") {
+    const offset1 =
+      (config.planeWidth + screenWidth * 0.25) / totalHorizontalDistance;
+    const offset2 =
+      (config.planeWidth + screenWidth * 0.5) / totalHorizontalDistance;
+    const offset3 =
+      (config.planeWidth + screenWidth * 0.75) / totalHorizontalDistance;
 
     const movementKeyframes = [
-      // Start off-screen left
-      { transform: `translate(0px, -50%)`, offset: 0 },
-      // Move across the screen with vertical wave motion
       {
-        transform: `translate(${screenWidth * 0.25}px, -40%)`,
+        left: `-${config.planeWidth}px`,
+        transform: "translateY(-50%)",
+        offset: 0,
+      },
+      {
+        left: `${screenWidth * 0.25}px`,
+        transform: "translateY(-40%)",
         offset: offset1,
       },
       {
-        transform: `translate(${screenWidth * 0.5}px, -60%)`,
+        left: `${screenWidth * 0.5}px`,
+        transform: "translateY(-60%)",
         offset: offset2,
       },
       {
-        transform: `translate(${screenWidth * 0.75}px, -40%)`,
+        left: `${screenWidth * 0.75}px`,
+        transform: "translateY(-40%)",
         offset: offset3,
       },
-      {
-        transform: `translate(${screenWidth}px, -50%)`,
-        offset: offset4,
-      },
-      // End off-screen right
-      { transform: `translate(${config.totalDistance}px, -50%)`, offset: 1 },
+      { left: `${screenWidth}px`, transform: "translateY(-50%)", offset: 1 },
     ];
     return movementKeyframes;
   }
-
-  const offset1 = (config.totalDistance - screenWidth) / config.totalDistance;
-  const offset2 =
-    (config.totalDistance - screenWidth * 0.75) / config.totalDistance;
-  const offset3 =
-    (config.totalDistance - screenWidth * 0.5) / config.totalDistance;
-  const offset4 =
-    (config.totalDistance - screenWidth * 0.25) / config.totalDistance;
+  const offset1 = (screenWidth * 0.25) / totalHorizontalDistance; // Distance from screenWidth to 0.75*screenWidth
+  const offset2 = (screenWidth * 0.5) / totalHorizontalDistance; // Distance from screenWidth to 0.5*screenWidth
+  const offset3 = (screenWidth * 0.75) / totalHorizontalDistance; // Distance from screenWidth to 0.25*screenWidth
 
   const movementKeyframes = [
-    // Start off-screen right
-    { transform: `translate(${config.totalDistance}px, -50%)`, offset: 0 },
-    // Move across the screen (right-to-left) with vertical wave motion
-    { transform: `translate(${screenWidth}px, -40%)`, offset: offset1 },
+    { left: `${screenWidth}px`, transform: "translateY(-50%)", offset: 0 },
     {
-      transform: `translate(${screenWidth * 0.75}px, -60%)`,
+      left: `${screenWidth * 0.75}px`,
+      transform: "translateY(-40%)",
+      offset: offset1,
+    },
+    {
+      left: `${screenWidth * 0.5}px`,
+      transform: "translateY(-60%)",
       offset: offset2,
     },
     {
-      transform: `translate(${screenWidth * 0.5}px, -40%)`,
+      left: `${screenWidth * 0.25}px`,
+      transform: "translateY(-40%)",
       offset: offset3,
     },
+    // End off-screen left
     {
-      transform: `translate(${screenWidth * 0.25}px, -50%)`,
-      offset: offset4,
+      left: `-${config.planeWidth}px`,
+      transform: "translateY(-50%)",
+      offset: 1,
     },
-    // End off-screen left (back to original CSS position)
-    { transform: `translate(0px, -50%)`, offset: 1 },
   ];
   return movementKeyframes;
 }
 
-function getBladeSwapKeyframes(direction: "left" | "right") {
-  if (direction === "left") {
+function getBladeSwapKeyframes(direction: "LTR" | "RTL") {
+  if (direction === "LTR") {
     return [
-      { backgroundImage: 'url("/plane-left-1.png")' },
-      { backgroundImage: 'url("/plane-left-2.png")' },
+      { backgroundImage: 'url("/plane-right-1.png")' },
+      { backgroundImage: 'url("/plane-right-2.png")' },
     ];
   }
   return [
-    { backgroundImage: 'url("/plane-right-1.png")' },
-    { backgroundImage: 'url("/plane-right-2.png")' },
+    { backgroundImage: 'url("/plane-left-1.png")' },
+    { backgroundImage: 'url("/plane-left-2.png")' },
   ];
 }
 
