@@ -1,6 +1,9 @@
 import { flushSync } from "react-dom";
 
-export function setTheme(isDarkMode: boolean, cb: (isDarkMode: boolean) => void) {
+export function setTheme(
+  isDarkMode: boolean,
+  cb: (isDarkMode: boolean) => void,
+) {
   cb(isDarkMode);
   document.documentElement.classList[isDarkMode ? "add" : "remove"]("dark");
   const maxAge = 60 * 60 * 24 * 7;
