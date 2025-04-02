@@ -10,8 +10,8 @@ import {
   Trash,
   ArrowLeft,
 } from "@phosphor-icons/react";
-import { useToast } from "@/hooks/use-toast";
-import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,6 @@ export function AccountPage({ user }: { user: User }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
 
   // Show error toast when error state changes
   useEffect(() => {
@@ -255,7 +254,6 @@ function ChangePasswordDialog() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -374,7 +372,6 @@ function SessionManagementDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
 
   const handleSignOutAll = async () => {
     setIsSubmitting(true);
@@ -438,7 +435,6 @@ function DeleteAccountDialog() {
   const [confirmText, setConfirmText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
 
   const handleDelete = async () => {
     if (confirmText !== "delete my account") {

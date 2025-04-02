@@ -7,7 +7,7 @@ import { ResultView } from "./result-view";
 import type { GameState, GameType, Song } from "@/lib/types";
 import { useUser } from "@/hooks/use-user";
 import type { User } from "better-auth";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 type Props = {
   gameType: GameType;
