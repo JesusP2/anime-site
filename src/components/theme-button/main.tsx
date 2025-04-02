@@ -7,7 +7,7 @@ export function ThemeButton(props: { isDarkMode: boolean; onThemeChange?: (isDar
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
 
-  function cb() {
+  function cb(isDarkMode: boolean) {
     props.onThemeChange?.(isDarkMode);
     setIsDarkMode(isDarkMode);
   }
