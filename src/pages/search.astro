@@ -8,6 +8,7 @@ import {
 import { getMangas } from "@/lib/manga/queries";
 import { Grid } from "@/components/grid";
 import type { Entity } from "@/lib/types";
+import { animeEntity } from "@/lib/constants";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 
@@ -17,7 +18,7 @@ const records =
   searchParams.get("searchType") === "Manga"
     ? await getMangas(searchParams, recordsPerPage)
     : await getAnimes(searchParams, recordsPerPage);
-const searchType = (searchParams.get("searchType") ?? "Anime") as Entity;
+const searchType = (searchParams.get("searchType") ?? animeEntity) as Entity;
 ---
 
 <MainLayout title="Anime Search" searchType={searchType} page="Search">

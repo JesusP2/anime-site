@@ -9,6 +9,7 @@ import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 import { navigate } from "astro:transitions/client";
 import type { Entity, EntityStatus } from "@/lib/types";
+import { animeEntity, mangaEntity } from "@/lib/constants";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
@@ -57,8 +58,8 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
       new URL(url),
     ),
   );
-  const [_searchType, setSearchType] = useState<"Anime" | "Manga">(
-    searchType === "Manga" ? "Manga" : "Anime",
+  const [_searchType, setSearchType] = useState<Entity>(
+    searchType === mangaEntity ? mangaEntity : animeEntity,
   );
   const options = _searchType === "Manga" ? mangaFilters : animeFilters;
 
@@ -132,7 +133,7 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
           type="button"
           className="min-w-[4.5rem]"
           onClick={() => {
-            const newType = _searchType === "Anime" ? "Manga" : "Anime";
+            const newType = _searchType === animeEntity ? mangaEntity : animeEntity;
             setSearchType(newType);
           }}
         >

@@ -1,5 +1,5 @@
 import type { components } from "./api/jikan.openapi";
-import type { entityStatuses, entities } from "./constants";
+import type { entityStatuses, animeEntity, mangaEntity } from "./constants";
 
 export type FullAnimeRecord = components["schemas"]["anime_full"] & {
   episodes_info: components["schemas"]["anime_episodes"]["data"];
@@ -61,4 +61,4 @@ export type Song = {
   animeName: string;
 };
 
-export type Entity = (typeof entities)[number];
+export type Entity = typeof animeEntity | typeof mangaEntity;

@@ -3,6 +3,7 @@ import MainLayout from "@/layout/main.astro";
 import { getAnimesWithStatus } from "@/lib/anime/queries";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
+import { animeEntity } from "@/lib/constants";
 
 const entityStatus = "completed";
 const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
@@ -16,7 +17,7 @@ const records = Astro.locals.user
   : ({ success: true, value: { data: [], count: 0 } } as any);
 ---
 
-<MainLayout title="Animes completed" entityStatus={entityStatus} page="Anime">
+<MainLayout title="Animes completed" entityStatus={entityStatus} page={animeEntity}>
   <AnimesWithStatusPage
     url={Astro.url.toString()}
     records={records}
