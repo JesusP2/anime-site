@@ -19,7 +19,7 @@ export function SongAutocomplete({
     animeTitle: string;
   }[];
   onSelectedValueChange: (value: Item) => void;
-    disabled?: boolean;
+  disabled?: boolean;
 }) {
   const cache = useRef<{ [key: string]: Item[] }>({});
   const [items, setItems] = useState<Item[]>([]);

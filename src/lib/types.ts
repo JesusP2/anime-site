@@ -57,8 +57,8 @@ export type GameType = "solo" | "multiplayer";
 export type Song = {
   id: string;
   name: string;
-  url: string,
+  url: string;
   animeName: string;
-}
+};
 
 export type Entity = (typeof entities)[number];

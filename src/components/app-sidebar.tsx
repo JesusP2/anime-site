@@ -123,13 +123,15 @@ const data = {
   ],
 };
 
-type SearchProps = {
-  page: 'Search';
-  searchType: Entity;
-} | {
-  page: Entity;
-  entityStatus: EntityStatus;
-}
+type SearchProps =
+  | {
+      page: "Search";
+      searchType: Entity;
+    }
+  | {
+      page: Entity;
+      entityStatus: EntityStatus;
+    };
 
 export function AppSidebar({
   children,
@@ -197,15 +199,10 @@ export function AppSidebar({
               className="mx-2 data-[orientation=vertical]:h-4"
             />
             {header}
-            <SearchWithFilters
-              url={url}
-              {...searchProps}
-            />
+            <SearchWithFilters url={url} {...searchProps} />
           </div>
         </header>
-        <main className="py-2">
-          {children}
-        </main>
+        <main className="py-2">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

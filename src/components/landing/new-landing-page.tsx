@@ -12,12 +12,13 @@ export function NewLandingPage(props: { isDarkMode: boolean }) {
           Explore a vast collection of anime, manga, and more.
         </h2>
         <div className="flex gap-x-2 max-w-xl w-full">
-          <Input className="bg-background w-full" placeholder="Search for anime, manga..." />
-          <Button variant="outline">
-            Search
-          </Button>
+          <Input
+            className="bg-background w-full"
+            placeholder="Search for anime, manga..."
+          />
+          <Button variant="outline">Search</Button>
         </div>
       </div>
     </section>
-  )
+  );
 }

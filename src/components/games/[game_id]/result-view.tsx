@@ -1,6 +1,13 @@
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Check, Trophy } from "@phosphor-icons/react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export function ResultView({
   quizTitle,
@@ -40,7 +47,9 @@ export function ResultView({
                 <TableRow>
                   <TableHead className="w-12">Rank</TableHead>
                   <TableHead>Player</TableHead>
-                  <TableHead className="text-right"><Check /></TableHead>
+                  <TableHead className="text-right">
+                    <Check />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

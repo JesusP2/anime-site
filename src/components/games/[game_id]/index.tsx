@@ -23,14 +23,18 @@ export function GameManager(props: Props) {
   const [gameState, setGameState] = React.useState<GameState>("waiting");
   const currentUser = useUser(props.host);
   // TODO: get this list from the server
-  const [players, setPlayers] = React.useState<Player[]>(currentUser.isLoading ? [] : [
-    {
-      id: currentUser.user.id,
-      name: currentUser.user.name,
-      isHost: true,
-      score: 0,
-    }
-  ]);
+  const [players, setPlayers] = React.useState<Player[]>(
+    currentUser.isLoading
+      ? []
+      : [
+          {
+            id: currentUser.user.id,
+            name: currentUser.user.name,
+            isHost: true,
+            score: 0,
+          },
+        ],
+  );
   const [results, setResults] = React.useState<
     Array<{ id: string; name: string; score: number }>
   >([]);
@@ -39,16 +43,15 @@ export function GameManager(props: Props) {
     setGameState(props.gameType);
   }
 
-  function handleGameComplete(data: {
-    id: string;
-    score: number;
-  }) {
+  function handleGameComplete(data: { id: string; score: number }) {
     console.log("handleGameComplete");
-    setResults([{
-      id: currentUser.user?.id,
-      name: currentUser.user?.name,
-      score: data.score,
-    }]);
+    setResults([
+      {
+        id: currentUser.user?.id,
+        name: currentUser.user?.name,
+        score: data.score,
+      },
+    ]);
     setGameState("results");
   }
 
@@ -61,10 +64,10 @@ export function GameManager(props: Props) {
           name: currentUser.user.name,
           isHost: true,
           score: 0,
-        }
+        },
       ]);
     }
-  }, [currentUser])
+  }, [currentUser]);
 
   if (currentUser.isLoading) {
     return <div>Loading...</div>;
@@ -78,7 +81,10 @@ export function GameManager(props: Props) {
             quizTitle={props.title}
             quizDescription={props.description}
             players={players}
-            isHost={players.find((p) => p.id === currentUser.user?.id)?.isHost || false}
+            isHost={
+              players.find((p) => p.id === currentUser.user?.id)?.isHost ||
+              false
+            }
             gameType={props.gameType}
             onStartGame={handleStartGame}
           />

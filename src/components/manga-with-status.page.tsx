@@ -33,15 +33,16 @@ export function MangasWithStatusPage({
 
   useEffect(() => {
     if (user) return;
-    getMangasFromLocalDB(entityStatus, _url.searchParams)
-      .then((recordsWithStatus) => {
+    getMangasFromLocalDB(entityStatus, _url.searchParams).then(
+      (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
         }
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
-      })
+      },
+    );
   }, []);
 
   return (

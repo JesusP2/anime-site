@@ -32,15 +32,16 @@ export function AnimesWithStatusPage({
 
   useEffect(() => {
     if (user) return;
-    getAnimesFromLocalDB(entityStatus, _url.searchParams)
-      .then((recordsWithStatus) => {
+    getAnimesFromLocalDB(entityStatus, _url.searchParams).then(
+      (recordsWithStatus) => {
         if (!recordsWithStatus.success) {
           _setRecords({ success: true, value: { data: [], count: 0 } });
           return;
         }
         const { data, count } = recordsWithStatus.value;
         _setRecords({ success: true, value: { data, count } });
-      })
+      },
+    );
   }, []);
 
   return (

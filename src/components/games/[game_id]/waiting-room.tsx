@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UsersThree, Play, Plus, Crown } from "@phosphor-icons/react";
@@ -21,7 +27,6 @@ export function WaitingRoom({
   gameType: GameType;
   onStartGame: () => void;
 }) {
-
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Card className="overflow-hidden relative shadow-lg">
@@ -31,13 +36,18 @@ export function WaitingRoom({
         <CardHeader className="relative z-10 pb-2">
           <div className="flex items-center mb-2">
             <div className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mr-3">
-              <UsersThree weight="fill" className="text-gray-600 dark:text-gray-300 w-6 h-6" />
+              <UsersThree
+                weight="fill"
+                className="text-gray-600 dark:text-gray-300 w-6 h-6"
+              />
             </div>
             <CardTitle className="text-3xl font-bold">{quizTitle}</CardTitle>
           </div>
-          <CardDescription className="text-lg">{quizDescription}</CardDescription>
+          <CardDescription className="text-lg">
+            {quizDescription}
+          </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="relative z-10 space-y-8">
           <div>
             <h2 className="text-xl font-semibold mb-4 flex items-center">
@@ -46,11 +56,11 @@ export function WaitingRoom({
                 {gameType === "multiplayer" ? "Multiplayer" : "Solo"} Game
               </span>
             </h2>
-            
+
             <div className="grid gap-4 mb-6">
               {/* Player cards */}
-              {players.map(player => (
-                <div 
+              {players.map((player) => (
+                <div
                   key={player.id}
                   className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border border-border flex items-center justify-between"
                 >
@@ -74,12 +84,12 @@ export function WaitingRoom({
                 </div>
               ))}
             </div>
-            
+
             {/* Empty slots for multiplayer games */}
             {gameType === "multiplayer" && players.length < 4 && (
               <div className="grid gap-3">
                 {Array.from({ length: 4 - players.length }).map((_, index) => (
-                  <div 
+                  <div
                     key={`empty-${index}`}
                     className="bg-background/50 backdrop-blur-sm rounded-lg p-4 border border-dashed border-muted-foreground/30 flex items-center justify-center h-[76px]"
                   >
@@ -92,14 +102,14 @@ export function WaitingRoom({
               </div>
             )}
           </div>
-          
+
           {/* Start button (only show if user is host) */}
           {isHost && (
             <div className="flex justify-center pt-4">
               <Button
-                size="lg" 
+                size="lg"
                 className={cn(
-                  "text-lg font-medium px-8 py-6 transition-all duration-300 shadow-md hover:scale-105"
+                  "text-lg font-medium px-8 py-6 transition-all duration-300 shadow-md hover:scale-105",
                 )}
                 onClick={onStartGame}
               >
@@ -108,7 +118,7 @@ export function WaitingRoom({
               </Button>
             </div>
           )}
-          
+
           {!isHost && (
             <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
               Waiting for the host to start the game...

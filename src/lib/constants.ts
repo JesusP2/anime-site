@@ -9,4 +9,4 @@ export const entityStatuses = [
   "on-hold",
   "not-started",
 ] as const;
-export const entities = ['Anime', 'Manga'] as const;
+export const entities = ["Anime", "Manga"] as const;

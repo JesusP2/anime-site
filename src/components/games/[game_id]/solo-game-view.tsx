@@ -21,7 +21,7 @@ export function SoloGameView({
   songs: Song[];
   players: Player[];
   currentPlayerId: string;
-  onGameComplete: (props: { id: string; score: number; }) => void;
+  onGameComplete: (props: { id: string; score: number }) => void;
 }) {
   const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -44,7 +44,7 @@ export function SoloGameView({
 
     return () => {
       clearInterval(timer);
-    }
+    };
   }, [isPlaying, timeLeft]);
 
   const handleTimerEnd = () => {
@@ -87,15 +87,26 @@ export function SoloGameView({
     <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full">
       <div className="h-[6rem] text-center py-2">
         {songIdx + 1} / {songs.length} - {timeLeft} - {timeLeft - TIMEOUT}
-        {!isPlaying && <>
-          <h1 className="text-x3 text-center">{currentSong?.animeName}</h1>
-          <h1 className="text-x3 text-center">{currentSong?.name}</h1>
-        </>}
+        {!isPlaying && (
+          <>
+            <h1 className="text-x3 text-center">{currentSong?.animeName}</h1>
+            <h1 className="text-x3 text-center">{currentSong?.name}</h1>
+          </>
+        )}
       </div>
       <div className="w-full h-[calc(100%-20rem)]">
         <div className="relative h-full w-full">
-          <div className={cn('absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center', isPlaying ? 'opacity-100' : 'hidden')}>
-            {(timeLeft - TIMEOUT) === 0 ? <div>The answer is...</div> : (timeLeft - TIMEOUT)}
+          <div
+            className={cn(
+              "absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center",
+              isPlaying ? "opacity-100" : "hidden",
+            )}
+          >
+            {timeLeft - TIMEOUT === 0 ? (
+              <div>The answer is...</div>
+            ) : (
+              timeLeft - TIMEOUT
+            )}
           </div>
           <iframe
             src={embedUrl(currentSong?.url)}

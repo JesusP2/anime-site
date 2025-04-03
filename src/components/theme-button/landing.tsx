@@ -1,7 +1,10 @@
 import { useId, useRef, useState } from "react";
 import { toggleTheme } from "./utils";
 
-export function ThemeButton(props: { isDarkMode: boolean; onThemeChange?: (isDarkMode: boolean) => void; }) {
+export function ThemeButton(props: {
+  isDarkMode: boolean;
+  onThemeChange?: (isDarkMode: boolean) => void;
+}) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
@@ -26,8 +29,7 @@ export function ThemeButton(props: { isDarkMode: boolean; onThemeChange?: (isDar
         className="absolute top-0 size-40 z-50 cursor-pointer"
         htmlFor={id}
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
-      >
-      </label>
+      ></label>
       <div className="bg-[url('/sun.png')] dark:bg-[url('/moon.png')] bg-cover bg-no-repeat absolute top-0 size-40 z-10" />
     </div>
   );

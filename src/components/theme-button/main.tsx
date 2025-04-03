@@ -2,7 +2,10 @@ import { Moon, Sun } from "@phosphor-icons/react";
 import { useId, useRef, useState } from "react";
 import { toggleTheme } from "./utils";
 
-export function ThemeButton(props: { isDarkMode: boolean; onThemeChange?: (isDarkMode: boolean) => void; }) {
+export function ThemeButton(props: {
+  isDarkMode: boolean;
+  onThemeChange?: (isDarkMode: boolean) => void;
+}) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);

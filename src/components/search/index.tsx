@@ -30,9 +30,9 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-      | string[]
-      | string
-      | boolean;
+        | string[]
+        | string
+        | boolean;
     } & { q: string },
   );
 }
@@ -40,18 +40,17 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
 type Props = {
   searchType: Entity;
   url: string;
-} & ({
-  page: 'Search';
-} | {
-  page: Entity;
-  entityStatus: EntityStatus;
-});
+} & (
+  | {
+      page: "Search";
+    }
+  | {
+      page: Entity;
+      entityStatus: EntityStatus;
+    }
+);
 
-export function SearchWithFilters({
-  searchType,
-  url,
-  ...props
-}: Props) {
+export function SearchWithFilters({ searchType, url, ...props }: Props) {
   const [filters, setFilters] = useState(
     setupFilters(
       searchType === "Manga" ? mangaFilters : animeFilters,
@@ -96,8 +95,12 @@ export function SearchWithFilters({
     });
 
     searchParams.set("page", "1");
-    if (props.page !== 'Search') {
-      safeStartViewTransition(() => navigate(`/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`));
+    if (props.page !== "Search") {
+      safeStartViewTransition(() =>
+        navigate(
+          `/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`,
+        ),
+      );
       return;
     }
     const path = searchParams.toString()
@@ -140,11 +143,7 @@ export function SearchWithFilters({
           options={options}
           setFilters={setFilters}
         >
-          <Button
-            type="button"
-            variant="outline"
-            className="whitespace-nowrap"
-          >
+          <Button type="button" variant="outline" className="whitespace-nowrap">
             <Funnel className="w-4 h-4 mr-2" />
             Filters
             {getActiveFiltersCount() > 0 && (
