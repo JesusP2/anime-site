@@ -6,6 +6,9 @@ import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
 import { animeFilters, type AnimeFilters } from "@/lib/anime/filters";
 import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
+import { navigate } from "astro:transitions/client";
+import type { Entity, EntityStatus } from "@/lib/types";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
@@ -27,37 +30,42 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
+      | string[]
+      | string
+      | boolean;
     } & { q: string },
   );
 }
-export function SearchWithFilters({
-  entity,
-  url,
-  title,
-  onSearch,
-}: {
-  entity: "Anime" | "Manga" | "Both";
+
+type Props = {
+  searchType: Entity;
   url: string;
-  title: string;
-  onSearch: (filters: URLSearchParams) => void;
-}) {
+} & ({
+  page: 'Search';
+} | {
+  page: Entity;
+  entityStatus: EntityStatus;
+});
+
+export function SearchWithFilters({
+  searchType,
+  url,
+  ...props
+}: Props) {
   const [filters, setFilters] = useState(
     setupFilters(
-      entity === "Manga" ? mangaFilters : animeFilters,
+      searchType === "Manga" ? mangaFilters : animeFilters,
       new URL(url),
     ),
   );
-  const [searchType, setSearchType] = useState<"Anime" | "Manga">(
-    entity === "Manga" ? "Manga" : "Anime",
+  const [_searchType, setSearchType] = useState<"Anime" | "Manga">(
+    searchType === "Manga" ? "Manga" : "Anime",
   );
-  const options = searchType === "Manga" ? mangaFilters : animeFilters;
+  const options = _searchType === "Manga" ? mangaFilters : animeFilters;
 
   useEffect(() => {
     setFilters(setupFilters(options, new URL(url)));
-  }, [searchType]);
+  }, [_searchType]);
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [key, value]) => {
@@ -86,67 +94,68 @@ export function SearchWithFilters({
         searchParams.append(key as string, value.toString());
       }
     });
-    searchParams.set("searchType", searchType);
-    onSearch(searchParams);
+
+    searchParams.set("page", "1");
+    if (props.page !== 'Search') {
+      safeStartViewTransition(() => navigate(`/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`));
+      return;
+    }
+    const path = searchParams.toString()
+      ? `/search?${searchParams.toString()}`
+      : "/search";
+    safeStartViewTransition(() => navigate(path));
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{title}</h1>
-      </div>
-      <div className="flex flex-col space-y-1.5">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            _onSearch();
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        _onSearch();
+      }}
+    >
+      <div className="flex space-x-2">
+        <Input
+          id="search-query"
+          type="text"
+          placeholder="Enter your search query..."
+          className="flex-grow"
+          defaultValue={filters.q}
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, q: e.target.value }))
+          }
+        />
+        <Button
+          variant="outline"
+          type="button"
+          className="min-w-[4.5rem]"
+          onClick={() => {
+            const newType = _searchType === "Anime" ? "Manga" : "Anime";
+            setSearchType(newType);
           }}
         >
-          <div className="flex space-x-2">
-            <Input
-              id="search-query"
-              type="text"
-              placeholder="Enter your search query..."
-              className="flex-grow"
-              defaultValue={filters.q}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, q: e.target.value }))
-              }
-            />
-            <Button
-              variant="outline"
-              type="button"
-              className="min-w-[4.5rem]"
-              onClick={() => {
-                const newType = searchType === "Anime" ? "Manga" : "Anime";
-                setSearchType(newType);
-              }}
-            >
-              {searchType}
-            </Button>
-            <FilterModal
-              filters={filters}
-              options={options}
-              setFilters={setFilters}
-            >
-              <Button
-                type="button"
-                variant="outline"
-                className="whitespace-nowrap"
-              >
-                <Funnel className="w-4 h-4 mr-2" />
-                Filters
-                {getActiveFiltersCount() > 0 && (
-                  <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
-                    {getActiveFiltersCount()}
-                  </span>
-                )}
-              </Button>
-            </FilterModal>
-            <Button>Search</Button>
-          </div>
-        </form>
+          {_searchType}
+        </Button>
+        <FilterModal
+          filters={filters}
+          options={options}
+          setFilters={setFilters}
+        >
+          <Button
+            type="button"
+            variant="outline"
+            className="whitespace-nowrap"
+          >
+            <Funnel className="w-4 h-4 mr-2" />
+            Filters
+            {getActiveFiltersCount() > 0 && (
+              <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
+                {getActiveFiltersCount()}
+              </span>
+            )}
+          </Button>
+        </FilterModal>
+        <Button>Search</Button>
       </div>
-    </div>
+    </form>
   );
 }

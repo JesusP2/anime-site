@@ -50,6 +50,9 @@ importers:
       '@mateoaranda/jikanjs':
         specifier: ^1.3.1
         version: 1.3.1
+      '@nanostores/react':
+        specifier: ^0.8.4
+        version: 0.8.4(nanostores@0.11.4)(react@19.0.0)
       '@phosphor-icons/react':
         specifier: ^2.1.7
         version: 2.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -197,6 +200,9 @@ importers:
       motion:
         specifier: ^11.18.0
         version: 11.18.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      nanostores:
+        specifier: ^0.11.4
+        version: 0.11.4
       neverthrow:
         specifier: ^8.1.1
         version: 8.1.1
@@ -1727,6 +1733,13 @@ packages:
 
   '@mateoaranda/jikanjs@1.3.1':
     resolution: {integrity: sha512-ZQyoIc5hOeV5MrDBKX9xim6T+FeXy9lNPjJ/+OTDZBPvL3iWp5lGHzepu0nhI91tx4snOBdswhFIkjdrkyNRBg==}
+
+  '@nanostores/react@0.8.4':
+    resolution: {integrity: sha512-EciHSzDXg7GmGODjegGG1VldPEinbAK+12/Uz5+MAdHmxf082Rl6eXqKFxAAu4pZAcr5dNTpv6wMfEe7XacjkQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
+      react: '>=18.0.0'
 
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
@@ -7757,6 +7770,11 @@ snapshots:
     optional: true
 
   '@mateoaranda/jikanjs@1.3.1': {}
+
+  '@nanostores/react@0.8.4(nanostores@0.11.4)(react@19.0.0)':
+    dependencies:
+      nanostores: 0.11.4
+      react: 19.0.0
 
   '@neon-rs/load@0.0.4': {}
 

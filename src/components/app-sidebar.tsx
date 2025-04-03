@@ -22,13 +22,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarRail,
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { buttonVariants } from "./ui/button";
 import type { User } from "better-auth";
 import { ThemeButton } from "./theme-button/main";
+import { Separator } from "./ui/separator";
+import { SearchWithFilters } from "./search";
+import type { Entity, EntityStatus } from "@/lib/types";
 
 const data = {
   navMain: [
@@ -121,23 +123,39 @@ const data = {
   ],
 };
 
+type SearchProps = {
+  page: 'Search';
+  searchType: Entity;
+} | {
+  page: Entity;
+  entityStatus: EntityStatus;
+}
+
 export function AppSidebar({
   children,
+  header,
   user,
   isSidebarOpen,
   isDarkMode,
+  url,
+  title,
+  searchProps,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
+  header?: React.ReactNode;
   isSidebarOpen: boolean;
   isDarkMode: boolean;
   user: User | null;
+  searchProps: SearchProps;
+  url: string;
+  title: string;
 }) {
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
-      <Sidebar collapsible="icon" {...props} variant="floating">
+      <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
-            <SidebarMenuItem className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <SidebarMenuItem>
               <SidebarMenuButton className="truncate font-semibold" asChild>
                 <a href="/">
                   <div className="flex items-center gap-2">
@@ -169,11 +187,25 @@ export function AppSidebar({
             </a>
           )}
         </SidebarFooter>
-        <SidebarRail />
       </Sidebar>
-      <SidebarInset>
-        <SidebarTrigger />
-        {children}
+      <SidebarInset className="border">
+        <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+          <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mx-2 data-[orientation=vertical]:h-4"
+            />
+            {header}
+            <SearchWithFilters
+              url={url}
+              {...searchProps}
+            />
+          </div>
+        </header>
+        <main className="py-2">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

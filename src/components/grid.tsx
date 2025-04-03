@@ -5,14 +5,21 @@ import type { Result } from "@/lib/result";
 import { AnimeCard } from "@/components/anime-card";
 import type { AnimeCardItem, MangaCardItem } from "@/lib/types";
 import { MangaCard } from "./manga-card";
+import { Pagination } from "@/components/pagination";
 
 export function Grid({
   records,
+  url,
+  recordsPerPage,
+  currentPage,
 }: {
   records: Result<
     { data: AnimeCardItem[] | MangaCardItem[]; count: number },
     ActionError
   >;
+  url: string;
+  recordsPerPage: number;
+  currentPage: number;
 }) {
   if (!records.success) {
     return <UnexpectedError />;
@@ -20,14 +27,26 @@ export function Grid({
     return <EmptyItems />;
   }
   return (
-    <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
-      {records.value.data.map((item, idx) =>
-        "rating" in item ? (
-          <AnimeCard idx={idx} key={item.mal_id} data={item} />
-        ) : "chapters" in item ? (
-          <MangaCard idx={idx} data={item} key={item.mal_id} />
-        ) : null,
-      )}
-    </div>
+    <>
+      <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
+        {records.value.data.map((item, idx) =>
+          "rating" in item ? (
+            <AnimeCard idx={idx} key={item.mal_id} data={item} />
+          ) : "chapters" in item ? (
+            <MangaCard idx={idx} data={item} key={item.mal_id} />
+          ) : null,
+        )}
+      </div>
+      <div className="flex-1" />
+      <div className="flex justify-center my-6">
+        <Pagination
+          url={new URL(url)}
+          lastVisiblePage={Math.ceil(
+            (records.success ? records.value.count : 1) / recordsPerPage,
+          )}
+          currentPage={currentPage}
+        />
+      </div>
+    </>
   );
 }

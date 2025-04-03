@@ -2,14 +2,21 @@
 import Head from "@/components/head.astro";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
+import type { Entity, EntityStatus } from "@/lib/types";
 
-interface Props {
+type Props = {
   title: string;
   description?: string;
   image?: string;
   path?: string;
-}
-const { title, description, image, path } = Astro.props;
+} & ({
+  page: "Search";
+  searchType: Entity;
+} | {
+  page: Entity;
+  entityStatus: EntityStatus;
+});
+const { title, description, image, path, ...props } = Astro.props;
 const user = Astro.locals.user;
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
@@ -17,11 +24,15 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={title} description={description} image={image} path={path} />
-  <body>
+  <body class="bg-sidebar">
     <AppSidebar
       isDarkMode={isDarkMode}
       isSidebarOpen={isSidebarOpen}
+      variant="inset"
       user={user}
+      title={title}
+      url={Astro.url.toString()}
+      searchProps={props}
       client:load
     >
       <slot />

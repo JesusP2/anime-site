@@ -18,9 +18,8 @@ const records = Astro.locals.user
   : ({ success: true, value: { data: [], count: 0 } } as any);
 ---
 
-<MainLayout title="Animes watching">
+<MainLayout title="Animes watching" entityStatus={entityStatus} page="Anime">
   <AnimesWithStatusPage
-    title="Animes watching"
     url={Astro.url.toString()}
     records={records}
     entityStatus={entityStatus}
