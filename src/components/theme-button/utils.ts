@@ -33,31 +33,34 @@ export async function toggleTheme(
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   const diagonal = Math.sqrt(screenWidth ** 2 + screenHeight ** 2);
-  const duration = diagonal / 3;
+  const duration = diagonal;
 
-  await document.startViewTransition(() => {
+  const transition = document.startViewTransition(() => {
     flushSync(() => {
       setTheme(isDarkMode, cb);
-      setTimeout(() => {
-        document.querySelectorAll("[data-saved-transition]").forEach((_el) => {
-          const el = _el as HTMLElement;
-          el.style.viewTransitionName = el.dataset.savedTransition as string;
-          delete el.dataset.savedTransition;
-        });
-      }, duration);
     });
-  }).ready;
-  document.documentElement.animate(
-    {
-      clipPath: [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${diagonal}px at ${x}px ${y}px)`,
-      ],
-    },
-    {
-      duration,
-      easing: "ease-in-out",
-      pseudoElement: "::view-transition-new(root)",
-    },
-  );
+  });
+  try {
+    await transition.ready;
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${diagonal}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration,
+        easing: "ease-in-out",
+        pseudoElement: "::view-transition-new(root)",
+      },
+    );
+    await transition.finished;
+  } finally {
+    document.querySelectorAll("[data-saved-transition]").forEach((_el) => {
+      const el = _el as HTMLElement;
+      el.style.viewTransitionName = el.dataset.savedTransition as string;
+      delete el.dataset.savedTransition;
+    });
+  }
 }
