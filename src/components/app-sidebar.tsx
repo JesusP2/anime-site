@@ -125,17 +125,16 @@ const data = {
 
 type SearchProps =
   | {
-      page: "Search";
-      searchType: Entity;
-    }
+    page: "Search";
+    searchType: Entity;
+  }
   | {
-      page: Entity;
-      entityStatus: EntityStatus;
-    };
+    page: Entity;
+    entityStatus: EntityStatus;
+  };
 
 export function AppSidebar({
   children,
-  header,
   user,
   isSidebarOpen,
   isDarkMode,
@@ -144,7 +143,6 @@ export function AppSidebar({
   searchProps,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  header?: React.ReactNode;
   isSidebarOpen: boolean;
   isDarkMode: boolean;
   user: User | null;
@@ -191,14 +189,16 @@ export function AppSidebar({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className="border">
-        <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+        <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-14 flex h-14 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
           <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
             <SidebarTrigger className="-ml-1" />
             <Separator
               orientation="vertical"
               className="mx-2 data-[orientation=vertical]:h-4"
             />
-            {header}
+            <h1 className="mr-4">
+              {title}
+            </h1>
             <SearchWithFilters url={url} {...searchProps} />
           </div>
         </header>

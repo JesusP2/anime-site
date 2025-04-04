@@ -12,12 +12,11 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
   return (
     <a
       href={`/anime/${data.mal_id}`}
-      className="cursor-pointer w-full"
+      className="cursor-pointer w-[27rem]"
       style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
     >
-      <MagicCard
-        className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto"
-        gradientColor={"#A9A9A955"}
+      <div
+        className="h-48 w-[27rem] shadow-2xl overflow-hidden mx-auto border rounded-xl"
       >
         <article className="p-[0.5rem] flex gap-x-[1rem]">
           <section
@@ -117,7 +116,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
             </section>
           </div>
         </article>
-      </MagicCard>
+      </div>
     </a>
   );
 }

@@ -117,12 +117,12 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
         _onSearch();
       }}
     >
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 max-w-4xl w-full">
         <Input
           id="search-query"
           type="text"
           placeholder="Enter your search query..."
-          className="flex-grow"
+          className="max-w-4xl w-full"
           defaultValue={filters.q}
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, q: e.target.value }))
