@@ -8,10 +8,11 @@ import {
 } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { FixedSizeList as List } from "react-window";
 import { useCallback } from "react";
+import { bookAnimation } from "@/lib/book-animations";
 
 export function Pagination({
   currentPage,
@@ -52,11 +53,11 @@ export function Pagination({
             {tab === "..." ? (
               <Select
                 onValueChange={(value) =>
-                  (window.location.href = createLink(
-                    url,
-                    value,
-                    lastVisiblePage,
-                  ))
+                (window.location.href = createLink(
+                  url,
+                  value,
+                  lastVisiblePage,
+                ))
                 }
               >
                 <SelectPrimitive.Trigger
@@ -87,10 +88,12 @@ export function Pagination({
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext
-            isActive={currentPage < lastVisiblePage}
-            href={createLink(url, currentPage + 1, lastVisiblePage)}
-          />
+          <Button
+            variant="outline"
+            onClick={() => bookAnimation(createLink(url, currentPage + 1, lastVisiblePage))}
+          >
+            Next
+          </Button>
         </PaginationItem>
       </PaginationContent>
     </BasePagination>
