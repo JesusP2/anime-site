@@ -1,0 +1,22 @@
+CREATE INDEX "animeYearIndex" ON "anime" USING btree ("year");--> statement-breakpoint
+CREATE INDEX "animeSeasonIndex" ON "anime" USING btree ("season");--> statement-breakpoint
+CREATE INDEX "animeStatusIndex" ON "anime" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "animeTypeIndex" ON "anime" USING btree ("type");--> statement-breakpoint
+CREATE INDEX "animeRatingIndex" ON "anime" USING btree ("rating");--> statement-breakpoint
+CREATE INDEX "animeGenresIndex" ON "anime" USING btree ("genres");--> statement-breakpoint
+CREATE INDEX "animeEpisodesByIndex" ON "anime" USING btree ("episodes");--> statement-breakpoint
+CREATE INDEX "animeScoreByIndex" ON "anime" USING btree ("score");--> statement-breakpoint
+CREATE INDEX "animeScoredByIndex" ON "anime" USING btree ("scored_by");--> statement-breakpoint
+CREATE INDEX "animeRankIndex" ON "anime" USING btree ("rank");--> statement-breakpoint
+CREATE INDEX "animePopularityIndex" ON "anime" USING btree ("popularity");--> statement-breakpoint
+CREATE INDEX "animeFavoritesIndex" ON "anime" USING btree ("favorites");--> statement-breakpoint
+CREATE INDEX "mangaStatusIndex" ON "manga" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "mangaTypeIndex" ON "manga" USING btree ("type");--> statement-breakpoint
+CREATE INDEX "mangaGenresIndex" ON "manga" USING btree ("genres");--> statement-breakpoint
+CREATE INDEX "mangaChaptersIndex" ON "manga" USING btree ("chapters");--> statement-breakpoint
+CREATE INDEX "mangaVolumesIndex" ON "manga" USING btree ("volumes");--> statement-breakpoint
+CREATE INDEX "mangaScoreByIndex" ON "manga" USING btree ("score");--> statement-breakpoint
+CREATE INDEX "mangaScoredByIndex" ON "manga" USING btree ("scored_by");--> statement-breakpoint
+CREATE INDEX "mangaRankIndex" ON "manga" USING btree ("rank");--> statement-breakpoint
+CREATE INDEX "mangaPopularityIndex" ON "manga" USING btree ("popularity");--> statement-breakpoint
+CREATE INDEX "mangaFavoritesIndex" ON "manga" USING btree ("favorites");

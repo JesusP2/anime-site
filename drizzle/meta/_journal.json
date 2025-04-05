@@ -99,6 +99,13 @@
       "when": 1742193098500,
       "tag": "0013_dizzy_nekra",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1743837657424,
+      "tag": "0014_shiny_magneto",
+      "breakpoints": true
     }
   ]
 }
