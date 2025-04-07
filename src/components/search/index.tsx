@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { FilterModal } from "./modal";
 import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
@@ -31,9 +31,9 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
+      | string[]
+      | string
+      | boolean;
     } & { q: string },
   );
 }
@@ -42,34 +42,34 @@ type Props = {
   searchType: Entity;
   url: string;
 } & (
-  | {
+    | {
       page: "Search";
     }
-  | {
+    | {
       page: Entity;
       entityStatus: EntityStatus;
     }
-);
+  );
 
-export function SearchWithFilters({ searchType, url, ...props }: Props) {
+export function SearchWithFilters(props: Props) {
   const [filters, setFilters] = useState(
     setupFilters(
-      searchType === "Manga" ? mangaFilters : animeFilters,
-      new URL(url),
+      props.searchType === "Manga" ? mangaFilters : animeFilters,
+      new URL(props.url),
     ),
   );
-  const [_searchType, setSearchType] = useState<Entity>(
-    searchType === mangaEntity ? mangaEntity : animeEntity,
+  const [searchType, setSearchType] = useState<Entity>(
+    props.searchType === mangaEntity ? mangaEntity : animeEntity,
   );
-  const options = _searchType === "Manga" ? mangaFilters : animeFilters;
+  const options = searchType === "Manga" ? mangaFilters : animeFilters;
 
   useEffect(() => {
-    setFilters(setupFilters(options, new URL(url)));
-  }, [_searchType]);
+    setFilters(setupFilters(options, new URL(props.url)));
+  }, [searchType]);
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [key, value]) => {
-      if (key === "sort" || key === "q") {
+      if (key === "sort" || key === "q" || key === 'sfw') {
         return acc;
       }
       if (key === "orderBy") {
@@ -85,7 +85,7 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
       return acc;
     }, 0);
   };
-  function _onSearch() {
+  function createSearchLink() {
     const searchParams = new URLSearchParams();
     objectEntries(filters).forEach(([key, value]) => {
       if (Array.isArray(value)) {
@@ -96,26 +96,27 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
     });
 
     searchParams.set("page", "1");
-    if (props.page !== "Search") {
-      safeStartViewTransition(() =>
-        navigate(
-          `/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`,
-        ),
-      );
-      return;
+    if (props.page === 'Search') {
+      if (searchType !== 'Anime') {
+        searchParams.set("searchType", searchType);
+      }
+      const path = searchParams.toString()
+        ? `/search?${searchParams.toString()}`
+        : "/search";
+      return path;
     }
-    const path = searchParams.toString()
-      ? `/search?${searchParams.toString()}`
-      : "/search";
-    safeStartViewTransition(() => navigate(path));
+    return `/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`;
+  }
+
+  function onSearch() {
+    const link = createSearchLink();
+    safeStartViewTransition(async () => navigate(link));
   }
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        _onSearch();
-      }}
+      onSubmit={onSearch}
+      className="max-4-xl w-full"
     >
       <div className="flex space-x-2 max-w-4xl w-full">
         <Input
@@ -133,11 +134,11 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
           type="button"
           className="min-w-[4.5rem]"
           onClick={() => {
-            const newType = _searchType === animeEntity ? mangaEntity : animeEntity;
+            const newType = searchType === animeEntity ? mangaEntity : animeEntity;
             setSearchType(newType);
           }}
         >
-          {_searchType}
+          {searchType}
         </Button>
         <FilterModal
           filters={filters}
@@ -154,7 +155,9 @@ export function SearchWithFilters({ searchType, url, ...props }: Props) {
             )}
           </Button>
         </FilterModal>
-        <Button>Search</Button>
+        <a href={createSearchLink()} className={buttonVariants()} data-astro-prefetch="hover">
+          Search
+        </a>
       </div>
     </form>
   );

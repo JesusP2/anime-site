@@ -1,12 +1,18 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 
 import node from "@astrojs/node";
 
 export default defineConfig({
   output: "server",
+  prefetch: {
+    defaultStrategy: "hover",
+  },
+  experimental: {
+    clientPrerender: true,
+  },
   env: {
     validateSecrets: true,
     schema: {
@@ -50,6 +56,7 @@ export default defineConfig({
         access: "public",
       }),
       POSTGRES_URL: envField.string({ context: "server", access: "public" }),
+      REDIS_URL: envField.string({ context: "server", access: "public" }),
       RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       EMAIL_FROM: envField.string({ context: "server", access: "public" }),
       BASE_URL: envField.string({ context: "client", access: "public" }),
@@ -63,7 +70,7 @@ export default defineConfig({
     mode: "standalone",
   }),
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 4321,
   },
   vite: {

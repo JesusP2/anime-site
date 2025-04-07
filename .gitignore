@@ -32,3 +32,4 @@ chroma.log
 .cursor
 deploy.sh
 docker-compose.yaml
+redis.conf

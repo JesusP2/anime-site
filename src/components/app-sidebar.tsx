@@ -196,7 +196,7 @@ export function AppSidebar({
               orientation="vertical"
               className="mx-2 data-[orientation=vertical]:h-4"
             />
-            <h1 className="mr-4">
+            <h1 className="mr-4 whitespace-nowrap">
               {title}
             </h1>
             <SearchWithFilters url={url} {...searchProps} />
