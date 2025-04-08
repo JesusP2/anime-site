@@ -12,7 +12,7 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
   return (
     <a
       href={`/manga/${data.mal_id}`}
-      className="cursor-pointer w-full"
+      className="cursor-pointer w-full mx-auto"
       style={{ viewTransitionName: `manga-card-${data.mal_id}` }}
     >
       <MagicCard

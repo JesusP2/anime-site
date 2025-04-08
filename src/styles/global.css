@@ -204,7 +204,7 @@ body {
 }
 
 .auto-fill-grid {
-  grid-template-columns: repeat(auto-fill, minmax(430px, 10fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 10fr));
 }
 
 .staff-auto-fill-grid {
