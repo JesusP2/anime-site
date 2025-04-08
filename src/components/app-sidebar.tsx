@@ -9,6 +9,7 @@ import {
   Book,
   SignIn,
   MusicNote,
+  ArrowLeft,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -25,7 +26,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import type { User } from "better-auth";
 import { ThemeButton } from "./theme-button/main";
 import { Separator } from "./ui/separator";
@@ -129,6 +130,9 @@ type SearchProps =
     searchType: Entity;
   }
   | {
+    page: "mal_id";
+  }
+  | {
     page: Entity;
     entityStatus: EntityStatus;
   };
@@ -196,6 +200,11 @@ export function AppSidebar({
               orientation="vertical"
               className="mx-2 data-[orientation=vertical]:h-4"
             />
+            {searchProps.page === 'mal_id' && (
+              <Button variant="ghost" onClick={() => window.history.back()}>
+                <ArrowLeft className="size-4" weight="bold" />
+              </Button>
+            )}
             <h1 className="mr-4 whitespace-nowrap">
               {title}
             </h1>

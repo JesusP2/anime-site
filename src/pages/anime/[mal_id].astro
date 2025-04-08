@@ -15,7 +15,7 @@ Astro.response.headers.set("Cache-Control", "public, max-age=86400");
 Astro.response.headers.set("CDN-Cache-Control", "public, max-age=86400");
 ---
 
-<MainLayout page="Search" searchType="Anime" title={`Anisearch - ${animeTitle}` || ''} description={animeTitle || ''} image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>
+<MainLayout page="mal_id" title={`Anisearch - ${animeTitle}` || ''} description={animeTitle || ''} image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>
   {
     anime.success ? (
       <AnimeDetailsPage anime={anime.value} user={Astro.locals.user} client:load />

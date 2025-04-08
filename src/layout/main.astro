@@ -9,13 +9,19 @@ type Props = {
   description?: string;
   image?: string;
   path?: string;
-} & ({
-  page: "Search";
-  searchType: Entity;
-} | {
-  page: Entity;
-  entityStatus: EntityStatus;
-});
+} & (
+  | {
+      page: "Search";
+      searchType: Entity;
+    }
+  | {
+      page: "mal_id";
+    }
+  | {
+      page: Entity;
+      entityStatus: EntityStatus;
+    }
+);
 const { title, description, image, path, ...props } = Astro.props;
 const user = Astro.locals.user;
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";

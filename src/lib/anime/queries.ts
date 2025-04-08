@@ -33,7 +33,7 @@ export async function getAnime(
   mal_id: number,
   userId: string | undefined,
 ): Promise<
-  Result<FullAnimeRecord & { entityStatus: EntityStatus | null }, ActionError>
+  Result<FullAnimeRecord & { entityStatus: EntityStatus | null; embedding: number[] }, ActionError>
 > {
   try {
     const selectKeys = {

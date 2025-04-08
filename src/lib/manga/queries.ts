@@ -30,7 +30,7 @@ export async function getManga(
   mal_id: number,
   userId: string | undefined,
 ): Promise<
-  Result<FullMangaRecord & { entityStatus: EntityStatus | null }, ActionError>
+  Result<FullMangaRecord & { entityStatus: EntityStatus | null; embedding: number[] }, ActionError>
 > {
   try {
     const selectKeys = {

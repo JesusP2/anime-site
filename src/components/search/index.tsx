@@ -39,11 +39,14 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
 }
 
 type Props = {
-  searchType: Entity;
   url: string;
 } & (
     | {
       page: "Search";
+      searchType: Entity;
+    }
+    | {
+      page: "mal_id";
     }
     | {
       page: Entity;
@@ -54,14 +57,14 @@ type Props = {
 export function SearchWithFilters(props: Props) {
   const [filters, setFilters] = useState(
     setupFilters(
-      props.searchType === "Manga" ? mangaFilters : animeFilters,
+      'searchType' in props ? props.searchType === mangaEntity ? mangaFilters : animeFilters : animeFilters,
       new URL(props.url),
     ),
   );
   const [searchType, setSearchType] = useState<Entity>(
-    props.searchType === mangaEntity ? mangaEntity : animeEntity,
+    'searchType' in props ? props.searchType === mangaEntity ? mangaEntity : animeEntity : animeEntity,
   );
-  const options = searchType === "Manga" ? mangaFilters : animeFilters;
+  const options = searchType === mangaEntity ? mangaFilters : animeFilters;
 
   useEffect(() => {
     setFilters(setupFilters(options, new URL(props.url)));
@@ -96,7 +99,7 @@ export function SearchWithFilters(props: Props) {
     });
 
     searchParams.set("page", "1");
-    if (props.page === 'Search') {
+    if (props.page === 'Search' || props.page === 'mal_id') {
       if (searchType !== 'Anime') {
         searchParams.set("searchType", searchType);
       }

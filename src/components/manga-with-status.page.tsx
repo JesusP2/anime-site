@@ -24,7 +24,6 @@ export function MangasWithStatusPage({
   >;
   entityStatus: EntityStatus;
   user: User | null;
-  title: string;
 }) {
   const _url = new URL(url);
   const [_records, _setRecords] = useState(records);

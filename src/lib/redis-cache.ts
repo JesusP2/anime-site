@@ -19,6 +19,7 @@ export function cache<
     await client.set(key, JSON.stringify(result.value), {
       EX: 60 * 60 * 24 * 7,
     });
+    await client.disconnect();
     return result;
   };
   return newFn as T;

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "typechek": "astro check",
     "preview": "wrangler pages dev ./dist --port 4321",
     "astro": "astro",
     "db:generate": "drizzle-kit generate",
@@ -20,6 +21,7 @@
     "ws": "tsx --watch src/server/index.ts"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.4",
     "@astrojs/cloudflare": "^12.2.2",
     "@astrojs/node": "^9.0.2",
     "@astrojs/react": "^4.1.3",
