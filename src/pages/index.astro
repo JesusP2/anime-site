@@ -11,6 +11,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
   <body
     class="bg-[url('/landing-background-light.jpg')] dark:bg-[url('/landing-background-night.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
+    <div class="texture"></div>
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-30">
       <Planes />
     </div>

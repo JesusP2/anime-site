@@ -6,6 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
 import { gameActions } from "./games";
+import { getConnectionString } from "@/lib/utils";
 
 export const server = {
   games: gameActions,
@@ -24,7 +25,7 @@ export const server = {
           message: "Unauthorized",
         });
       }
-      const db = getDb();
+      const db = getDb(getConnectionString(context));
       await db
         .insert(trackedEntityTable)
         .values({

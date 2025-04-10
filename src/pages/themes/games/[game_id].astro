@@ -2,9 +2,10 @@
 import { GameManager } from "@/components/games/[game_id]/index";
 import MainLayout from "@/layout/main.astro";
 import { getGameInfo } from "@/lib/games/queries";
+import { getConnectionString } from "@/lib/utils";
 
 const gameId = Astro.params.game_id as string;
-const gameInfo = await getGameInfo(gameId);
+const gameInfo = await getGameInfo(gameId, getConnectionString(Astro));
 if (!gameInfo.success) {
 	return Astro.redirect("/");
 }

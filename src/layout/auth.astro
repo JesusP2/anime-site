@@ -7,26 +7,31 @@ interface Props {
 const { title, description } = Astro.props;
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
+
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={title} description={description} />
-  <main class="grid place-items-center h-screen">
-    <div
-      class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full"
-    >
-      <div class="flex flex-col space-y-1.5 p-6">
-        <div
-          class="font-semibold leading-none tracking-tight text-3xl text-center"
-        >
-          <slot name="card-title" />
+  <body class="bg-sidebar">
+    <div class="texture"></div>
+    <slot name="video-forward" />
+    <slot name="video-backward" />
+    <main class="grid place-items-center h-screen z-10 relative">
+      <div
+        class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full"
+      >
+        <div class="flex flex-col space-y-1.5 p-6">
+          <div
+            class="font-semibold leading-none tracking-tight text-3xl text-center"
+          >
+            <slot name="card-title" />
+          </div>
+          <div class="text-sm text-muted-foreground text-center">
+            <slot name="card-description" />
+          </div>
         </div>
-        <div class="text-sm text-muted-foreground text-center">
-          <slot name="card-description" />
+        <div class="p-6 pt-0">
+          <slot name="card-content" />
         </div>
       </div>
-      <div class="p-6 pt-0">
-        <slot name="card-content" />
-      </div>
-    </div>
-  </main>
-  <html></html>
+    </main>
+  </body>
 </html>

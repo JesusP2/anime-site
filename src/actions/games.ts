@@ -13,6 +13,7 @@ import {
 } from "@/lib/db/schemas";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as schema from "@/lib/db/schemas";
+import { getConnectionString } from "@/lib/utils";
 
 function getThemePoolNumber(
   difficulty: Omit<z.infer<typeof createQuizSchema>["difficulty"], "custom">,
@@ -68,8 +69,8 @@ export const gameActions = {
   createQuiz: defineAction({
     accept: "json",
     input: createQuizSchema,
-    handler: async (data) => {
-      const db = getDb();
+    handler: async (data, context) => {
+      const db = getDb(getConnectionString(context));
       db;
       const quizId = ulid();
       if (data.isRandom) {
@@ -123,8 +124,8 @@ export const gameActions = {
       quizId: z.string().ulid(),
       gameType: z.enum(["solo", "multiplayer"]),
     }),
-    handler: async (data) => {
-      const db = getDb();
+    handler: async (data, context) => {
+      const db = getDb(getConnectionString(context));
       const { quizId } = data;
 
       const gameId = ulid();

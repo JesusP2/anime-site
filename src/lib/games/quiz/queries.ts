@@ -6,10 +6,16 @@ import {
   quizToThemeTable,
   themeTable,
 } from "@/lib/db/schemas";
+import { getConnectionString } from "@/lib/utils";
+import type { APIContext } from "astro";
+import type { ActionAPIContext } from "astro:actions";
 import { eq } from "drizzle-orm";
 
-export async function getQuizInfo(quizId: string) {
-  const db = getDb();
+export async function getQuizInfo(
+  quizId: string,
+  context: APIContext | ActionAPIContext,
+) {
+  const db = getDb(getConnectionString(context));
   const result = await db
     .select({
       quizTitle: quizTable.title,
@@ -31,8 +37,11 @@ export async function getQuizInfo(quizId: string) {
   return quizInfo;
 }
 
-export async function getQuizCompleteInfo(quizId: string) {
-  const db = getDb();
+export async function getQuizCompleteInfo(
+  quizId: string,
+  context: APIContext | ActionAPIContext,
+) {
+  const db = getDb(getConnectionString(context));
   const result = await db
     .select({
       quizTitle: quizTable.title,

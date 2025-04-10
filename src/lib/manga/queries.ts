@@ -11,6 +11,7 @@ import { err, ok, type Result } from "../result";
 import { mapScore } from "../utils/map-score";
 import { getSimilarity } from "../db/queries";
 import { getEmbedding } from "../semantic-search";
+import { logger } from "../logger";
 
 const mangaCardKeys = {
   titles: mangaTable.titles,
@@ -29,8 +30,15 @@ const mangaCardKeys = {
 export async function getManga(
   mal_id: number,
   userId: string | undefined,
+  connectionString: string,
 ): Promise<
-  Result<FullMangaRecord & { entityStatus: EntityStatus | null; embedding: number[] }, ActionError>
+  Result<
+    FullMangaRecord & {
+      entityStatus: EntityStatus | null;
+      embedding: number[] | null;
+    },
+    ActionError
+  >
 > {
   try {
     const selectKeys = {
@@ -53,7 +61,7 @@ export async function getManga(
       demographics: mangaTable.demographics,
       embedding: mangaTable.embedding,
     } as const;
-    const db = getDb();
+    const db = getDb(connectionString);
     const [manga] = await db
       .select({
         ...selectKeys,
@@ -77,8 +85,10 @@ export async function getManga(
         message: "Could not get manga",
       }),
     );
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error('error getting manga', error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -91,6 +101,7 @@ export async function getManga(
 export async function getMangas(
   searchParams: URLSearchParams,
   recordsPerPage: number,
+  connectionString: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -102,7 +113,7 @@ export async function getMangas(
     mangaTable,
   );
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -148,8 +159,10 @@ export async function getMangas(
       data: mangaRecords,
       count: mangaCount[0]?.count ?? 0,
     });
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error('error getting mangas', error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -164,6 +177,7 @@ export async function getMangasWithStatus(
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
+  connectionString: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -180,7 +194,7 @@ export async function getMangasWithStatus(
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -238,8 +252,10 @@ export async function getMangasWithStatus(
       data: mangaRecords,
       count: mangaCount[0]?.count ?? 0,
     });
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(`error getting mangas with status: ${entityStatus}`, error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -252,6 +268,7 @@ export async function getMangasWithStatus(
 export async function getCarouselMangas(
   searchParams: URLSearchParams,
   recordsPerPage: number,
+  connectionString: string,
 ): Promise<
   Result<
     Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[],
@@ -269,7 +286,7 @@ export async function getCarouselMangas(
     mangaTable,
   );
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const query = db
       .select({
         mal_id: mangaTable.mal_id,
@@ -286,8 +303,10 @@ export async function getCarouselMangas(
     } else {
       return ok(await query);
     }
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(`error getting carousel mangas`, error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",

@@ -2,8 +2,7 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
-
-import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
   output: "server",
@@ -55,20 +54,20 @@ export default defineConfig({
         context: "server",
         access: "public",
       }),
-      POSTGRES_URL: envField.string({ context: "server", access: "public" }),
       REDIS_URL: envField.string({ context: "server", access: "public" }),
+      REDIS_TOKEN: envField.string({ context: "server", access: "public" }),
       RESEND_API_KEY: envField.string({ context: "server", access: "public" }),
       EMAIL_FROM: envField.string({ context: "server", access: "public" }),
       BASE_URL: envField.string({ context: "client", access: "public" }),
+      AXIOM_DATASET: envField.string({ context: "client", access: "public" }),
+      AXIOM_TOKEN: envField.string({ context: "client", access: "public" }),
     },
   },
   integrations: [react()],
   image: {
     domains: ["cdn.myanimelist.net"],
   },
-  adapter: node({
-    mode: "standalone",
-  }),
+  adapter: cloudflare(),
   server: {
     host: "0.0.0.0",
     port: 4321,

@@ -1,5 +1,6 @@
 import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
+import { getConnectionString } from "./lib/utils";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // NOTE: move this to the db
@@ -15,7 +16,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.season = data[0].season;
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
-  const auth = getAuth();
+  const auth = getAuth(context);
   const isAuthed = await auth.api.getSession({
     headers: context.request.headers,
   });

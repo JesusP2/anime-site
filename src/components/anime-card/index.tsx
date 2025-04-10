@@ -12,7 +12,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
   return (
     <a
       href={`/anime/${data.mal_id}`}
-      className="cursor-pointer w-[27rem]"
+      className="cursor-pointer w-[27rem] mx-auto"
       style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
     >
       <div

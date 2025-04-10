@@ -13,9 +13,12 @@ import { sendEmail } from "./email";
 import { magicLinkTemplate } from "./email/templates/magic-link";
 import { forgotPasswordTemplate } from "./email/templates/otp";
 import { BASE_URL } from "astro:env/client";
+import type { APIContext } from "astro";
+import type { ActionAPIContext } from "astro:actions";
+import { getConnectionString } from "./utils";
 
-export function getAuth() {
-  const db = getDb();
+export function getAuth(context: APIContext | ActionAPIContext) {
+  const db = getDb(getConnectionString(context));
   const auth = betterAuth({
     plugins: [
       username(),

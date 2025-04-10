@@ -13,6 +13,7 @@ import { cache } from "@/lib/redis-cache";
 import { sanitizeSearchParams } from "@/lib/utils/sanitize-searchparams";
 import { mangaFilters } from "@/lib/manga/filters";
 import { animeFilters } from "@/lib/anime/filters";
+import { getConnectionString } from "@/lib/utils";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 
@@ -22,13 +23,13 @@ const fn =
   searchParams.get("searchType") === "Manga"
     ? cache(getMangas, (searchParams) => {
         const key = sanitizeSearchParams(searchParams, mangaFilters).toString();
-        return `anime.v1.${key}`;
+        return `manga.v1.${key}`;
       })
     : cache(getAnimes, (searchParams) => {
         const key = sanitizeSearchParams(searchParams, animeFilters).toString();
-        return `manga.v1.${key}`;
+        return `anime.v1.${key}`;
       });
-const records = await fn(searchParams, recordsPerPage);
+const records = await fn(searchParams, recordsPerPage, getConnectionString(Astro));
 const searchType = (searchParams.get("searchType") ?? animeEntity) as Entity;
 ---
 

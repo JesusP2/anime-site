@@ -1,16 +1,7 @@
-import { createClient, type RedisClientType } from "redis";
-import { REDIS_URL } from "astro:env/server";
+import { Redis } from "@upstash/redis/cloudflare";
+import { REDIS_URL, REDIS_TOKEN } from "astro:env/server";
 
-declare global {
-  var redis: RedisClientType<any>;
-}
-export async function getRedis() {
-  const client = await createClient({
-    url: REDIS_URL,
-  })
-    .on("error", (err) => {
-      console.error("Redis error:", err);
-    })
-    .connect();
-  return client;
-}
+export const redis = new Redis({
+  url: REDIS_URL,
+  token: REDIS_TOKEN,
+});

@@ -1,4 +1,4 @@
-import { count, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getDb } from "../db/pool";
 import {
   animeTable,
@@ -8,11 +8,13 @@ import {
   themeTable,
 } from "../db/schemas";
 import { err, ok } from "../result";
-import { ActionError } from "astro:actions";
+import { ActionError, type ActionAPIContext } from "astro:actions";
 import { getRecordTitle } from "../anime-title";
+import type { APIContext } from "astro";
+import { getConnectionString } from "../utils";
 
-export async function getGameInfo(gameId: string) {
-  const db = getDb();
+export async function getGameInfo(gameId: string, context: APIContext | ActionAPIContext) {
+  const db = getDb(getConnectionString(context));
   const [_gameInfo] = await db
     .select({
       quizId: quizTable.id,

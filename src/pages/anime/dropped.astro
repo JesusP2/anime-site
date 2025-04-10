@@ -4,6 +4,7 @@ import { getAnimesWithStatus } from "@/lib/anime/queries";
 import { AnimesWithStatusPage } from "@/components/anime-with-status.page";
 import { getRecordsPerPage } from "@/lib/utils/records-per-page";
 import { animeEntity } from "@/lib/constants";
+import { getConnectionString } from "@/lib/utils";
 
 const entityStatus = "dropped";
 const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
@@ -13,11 +14,16 @@ const records = Astro.locals.user
       new URLSearchParams(Astro.url.searchParams),
       recordsPerPage,
       Astro.locals.user.id,
+      getConnectionString(Astro),
     )
   : ({ success: true, value: { data: [], count: 0 } } as any);
 ---
 
-<MainLayout title="Animes dropped" entityStatus={entityStatus} page={animeEntity}>
+<MainLayout
+  title="Animes dropped"
+  entityStatus={entityStatus}
+  page={animeEntity}
+>
   <AnimesWithStatusPage
     url={Astro.url.toString()}
     records={records}

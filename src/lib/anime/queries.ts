@@ -11,6 +11,7 @@ import { err, ok, type Result } from "../result";
 import { mapScore } from "../utils/map-score";
 import { getSimilarity } from "../db/queries";
 import { getEmbedding } from "../semantic-search";
+import { logger } from "../logger";
 
 const animeCardKeys = {
   titles: animeTable.titles,
@@ -32,8 +33,15 @@ const animeCardKeys = {
 export async function getAnime(
   mal_id: number,
   userId: string | undefined,
+  connectionString: string,
 ): Promise<
-  Result<FullAnimeRecord & { entityStatus: EntityStatus | null; embedding: number[] }, ActionError>
+  Result<
+    FullAnimeRecord & {
+      entityStatus: EntityStatus | null;
+      embedding: number[] | null;
+    },
+    ActionError
+  >
 > {
   try {
     const selectKeys = {
@@ -66,7 +74,7 @@ export async function getAnime(
       embedding: animeTable.embedding,
     } as const;
     if (userId) {
-      const db = getDb();
+      const db = getDb(connectionString);
       const [anime] = await db
         .select({
           ...selectKeys,
@@ -91,7 +99,7 @@ export async function getAnime(
         }),
       );
     }
-    const db = getDb();
+    const db = getDb(connectionString);
     const [anime] = await db
       .select({
         ...selectKeys,
@@ -115,8 +123,10 @@ export async function getAnime(
         message: "Could not get anime",
       }),
     );
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error("error getting anime", error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -129,6 +139,7 @@ export async function getAnime(
 export async function getAnimes(
   searchParams: URLSearchParams,
   recordsPerPage: number,
+  connectionString: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -140,7 +151,7 @@ export async function getAnimes(
     animeTable,
   );
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const queryCount = db
       .select({ count: count() })
       .from(animeTable)
@@ -186,8 +197,10 @@ export async function getAnimes(
       data: animeRecords,
       count: animeCount[0]?.count ?? 0,
     });
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error("error getting animes", error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -202,6 +215,7 @@ export async function getAnimesWithStatus(
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
+  connectionString: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -218,7 +232,7 @@ export async function getAnimesWithStatus(
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const queryCount = db
       .select({ count: count() })
       .from(animeTable)
@@ -276,8 +290,10 @@ export async function getAnimesWithStatus(
       data: animeRecords,
       count: animeCount[0]?.count ?? 0,
     });
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(`error getting anime with status: ${entityStatus}`, error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",
@@ -290,6 +306,7 @@ export async function getAnimesWithStatus(
 export async function getCarouselAnimes(
   searchParams: URLSearchParams,
   recordsPerPage: number,
+  connectionString: string,
 ): Promise<
   Result<
     Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[],
@@ -307,7 +324,7 @@ export async function getCarouselAnimes(
     animeTable,
   );
   try {
-    const db = getDb();
+    const db = getDb(connectionString);
     const query = db
       .select({
         mal_id: animeTable.mal_id,
@@ -324,8 +341,10 @@ export async function getCarouselAnimes(
     } else {
       return ok(await query);
     }
-  } catch (_) {
-    console.error(_);
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(`error getting carousel animes`, error);
+    }
     return err(
       new ActionError({
         code: "INTERNAL_SERVER_ERROR",

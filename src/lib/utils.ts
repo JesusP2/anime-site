@@ -1,3 +1,5 @@
+import type { APIContext } from "astro";
+import type { ActionAPIContext } from "astro:actions";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -25,4 +27,8 @@ export function objectKeys<T extends Record<string, unknown>>(obj: T) {
 }
 export function objectEntries<T extends Record<string, unknown>>(obj: T) {
   return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+export function getConnectionString(context: APIContext | ActionAPIContext) {
+  return context.locals.runtime.env.HYPERDRIVE.connectionString;
 }

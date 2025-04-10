@@ -1,4 +1,4 @@
-name = "anime-site"
+name = "notmyanimelist"
 pages_build_output_dir = "./dist"
 compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2024-09-23"
@@ -9,3 +9,7 @@ BETTER_AUTH_URL = "https://notmyanimelist.com"
 EMAIL_FROM = "noreply@notmyanimelist.com"
 GOOGLE_REDIRECT_URI="https://notmyanimelist.com/api/auth/callback/google"
 BASE_URL="https://notmyanimelist.com"
+
+[[hyperdrive]]
+binding = 'HYPERDRIVE'
+id = "8fdc5e1c1cfb4abebeb98d25ab1b34cf"

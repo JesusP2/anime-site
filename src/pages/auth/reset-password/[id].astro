@@ -67,37 +67,12 @@ if (Astro.locals.user) {
 </AuthLayout>
 
 <script>
-  const eyeBtn = document.querySelector(".eye-btn");
-  if (eyeBtn) {
-    const eyeLineIcon = eyeBtn.querySelector(".eye-line");
-    const eyeOffLineIcon = eyeBtn.querySelector(".eye-off-line");
-    const passwordInput = document.querySelector<HTMLInputElement>("#password");
-    eyeBtn?.addEventListener("click", () => {
-      if (!eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
-      eyeLineIcon.classList.toggle("hidden");
-      eyeOffLineIcon.classList.toggle("hidden");
-      passwordInput.type =
-        passwordInput.type === "password" ? "text" : "password";
-    });
-  }
-
-  const eyeBtn2 = document.querySelector(".eye-btn-2");
-  if (eyeBtn2) {
-    const eyeLineIcon = eyeBtn2.querySelector(".eye-line-2");
-    const eyeOffLineIcon = eyeBtn2.querySelector(".eye-off-line-2");
-    const passwordInput =
-      document.querySelector<HTMLInputElement>("#confirmPassword");
-    eyeBtn2?.addEventListener("click", () => {
-      if (!eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
-      eyeLineIcon.classList.toggle("hidden");
-      eyeOffLineIcon.classList.toggle("hidden");
-      passwordInput.type =
-        passwordInput.type === "password" ? "text" : "password";
-    });
-  }
 </script>
 <script>
   import { authClient } from "@/lib/auth-client";
+  import { eyeBtnEvent } from "@/lib/auth-actions";
+  eyeBtnEvent();
+  eyeBtnEvent("2");
   const form = document.querySelector("form");
   const formError = document.querySelector<HTMLSpanElement>("#form-error");
   form?.addEventListener("submit", async (e) => {

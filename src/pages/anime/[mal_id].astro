@@ -3,9 +3,10 @@ import MainLayout from "@/layout/main.astro";
 
 import { AnimeDetailsPage } from "@/components/anime.page.tsx";
 import { getAnime } from "@/lib/anime/queries";
+import { getConnectionString } from "@/lib/utils";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
 const userId = Astro.locals.user?.id;
-const anime = await getAnime(mal_id, userId);
+const anime = await getAnime(mal_id, userId, getConnectionString(Astro));
 const animeTitle =
   (anime.success &&
     anime.value.titles?.find((title) => title.type === "English")?.title) ||
