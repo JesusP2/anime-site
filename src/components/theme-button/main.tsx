@@ -4,14 +4,12 @@ import { toggleTheme } from "./utils";
 
 export function ThemeButton(props: {
   isDarkMode: boolean;
-  onThemeChange?: (isDarkMode: boolean) => void;
 }) {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
 
   function cb(isDarkMode: boolean) {
-    props.onThemeChange?.(isDarkMode);
     setIsDarkMode(isDarkMode);
   }
 
@@ -23,7 +21,7 @@ export function ThemeButton(props: {
         id={id}
         className="peer sr-only"
         checked={isDarkMode}
-        onChange={(e) => toggleTheme(e.target.checked, ref, cb)}
+        onChange={(e) => toggleTheme(e.target.checked, ref.current, cb)}
       />
       <label
         ref={ref}

@@ -1,0 +1,40 @@
+---
+interface Props {
+  isDarkMode: boolean;
+}
+
+const { isDarkMode } = Astro.props;
+---
+
+<div class="flex flex-col justify-center absolute top-0 left-[50%] size-40">
+  <input
+    type="checkbox"
+    name="theme"
+    id="theme"
+    class="peer sr-only z-50"
+    checked={isDarkMode}
+  />
+  <label
+    class="absolute top-0 size-40 z-50 cursor-pointer"
+    for="theme"
+    aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}></label>
+  <div
+    class="bg-[url('/sun.avif')] dark:bg-[url('/moon.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10"
+  >
+  </div>
+</div>
+<script>
+  import { toggleTheme } from "./utils";
+  const $label = document.querySelector<HTMLLabelElement>("label");
+  const $input = document.querySelector<HTMLInputElement>("input");
+
+  function cb(isDarkMode: boolean) {
+    $label.setAttribute(
+      "aria-label",
+      `Switch to ${isDarkMode ? "light" : "dark"} mode`,
+    );
+  }
+  $input.addEventListener("change", (e) => {
+    toggleTheme(e.target.checked, $label, cb);
+  });
+</script>

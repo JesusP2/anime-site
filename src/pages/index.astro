@@ -1,9 +1,9 @@
 ---
 import Head from "@/components/head.astro";
-import { LandingPage } from "@/components/landing/page";
+import LandingPage from "@/components/landing/index.astro";
 import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
-import { ThemeButton } from "@/components/theme-button/landing";
+import ThemeButton from "@/components/theme-button/landing.astro";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---
 
@@ -13,7 +13,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
     <div class="texture"></div>
-    <ThemeButton isDarkMode={isDarkMode} client:load />
+    <ThemeButton isDarkMode={isDarkMode} />
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
       <div
         class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
@@ -47,7 +47,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     <div
       class="bg-[url('/landing/light/bg1.avif')] dark:bg-[url('/landing/night/bg1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
     >
-      <LandingPage isDarkMode={isDarkMode} client:load />
+      <LandingPage />
     </div>
     <script>
       const clouds1 = document.querySelectorAll(".clouds");

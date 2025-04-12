@@ -1,0 +1,44 @@
+---
+import { buttonVariants } from "@/components/ui/button";
+import { inputVariants } from "@/components/ui/input";
+---
+
+<section class="h-screen">
+  <div
+    class="grid place-items-center space-y-10 px-10 :sm:px-20 md:px-28 lg:px-40 pt-10 sm:pt-20 md:pt-28 lg:pt-40"
+  >
+    <h1
+      class="stroked-text font-crimson text-center text-4xl sm:text-5xl lg:text-7xl font-black max-w-4xl z-10"
+    >
+      Search and track your favorite anime
+    </h1>
+    <h2 class="stroked-text text-center text-xl md:text-2xl font-semibold z-10">
+      Explore a vast collection of anime, manga, and more.
+    </h2>
+    <form
+      class="max-w-xl w-full"
+      id="search-form"
+    >
+      <div class="flex gap-x-2 max-w-xl w-full">
+        <input
+          name="q"
+          placeholder="Search for anime, manga..."
+          class={inputVariants()}
+        />
+        <button class={buttonVariants({ variant: "outline" })}>Search</button>
+      </div>
+    </form>
+  </div>
+</section>
+<script>
+  import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
+  import { navigate } from "astro:transitions/client";
+  const $search = document.querySelector("#search-form");
+  $search.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const search = new URLSearchParams();
+    search.set("q", (formData.get("q") as string) ?? "");
+    safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
+  });
+</script>

@@ -1,5 +1,3 @@
-import { flushSync } from "react-dom";
-
 export function setTheme(
   isDarkMode: boolean,
   cb: (isDarkMode: boolean) => void,
@@ -12,10 +10,10 @@ export function setTheme(
 
 export async function toggleTheme(
   isDarkMode: boolean,
-  ref: React.RefObject<HTMLLabelElement | null>,
+  el: HTMLLabelElement | null,
   cb: (isDarkMode: boolean) => void,
 ) {
-  if (!document.startViewTransition || !ref.current) {
+  if (!document.startViewTransition || !el) {
     setTheme(isDarkMode, cb);
     return;
   }
@@ -27,7 +25,7 @@ export async function toggleTheme(
       el.style.viewTransitionName = "";
     });
 
-  const { left, top, width, height } = ref.current.getBoundingClientRect();
+  const { left, top, width, height } = el.getBoundingClientRect();
   const x = left + width / 2;
   const y = top + height / 2;
   const screenWidth = window.innerWidth;
@@ -36,9 +34,7 @@ export async function toggleTheme(
   const duration = diagonal / 3;
 
   const transition = document.startViewTransition(() => {
-    flushSync(() => {
       setTheme(isDarkMode, cb);
-    });
   });
   try {
     await transition.ready;
