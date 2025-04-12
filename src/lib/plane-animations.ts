@@ -3,12 +3,12 @@ const DESIGN_MAX_TOP = 600;
 const screenWidth = window.innerWidth; // Get screen width for responsive movement
 
 const defaultConfig = {
-  frameTime: 1_000 / 24,
-  minLoopDelay: 5_000,
-  maxLoopDelay: 20_000,
-  sizeOptions: [50, 100, 150, 200],
-  minDurationMovement: 10_000,
-  maxDurationMovement: 20_000,
+  frameTime: 1_000 / 60,
+  minLoopDelay: 0,
+  maxLoopDelay: 0,
+  sizeOptions: [100, 130, 150],
+  minDurationMovement: 15_000,
+  maxDurationMovement: 50_000,
 };
 
 type Config = {

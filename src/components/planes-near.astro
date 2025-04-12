@@ -1,0 +1,24 @@
+---
+
+---
+
+<div class="top-[15rem] plane-container plane-near"></div>
+<div class="top-[15rem] plane-container plane-near"></div>
+<div class="top-[15rem] plane-container plane-near"></div>
+<script>
+  import { createPlaneAnimations } from "@/lib/plane-animations";
+  const planes = document.querySelectorAll<HTMLElement>(".plane-near");
+  planes.forEach((plane) => {
+    const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
+      | "LTR"
+      | "RTL";
+    createPlaneAnimations(plane, direction);
+  });
+</script>
+<style>
+  .plane-container {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+</style>
