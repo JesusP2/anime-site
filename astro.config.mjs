@@ -68,10 +68,10 @@ export default defineConfig({
     domains: ["cdn.myanimelist.net"],
   },
   adapter: cloudflare(),
-  server: {
-    host: "0.0.0.0",
-    port: 4321,
-  },
+  // server: {
+  //   host: "0.0.0.0",
+  //   port: 4321,
+  // },
   vite: {
     plugins: [tailwindcss()],
     resolve: {

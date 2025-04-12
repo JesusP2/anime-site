@@ -3,5 +3,5 @@ export function safeStartViewTransition(callback: () => void) {
     callback();
     return;
   }
-  document.startViewTransition(callback);
+  return document.startViewTransition(callback);
 }
