@@ -10,55 +10,78 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={"Anisearch"} description={"description"} />
   <body
-    class="bg-[url('/landing/light/sky.png')] dark:bg-[url('/landing/night/sky.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
+    class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
     <div class="texture"></div>
     <ThemeButton isDarkMode={isDarkMode} client:load />
-    <div
-      class="bg-[url('/landing/light/cloud2.png')] dark:bg-[url('/landing/night/cloud2.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
-    >
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <div
+        class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
+      >
+      </div>
+      <div
+        class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
+      >
+      </div>
     </div>
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
       <PlanesFar />
     </div>
-    <div
-      class="bg-[url('/landing/light/cloud1.png')] dark:bg-[url('/landing/night/cloud1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
-    >
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <div
+        class="bg-[url('/landing/light/cloud1.avif')] dark:bg-[url('/landing/night/cloud1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
+      >
+      </div>
+      <div
+        class="bg-[url('/landing/light/cloud1.avif')] dark:bg-[url('/landing/night/cloud1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
+      >
+      </div>
     </div>
     <div
-      class="bg-[url('/landing/light/bg2.png')] dark:bg-[url('/landing/night/bg2.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-20"
+      class="bg-[url('/landing/light/bg2.avif')] dark:bg-[url('/landing/night/bg2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-20"
     >
     </div>
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-30">
       <PlanesNear />
     </div>
     <div
-      class="bg-[url('/landing/light/bg1.png')] dark:bg-[url('/landing/night/bg1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
+      class="bg-[url('/landing/light/bg1.avif')] dark:bg-[url('/landing/night/bg1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
     >
       <LandingPage isDarkMode={isDarkMode} client:load />
     </div>
     <script>
-      // Select all elements with the 'clouds' class
-      const clouds = document.querySelectorAll(".clouds");
+      const clouds1 = document.querySelectorAll(".clouds");
+      const clouds2 = document.querySelectorAll(".clouds-2");
 
-      // Define keyframes for the first cloud layer (subtle vertical movement)
-      // Animates from off-screen left (-100%) to off-screen right (100%)
-      // Includes a slight up/down motion using translateY
       const cloudKeyframes1 = [
-        { transform: 'translate(-100%, 0px)' }, // Start position
-        { transform: 'translate(0%, 5px)', offset: 0.5 }, // Mid-point, slightly down
-        { transform: 'translate(100%, 0px)' } // End position, back to original Y
+        { transform: "translate(0%, 0px)" },
+        { transform: "translate(25%, -50px)", offset: 0.25 },
+        { transform: "translate(50%, -0px)", offset: 0.50 },
+        { transform: "translate(75%, -50px)", offset: 0.75 },
+        { transform: "translate(100%, 0px)" },
       ];
 
-      // Define timing for the first cloud layer (slower)
-      const cloudTiming1 = {
-        duration: 200_000, // 90 seconds for a full cycle
+      const cloudKeyframes2 = [
+        { transform: "translate(-100%, 0px)" },
+        { transform: "translate(-75%, -50px)", offset: 0.25 },
+        { transform: "translate(-50%, 0px)", offset: 0.5 },
+        { transform: "translate(-25%, -50px)", offset: 0.75 },
+        { transform: "translate(0%, 0px)" },
+      ];
+
+      // Define timing for the cloud animation
+      const cloudTiming = {
+        duration: 240_000, // 90 seconds for a full cycle (adjust as needed)
         iterations: Infinity, // Loop forever
-        easing: 'linear' // Constant speed
+        easing: "linear", // Constant speed
       };
 
-      clouds.forEach((cloud) => {
-        cloud.animate(cloudKeyframes1, cloudTiming1);
+      // Apply the same animation to all cloud elements
+      clouds1.forEach((cloud) => {
+        cloud.animate(cloudKeyframes1, cloudTiming);
+      });
+      clouds2.forEach((cloud) => {
+        cloud.animate(cloudKeyframes2, cloudTiming);
       });
     </script>
   </body>

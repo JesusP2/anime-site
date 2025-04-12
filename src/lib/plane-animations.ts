@@ -192,13 +192,13 @@ function getKeyFrames(
 function getBladeSwapKeyframes(direction: "LTR" | "RTL") {
   if (direction === "LTR") {
     return [
-      { backgroundImage: 'url("/plane-right-1.png")' },
-      { backgroundImage: 'url("/plane-right-2.png")' },
+      { backgroundImage: 'url("/plane-right-1.avif")' },
+      { backgroundImage: 'url("/plane-right-2.avif")' },
     ];
   }
   return [
-    { backgroundImage: 'url("/plane-left-1.png")' },
-    { backgroundImage: 'url("/plane-left-2.png")' },
+    { backgroundImage: 'url("/plane-left-1.avif")' },
+    { backgroundImage: 'url("/plane-left-2.avif")' },
   ];
 }
 

@@ -30,7 +30,7 @@ export function ThemeButton(props: {
         htmlFor={id}
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
       ></label>
-      <div className="bg-[url('/sun.png')] dark:bg-[url('/moon.png')] bg-cover bg-no-repeat absolute top-0 size-40 z-10" />
+      <div className="bg-[url('/sun.avif')] dark:bg-[url('/moon.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10" />
     </div>
   );
 }
