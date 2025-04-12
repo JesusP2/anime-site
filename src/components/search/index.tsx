@@ -149,7 +149,7 @@ export function SearchWithFilters(props: Props) {
           setFilters={setFilters}
         >
           <Button type="button" variant="outline" className="whitespace-nowrap">
-            <Funnel className="w-4 h-4 mr-2" />
+            <Funnel className="w-4 h-4" />
             Filters
             {getActiveFiltersCount() > 0 && (
               <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
