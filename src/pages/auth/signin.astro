@@ -14,13 +14,20 @@ if (Astro.locals.user) {
 
 <AuthLayout title="Login">
   <!-- Container for the image sequence animation -->
-  <div
-    id="frame-animation"
-    slot="animation"
-    class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
-    style="background-image: url('/frames/frame001.png');"
-  >
-  </div>
+  <Fragment slot="animation">
+    <div
+      id="frame-animation"
+      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
+      style="background-image: url('/frames/frame001.avif');"
+    >
+    </div>
+    <div
+      id="frame-animation-hidden"
+      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
+      style="background-image: url('/frames/frame001.avif'); opacity: 0;"
+    >
+    </div>
+  </Fragment>
   <h1 slot="card-title">Welcome back</h1>
   <h1 slot="card-description">Login using one of the options below</h1>
   <Fragment slot="card-content">
@@ -41,11 +48,7 @@ if (Astro.locals.user) {
         <span class="w-full border-t"></span>
       </div>
       <div class="relative flex justify-center text-xs uppercase">
-        <span
-          class="bg-background px-2"
-        >
-          Or continue with email
-        </span>
+        <span class="bg-background px-2"> Or continue with email </span>
       </div>
     </section>
     <form method="POST">
@@ -69,7 +72,11 @@ if (Astro.locals.user) {
               <label class={labelVariants()} for="password">Password</label>
               <button class="eye-btn p-1 rounded hover:bg-muted" type="button">
                 <Eye className="eye-line" size={17} strokeWidth={1.5} />
-                <EyeOff className="eye-off-line hidden" size={17} strokeWidth={1.5} />
+                <EyeOff
+                  className="eye-off-line hidden"
+                  size={17}
+                  strokeWidth={1.5}
+                />
               </button>
             </div>
             <AuthLink href="/auth/forgot-password">
