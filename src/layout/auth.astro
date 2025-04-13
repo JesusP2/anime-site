@@ -12,8 +12,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
   <Head title={title} description={description} />
   <body class="bg-[url('/auth-light.png')] dark:bg-[url('/auth-night.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative">
     <div class="texture"></div>
-    <slot name="video-forward" />
-    <slot name="video-backward" />
+    <slot name="animation" />
     <main class="grid place-items-center h-screen z-10 relative">
       <div
         class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full"

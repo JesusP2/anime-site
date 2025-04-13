@@ -6,33 +6,21 @@ import { labelVariants } from "@/components/ui/label";
 import { inputVariants } from "@/components/ui/input";
 import AuthLayout from "@/layout/auth.astro";
 import AuthLink from "@/components/auth-link.astro";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { Eye, EyeOff } from "lucide-react";
 if (Astro.locals.user) {
   return Astro.redirect("/");
 }
 ---
 
 <AuthLayout title="Login">
-  <video
-    slot="video-forward"
-    id="video-forward"
-    muted
-    class="absolute left-[calc(50%-100px)] top-[20px]"
-    width="200"
-    height="200"
+  <!-- Container for the image sequence animation -->
+  <div
+    id="frame-animation"
+    slot="animation"
+    class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
+    style="background-image: url('/frames/frame001.png');"
   >
-    <source src="/girl-covering-her-eyes-forward.webm" type="video/mp4" />
-  </video>
-  <video
-    slot="video-backward"
-    id="video-backward"
-    muted
-    class="absolute left-[calc(50%-100px)] top-[20px] opacity-0"
-    width="200"
-    height="200"
-  >
-    <source src="/girl-covering-her-eyes-backward.webm" type="video/mp4" />
-  </video>
+  </div>
   <h1 slot="card-title">Welcome back</h1>
   <h1 slot="card-description">Login using one of the options below</h1>
   <Fragment slot="card-content">
@@ -79,9 +67,9 @@ if (Astro.locals.user) {
           <div class="flex items-center">
             <div class="flex items-center gap-x-1">
               <label class={labelVariants()} for="password">Password</label>
-              <button class="eye-btn" type="button" class="hover:text-gray-600">
-                <Eye className="eye-line" size={17} />
-                <EyeSlash className="eye-off-line hidden" size={17} />
+              <button class="eye-btn p-1 rounded hover:bg-muted" type="button">
+                <Eye className="eye-line" size={17} strokeWidth={1.5} />
+                <EyeOff className="eye-off-line hidden" size={17} strokeWidth={1.5} />
               </button>
             </div>
             <AuthLink href="/auth/forgot-password">
@@ -120,6 +108,7 @@ if (Astro.locals.user) {
   import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-actions";
   googleBtnEvent();
   eyeBtnEvent();
+
   const form = document.querySelector("form");
   const formError = document.querySelector<HTMLSpanElement>("#form-error");
   form?.addEventListener("submit", async (e) => {

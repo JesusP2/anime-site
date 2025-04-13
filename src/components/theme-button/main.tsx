@@ -33,13 +33,13 @@ export function ThemeButton(props: {
         <Moon
           size={16}
           strokeWidth={2}
-          className="shrink-0 scale-0 opacity-0 transition-all peer-checked:group-[]:scale-100 peer-checked:group-[]:opacity-100"
+          className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark::opacity-100"
           aria-hidden="true"
         />
         <Sun
           size={16}
           strokeWidth={2}
-          className="absolute shrink-0 scale-100 opacity-100 transition-all peer-checked:group-[]:scale-0 peer-checked:group-[]:opacity-0"
+          className="absolute shrink-0 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0"
           aria-hidden="true"
         />
       </label>
