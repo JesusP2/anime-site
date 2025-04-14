@@ -24,17 +24,17 @@ const { isDarkMode } = Astro.props;
   </div>
 </div>
 <script>
-  import { toggleTheme } from "./utils";
+  import { toggleTheme } from "./landing-utils";
   const $label = document.querySelector<HTMLLabelElement>("label");
   const $input = document.querySelector<HTMLInputElement>("input");
 
   function cb(isDarkMode: boolean) {
-    $label.setAttribute(
+    $label?.setAttribute(
       "aria-label",
       `Switch to ${isDarkMode ? "light" : "dark"} mode`,
     );
   }
-  $input.addEventListener("change", (e) => {
+  $input?.addEventListener("change", (e) => {
     toggleTheme(e.target.checked, $label, cb);
   });
 </script>
