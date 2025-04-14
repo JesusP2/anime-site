@@ -1,4 +1,7 @@
 ---
+import ThemeButton from "@/components/theme-button/landing.astro";
+import PlanesNear from "@/components/planes-near.astro";
+import PlanesFar from "@/components/planes-far.astro";
 import Head from "@/components/head.astro";
 interface Props {
   title: string;
@@ -10,10 +13,43 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={title} description={description} />
-  <body class="bg-[url('/auth-light.png')] dark:bg-[url('/auth-night.png')] bg-no-repeat bg-cover overflow-hidden h-screen relative">
+  <body
+    class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
+  >
     <div class="texture"></div>
+    <ThemeButton isDarkMode={isDarkMode} />
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <div
+        class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
+      >
+      </div>
+      <div
+        class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
+      >
+      </div>
+    </div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <PlanesFar />
+    </div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <div
+        class="bg-[url('/landing/light/cloud1.avif')] dark:bg-[url('/landing/night/cloud1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
+      >
+      </div>
+      <div
+        class="bg-[url('/landing/light/cloud1.avif')] dark:bg-[url('/landing/night/cloud1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds"
+      >
+      </div>
+    </div>
+    <div
+      class="bg-[url('/auth/light/bg2.png')] dark:bg-[url('/auth/night/bg2.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-20"
+    >
+    </div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-30">
+      <PlanesNear />
+    </div>
     <slot name="animation" />
-    <main class="grid place-items-center h-screen z-10 relative">
+    <main class="grid place-items-center bg-[url('/auth/light/bg1.png')] dark:bg-[url('/auth/night/bg1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40">
       <div
         class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full"
       >

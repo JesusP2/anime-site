@@ -12,7 +12,6 @@ import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { FixedSizeList as List } from "react-window";
 import { useCallback } from "react";
-import { bookAnimation } from "@/lib/book-animations";
 
 export function Pagination({
   currentPage,
@@ -88,12 +87,10 @@ export function Pagination({
           </PaginationItem>
         ))}
         <PaginationItem>
-          <Button
-            variant="outline"
-            onClick={() => bookAnimation(createLink(url, currentPage + 1, lastVisiblePage))}
-          >
-            Next
-          </Button>
+          <PaginationNext
+            isActive={currentPage < lastVisiblePage}
+            href={createLink(url, currentPage + 1, lastVisiblePage)}
+          />
         </PaginationItem>
       </PaginationContent>
     </BasePagination>

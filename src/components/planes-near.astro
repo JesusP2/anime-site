@@ -6,7 +6,7 @@
 <div class="top-[15rem] plane-container plane-near"></div>
 <div class="top-[15rem] plane-container plane-near"></div>
 <script>
-  import { createPlaneAnimations } from "@/lib/plane-animations";
+  import { createPlaneAnimations } from "@/lib/animations/planes";
   const planes = document.querySelectorAll<HTMLElement>(".plane-near");
   planes.forEach((plane) => {
     const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as

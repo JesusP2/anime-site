@@ -31,7 +31,7 @@ export function eyeBtnEvent(btn: "1" | "2" = "1") {
   for (let i = 1; i <= totalFrames; i++) {
     const frameNumber = String(i).padStart(3, "0");
     keyframesForward.push({
-      backgroundImage: `url('/frames_out/frame${frameNumber}.avif')`,
+      backgroundImage: `url('/frames/frame${frameNumber}.avif')`,
       offset: (i - 1) / (totalFrames - 1),
     });
   }

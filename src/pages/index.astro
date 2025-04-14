@@ -45,44 +45,15 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       <PlanesNear />
     </div>
     <div
-      class="bg-[url('/landing/light/bg1.avif')] dark:bg-[url('/landing/night/bg1.png')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
+      class="bg-[url('/landing/light/bg1.avif')] dark:bg-[url('/landing/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
     >
       <LandingPage />
     </div>
     <script>
+      import { createCloudAnimations } from "@/lib/animations/clouds";
       const clouds1 = document.querySelectorAll(".clouds");
       const clouds2 = document.querySelectorAll(".clouds-2");
-
-      const cloudKeyframes1 = [
-        { transform: "translate(0%, 0px)" },
-        { transform: "translate(25%, -50px)", offset: 0.25 },
-        { transform: "translate(50%, -0px)", offset: 0.50 },
-        { transform: "translate(75%, -50px)", offset: 0.75 },
-        { transform: "translate(100%, 0px)" },
-      ];
-
-      const cloudKeyframes2 = [
-        { transform: "translate(-100%, 0px)" },
-        { transform: "translate(-75%, -50px)", offset: 0.25 },
-        { transform: "translate(-50%, 0px)", offset: 0.5 },
-        { transform: "translate(-25%, -50px)", offset: 0.75 },
-        { transform: "translate(0%, 0px)" },
-      ];
-
-      // Define timing for the cloud animation
-      const cloudTiming = {
-        duration: 240_000, // 90 seconds for a full cycle (adjust as needed)
-        iterations: Infinity, // Loop forever
-        easing: "linear", // Constant speed
-      };
-
-      // Apply the same animation to all cloud elements
-      clouds1.forEach((cloud) => {
-        cloud.animate(cloudKeyframes1, cloudTiming);
-      });
-      clouds2.forEach((cloud) => {
-        cloud.animate(cloudKeyframes2, cloudTiming);
-      });
+      createCloudAnimations(clouds1, clouds2);
     </script>
   </body>
 </html>

@@ -70,7 +70,7 @@ if (Astro.locals.user) {
 </script>
 <script>
   import { authClient } from "@/lib/auth-client";
-  import { eyeBtnEvent } from "@/lib/auth-actions";
+  import { eyeBtnEvent } from "@/lib/auth-events";
   eyeBtnEvent();
   eyeBtnEvent("2");
   const form = document.querySelector("form");

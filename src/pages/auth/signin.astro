@@ -17,7 +17,7 @@ if (Astro.locals.user) {
   <Fragment slot="animation">
     <div
       id="frame-animation"
-      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
+      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center z-30"
       style="background-image: url('/frames/frame001.avif');"
     >
     </div>
@@ -111,8 +111,14 @@ if (Astro.locals.user) {
   </Fragment>
 </AuthLayout>
 <script>
+  import { createCloudAnimations } from "@/lib/animations/clouds";
+  const clouds1 = document.querySelectorAll(".clouds");
+  const clouds2 = document.querySelectorAll(".clouds-2");
+  createCloudAnimations(clouds1, clouds2);
+</script>
+<script>
   import { authClient } from "@/lib/auth-client";
-  import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-actions";
+  import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-events";
   googleBtnEvent();
   eyeBtnEvent();
 
