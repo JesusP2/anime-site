@@ -35,7 +35,7 @@ export async function toggleTheme(
 
   try {
     await transition.ready;
-    const duration = 9_000;
+    const duration = 900;
     const easing = "cubic-bezier(0.76, 0, 0.24, 1)";
 
     const slideOutRight = [
@@ -131,7 +131,48 @@ export async function toggleTheme(
       easing: "ease-out",
       pseudoElement: "::view-transition-new(root)",
       fill: "forwards",
-    }).finished;
+    });
+
+    document.documentElement.animate(fadeOut, {
+      duration,
+      pseudoElement: "::view-transition-old(landing-layer-2)",
+    });
+
+    document.documentElement.animate(fadeIn, {
+      duration,
+      pseudoElement: "::view-transition-new(landing-layer-2)",
+    });
+
+    document.documentElement.animate(fadeOut, {
+      duration,
+      pseudoElement: "::view-transition-old(landing-layer-4)",
+    });
+
+    document.documentElement.animate(fadeIn, {
+      duration,
+      pseudoElement: "::view-transition-new(landing-layer-4)",
+    });
+
+    document.documentElement.animate(fadeOut, {
+      duration,
+      pseudoElement: "::view-transition-old(auth-layer-2)",
+    });
+
+    document.documentElement.animate(fadeIn, {
+      duration,
+      pseudoElement: "::view-transition-new(auth-layer-2)",
+    });
+
+    document.documentElement.animate(fadeOut, {
+      duration,
+      pseudoElement: "::view-transition-old(auth-layer-4)",
+    });
+
+    document.documentElement.animate(fadeIn, {
+      duration,
+      pseudoElement: "::view-transition-new(auth-layer-4)",
+    });
+
 
     await transition.finished;
   } finally {
