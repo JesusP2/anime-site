@@ -17,8 +17,11 @@ if (Astro.locals.user) {
   <Fragment slot="animation">
     <div
       id="frame-animation"
-      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center z-30"
-      style="background-image: url('/frames/frame001.avif');"
+      class="absolute left-[calc(50%)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center z-30"
+      style={{
+        'background-image': `url('/frames/frame001.avif')`,
+        'view-transition-name': 'auth-layer-1'
+      }}
     >
     </div>
     <div

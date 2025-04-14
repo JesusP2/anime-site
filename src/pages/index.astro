@@ -39,13 +39,15 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     </div>
     <div
       class="bg-[url('/landing/light/bg2.avif')] dark:bg-[url('/landing/night/bg2.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-20"
+      style="view-transition-name: landing-layer-2"
     >
     </div>
-    <div class="absolute inset-0 overflow-hidden pointer-events-none z-30">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-30" style="view-transition-name: landing-layer-3">
       <PlanesNear />
     </div>
     <div
       class="bg-[url('/landing/light/bg1.avif')] dark:bg-[url('/landing/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
+      style="view-transition-name: landing-layer-4"
     >
       <LandingPage />
     </div>

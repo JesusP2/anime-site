@@ -13,51 +13,127 @@ export async function toggleTheme(
   el: HTMLLabelElement | null,
   cb: (isDarkMode: boolean) => void,
 ) {
-  console.log('ahello')
   if (!document.startViewTransition || !el) {
     setTheme(isDarkMode, cb);
     return;
   }
-  document
-    .querySelectorAll('[style*="view-transition-name"]')
-    .forEach((_el) => {
-      const el = _el as HTMLElement;
-      el.dataset.savedTransition = el.style.viewTransitionName;
-      el.style.viewTransitionName = "";
-    });
 
-  const { left, top, width, height } = el.getBoundingClientRect();
-  const x = left + width / 2;
-  const y = top + height / 2;
+  const oldIconName = isDarkMode ? "theme-icon-sun" : "theme-icon-moon";
+  const newIconName = isDarkMode ? "theme-icon-moon" : "theme-icon-sun";
+
+  const rect = el.getBoundingClientRect();
+  const iconCenterX = rect.left + rect.width / 2;
+
   const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-  const diagonal = Math.sqrt(screenWidth ** 2 + screenHeight ** 2);
-  const duration = diagonal / 3;
+
+  const distanceToRight = screenWidth - iconCenterX;
+  const distanceToLeft = iconCenterX;
 
   const transition = document.startViewTransition(() => {
-      setTheme(isDarkMode, cb);
+    setTheme(isDarkMode, cb);
   });
+
   try {
     await transition.ready;
-    document.documentElement.animate(
+    const duration = 9_000;
+    const easing = "cubic-bezier(0.76, 0, 0.24, 1)";
+
+    const slideOutRight = [
+      { transform: "translate(0, 0) scale(1)", opacity: 1, offset: 0 },
       {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${diagonal}px at ${x}px ${y}px)`,
-        ],
+        transform: `translate(${distanceToRight * 0.2}px, 1vh) scale(0.97)`,
+        opacity: 0.9,
+        offset: 0.2,
       },
       {
-        duration,
-        easing: "ease-in-out",
-        pseudoElement: "::view-transition-new(root)",
+        transform: `translate(${distanceToRight * 0.4}px, 3.5vh) scale(0.94)`,
+        opacity: 0.8,
+        offset: 0.4,
       },
-    );
+      {
+        transform: `translate(${distanceToRight * 0.6}px, 7.5vh) scale(0.91)`,
+        opacity: 0.7,
+        offset: 0.6,
+      },
+      {
+        transform: `translate(${distanceToRight * 0.8}px, 14.25vh) scale(0.88)`,
+        opacity: 0.6,
+        offset: 0.8,
+      },
+      {
+        transform: `translate(${distanceToRight}px, 25vh) scale(0.85)`,
+        opacity: 0.5,
+        offset: 1,
+      },
+    ];
+
+    const slideInLeft = [
+      {
+        transform: `translate(-${distanceToLeft + rect.width}px, 25vh) scale(0.85)`,
+        opacity: 0.5,
+        offset: 0,
+      },
+      {
+        transform: `translate(-${(distanceToLeft + rect.width) * 0.8}px, 14.25vh) scale(0.88)`,
+        opacity: 0.6,
+        offset: 0.2,
+      },
+      {
+        transform: `translate(-${(distanceToLeft + rect.width) * 0.6}px, 7.5vh) scale(0.91)`,
+        opacity: 0.7,
+        offset: 0.4,
+      },
+      {
+        transform: `translate(-${(distanceToLeft + rect.width) * 0.4}px, 3.5vh) scale(0.94)`,
+        opacity: 0.8,
+        offset: 0.6,
+      },
+      {
+        transform: `translate(-${(distanceToLeft + rect.width) * 0.2}px, 1vh) scale(0.97)`,
+        opacity: 0.9,
+        offset: 0.8,
+      },
+      { transform: "translate(0, 0) scale(1)", opacity: 1, offset: 1 },
+    ];
+
+    const fadeOut = [
+      { opacity: 1, offset: 0 },
+      { opacity: 0, offset: 1 },
+    ];
+    const fadeIn = [
+      { opacity: 0, offset: 0 },
+      { opacity: 1, offset: 1 },
+    ];
+
+    document.documentElement.animate(slideOutRight, {
+      duration,
+      easing,
+      pseudoElement: `::view-transition-old(${oldIconName})`,
+      fill: "forwards",
+    });
+
+    document.documentElement.animate(slideInLeft, {
+      duration,
+      easing,
+      pseudoElement: `::view-transition-new(${newIconName})`,
+      fill: "forwards",
+    });
+
+    document.documentElement.animate(fadeOut, {
+      duration,
+      easing: "ease-in",
+      pseudoElement: "::view-transition-old(root)",
+      fill: "forwards",
+    });
+
+    document.documentElement.animate(fadeIn, {
+      duration,
+      easing: "ease-out",
+      pseudoElement: "::view-transition-new(root)",
+      fill: "forwards",
+    }).finished;
+
     await transition.finished;
   } finally {
-    document.querySelectorAll("[data-saved-transition]").forEach((_el) => {
-      const el = _el as HTMLElement;
-      el.style.viewTransitionName = el.dataset.savedTransition as string;
-      delete el.dataset.savedTransition;
-    });
   }
 }
