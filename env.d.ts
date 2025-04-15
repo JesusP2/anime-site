@@ -14,10 +14,12 @@ declare namespace App {
 }
 
 type KVNamespace = import("@cloudflare/workers-types").KVNamespace;
-type HYPERDRIVE = import("@cloudflare/workers-types").HYPERDRIVE;
+type HYPERDRIVE = import("@cloudflare/workers-types").Hyperdrive;
+type R2 = import("@cloudflare/workers-types").R2Bucket;
 type ENV = {
   // replace `MY_KV` with your KV namespace
   HYPERDRIVE: HYPERDRIVE;
+  R2: R2;
 };
 
 // use a default runtime configuration (advanced mode).

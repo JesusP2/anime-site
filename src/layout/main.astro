@@ -3,6 +3,7 @@ import Head from "@/components/head.astro";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
 import type { Entity, EntityStatus } from "@/lib/types";
+import { createReadPresignedUrl } from "@/lib/s3";
 
 type Props = {
   title: string;
@@ -24,6 +25,10 @@ type Props = {
 );
 const { title, description, image, path, ...props } = Astro.props;
 const user = Astro.locals.user;
+if (user && !user.image) {
+  const img = await createReadPresignedUrl(`${user.id}/avatar`);
+  user.image = img;
+}
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 ---

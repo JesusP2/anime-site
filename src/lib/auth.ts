@@ -16,10 +16,39 @@ import { BASE_URL } from "astro:env/client";
 import type { APIContext } from "astro";
 import type { ActionAPIContext } from "astro:actions";
 import { getConnectionString } from "./utils";
+import { redis } from "./db/redis";
 
 export function getAuth(context: APIContext | ActionAPIContext) {
   const db = getDb(getConnectionString(context));
   const auth = betterAuth({
+    rateLimit: {
+      enabled: true,
+      window: 10,
+      max: 100,
+      customRules: {
+        "/": {
+          window: 60,
+          max: 10,
+        },
+      },
+      storage: "secondary-storage",
+      modelName: "rateLimit",
+    },
+    secondaryStorage: {
+      get: async (key) => {
+        const value = await redis.get(key);
+        return value ? JSON.stringify(value) : null;
+      },
+      set: async (key, value, ttl) => {
+        if (ttl) await redis.set(key, value, { ex: ttl });
+        // or for ioredis:
+        // if (ttl) await redis.set(key, value, 'EX', ttl)
+        else await redis.set(key, value);
+      },
+      delete: async (key) => {
+        await redis.del(key);
+      },
+    },
     plugins: [
       username(),
       passkey(),

@@ -70,10 +70,12 @@ export function NavUser({ user }: { user: User }) {
             <DropdownMenuSeparator />
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <SealCheck weight="bold" />
-                Account
-              </DropdownMenuItem>
+              <a href="/account">
+                <DropdownMenuItem>
+                  <SealCheck weight="bold" />
+                  Account
+                </DropdownMenuItem>
+              </a>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

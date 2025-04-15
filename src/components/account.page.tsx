@@ -10,8 +10,8 @@ import {
   Trash,
   ArrowLeft,
 } from "@phosphor-icons/react";
-import { toast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { actions } from "astro:actions";
 
 export function AccountPage({ user }: { user: User }) {
   const [name, setName] = useState(user.name);
@@ -44,11 +45,7 @@ export function AccountPage({ user }: { user: User }) {
   // Show error toast when error state changes
   useEffect(() => {
     if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error,
-      });
+      toast.error(error)
       setError(null);
     }
   }, [error, toast]);
@@ -66,11 +63,7 @@ export function AccountPage({ user }: { user: User }) {
       await authClient.updateUser({
         name,
       });
-      toast({
-        title: "Success",
-        description: "Name updated successfully",
-        variant: "default",
-      });
+      toast.success("Name updated successfully");
       setIsEditingName(false);
     } catch (err: any) {
       setError(err.message || "Failed to update name");
@@ -87,32 +80,37 @@ export function AccountPage({ user }: { user: User }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Convert image to base64
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64Image = reader.result as string;
-
+    try {
       setIsUpdating(true);
-      setError(null);
-
-      try {
-        await authClient.updateUser({
-          image: base64Image,
-        });
-        toast({
-          title: "Success",
-          description: "Profile picture updated successfully",
-          variant: "default",
-        });
-        // Force a reload to see the updated avatar
-        window.location.reload();
-      } catch (err: any) {
-        setError(err.message || "Failed to update profile picture");
-      } finally {
-        setIsUpdating(false);
+      const result = await actions.createWritePresignedUrl({
+        key: `${user.id}/avatar`,
+        type: file.type,
+        size: file.size,
+      })
+      if (result.error) {
+        throw new Error("Failed to update profile picture");
       }
-    };
-    reader.readAsDataURL(file);
+      const res = await fetch(result.data, {
+        method: "PUT",
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        },
+      });
+      if (res.ok) {
+        authClient.updateUser({
+          image: null,
+        });
+        toast.success("Profile picture updated successfully");
+        window.location.reload();
+      } else {
+        throw new Error("Failed to update profile picture");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to update profile picture");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -278,10 +276,7 @@ function ChangePasswordDialog() {
         revokeOtherSessions: true,
       });
 
-      toast({
-        title: "Success",
-        description: "Password changed successfully",
-      });
+      toast.success("Password changed successfully");
 
       // Reset form and close dialog
       setCurrentPassword("");
@@ -381,10 +376,7 @@ function SessionManagementDialog() {
       // Sign out from all sessions
       await authClient.revokeSessions();
       await authClient.signOut();
-      toast({
-        title: "Success",
-        description: "Signed out from all devices",
-      });
+      toast.success("Signed out from all devices");
       window.location.href = "/auth/signin"; // Redirect to sign in page
     } catch (err: any) {
       setError(err.message || "Failed to sign out from all sessions");
@@ -450,10 +442,7 @@ function DeleteAccountDialog() {
         password,
       });
 
-      toast({
-        title: "Account deleted",
-        description: "Your account has been permanently deleted",
-      });
+      toast.success("Your account has been permanently deleted");
 
       // Redirect to home page after account deletion
       window.location.href = "/";

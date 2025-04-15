@@ -7,6 +7,7 @@ import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
 import { gameActions } from "./games";
 import { getConnectionString } from "@/lib/utils";
+import { createDeletePresignedUrl, createReadPresignedUrl, createWritePresignedUrl } from "@/lib/s3";
 
 export const server = {
   games: gameActions,
@@ -72,6 +73,38 @@ export const server = {
     handler: async ({ q }) => {
       const embedding = await getEmbedding(q);
       return embedding;
+    },
+  }),
+  createReadPresignedUrl: defineAction({
+    accept: "json",
+    input: z.object({
+      key: z.string(),
+    }),
+    handler: async ({ key }) => {
+      const url = await createReadPresignedUrl(key);
+      return url;
+    },
+  }),
+  createWritePresignedUrl: defineAction({
+    accept: "json",
+    input: z.object({
+      key: z.string(),
+      type: z.string(),
+      size: z.number(),
+    }),
+    handler: async ({ key, type, size }) => {
+      const url = await createWritePresignedUrl(key, type, size);
+      return url;
+    },
+  }),
+  createDeletePresignedUrl: defineAction({
+    accept: "json",
+    input: z.object({
+      key: z.string(),
+    }),
+    handler: async ({ key }) => {
+      const url = await createDeletePresignedUrl(key);
+      return url;
     },
   }),
 };
