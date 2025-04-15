@@ -19,8 +19,8 @@ if (Astro.locals.user) {
       id="frame-animation"
       class="absolute left-[calc(50%)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center z-30"
       style={{
-        'background-image': `url('/frames/frame001.avif')`,
-        'view-transition-name': 'auth-layer-1'
+        "background-image": `url('/frames/frame001.avif')`,
+        "view-transition-name": "auth-layer-1",
       }}
     >
     </div>
@@ -113,6 +113,7 @@ if (Astro.locals.user) {
     </section>
   </Fragment>
 </AuthLayout>
+
 <script>
   import { createCloudAnimations } from "@/lib/animations/clouds";
   const clouds1 = document.querySelectorAll(".clouds");

@@ -50,7 +50,10 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       <PlanesNear />
     </div>
     <slot name="animation" />
-    <main class="grid place-items-center bg-[url('/auth/light/bg1.avif')] dark:bg-[url('/auth/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40" style="view-transition-name: auth-layer-4">
+    <main
+      class="grid place-items-center bg-[url('/auth/light/bg1.avif')] dark:bg-[url('/auth/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
+      style="view-transition-name: auth-layer-4"
+    >
       <div
         class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full"
       >
