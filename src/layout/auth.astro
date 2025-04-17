@@ -16,7 +16,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
   <body
     class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
-    <div class="texture"></div>
+    <div class="texture" style="view-transition-name: page-texture"></div>
     <ThemeButton isDarkMode={isDarkMode} />
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
       <div

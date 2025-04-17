@@ -48,7 +48,7 @@ export function MangaDetailsPage({ manga, user }: Props) {
 
   return (
     <div
-      className="container mx-auto py-8 space-y-8"
+      className="container mx-auto space-y-4 relative z-[100] px-4"
       style={{ viewTransitionName: `manga-card-${manga.mal_id}` }}
     >
       {/* Hero Section - Using flex instead of grid for better control */}

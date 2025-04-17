@@ -17,6 +17,7 @@ import { inputVariants } from "@/components/ui/input";
     </h2>
     <form
       class="max-w-xl w-full"
+      action="/search"
       id="search-form"
     >
       <div class="flex gap-x-2 max-w-xl w-full">
@@ -34,11 +35,11 @@ import { inputVariants } from "@/components/ui/input";
   import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
   import { navigate } from "astro:transitions/client";
   const $search = document.querySelector("#search-form");
-  $search.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const search = new URLSearchParams();
-    search.set("q", (formData.get("q") as string) ?? "");
-    safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
-  });
+  // $search?.addEventListener("submit", (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.target as HTMLFormElement);
+  //   const search = new URLSearchParams();
+  //   search.set("q", (formData.get("q") as string) ?? "");
+  //   safeStartViewTransition(() => navigate(`/search?${search.toString()}`));
+  // });
 </script>

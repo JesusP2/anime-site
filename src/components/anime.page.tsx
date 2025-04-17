@@ -88,7 +88,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
   return (
     <div
-      className="container mx-auto"
+      className="container mx-auto space-y-4 relative z-[100] px-4"
       style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}
     >
       {/* Hero Section - Using flex instead of grid for better control */}

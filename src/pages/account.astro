@@ -6,9 +6,7 @@ import { createReadPresignedUrl } from "@/lib/s3";
 const user = Astro.locals.user;
 if (!user) return Astro.redirect("/");
 if (!user.image) {
-  const start = Date.now();
   const img = await createReadPresignedUrl(`${user.id}/avatar`);
-  console.log("createReadPresignedUrl", Date.now() - start);
   user.image = img;
 }
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
@@ -17,6 +15,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title="Account" description="User account congiuration" />
   <body>
+    <div class="texture"></div>
     <AccountPage user={user} client:load />
   </body>
 </html>

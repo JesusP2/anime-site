@@ -114,10 +114,10 @@ export function AccountPage({ user }: { user: User }) {
   };
 
   return (
-    <div className="container mx-auto py-10 max-w-4xl">
-      <div className="mb-8">
+    <div className="container mx-auto py-2 max-w-4xl">
+      <div>
         <Button variant="ghost" size="sm" asChild className="mb-4">
-          <a href="/">
+          <a href="/search">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to home
           </a>
         </Button>

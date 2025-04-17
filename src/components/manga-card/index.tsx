@@ -10,15 +10,15 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
 
   return (
     <a
-      href={`/anime/${data.mal_id}`}
+      href={`/manga/${data.mal_id}`}
       className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl bg-background relative z-[100]"
-      style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
+      style={{ viewTransitionName: `manga-card-${data.mal_id}` }}
     >
       <article className="p-[0.5rem] h-[12rem] w-fit flex gap-x-[1rem]">
         <section
           className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
           style={{
-            viewTransitionName: `anime-card-img-${data.mal_id}`,
+            viewTransitionName: `manga-card-img-${data.mal_id}`,
           }}
         >
           <img
@@ -36,7 +36,7 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
           <section>
             <h3
               style={{
-                viewTransitionName: `anime-card-title-${data.mal_id}`,
+                viewTransitionName: `manga-card-title-${data.mal_id}`,
               }}
               title={mangaTitle}
               className="text-lg truncate font-bold dark:text-white leading-tight"
