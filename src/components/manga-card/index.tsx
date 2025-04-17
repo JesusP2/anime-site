@@ -11,7 +11,7 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
   return (
     <a
       href={`/manga/${data.mal_id}`}
-      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl bg-background relative z-[100]"
+      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl relative z-50 bg-background shadow-xl"
       style={{ viewTransitionName: `manga-card-${data.mal_id}` }}
     >
       <article className="p-[0.5rem] h-[12rem] w-fit flex gap-x-[1rem]">

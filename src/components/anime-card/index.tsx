@@ -11,15 +11,15 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
   return (
     <a
       href={`/anime/${data.mal_id}`}
-      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl bg-background relative z-[100]"
+      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl relative z-50 bg-background shadow-xl"
       style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
     >
       <article className="p-[0.5rem] h-[12rem] w-fit flex gap-x-[1rem]">
         <section
           className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
-          style={{
-            viewTransitionName: `anime-card-img-${data.mal_id}`,
-          }}
+            style={{
+              viewTransitionName: `anime-card-img-${data.mal_id}`,
+            }}
         >
           <img
             loading="lazy"
@@ -27,7 +27,6 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
             src={data.images?.webp?.image_url || ""}
             alt={animeTitle}
           />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent" />
           <div className="absolute top-2 left-2">
             {data.type && <AnimeTypeBadge type={data.type} />}
           </div>

@@ -193,7 +193,7 @@ body {
     background-repeat: repeat;
     opacity: 0.14;
     mix-blend-mode: multiply;
-    z-index: 100;
+    z-index: 50;
     isolation: isolate;
     position: fixed;
     inset: 0;

@@ -88,7 +88,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
   return (
     <div
-      className="container mx-auto space-y-4 relative z-[100] px-4"
+      className="container mx-auto space-y-4 relative z-50 px-4"
       style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}
     >
       {/* Hero Section - Using flex instead of grid for better control */}
@@ -97,17 +97,18 @@ export function AnimeDetailsPage({ anime, user }: Props) {
         <div className="w-2/3 lg:w-[320px] flex-shrink-0 mx-auto">
           <Card>
             <CardContent className="p-4">
-              <div className="aspect-[2/3] relative overflow-hidden rounded-md">
+              <div className="aspect-[2/3] relative overflow-hidden rounded-md"
+              >
                 <img
-                  style={{
-                    viewTransitionName: `anime-card-img-${anime.mal_id}`,
-                  }}
                   src={
                     anime.images?.jpg?.large_image_url ||
                     "/placeholder-anime.jpg"
                   }
                   alt={getRecordTitle(anime.titles)}
                   className="object-cover w-full h-full"
+                  style={{
+                    viewTransitionName: `anime-card-img-${anime.mal_id}`,
+                  }}
                 />
               </div>
               <div className="mt-4 space-y-2">
@@ -252,15 +253,13 @@ export function AnimeDetailsPage({ anime, user }: Props) {
         </div>
       </div>
 
-      {/* The rest of your code remains the same */}
-      {/* Tabs Section */}
       <Tabs defaultValue="details" className="w-full mt-2">
-        <TabsList className="grid grid-cols-5 max-w-2xl mx-auto">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="episodes">Episodes</TabsTrigger>
-          <TabsTrigger value="characters">Characters</TabsTrigger>
-          <TabsTrigger value="staff">Staff</TabsTrigger>
-          <TabsTrigger value="streaming">Streaming</TabsTrigger>
+        <TabsList className="grid grid-cols-5 max-w-2xl mx-auto bg-background">
+          <TabsTrigger className="cursor-pointer" value="details">Details</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="episodes">Episodes</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="characters">Characters</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="staff">Staff</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="streaming">Streaming</TabsTrigger>
         </TabsList>
 
         {/* Details Tab */}
@@ -345,34 +344,34 @@ export function AnimeDetailsPage({ anime, user }: Props) {
 
               {(anime.theme?.openings?.length ||
                 anime.theme?.endings?.length) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {anime.theme?.openings && anime.theme.openings.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">
-                        Opening Themes
-                      </h3>
-                      <ul className="text-sm space-y-1">
-                        {anime.theme.openings.map((opening, index) => (
-                          <li key={index}>{opening}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {anime.theme?.openings && anime.theme.openings.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-medium mb-2">
+                          Opening Themes
+                        </h3>
+                        <ul className="text-sm space-y-1">
+                          {anime.theme.openings.map((opening, index) => (
+                            <li key={index}>{opening}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {anime.theme?.endings && anime.theme.endings.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">
-                        Ending Themes
-                      </h3>
-                      <ul className="text-sm space-y-1">
-                        {anime.theme.endings.map((ending, index) => (
-                          <li key={index}>{ending}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
+                    {anime.theme?.endings && anime.theme.endings.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-medium mb-2">
+                          Ending Themes
+                        </h3>
+                        <ul className="text-sm space-y-1">
+                          {anime.theme.endings.map((ending, index) => (
+                            <li key={index}>{ending}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
               {/* Related Anime */}
               {anime.relations && anime.relations.length > 0 && (

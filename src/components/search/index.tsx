@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { FilterModal } from "./modal";
-import { Funnel } from "@phosphor-icons/react";
 import { objectEntries } from "@/lib/utils";
 import { animeFilters, type AnimeFilters } from "@/lib/anime/filters";
 import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 import { navigate } from "astro:transitions/client";
-import type { Entity, EntityStatus } from "@/lib/types";
+import type { Entity, EntityStatus, IconRef } from "@/lib/types";
 import { animeEntity, mangaEntity } from "@/lib/constants";
+import { SettingsIcon } from "../ui/settings";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
@@ -55,6 +55,7 @@ type Props = {
   );
 
 export function SearchWithFilters(props: Props) {
+  const buttonRef = useRef<IconRef>(null);
   const [filters, setFilters] = useState(
     setupFilters(
       'searchType' in props ? props.searchType === mangaEntity ? mangaFilters : animeFilters : animeFilters,
@@ -148,8 +149,11 @@ export function SearchWithFilters(props: Props) {
           options={options}
           setFilters={setFilters}
         >
-          <Button type="button" variant="outline" className="whitespace-nowrap">
-            <Funnel className="w-4 h-4" />
+          <Button type="button" variant="outline" className="whitespace-nowrap"
+            onMouseEnter={() => buttonRef.current?.startAnimation?.()}
+            onMouseLeave={() => buttonRef.current?.stopAnimation?.()}
+          >
+            <SettingsIcon className="size-4 p-0" ref={buttonRef} />
             Filters
             {getActiveFiltersCount() > 0 && (
               <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">

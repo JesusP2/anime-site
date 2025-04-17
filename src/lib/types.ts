@@ -62,3 +62,8 @@ export type Song = {
 };
 
 export type Entity = typeof animeEntity | typeof mangaEntity;
+
+export interface IconRef {
+  startAnimation: () => void;
+  stopAnimation: () => void;
+}

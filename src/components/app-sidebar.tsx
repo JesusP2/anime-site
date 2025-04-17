@@ -1,17 +1,3 @@
-import * as React from "react";
-import {
-  Trash,
-  CalendarCheck,
-  MonitorPlay,
-  PauseCircle,
-  CheckCircle,
-  TelevisionSimple,
-  Book,
-  SignIn,
-  MusicNote,
-  ArrowLeft,
-} from "@phosphor-icons/react";
-
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -31,98 +17,10 @@ import type { User } from "better-auth";
 import { ThemeButton } from "./theme-button/main";
 import { Separator } from "./ui/separator";
 import { SearchWithFilters } from "./search";
-import type { Entity, EntityStatus } from "@/lib/types";
-
-const data = {
-  navMain: [
-    {
-      title: "Animes",
-      url: "#",
-      icon: TelevisionSimple,
-      items: [
-        {
-          title: "Completed",
-          url: "/anime/completed",
-          icon: CheckCircle,
-        },
-        {
-          title: "Planned to Watch",
-          url: "/anime/planned",
-          icon: CalendarCheck,
-        },
-        {
-          title: "Dropped",
-          url: "/anime/dropped",
-          icon: Trash,
-        },
-        {
-          title: "Watching",
-          url: "/anime/watching",
-          icon: MonitorPlay,
-        },
-        {
-          title: "On Hold",
-          url: "/anime/on-hold",
-          icon: PauseCircle,
-        },
-      ],
-    },
-    {
-      title: "Mangas",
-      url: "#",
-      icon: Book,
-      items: [
-        {
-          title: "Completed",
-          url: "/manga/completed",
-          icon: CheckCircle,
-        },
-        {
-          title: "Planned to Watch",
-          url: "/manga/planned",
-          icon: CalendarCheck,
-        },
-        {
-          title: "Dropped",
-          url: "/manga/dropped",
-          icon: Trash,
-        },
-        {
-          title: "Watching",
-          url: "/manga/watching",
-          icon: MonitorPlay,
-        },
-        {
-          title: "On Hold",
-          url: "/manga/on-hold",
-          icon: PauseCircle,
-        },
-      ],
-    },
-    {
-      title: "Anime Quizzes",
-      url: "#",
-      icon: MusicNote,
-      items: [
-        {
-          title: "Home",
-          url: "/themes/quiz",
-          icon: MusicNote,
-        },
-        {
-          title: "Create Quiz",
-          url: "/themes/quiz/create",
-          icon: MusicNote,
-        },
-        {
-          title: "My Quizzes",
-          url: "/themes/quiz/my-quizzes",
-          icon: CalendarCheck,
-        },
-      ],
-    },
-  ],
-};
+import { type Entity, type EntityStatus, type IconRef } from "@/lib/types";
+import { LogoutIcon } from "./ui/logout";
+import { useRef } from "react";
+import { ArrowLeft } from "@phosphor-icons/react";
 
 type SearchProps =
   | {
@@ -154,6 +52,7 @@ export function AppSidebar({
   url: string;
   title: string;
 }) {
+  const logoutRef = useRef<IconRef>(null);
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
       <Sidebar collapsible="icon" {...props}>
@@ -165,7 +64,7 @@ export function AppSidebar({
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
                     <span className="sm:block hidden text-lg font-semibold">
-                      AniSearch
+                      NotMyAnimeList
                     </span>
                   </div>
                 </a>
@@ -174,7 +73,7 @@ export function AppSidebar({
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <NavMain items={data.navMain} />
+          <NavMain />
           <div className="mx-3 group-data-[collapsible=icon]:mx-auto">
             <ThemeButton isDarkMode={isDarkMode} />
           </div>
@@ -183,8 +82,11 @@ export function AppSidebar({
           {user ? (
             <NavUser user={user} />
           ) : (
-            <a className={buttonVariants()} href="/auth/signin">
-              <SignIn className="w-5 h-5" weight="bold" />
+            <a className={buttonVariants()} href="/auth/signin"
+              onMouseEnter={() => logoutRef.current?.startAnimation()}
+              onMouseLeave={() => logoutRef.current?.stopAnimation()}
+            >
+              <LogoutIcon ref={logoutRef} />
               <span className="group-data-[collapsible=icon]:hidden">
                 Login
               </span>

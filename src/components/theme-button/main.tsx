@@ -1,6 +1,9 @@
-import { Moon, Sun } from "@phosphor-icons/react";
 import { useId, useRef, useState } from "react";
 import { toggleTheme } from "./utils";
+import { MoonIcon } from "../ui/moon";
+import { SunIcon } from "../ui/sun";
+import { buttonVariants } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 export function ThemeButton(props: {
   isDarkMode: boolean;
@@ -8,6 +11,8 @@ export function ThemeButton(props: {
   const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
+  const moonRef = useRef<IconRef>(null);
+  const sunRef = useRef<IconRef>(null);
 
   function cb(isDarkMode: boolean) {
     setIsDarkMode(isDarkMode);
@@ -25,22 +30,29 @@ export function ThemeButton(props: {
       />
       <label
         ref={ref}
-        className="group relative inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border border-input bg-background text-foreground shadow-sm shadow-black/5 transition-colors hover:bg-accent hover:text-accent-foreground peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ring/70"
+        className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'size-8 relative right-[1px]')}
         htmlFor={id}
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
+        onMouseEnter={() => {
+          moonRef.current?.startAnimation?.()
+          sunRef.current?.startAnimation?.()
+        }}
+        onMouseLeave={() => {
+          moonRef.current?.stopAnimation?.()
+          sunRef.current?.stopAnimation?.()
+        }}
       >
-        {/* Note: After dark mode implementation, rely on dark: prefix rather than peer-checked:group-[]: */}
-        <Moon
+        <MoonIcon
           size={16}
-          strokeWidth={2}
-          className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark::opacity-100"
+          className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark:opacity-100"
           aria-hidden="true"
+          ref={moonRef}
         />
-        <Sun
+        <SunIcon
           size={16}
-          strokeWidth={2}
           className="absolute shrink-0 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0"
           aria-hidden="true"
+          ref={sunRef}
         />
       </label>
     </div>
