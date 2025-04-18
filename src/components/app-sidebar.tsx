@@ -59,7 +59,7 @@ export function AppSidebar({
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton className="truncate font-semibold" asChild>
+              <SidebarMenuButton className="truncate font-semibold hover:bg-inherit" asChild>
                 <a href="/">
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
