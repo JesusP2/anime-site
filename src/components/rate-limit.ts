@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { redis } from "@/lib/db/redis";
 export const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(10, "1m"),
+  limiter: Ratelimit.slidingWindow(180, "1m"),
   analytics: true,
   /**
    * Optional prefix for the keys used in redis. This is useful if you want to share a redis

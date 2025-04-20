@@ -2,15 +2,16 @@ import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 import { logger } from "./lib/logger";
 import { ratelimit } from "./components/rate-limit";
-import { AXIOM_TOKEN } from "astro:env/server";
+import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   logger.info("request", {
     token: AXIOM_TOKEN,
+    dataset: AXIOM_DATASET,
   });
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
-    logger.info("ratelimit", res);
+    // const retryAfter = (res.reset - Date.now()) / 1000;
     return new Response("Too many requests", {
       status: 429,
     });
