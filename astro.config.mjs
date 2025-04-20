@@ -7,11 +7,11 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   output: "server",
   prefetch: {
-    defaultStrategy: "hover",
+    defaultStrategy: "viewport",
   },
-  // experimental: {
-  //   clientPrerender: true,
-  // },
+  experimental: {
+    clientPrerender: true,
+  },
   env: {
     validateSecrets: true,
     schema: {

@@ -21,6 +21,7 @@ async function sendLogs(logs: any[]) {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  console.log('middlewware')
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     return new Response("Too many requests", {
@@ -56,5 +57,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   context.locals.currentSeason = currentSeason;
-  return next();
+  const response = await next();
+  console.log('response:', await response.clone().text())
 });
