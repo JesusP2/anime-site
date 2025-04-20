@@ -44,7 +44,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.season = data[0].season;
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
-  console.log(globalThis)
+  globalThis.test = 'test';
   await sendLogs();
   context.locals.runtime.ctx.props;
   logger.info("ip:", {
