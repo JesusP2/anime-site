@@ -107,9 +107,12 @@ export function SearchWithFilters(props: Props) {
       const path = searchParams.toString()
         ? `/search?${searchParams.toString()}`
         : "/search";
+      console.log('path x1:', path)
       return path;
     }
-    return `/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`;
+    const path = `/${props.page.toLowerCase()}/${props.entityStatus}?${searchParams.toString()}`;
+    console.log('path x2:', path)
+    return path;
   }
 
   function onSearch() {
