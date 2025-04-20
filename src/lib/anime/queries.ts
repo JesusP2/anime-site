@@ -139,7 +139,6 @@ export async function getAnime(
 export async function getAnimes(
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  connectionString: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,

@@ -7,7 +7,6 @@ export function cache<
   T extends (...args: any) => Promise<Result<unknown, ActionError>>,
 >(fn: T, calculateCacheKey: (...args: Parameters<T>) => string) {
   const newFn = async (...args: Parameters<T>) => {
-    console.log('global:', globalThis.test);
     const start = Date.now();
     const key = calculateCacheKey(...args);
     const value = await redis.get(key);

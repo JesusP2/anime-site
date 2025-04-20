@@ -3,6 +3,7 @@ import { defineMiddleware } from "astro:middleware";
 import { logger } from "./lib/logger";
 import { ratelimit } from "./components/rate-limit";
 import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
+import { getConnectionString } from "./lib/utils";
 
 async function sendLogs() {
   const url = `https://api.axiom.co/v1/datasets/${AXIOM_DATASET}/ingest`;
@@ -44,7 +45,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.season = data[0].season;
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
-  globalThis.test = 'test';
+  globalThis.connectionString = getConnectionString(context);
   await sendLogs();
   context.locals.runtime.ctx.props;
   logger.info("ip:", {
