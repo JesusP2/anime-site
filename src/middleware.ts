@@ -5,14 +5,12 @@ import { ratelimit } from "./components/rate-limit";
 import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
 import { getConnectionString } from "./lib/utils";
 
-async function sendLogs() {
+async function sendLogs(logs: any[]) {
   const url = `https://api.axiom.co/v1/datasets/${AXIOM_DATASET}/ingest`;
   return fetch(url, {
     signal: AbortSignal.timeout(30_000),
     method: "POST",
-    body: JSON.stringify({
-      message: "hello",
-    }),
+    body: JSON.stringify(logs),
     headers: {
       "Content-Type": "application/x-ndjson",
       Authorization: `Bearer ${AXIOM_TOKEN}`,
@@ -46,8 +44,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
   globalThis.connectionString = getConnectionString(context);
-  await sendLogs();
-  context.locals.runtime.ctx.props;
+  await logger.info("error:", {
+    msg: "idk",
+  });
   logger.info("ip:", {
     cloudflare: context.request.headers.get("cf-connecting-ip"),
     ip: context.clientAddress,
