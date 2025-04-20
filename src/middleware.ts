@@ -1,27 +1,9 @@
 import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
-import { logger } from "./lib/logger";
 import { ratelimit } from "./components/rate-limit";
-import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
 import { getConnectionString } from "./lib/utils";
-import { ActionError } from "astro:actions";
-
-async function sendLogs(logs: any[]) {
-  const url = `https://api.axiom.co/v1/datasets/${AXIOM_DATASET}/ingest`;
-  return fetch(url, {
-    signal: AbortSignal.timeout(30_000),
-    method: "POST",
-    body: JSON.stringify(logs),
-    headers: {
-      "Content-Type": "application/x-ndjson",
-      Authorization: `Bearer ${AXIOM_TOKEN}`,
-      "User-Agent": "axiom-cloudflare/" + "0.3.0",
-    },
-  });
-}
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  console.log('middlewware')
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     return new Response("Too many requests", {
@@ -57,6 +39,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   context.locals.currentSeason = currentSeason;
-  const response = await next();
-  console.log('response:', await response.clone().text())
+  return next();
 });
