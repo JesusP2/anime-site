@@ -30,7 +30,6 @@ const mangaCardKeys = {
 export async function getManga(
   mal_id: number,
   userId: string | undefined,
-  connectionString: string,
 ): Promise<
   Result<
     FullMangaRecord & {
@@ -101,7 +100,6 @@ export async function getManga(
 export async function getMangas(
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  connectionString: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -177,7 +175,6 @@ export async function getMangasWithStatus(
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
-  connectionString: string,
 ): Promise<Result<{ data: MangaCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -268,7 +265,6 @@ export async function getMangasWithStatus(
 export async function getCarouselMangas(
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  connectionString: string,
 ): Promise<
   Result<
     Pick<FullMangaRecord, "mal_id" | "titles" | "images" | "type">[],

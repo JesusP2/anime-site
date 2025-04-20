@@ -2,10 +2,9 @@
 import MainLayout from "@/layout/main.astro";
 import { MangaDetailsPage } from "@/components/manga.page.tsx";
 import { getManga } from "@/lib/manga/queries";
-import { getConnectionString } from "@/lib/utils";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
 const userId = Astro.locals.user?.id;
-const manga = await getManga(mal_id, userId, getConnectionString(Astro));
+const manga = await getManga(mal_id, userId);
 const mangaTitle =
   (manga.success &&
     manga.value.titles?.find((title) => title.type === "English")?.title) ||

@@ -6,7 +6,6 @@ import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
 import { gameActions } from "./games";
-import { getConnectionString } from "@/lib/utils";
 import {
   createDeletePresignedUrl,
   createReadPresignedUrl,
@@ -22,7 +21,7 @@ export const server = {
       entityType: z.enum(["ANIME", "MANGA"]),
       status: z.enum(entityStatuses),
     }),
-    handler: async ({ mal_id, entityType, status }, ctx) => {
+    handler: async ({ mal_id, entityType, status }) => {
       const userId = ctx.locals.user?.id;
       if (!userId) {
         throw new ActionError({
@@ -30,7 +29,7 @@ export const server = {
           message: "Unauthorized",
         });
       }
-      const db = getDb(getConnectionString(ctx));
+      const db = getDb();
       await db
         .insert(trackedEntityTable)
         .values({

@@ -1,5 +1,4 @@
 import { getDb } from "@/lib/db/pool";
-import { getConnectionString } from "@/lib/utils";
 import type { APIRoute } from "astro";
 import { z } from "astro:content";
 import { sql } from "drizzle-orm";
@@ -39,7 +38,7 @@ export const GET: APIRoute = async (ctx) => {
       status: 400,
     });
   }
-  const db = getDb(getConnectionString(ctx));
+  const db = getDb();
   const query = sql`SELECT theme.id, anime.titles, theme.type, theme.number, theme.name, ts_rank_cd(theme.search_vector, q.query) AS rank
 	FROM theme
 	CROSS JOIN (SELECT plainto_tsquery('english', ${q.data}) AS query) as q

@@ -7,8 +7,8 @@ declare global {
   var db: PostgresJsDatabase<typeof schema>;
   var connectionString: string;
 }
-export function getDb(url: string) {
-  const client = postgres(url);
+export function getDb() {
+  const client = postgres(globalThis.connectionString);
   // if (globalThis.db) return globalThis.db;
   const db = drizzle(client, { schema });
   // globalThis.db = db;

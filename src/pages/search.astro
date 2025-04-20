@@ -13,7 +13,6 @@ import { cache } from "@/lib/redis-cache";
 import { sanitizeSearchParams } from "@/lib/utils/sanitize-searchparams";
 import { mangaFilters } from "@/lib/manga/filters";
 import { animeFilters } from "@/lib/anime/filters";
-import { getConnectionString } from "@/lib/utils";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 

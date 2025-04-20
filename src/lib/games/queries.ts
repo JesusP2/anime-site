@@ -10,11 +10,9 @@ import {
 import { err, ok } from "../result";
 import { ActionError, type ActionAPIContext } from "astro:actions";
 import { getRecordTitle } from "../anime-title";
-import type { APIContext } from "astro";
-import { getConnectionString } from "../utils";
 
-export async function getGameInfo(gameId: string, context: APIContext | ActionAPIContext) {
-  const db = getDb(getConnectionString(context));
+export async function getGameInfo(gameId: string) {
+  const db = getDb();
   const [_gameInfo] = await db
     .select({
       quizId: quizTable.id,

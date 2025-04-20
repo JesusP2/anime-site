@@ -33,7 +33,6 @@ const animeCardKeys = {
 export async function getAnime(
   mal_id: number,
   userId: string | undefined,
-  connectionString: string,
 ): Promise<
   Result<
     FullAnimeRecord & {
@@ -214,7 +213,6 @@ export async function getAnimesWithStatus(
   searchParams: URLSearchParams,
   recordsPerPage: number,
   userId: string,
-  connectionString: string,
 ): Promise<Result<{ data: AnimeCardItem[]; count: number }, ActionError>> {
   const sanitizedSearchParams = sanitizeSearchParams(
     searchParams,
@@ -305,7 +303,6 @@ export async function getAnimesWithStatus(
 export async function getCarouselAnimes(
   searchParams: URLSearchParams,
   recordsPerPage: number,
-  connectionString: string,
 ): Promise<
   Result<
     Pick<FullAnimeRecord, "mal_id" | "titles" | "images" | "type">[],
