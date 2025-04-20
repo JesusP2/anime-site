@@ -9,9 +9,9 @@ export default defineConfig({
   prefetch: {
     defaultStrategy: "hover",
   },
-  experimental: {
-    clientPrerender: true,
-  },
+  // experimental: {
+  //   clientPrerender: true,
+  // },
   env: {
     validateSecrets: true,
     schema: {

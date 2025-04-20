@@ -32,10 +32,10 @@ export async function validateTurnstileToken(
       },
     );
     if (!res.ok) {
-      logger.error("error fetching turnstile", {
+      globalThis.waitUntil(logger.error("error fetching turnstile", {
         message: await res.text().catch(() => "Could not fetch turnstile"),
         statusText: res.statusText,
-      });
+      }));
       return err(
         new ActionError({
           code: "BAD_REQUEST",
@@ -55,7 +55,7 @@ export async function validateTurnstileToken(
     );
   } catch (error) {
     if (error instanceof Error) {
-      logger.error("error fetching turnstile", error);
+      globalThis.waitUntil(logger.error("error fetching turnstile", error));
     }
     return err(
       new ActionError({

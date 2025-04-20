@@ -86,7 +86,7 @@ export async function getManga(
     );
   } catch (error) {
     if (error instanceof Error) {
-      logger.error('error getting manga', error);
+      globalThis.waitUntil(logger.error('error getting manga', error));
     }
     return err(
       new ActionError({
@@ -159,7 +159,7 @@ export async function getMangas(
     });
   } catch (error) {
     if (error instanceof Error) {
-      logger.error('error getting mangas', error);
+      globalThis.waitUntil(logger.error('error getting mangas', error));
     }
     return err(
       new ActionError({
@@ -251,7 +251,7 @@ export async function getMangasWithStatus(
     });
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`error getting mangas with status: ${entityStatus}`, error);
+      globalThis.waitUntil(logger.error(`error getting mangas with status: ${entityStatus}`, error));
     }
     return err(
       new ActionError({
@@ -301,7 +301,7 @@ export async function getCarouselMangas(
     }
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`error getting carousel mangas`, error);
+      globalThis.waitUntil(logger.error(`error getting carousel mangas`, error));
     }
     return err(
       new ActionError({

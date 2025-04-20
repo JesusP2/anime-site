@@ -12,7 +12,7 @@ const mangaTitle =
     manga.value.titles?.find((title) => title.type === "Default")?.title);
 ---
 
-<MainLayout page="mal_id" title={`Anisearch - ${mangaTitle}` || ''} description={mangaTitle || ''} image={manga.success ? manga.value.images?.jpg?.large_image_url as string : undefined}>
+<MainLayout page="mal_id" title={`${mangaTitle}` || ''} description={mangaTitle || ''} image={manga.success ? manga.value.images?.jpg?.large_image_url as string : undefined}>
   {
     manga.success ? (
       <MangaDetailsPage manga={manga.value} user={Astro.locals.user} client:load />

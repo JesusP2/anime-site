@@ -289,7 +289,7 @@ export async function getAnimesWithStatus(
     });
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`error getting anime with status: ${entityStatus}`, error);
+      globalThis.waitUntil(logger.error(`error getting anime with status: ${entityStatus}`, error));
     }
     return err(
       new ActionError({
@@ -339,7 +339,7 @@ export async function getCarouselAnimes(
     }
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`error getting carousel animes`, error);
+      globalThis.waitUntil(logger.error(`error getting carousel animes`, error));
     }
     return err(
       new ActionError({

@@ -103,7 +103,7 @@ export function AppSidebar({
               className="mx-2 data-[orientation=vertical]:h-4"
             />
             {searchProps.page === 'mal_id' && (
-              <Button variant="ghost" onClick={() => window.history.back()}>
+              <Button variant="ghost" onClick={() => window.history.state}>
                 <ArrowLeft className="size-4" weight="bold" />
               </Button>
             )}
