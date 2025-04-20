@@ -2,8 +2,12 @@ import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 import { logger } from "./lib/logger";
 import { ratelimit } from "./components/rate-limit";
+import { AXIOM_TOKEN } from "astro:env/server";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  logger.info("request", {
+    token: AXIOM_TOKEN,
+  });
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     logger.info("ratelimit", res);

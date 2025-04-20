@@ -12,4 +12,3 @@ export const logger = new Logger({
     new ConsoleTransport(),
   ],
 });
-logger.info(AXIOM_TOKEN)
