@@ -60,7 +60,7 @@ export async function getManga(
       demographics: mangaTable.demographics,
       embedding: mangaTable.embedding,
     } as const;
-    const db = getDb(connectionString);
+    const db = getDb();
     const [manga] = await db
       .select({
         ...selectKeys,
@@ -111,7 +111,7 @@ export async function getMangas(
     mangaTable,
   );
   try {
-    const db = getDb(connectionString);
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -191,7 +191,7 @@ export async function getMangasWithStatus(
   where = and(where, eq(trackedEntityTable.userId, userId));
 
   try {
-    const db = getDb(connectionString);
+    const db = getDb();
     const queryCount = db
       .select({ count: count() })
       .from(mangaTable)
@@ -282,7 +282,7 @@ export async function getCarouselMangas(
     mangaTable,
   );
   try {
-    const db = getDb(connectionString);
+    const db = getDb();
     const query = db
       .select({
         mal_id: mangaTable.mal_id,

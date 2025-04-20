@@ -11,11 +11,13 @@ export function cache<
     const key = calculateCacheKey(...args);
     const value = await redis.get(key);
     if (value) {
-      logger.info("redis_cache_hit", {
-        action: "redis_cache_hit",
-        key,
-        duration: `${Date.now() - start}ms`,
-      });
+      globalThis.waitUntil(
+        logger.info("redis_cache_hit", {
+          action: "redis_cache_hit",
+          key,
+          duration: `${Date.now() - start}ms`,
+        }),
+      );
       return ok(value);
     }
     const result = await fn(...args);
@@ -25,11 +27,13 @@ export function cache<
     await redis.set(key, JSON.stringify(result.value), {
       ex: 60 * 60 * 24 * 7,
     });
-    logger.info("redis_cache_set", {
-      action: "redis_cache_set",
-      key,
-      duration: `${Date.now() - start}ms`,
-    });
+    globalThis.waitUntil(
+      logger.info("redis_cache_set", {
+        action: "redis_cache_set",
+        key,
+        duration: `${Date.now() - start}ms`,
+      }),
+    );
     return result;
   };
   return newFn as T;

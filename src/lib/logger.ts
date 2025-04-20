@@ -45,13 +45,22 @@ class Logger {
     this.token = token;
   }
 
+  private stringifyWithErrorStack(obj: any, space: number) {
+    const customReplacer = (key: string, value: any) => {
+      return value;
+    };
+
+    return JSON.stringify(obj, customReplacer, 2);
+  }
+
   private async log(level: string, log: any) {
     const url = `https://api.axiom.co/v1/datasets/${this.dataset}/ingest`;
     log.level = level;
+    console.log(this.stringifyWithErrorStack(log, 2), JSON.stringify(log));
     await fetch(url, {
       signal: AbortSignal.timeout(10_000),
       method: "POST",
-      body: JSON.stringify(log),
+      body: JSON.stringify(log, Object.getOwnPropertyNames(log)),
       headers: {
         "Content-Type": "application/x-ndjson",
         Authorization: `Bearer ${this.token}`,
@@ -66,11 +75,11 @@ class Logger {
   }
   async error(message: string, log: any) {
     log.message = message;
-    return this.log("INFO", log);
+    return this.log("ERROR", log);
   }
   async warn(message: string, log: any) {
     log.message = message;
-    return this.log("INFO", log);
+    return this.log("WARN", log);
   }
 }
 export const logger = new Logger(AXIOM_DATASET, AXIOM_TOKEN);

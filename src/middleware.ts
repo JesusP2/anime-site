@@ -4,6 +4,7 @@ import { logger } from "./lib/logger";
 import { ratelimit } from "./components/rate-limit";
 import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
 import { getConnectionString } from "./lib/utils";
+import { ActionError } from "astro:actions";
 
 async function sendLogs(logs: any[]) {
   const url = `https://api.axiom.co/v1/datasets/${AXIOM_DATASET}/ingest`;
@@ -20,10 +21,6 @@ async function sendLogs(logs: any[]) {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  logger.info("request", {
-    token: AXIOM_TOKEN,
-    dataset: AXIOM_DATASET,
-  });
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     return new Response("Too many requests", {
@@ -44,17 +41,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
   globalThis.connectionString = getConnectionString(context);
-  await logger.info("error:", {
-    msg: "idk",
-  });
-  logger.info("ip:", {
-    cloudflare: context.request.headers.get("cf-connecting-ip"),
-    ip: context.clientAddress,
-  });
   const auth = getAuth(context);
   const isAuthed = await auth.api.getSession({
     headers: context.request.headers,
   });
+  globalThis.waitUntil = context.locals.runtime.ctx.waitUntil;
 
   if (isAuthed) {
     context.locals.user = isAuthed.user;
