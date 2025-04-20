@@ -1,6 +1,6 @@
 ---
 import "@/styles/global.css";
-import '@fontsource-variable/crimson-pro';
+import "@fontsource-variable/crimson-pro";
 import "@fontsource/geist-sans/100.css";
 import "@fontsource/geist-sans/200.css";
 import "@fontsource/geist-sans/300.css";
@@ -21,7 +21,9 @@ interface Props {
 }
 
 const { title, path } = Astro.props;
-const description = Astro.props.description || "Anisearch is a search engine for anime and manga.";
+const description =
+  Astro.props.description ||
+  "Anisearch is a search engine for anime and manga.";
 const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
 ---
 
@@ -39,10 +41,7 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta
-    property="og:image"
-    content={image}
-  />
+  <meta property="og:image" content={image} />
 
   <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -50,9 +49,10 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
   <meta property="twitter:url" content={path ? BASE_URL + path : BASE_URL} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  <meta
-    name="twitter:image"
-    content={image}
-  />
+  <meta name="twitter:image" content={image} />
   <ClientRouter />
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer></script>
 </head>

@@ -16,6 +16,10 @@ export default defineConfig({
     validateSecrets: true,
     schema: {
       ANIME_API: envField.string({ context: "client", access: "public" }),
+      CLOUDFLARE_TURNSTILE_SECRET_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+      }),
       CLOUDFLARE_TOKEN: envField.string({
         context: "server",
         access: "public",

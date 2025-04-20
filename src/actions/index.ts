@@ -7,7 +7,11 @@ import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
 import { gameActions } from "./games";
 import { getConnectionString } from "@/lib/utils";
-import { createDeletePresignedUrl, createReadPresignedUrl, createWritePresignedUrl } from "@/lib/s3";
+import {
+  createDeletePresignedUrl,
+  createReadPresignedUrl,
+  createWritePresignedUrl,
+} from "@/lib/s3";
 
 export const server = {
   games: gameActions,
@@ -18,15 +22,15 @@ export const server = {
       entityType: z.enum(["ANIME", "MANGA"]),
       status: z.enum(entityStatuses),
     }),
-    handler: async ({ mal_id, entityType, status }, context) => {
-      const userId = context.locals.user?.id;
+    handler: async ({ mal_id, entityType, status }, ctx) => {
+      const userId = ctx.locals.user?.id;
       if (!userId) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "Unauthorized",
         });
       }
-      const db = getDb(getConnectionString(context));
+      const db = getDb(getConnectionString(ctx));
       await db
         .insert(trackedEntityTable)
         .values({
@@ -47,8 +51,8 @@ export const server = {
     input: z.object({
       mal_id: z.number(),
     }),
-    handler: async ({ mal_id }, context) => {
-      const userId = context.locals.user?.id;
+    handler: async ({ mal_id }, ctx) => {
+      const userId = ctx.locals.user?.id;
       if (!userId) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -70,7 +74,7 @@ export const server = {
     input: z.object({
       q: z.string(),
     }),
-    handler: async ({ q }) => {
+    handler: async ({ q }, ctx) => {
       const embedding = await getEmbedding(q);
       return embedding;
     },

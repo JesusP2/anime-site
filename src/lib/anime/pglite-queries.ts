@@ -1,5 +1,5 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
-import { getLocalDB, pgliteAnimeTable, pgliteMangaTable } from "../pglite";
+import { getLocalDB, pgliteAnimeTable } from "../pglite";
 import type { AnimeCardItem, EntityStatus } from "@/lib/types";
 import type { FullAnimeRecord } from "../types";
 import { animeFilters } from "./filters";

@@ -1,10 +1,11 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDb } from "./db/pool";
-import { magicLink, emailOTP, username } from "better-auth/plugins";
+import { magicLink, emailOTP, username, captcha } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import {
   BETTER_AUTH_SECRET,
+  CLOUDFLARE_TURNSTILE_SECRET_KEY,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
@@ -50,6 +51,10 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       },
     },
     plugins: [
+      captcha({
+        provider: 'cloudflare-turnstile',
+        secretKey: CLOUDFLARE_TURNSTILE_SECRET_KEY,
+      }),
       username(),
       passkey(),
       magicLink({

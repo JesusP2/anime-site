@@ -69,8 +69,8 @@ export const gameActions = {
   createQuiz: defineAction({
     accept: "json",
     input: createQuizSchema,
-    handler: async (data, context) => {
-      const db = getDb(getConnectionString(context));
+    handler: async (data, ctx) => {
+      const db = getDb(getConnectionString(ctx));
       db;
       const quizId = ulid();
       if (data.isRandom) {
@@ -124,8 +124,8 @@ export const gameActions = {
       quizId: z.string().ulid(),
       gameType: z.enum(["solo", "multiplayer"]),
     }),
-    handler: async (data, context) => {
-      const db = getDb(getConnectionString(context));
+    handler: async (data, ctx) => {
+      const db = getDb(getConnectionString(ctx));
       const { quizId } = data;
 
       const gameId = ulid();
