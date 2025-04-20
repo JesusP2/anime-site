@@ -11,7 +11,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   });
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
-    // const retryAfter = (res.reset - Date.now()) / 1000;
     return new Response("Too many requests", {
       status: 429,
     });
@@ -29,9 +28,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.season = data[0].season;
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
-  logger.info("method:", {
-    method: context.request.method,
-  });
+  context.locals.runtime.ctx.waitUntil(
+    logger.info("method:", {
+      method: context.request.method,
+    }),
+  );
   logger.info("ip:", {
     cloudflare: context.request.headers.get("cf-connecting-ip"),
     ip: context.clientAddress,
