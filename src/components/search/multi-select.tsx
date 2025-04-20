@@ -20,15 +20,17 @@ import type { MangaFilters } from "@/lib/manga/filters";
 import type { AnimeFilters } from "@/lib/anime/filters";
 
 export function MultiSelect({
+  name,
   options,
   placeholder,
   value,
   onChange,
   label,
 }: {
+  name: string;
   options:
-    | AnimeFilters[keyof AnimeFilters]["options"]
-    | MangaFilters[keyof MangaFilters]["options"];
+  | AnimeFilters[keyof AnimeFilters]["options"]
+  | MangaFilters[keyof MangaFilters]["options"];
   placeholder: string;
   value: (string | boolean)[];
   onChange: (value: (string | boolean)[]) => void;
@@ -56,7 +58,7 @@ export function MultiSelect({
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
           <Command>
-            <CommandInput placeholder={`Search ${label.toLowerCase()}...`} />
+            <CommandInput name={name} placeholder={`Search ${label.toLowerCase()}...`} />
             <CommandList>
               <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
               <CommandGroup>

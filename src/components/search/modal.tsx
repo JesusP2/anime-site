@@ -31,9 +31,9 @@ type CommonProps = {
     SetStateAction<
       {
         [K in keyof AnimeFilters | keyof MangaFilters]:
-          | string[]
-          | string
-          | boolean;
+        | string[]
+        | string
+        | boolean;
       } & { q: string }
     >
   >;
@@ -89,7 +89,7 @@ export function FilterModal({
                 Basic Filters
               </h3>
               <div className="space-y-4">
-                <Idk
+                <RadioGroupFiltersSelector
                   options={basicFilters}
                   filters={_filters}
                   setFilters={_setFilters}
@@ -102,7 +102,7 @@ export function FilterModal({
                 Content Filters
               </h3>
               <div className="space-y-4">
-                <Idk
+                <RadioGroupFiltersSelector
                   options={contentFilters}
                   filters={_filters}
                   setFilters={_setFilters}
@@ -116,7 +116,7 @@ export function FilterModal({
                 Display Options
               </h3>
               <div className="space-y-4">
-                <Idk
+                <RadioGroupFiltersSelector
                   options={displayFilters}
                   filters={_filters}
                   setFilters={_setFilters}
@@ -136,7 +136,7 @@ export function FilterModal({
   );
 }
 
-function Idk({ options, filters, setFilters }: CommonProps) {
+function RadioGroupFiltersSelector({ options, filters, setFilters }: CommonProps) {
   return objectEntries(options).map(([key, value]) => {
     if (
       "type" in value &&
@@ -148,6 +148,7 @@ function Idk({ options, filters, setFilters }: CommonProps) {
           <RadioGroupFilters
             options={value.options}
             value={filters[key]}
+            name={key}
             onChange={(value) =>
               setFilters((prev) => ({ ...prev, [key]: value }))
             }
@@ -161,6 +162,7 @@ function Idk({ options, filters, setFilters }: CommonProps) {
           <MultiSelect
             options={value.options}
             placeholder={`Select ${value.label}`}
+            name={key}
             value={filters[key]}
             onChange={(value) =>
               setFilters((prev) => ({ ...prev, [key]: value }))
@@ -174,20 +176,22 @@ function Idk({ options, filters, setFilters }: CommonProps) {
 }
 
 function RadioGroupFilters({
+  name,
   label,
   options,
   value,
   onChange,
 }: {
+  name: string;
   label: string;
   options:
-    | AnimeFilters[keyof AnimeFilters]["options"]
-    | MangaFilters[keyof MangaFilters]["options"];
+  | AnimeFilters[keyof AnimeFilters]["options"]
+  | MangaFilters[keyof MangaFilters]["options"];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {
   return (
-    <RadioGroup value={value as string} onValueChange={onChange}>
+    <RadioGroup name={name} value={value as string} onValueChange={onChange}>
       <Label className="text-foreground">{label}</Label>
       {options.map((option) => (
         <div

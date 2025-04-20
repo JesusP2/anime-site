@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { FilterModal } from "./modal";
@@ -115,7 +115,8 @@ export function SearchWithFilters(props: Props) {
     return path;
   }
 
-  function onSearch() {
+  function onSearch(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const link = createSearchLink();
     safeStartViewTransition(async () => navigate(link));
   }
@@ -129,9 +130,10 @@ export function SearchWithFilters(props: Props) {
         <Input
           id="search-query"
           type="text"
+          name="q"
           placeholder="Enter your search query..."
           className="max-w-4xl w-full"
-          defaultValue={filters.q}
+          value={filters.q}
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, q: e.target.value }))
           }
