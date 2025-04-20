@@ -7,7 +7,7 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   output: "server",
   prefetch: {
-    defaultStrategy: "viewport",
+    defaultStrategy: "hover",
   },
   // experimental: {
   //   clientPrerender: true,
