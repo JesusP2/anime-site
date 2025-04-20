@@ -2,8 +2,10 @@ import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 import { ratelimit } from "./components/rate-limit";
 import { getConnectionString } from "./lib/utils";
+import { logger } from "./lib/logger";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  context.locals.runtime.ctx.waitUntil(logger.info("running middleware", {}));
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     return new Response("Too many requests", {
