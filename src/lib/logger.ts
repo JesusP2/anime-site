@@ -1,11 +1,11 @@
-import { Logger, AxiomJSTransport, ConsoleTransport } from "@axiomhq/logging";
-import type { Transport } from "@axiomhq/logging";
-import { Axiom } from "@axiomhq/js";
+// import { Logger, AxiomJSTransport, ConsoleTransport } from "@axiomhq/logging";
+// import type { Transport } from "@axiomhq/logging";
+// import { Axiom } from "@axiomhq/js";
 import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
-
-const axiom = new Axiom({
-  token: AXIOM_TOKEN,
-});
+//
+// const axiom = new Axiom({
+//   token: AXIOM_TOKEN,
+// });
 
 // class CloudflareTransport implements Transport {
 //   async log(logs: Parameters<Transport["log"]>[0]) {
