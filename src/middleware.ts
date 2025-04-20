@@ -1,8 +1,16 @@
 import { getAuth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 import { logger } from "./lib/logger";
+import { ratelimit } from "./components/rate-limit";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  const res = await ratelimit.limit(context.clientAddress);
+  if (!res.success) {
+    logger.info("ratelimit", res);
+    return new Response("Too many requests", {
+      status: 429,
+    });
+  }
   // NOTE: move this to the db
   let currentSeason = {
     year: 2025,

@@ -1,7 +1,7 @@
 import { Logger, AxiomJSTransport, ConsoleTransport } from "@axiomhq/logging";
 import { Axiom } from "@axiomhq/js";
 import { AXIOM_DATASET, AXIOM_TOKEN } from "astro:env/server";
-console.log(AXIOM_TOKEN)
+
 const axiom = new Axiom({
   token: AXIOM_TOKEN,
 });
@@ -12,3 +12,4 @@ export const logger = new Logger({
     new ConsoleTransport(),
   ],
 });
+logger.info(AXIOM_TOKEN)
