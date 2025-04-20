@@ -9,9 +9,9 @@ export default defineConfig({
   prefetch: {
     defaultStrategy: "viewport",
   },
-  experimental: {
-    clientPrerender: true,
-  },
+  // experimental: {
+  //   clientPrerender: true,
+  // },
   env: {
     validateSecrets: true,
     schema: {
