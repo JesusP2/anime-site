@@ -54,18 +54,8 @@ export function AppSidebar({
   title: string;
 }) {
   const logoutRef = useRef<IconRef>(null);
-  const [isSidebarOpenClientSide, setIsSidebarOpenClientSide] = useState(isSidebarOpen);
-  useEffect(() => {
-    document.cookie.split(";").forEach(cookie => {
-      console.log(cookie)
-      if (cookie.trim().startsWith(`${SIDEBAR_COOKIE_NAME}=`)) {
-        console.log(cookie.trim().endsWith("true"))
-        setIsSidebarOpenClientSide(cookie.trim().endsWith("true"));
-      }
-    });
-  }, [])
   return (
-    <SidebarProvider defaultOpen={isSidebarOpen} open={isSidebarOpenClientSide} onOpenChange={setIsSidebarOpenClientSide}>
+    <SidebarProvider defaultOpen={isSidebarOpen}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
