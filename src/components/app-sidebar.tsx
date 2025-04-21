@@ -11,6 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
   SidebarInset,
+  SIDEBAR_COOKIE_NAME,
 } from "@/components/ui/sidebar";
 import { Button, buttonVariants } from "./ui/button";
 import type { User } from "better-auth";
@@ -19,7 +20,7 @@ import { Separator } from "./ui/separator";
 import { SearchWithFilters } from "./search";
 import { type Entity, type EntityStatus, type IconRef } from "@/lib/types";
 import { LogoutIcon } from "./ui/logout";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
 
 type SearchProps =
@@ -53,8 +54,16 @@ export function AppSidebar({
   title: string;
 }) {
   const logoutRef = useRef<IconRef>(null);
+  const [isSidebarOpenClientSide, setIsSidebarOpenClientSide] = useState(isSidebarOpen);
+  useEffect(() => {
+    document.cookie.split(";").forEach(cookie => {
+      if (cookie.trim().startsWith(`${SIDEBAR_COOKIE_NAME}=`)) {
+        setIsSidebarOpenClientSide(cookie.trim().endsWith("true"));
+      }
+    });
+  }, [])
   return (
-    <SidebarProvider defaultOpen={isSidebarOpen}>
+    <SidebarProvider defaultOpen={isSidebarOpen} open={isSidebarOpenClientSide} onOpenChange={setIsSidebarOpenClientSide}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
