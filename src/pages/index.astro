@@ -5,6 +5,7 @@ import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import ThemeButton from "@/components/theme-button/landing.astro";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
+Astro.response.headers.set('CDN-Cache-Control', 'max-age=86400');
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
@@ -56,6 +57,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       const clouds1 = document.querySelectorAll(".clouds");
       const clouds2 = document.querySelectorAll(".clouds-2");
       createCloudAnimations(clouds1, clouds2);
+      console.log('running x1')
     </script>
   </body>
 </html>
