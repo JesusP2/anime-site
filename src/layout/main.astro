@@ -54,5 +54,13 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         <SignInButton slot="fallback" client:load />
       </NavUserWrapper>
     </AppSidebar>
+    <script is:inline>
+      import { themeButtonId } from "@/lib/constants";
+      const isDarkMode = document.cookie.includes("theme=dark");
+      const themeButton = document.querySelector(`#${themeButtonId}`);
+      if (themeButton) {
+        themeButton.checked = isDarkMode;
+      }
+    </script>
   </body>
 </html>

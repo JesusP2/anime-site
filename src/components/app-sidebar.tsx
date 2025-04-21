@@ -43,7 +43,7 @@ export function AppSidebar({
   searchProps,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  dropdown: React.ReactNode;
+  dropdown?: React.ReactNode;
   isSidebarOpen: boolean;
   isDarkMode: boolean;
   user: User | null;

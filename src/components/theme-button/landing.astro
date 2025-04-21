@@ -21,7 +21,6 @@ const { isDarkMode } = Astro.props;
     for="theme"
     aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}></label>
 
-  {/* Sun Icon - Visible in Light Mode */}
   <div
     class="bg-[url('/sun.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10 dark:opacity-0 dark:invisible transition-opacity duration-300"
     style={{
@@ -30,7 +29,6 @@ const { isDarkMode } = Astro.props;
     aria-hidden={isDarkMode}
   >
   </div>
-  {/* Moon Icon - Visible in Dark Mode */}
   <div
     class="bg-[url('/moon.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10 opacity-0 invisible dark:opacity-100 dark:visible transition-opacity duration-300"
     style={{
@@ -56,6 +54,6 @@ const { isDarkMode } = Astro.props;
     );
   }
   $input?.addEventListener("change", (e) => {
-    toggleTheme(e.target.checked, $label, cb);
+    toggleTheme(e.target?.checked, $label, cb);
   });
 </script>

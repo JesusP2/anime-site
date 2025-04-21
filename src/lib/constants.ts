@@ -12,3 +12,4 @@ export const entityStatuses = [
 
 export const animeEntity = "Anime";
 export const mangaEntity = "Manga";
+export const themeButtonId = "theme-button-super-unique-id";

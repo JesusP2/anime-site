@@ -1,14 +1,15 @@
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toggleTheme } from "./utils";
 import { MoonIcon } from "../ui/moon";
 import { SunIcon } from "../ui/sun";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import type { IconRef } from "@/lib/types";
+import { themeButtonId } from "@/lib/constants";
 
 export function ThemeButton(props: {
   isDarkMode: boolean;
 }) {
-  const id = useId();
   const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
   const ref = useRef<HTMLLabelElement>(null);
   const moonRef = useRef<IconRef>(null);
@@ -22,8 +23,8 @@ export function ThemeButton(props: {
     <div className="flex flex-col justify-center">
       <input
         type="checkbox"
-        name={id}
-        id={id}
+        name={themeButtonId}
+        id={themeButtonId}
         className="peer sr-only"
         checked={isDarkMode}
         onChange={(e) => toggleTheme(e.target.checked, ref.current, cb)}
@@ -31,7 +32,7 @@ export function ThemeButton(props: {
       <label
         ref={ref}
         className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'size-8 relative right-[1px]')}
-        htmlFor={id}
+        htmlFor={themeButtonId}
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
         onMouseEnter={() => {
           moonRef.current?.startAnimation?.()
