@@ -13,7 +13,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 Astro.locals.runtime.ctx.waitUntil(logger.info('auth layout page', {
   url: Astro.url.toString(),
 }));
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+// Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
