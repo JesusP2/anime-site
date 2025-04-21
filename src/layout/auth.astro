@@ -9,6 +9,7 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
