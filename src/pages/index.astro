@@ -5,7 +5,7 @@ import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import ThemeButton from "@/components/theme-button/landing.astro";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
-Astro.response.headers.set('CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
