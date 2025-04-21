@@ -55,4 +55,12 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
     src="https://challenges.cloudflare.com/turnstile/v0/api.js"
     async
     defer></script>
+  <script is:inline>
+    const isDarkMode = document.cookie.includes("theme=dark");
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
 </head>
