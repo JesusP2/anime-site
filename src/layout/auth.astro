@@ -3,12 +3,16 @@ import ThemeButton from "@/components/theme-button/landing.astro";
 import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import Head from "@/components/head.astro";
+import { logger } from "@/lib/logger";
 interface Props {
   title: string;
   description?: string;
 }
 const { title, description } = Astro.props;
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
+logger.info('auth layout page', {
+  url: Astro.url.toString(),
+})
 Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
