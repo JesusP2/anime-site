@@ -33,7 +33,6 @@ if (user && !user.image) {
 }
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
-Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
