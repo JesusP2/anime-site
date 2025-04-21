@@ -10,6 +10,7 @@ const mangaTitle =
     manga.value.titles?.find((title) => title.type === "English")?.title) ||
   (manga.success &&
     manga.value.titles?.find((title) => title.type === "Default")?.title);
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <MainLayout page="mal_id" title={`${mangaTitle}` || ''} description={mangaTitle || ''} image={manga.success ? manga.value.images?.jpg?.large_image_url as string : undefined}>

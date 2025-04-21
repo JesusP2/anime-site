@@ -11,6 +11,7 @@ const animeTitle =
     anime.value.titles?.find((title) => title.type === "English")?.title) ||
   (anime.success &&
     anime.value.titles?.find((title) => title.type === "Default")?.title);
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <MainLayout page="mal_id" title={`${animeTitle}` || ''} description={animeTitle || ''} image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>

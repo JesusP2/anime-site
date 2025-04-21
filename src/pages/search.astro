@@ -30,6 +30,7 @@ const fn =
       });
 const records = await fn(searchParams, recordsPerPage);
 const searchType = (searchParams.get("searchType") ?? animeEntity) as Entity;
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
 <MainLayout title="Anime Search" searchType={searchType} page="Search">

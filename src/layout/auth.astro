@@ -3,16 +3,12 @@ import ThemeButton from "@/components/theme-button/landing.astro";
 import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import Head from "@/components/head.astro";
-import { logger } from "@/lib/logger";
 interface Props {
   title: string;
   description?: string;
 }
 const { title, description } = Astro.props;
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
-Astro.locals.runtime.ctx.waitUntil(logger.info('auth layout page', {
-  url: Astro.url.toString(),
-}));
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
