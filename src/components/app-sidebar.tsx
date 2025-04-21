@@ -1,5 +1,4 @@
 import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -11,16 +10,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
   SidebarInset,
-  SIDEBAR_COOKIE_NAME,
 } from "@/components/ui/sidebar";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import type { User } from "better-auth";
 import { ThemeButton } from "./theme-button/main";
 import { Separator } from "./ui/separator";
 import { SearchWithFilters } from "./search";
-import { type Entity, type EntityStatus, type IconRef } from "@/lib/types";
-import { LogoutIcon } from "./ui/logout";
-import { useEffect, useRef, useState } from "react";
+import { type Entity, type EntityStatus } from "@/lib/types";
 import { ArrowLeft } from "@phosphor-icons/react";
 
 type SearchProps =
@@ -39,6 +35,7 @@ type SearchProps =
 export function AppSidebar({
   children,
   user,
+  dropdown,
   isSidebarOpen,
   isDarkMode,
   url,
@@ -46,6 +43,7 @@ export function AppSidebar({
   searchProps,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
+  dropdown: React.ReactNode;
   isSidebarOpen: boolean;
   isDarkMode: boolean;
   user: User | null;
@@ -53,7 +51,6 @@ export function AppSidebar({
   url: string;
   title: string;
 }) {
-  const logoutRef = useRef<IconRef>(null);
   return (
     <SidebarProvider defaultOpen={isSidebarOpen}>
       <Sidebar collapsible="icon" {...props}>
@@ -80,19 +77,7 @@ export function AppSidebar({
           </div>
         </SidebarContent>
         <SidebarFooter>
-          {user ? (
-            <NavUser user={user} />
-          ) : (
-            <a className={buttonVariants()} href="/auth/signin"
-              onMouseEnter={() => logoutRef.current?.startAnimation()}
-              onMouseLeave={() => logoutRef.current?.stopAnimation()}
-            >
-              <LogoutIcon ref={logoutRef} />
-              <span className="group-data-[collapsible=icon]:hidden">
-                Login
-              </span>
-            </a>
-          )}
+          {dropdown}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className="border">

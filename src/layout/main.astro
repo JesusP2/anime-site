@@ -4,6 +4,8 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
 import type { Entity, EntityStatus } from "@/lib/types";
 import { createReadPresignedUrl } from "@/lib/s3";
+import NavUserWrapper from "@/components/nav-user-wrapper.astro";
+import { SignInButton } from "@/components/signin-button";
 
 type Props = {
   title: string;
@@ -31,7 +33,7 @@ if (user && !user.image) {
 }
 const isSidebarOpen = Astro.cookies.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
@@ -49,6 +51,9 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
       client:load
     >
       <slot />
+      <NavUserWrapper server:defer slot="dropdown">
+        <SignInButton slot="fallback" client:load />
+      </NavUserWrapper>
     </AppSidebar>
   </body>
 </html>

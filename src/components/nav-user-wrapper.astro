@@ -1,0 +1,6 @@
+---
+import { NavUser } from "@/components/nav-user";
+const user = Astro.locals.user;
+---
+
+<NavUser user={user} client:load />

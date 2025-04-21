@@ -12,19 +12,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
-  SidebarMenuButton,
+  sidebarMenuButtonVariants,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import type { User } from "better-auth";
+import { cn } from "@/lib/utils";
+import { SignInButton } from "./signin-button";
 
-export function NavUser({ user }: { user: User }) {
-  const { isMobile } = useSidebar();
-
+export function NavUser({ user }: { user: User | null }) {
   async function handleLogout() {
     await authClient.signOut();
     window.location.reload();
+  }
+
+  if (!user) {
+    return <SignInButton />;
   }
 
   return (
@@ -32,9 +35,10 @@ export function NavUser({ user }: { user: User }) {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            <button
+              data-slot="sidebar-menu-button"
+              data-sidebar="menu-button"
+              className={cn(sidebarMenuButtonVariants({ variant: 'default', size: 'lg' }), "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground")}
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
@@ -47,11 +51,10 @@ export function NavUser({ user }: { user: User }) {
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <CaretUpDown weight="bold" className="ml-auto size-4" />
-            </SidebarMenuButton>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
