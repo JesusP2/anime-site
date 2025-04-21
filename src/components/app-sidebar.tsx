@@ -108,9 +108,9 @@ export function AppSidebar({
                 <ArrowLeft className="size-4" weight="bold" />
               </Button>
             )}
-            <h1 className="mr-4 whitespace-nowrap">
+            <h2 className="mr-4 whitespace-nowrap">
               {title}
-            </h1>
+            </h2>
             <SearchWithFilters url={url} {...searchProps} />
           </div>
         </header>

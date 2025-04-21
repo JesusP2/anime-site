@@ -1,0 +1,11 @@
+---
+import type { User } from "better-auth";
+type Props = {
+  user: User | null;
+}
+const { user } = Astro.props;
+---
+<div>
+  <h1>Test Server Island</h1>
+  {user ? 'Logged in' : 'Not logged in'}
+</div>
