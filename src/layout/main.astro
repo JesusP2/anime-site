@@ -51,11 +51,27 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       </NavUserWrapper>
     </AppSidebar>
     <script is:inline>
-    console.log('script running')
-      const $sidebar = document.getElementById("sidebar");
-      const isSidebarOpen = document.cookie.includes(`sidebar_state=true`);
-      $sidebar?.setAttribute("data-state", isSidebarOpen ? "expanded" : "collapsed");
-      $sidebar?.setAttribute("data-collapsible", isSidebarOpen ? "" : "icon");
+      function updateSidebarState() {
+        const $sidebar = document.getElementById("sidebar");
+        // Check if the cookie exists and has the value 'true'
+        const isSidebarOpen = document.cookie.split('; ').some(row => row.startsWith('sidebar_state=') && row.split('=')[1] === 'true');
+        if ($sidebar) {
+          $sidebar.setAttribute("data-state", isSidebarOpen ? "expanded" : "collapsed");
+          // Only set data-collapsible if it's meant to be collapsed
+          if (!isSidebarOpen) {
+            $sidebar.setAttribute("data-collapsible", "icon");
+          } else {
+            // Remove the attribute if it's expanded
+            $sidebar.removeAttribute("data-collapsible");
+          }
+        }
+      }
+
+      // Run on initial load
+      updateSidebarState();
+
+      // Run after view transitions
+      document.addEventListener('astro:after-swap', updateSidebarState);
     </script>
   </body>
 </html>
