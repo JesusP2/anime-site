@@ -51,7 +51,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       </NavUserWrapper>
     </AppSidebar>
     <script is:inline>
-      function updateSidebarState(document) {
+      function updateSidebarState() {
         const $sidebar = document.getElementById("sidebar");
         // Check if the cookie exists and has the value 'true'
         const isSidebarOpen = document.cookie
@@ -62,7 +62,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
           );
         if ($sidebar) {
           console.log("inline script:", Date.now());
-          console.log('isSidebarOpen: ', isSidebarOpen);
+          console.log("isSidebarOpen: ", isSidebarOpen);
           $sidebar.setAttribute(
             "data-state",
             isSidebarOpen ? "expanded" : "collapsed",
@@ -77,10 +77,8 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         }
       }
 
-      updateSidebarState(document);
-      document.addEventListener("astro:after-swap", (event) => {
-        updateSidebarState(event.document);
-      });
+      updateSidebarState();
+      document.addEventListener("astro:after-swap", updateSidebarState);
     </script>
   </body>
 </html>
