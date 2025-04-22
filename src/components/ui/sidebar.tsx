@@ -184,7 +184,7 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
-  console.log('sidebar log - state: ', state)
+  console.log('sidebar log - state: ', state, "collapsible: ", collapsible)
   if (collapsible === "none") {
     return (
       <div
@@ -225,7 +225,7 @@ function Sidebar({
     );
   }
 
-  console.log('render - state x2: ', state)
+  console.log('sidebar log - state x2: ', state, "collapsible: ", collapsible)
   return (
     <div
       suppressHydrationWarning

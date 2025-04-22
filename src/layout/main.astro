@@ -50,11 +50,5 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         <SignInButton slot="fallback" client:load />
       </NavUserWrapper>
     </AppSidebar>
-    <!-- <script is:inline> -->
-    <!--   const $sidebar = document.getElementById("sidebar"); -->
-    <!--   const isSidebarOpen = document.cookie.includes(`sidebar_state=true`); -->
-    <!--   $sidebar?.setAttribute("data-state", isSidebarOpen ? "expanded" : "collapsed"); -->
-    <!--   $sidebar?.setAttribute("data-collapsible", isSidebarOpen ? "" : "icon"); -->
-    <!-- </script> -->
   </body>
 </html>
