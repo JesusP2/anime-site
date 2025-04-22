@@ -96,6 +96,9 @@ function SidebarProvider({
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
+    if (firstRender && 'document' in globalThis) {
+      setFirstRender(false);
+    }
     const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
     if (isSidebarOpen) {
       isMobile ? setOpenMobile(true) : setOpen(true);
@@ -120,7 +123,6 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
   if (firstRender && 'document' in globalThis) {
-    setFirstRender(false);
     state = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`) ? 'expanded' : 'collapsed';
   }
 
