@@ -1,6 +1,6 @@
 export function createCloudAnimations(
-  clouds1: HTMLElement[] | null,
-  clouds2: HTMLElement[] | null,
+  clouds1: NodeListOf<Element>,
+  clouds2: NodeListOf<Element>,
 ) {
   const cloudKeyframes1 = [
     { transform: "translate(0%, 0px)" },
