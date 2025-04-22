@@ -1,32 +1,22 @@
 ---
-interface Props {
-  isDarkMode: boolean;
-}
 
-const { isDarkMode } = Astro.props;
 ---
 
 <div
   class="flex flex-col justify-center absolute top-0 left-[calc(50%-80px)] size-40"
 >
-  <input
-    type="checkbox"
-    name="theme"
-    id="theme"
-    class="peer sr-only z-50"
-    checked={isDarkMode}
-  />
+  <input type="checkbox" name="theme" id="theme" class="peer sr-only z-50" />
   <label
     class="absolute top-0 size-40 z-50 cursor-pointer"
-    for="theme"
-    aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}></label>
+    id="theme-label"
+    for="theme"></label>
 
   <div
     class="bg-[url('/sun.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10 dark:opacity-0 dark:invisible transition-opacity duration-300"
     style={{
       "view-transition-name": "theme-icon-sun",
     }}
-    aria-hidden={isDarkMode}
+    id="theme-icon-sun"
   >
   </div>
   <div
@@ -34,7 +24,7 @@ const { isDarkMode } = Astro.props;
     style={{
       "view-transition-name": "theme-icon-moon",
     }}
-    aria-hidden={!isDarkMode}
+    id="theme-icon-moon"
   >
   </div>
 </div>
@@ -42,17 +32,23 @@ const { isDarkMode } = Astro.props;
   import { toggleTheme } from "./landing-utils";
   const $label = document.querySelector<HTMLLabelElement>("label");
   const $input = document.querySelector<HTMLInputElement>("input");
+  const $iconSun = document.querySelector<HTMLDivElement>("#theme-icon-sun");
+  const $iconMoon = document.querySelector<HTMLDivElement>("#theme-icon-moon");
   const isDarkMode = document.cookie.includes("theme=dark");
-  if ($input) {
-    $input.checked = isDarkMode;
-  }
 
   function cb(isDarkMode: boolean) {
     $label?.setAttribute(
       "aria-label",
       `Switch to ${isDarkMode ? "light" : "dark"} mode`,
     );
+    $iconSun?.setAttribute("aria-hidden", isDarkMode.toString());
+    $iconMoon?.setAttribute("aria-hidden", (!isDarkMode).toString());
   }
+  if ($input) {
+    $input.checked = isDarkMode;
+    cb(isDarkMode);
+  }
+
   $input?.addEventListener("change", (e) => {
     toggleTheme(e.target?.checked, $label, cb);
   });

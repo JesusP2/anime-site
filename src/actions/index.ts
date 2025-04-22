@@ -1,7 +1,7 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { getDb } from "@/lib/db/pool";
-import { trackedEntityTable } from "@/lib/db/schemas";
+import { animeTable, mangaTable, trackedEntityTable } from "@/lib/db/schemas";
 import { and, eq } from "drizzle-orm";
 import { getEmbedding } from "@/lib/semantic-search";
 import { entityStatuses } from "@/lib/constants";
@@ -21,7 +21,7 @@ export const server = {
       entityType: z.enum(["ANIME", "MANGA"]),
       status: z.enum(entityStatuses),
     }),
-    handler: async ({ mal_id, entityType, status }) => {
+    handler: async ({ mal_id, entityType, status }, ctx) => {
       const userId = ctx.locals.user?.id;
       if (!userId) {
         throw new ActionError({
@@ -73,9 +73,58 @@ export const server = {
     input: z.object({
       q: z.string(),
     }),
-    handler: async ({ q }, ctx) => {
+    handler: async ({ q }) => {
       const embedding = await getEmbedding(q);
       return embedding;
+    },
+  }),
+  getEmbeddingFromMalId: defineAction({
+    accept: "json",
+    input: z.object({
+      mal_id: z.number(),
+      entity: z.enum(["ANIME", "MANGA"]),
+    }),
+    handler: async ({ mal_id, entity }) => {
+      const db = getDb();
+      const table = entity === "ANIME" ? animeTable : mangaTable;
+      const [record] = await db
+        .select({
+          embedding: table.embedding,
+        })
+        .from(table)
+        .where(eq(table.mal_id, mal_id))
+        .limit(1);
+      if (!record) return null;
+      return record.embedding;
+    },
+  }),
+  getStatusFromMalId: defineAction({
+    accept: "json",
+    input: z.object({
+      mal_id: z.number(),
+      entity: z.enum(["ANIME", "MANGA"]),
+    }),
+    handler: async ({ mal_id, entity }, ctx) => {
+      if (!ctx.locals.user?.id) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized",
+        });
+      }
+      const db = getDb();
+      const [record] = await db
+        .select({
+          entityStatus: trackedEntityTable.entityStatus,
+        })
+        .from(trackedEntityTable)
+        .where(
+          and(
+            eq(trackedEntityTable.mal_id, mal_id),
+            eq(trackedEntityTable.entityType, entity),
+          ),
+        )
+        .limit(1);
+      return record?.entityStatus ?? "not-started";
     },
   }),
   createReadPresignedUrl: defineAction({

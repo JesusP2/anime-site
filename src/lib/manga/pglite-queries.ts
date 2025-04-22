@@ -32,7 +32,8 @@ async function getEmbedding(q: string) {
 }
 
 export async function updateLocalManga(
-  data: (MangaCardItem | FullMangaRecord) & { embedding: number[] },
+  data: MangaCardItem | FullMangaRecord,
+  embedding: number[],
   entityStatus: EntityStatus,
 ) {
   const { db } = await getLocalDB();
@@ -50,7 +51,7 @@ export async function updateLocalManga(
     genres: data.genres,
     status: data.status,
     popularity: data.popularity,
-    embedding: data.embedding,
+    embedding,
   };
   await db
     .insert(pgliteMangaTable)

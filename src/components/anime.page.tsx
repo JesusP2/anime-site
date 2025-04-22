@@ -1,5 +1,4 @@
-import type { EntityStatus, FullAnimeRecord } from "@/lib/types";
-import type { User } from "better-auth";
+import type { FullAnimeRecord } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -41,13 +40,7 @@ import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
 import { getRecordTitle } from "@/lib/anime-title";
 
-type Props = {
-  anime: FullAnimeRecord & { entityStatus?: EntityStatus; embedding: number[] };
-  user: User | null;
-};
-
-export function AnimeDetailsPage({ anime, user }: Props) {
-  const [status, setStatus] = useState(anime.entityStatus as EntityStatus);
+export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
@@ -65,6 +58,7 @@ export function AnimeDetailsPage({ anime, user }: Props) {
     }
   };
 
+  // TODO: fetch on hover
   useEffect(() => {
     if (reviewsOpen && reviews.length === 0) {
       fetchAnimeReviews();
@@ -114,11 +108,8 @@ export function AnimeDetailsPage({ anime, user }: Props) {
               <div className="mt-4 space-y-2">
                 <StatusSelector
                   data={anime}
-                  status={status}
-                  setStatus={setStatus}
                   entityType="ANIME"
                   className="w-full"
-                  user={user}
                 />
               </div>
             </CardContent>

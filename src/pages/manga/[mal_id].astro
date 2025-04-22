@@ -3,20 +3,26 @@ import MainLayout from "@/layout/main.astro";
 import { MangaDetailsPage } from "@/components/manga.page.tsx";
 import { getManga } from "@/lib/manga/queries";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
-const userId = Astro.locals.user?.id;
-const manga = await getManga(mal_id, userId);
+const manga = await getManga(mal_id);
 const mangaTitle =
   (manga.success &&
     manga.value.titles?.find((title) => title.type === "English")?.title) ||
   (manga.success &&
     manga.value.titles?.find((title) => title.type === "Default")?.title);
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
-<MainLayout page="mal_id" title={`${mangaTitle}` || ''} description={mangaTitle || ''} image={manga.success ? manga.value.images?.jpg?.large_image_url as string : undefined}>
+<MainLayout
+  page="mal_id"
+  title={`${mangaTitle}` || ""}
+  description={mangaTitle || ""}
+  image={manga.success
+    ? (manga.value.images?.jpg?.large_image_url as string)
+    : undefined}
+>
   {
     manga.success ? (
-      <MangaDetailsPage manga={manga.value} user={Astro.locals.user} client:load />
+      <MangaDetailsPage manga={manga.value} client:load />
     ) : (
       <div>Error</div>
     )

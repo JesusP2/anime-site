@@ -36,23 +36,19 @@ export function AppSidebar({
   children,
   user,
   dropdown,
-  isSidebarOpen,
-  isDarkMode,
   url,
   title,
   searchProps,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   dropdown?: React.ReactNode;
-  isSidebarOpen: boolean;
-  isDarkMode: boolean;
   user: User | null;
   searchProps: SearchProps;
   url: string;
   title: string;
 }) {
   return (
-    <SidebarProvider defaultOpen={isSidebarOpen}>
+    <SidebarProvider>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
@@ -73,7 +69,7 @@ export function AppSidebar({
         <SidebarContent>
           <NavMain />
           <div className="mx-3 group-data-[collapsible=icon]:mx-auto">
-            <ThemeButton isDarkMode={isDarkMode} />
+            <ThemeButton />
           </div>
         </SidebarContent>
         <SidebarFooter>

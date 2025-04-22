@@ -32,13 +32,9 @@ const animeCardKeys = {
 
 export async function getAnime(
   mal_id: number,
-  userId: string | undefined,
 ): Promise<
   Result<
-    FullAnimeRecord & {
-      entityStatus: EntityStatus | null;
-      embedding: number[] | null;
-    },
+    FullAnimeRecord,
     ActionError
   >
 > {
@@ -70,49 +66,12 @@ export async function getAnime(
       staff: animeTable.staff,
       episodes_info: animeTable.episodes_info,
       streaming: animeTable.streaming,
-      embedding: animeTable.embedding,
     } as const;
-    if (userId) {
-      const db = getDb();
-      const [anime] = await db
-        .select({
-          ...selectKeys,
-          entityStatus: trackedEntityTable.entityStatus,
-        })
-        .from(animeTable)
-        .where(eq(animeTable.mal_id, mal_id))
-        .leftJoin(
-          trackedEntityTable,
-          and(
-            eq(animeTable.mal_id, trackedEntityTable.mal_id),
-            eq(trackedEntityTable.userId, userId),
-          ),
-        );
-      if (anime) {
-        return ok(anime);
-      }
-      return err(
-        new ActionError({
-          code: "NOT_FOUND",
-          message: "Could not get anime",
-        }),
-      );
-    }
     const db = getDb();
     const [anime] = await db
-      .select({
-        ...selectKeys,
-        entityStatus: trackedEntityTable.entityStatus,
-      })
+      .select(selectKeys)
       .from(animeTable)
       .where(eq(animeTable.mal_id, mal_id))
-      .leftJoin(
-        trackedEntityTable,
-        and(
-          eq(animeTable.mal_id, trackedEntityTable.mal_id),
-          eq(trackedEntityTable.userId, userId ?? "0"),
-        ),
-      );
     if (anime) {
       return ok(anime);
     }

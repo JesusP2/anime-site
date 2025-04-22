@@ -1,5 +1,4 @@
-import type { EntityStatus, FullMangaRecord } from "@/lib/types";
-import type { User } from "better-auth";
+import type { FullMangaRecord } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -14,17 +13,12 @@ import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
 import { getRecordTitle } from "@/lib/anime-title";
 
-type Props = {
-  manga: FullMangaRecord & { entityStatus?: EntityStatus; embedding: number[] };
-  user: User | null;
-};
-
-export function MangaDetailsPage({ manga, user }: Props) {
-  const [status, setStatus] = useState(manga.entityStatus as EntityStatus);
+export function MangaDetailsPage({ manga }: { manga: FullMangaRecord }) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
 
+  // TODO: fetch on hover
   useEffect(() => {
     if (reviewsOpen && reviews.length === 0) {
       fetchMangaReviews();
@@ -73,11 +67,8 @@ export function MangaDetailsPage({ manga, user }: Props) {
               <div className="mt-4 space-y-2">
                 <StatusSelector
                   data={manga}
-                  status={status}
-                  setStatus={setStatus}
                   entityType="MANGA"
                   className="w-full"
-                  user={user}
                 />
               </div>
             </CardContent>

@@ -4,8 +4,7 @@ import MainLayout from "@/layout/main.astro";
 import { AnimeDetailsPage } from "@/components/anime.page.tsx";
 import { getAnime } from "@/lib/anime/queries";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
-const userId = Astro.locals.user?.id;
-const anime = await getAnime(mal_id, userId);
+const anime = await getAnime(mal_id);
 const animeTitle =
   (anime.success &&
     anime.value.titles?.find((title) => title.type === "English")?.title) ||
@@ -14,10 +13,13 @@ const animeTitle =
 Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 ---
 
-<MainLayout page="mal_id" title={`${animeTitle}` || ''} description={animeTitle || ''} image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>
+<MainLayout
+  page="mal_id" title={`${animeTitle}` || ''}
+  description={animeTitle || ''}
+  image={anime.success ? anime.value.images?.jpg?.large_image_url as string : undefined}>
   {
     anime.success ? (
-      <AnimeDetailsPage anime={anime.value} user={Astro.locals.user} client:load />
+      <AnimeDetailsPage anime={anime.value} client:load />
     ) : (
       <div>Error</div>
     )

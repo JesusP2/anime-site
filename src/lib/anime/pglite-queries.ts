@@ -35,7 +35,8 @@ async function getEmbedding(q: string) {
 }
 
 export async function updateLocalAnime(
-  data: (AnimeCardItem | FullAnimeRecord) & { embedding: number[] },
+  data: AnimeCardItem | FullAnimeRecord,
+  embedding: number[],
   entityStatus: EntityStatus,
 ) {
   const { db } = await getLocalDB();
@@ -56,7 +57,7 @@ export async function updateLocalAnime(
     genres: data.genres,
     status: data.status,
     popularity: data.popularity,
-    embedding: data.embedding,
+    embedding,
   };
   await db
     .insert(pgliteAnimeTable)

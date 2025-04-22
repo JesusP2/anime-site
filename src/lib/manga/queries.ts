@@ -29,13 +29,9 @@ const mangaCardKeys = {
 
 export async function getManga(
   mal_id: number,
-  userId: string | undefined,
 ): Promise<
   Result<
-    FullMangaRecord & {
-      entityStatus: EntityStatus | null;
-      embedding: number[] | null;
-    },
+    FullMangaRecord,
     ActionError
   >
 > {
@@ -58,23 +54,14 @@ export async function getManga(
       members: mangaTable.members,
       synopsis: mangaTable.synopsis,
       demographics: mangaTable.demographics,
-      embedding: mangaTable.embedding,
     } as const;
     const db = getDb();
     const [manga] = await db
       .select({
         ...selectKeys,
-        entityStatus: trackedEntityTable.entityStatus,
       })
       .from(mangaTable)
-      .where(eq(mangaTable.mal_id, mal_id))
-      .leftJoin(
-        trackedEntityTable,
-        and(
-          eq(mangaTable.mal_id, trackedEntityTable.mal_id),
-          eq(trackedEntityTable.userId, userId ?? "0"),
-        ),
-      );
+      .where(eq(mangaTable.mal_id, mal_id));
     if (manga) {
       return ok(manga);
     }
@@ -86,7 +73,7 @@ export async function getManga(
     );
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error('error getting manga', error));
+      globalThis.waitUntil(logger.error("error getting manga", error));
     }
     return err(
       new ActionError({
@@ -159,7 +146,7 @@ export async function getMangas(
     });
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error('error getting mangas', error));
+      globalThis.waitUntil(logger.error("error getting mangas", error));
     }
     return err(
       new ActionError({
@@ -251,7 +238,12 @@ export async function getMangasWithStatus(
     });
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error(`error getting mangas with status: ${entityStatus}`, error));
+      globalThis.waitUntil(
+        logger.error(
+          `error getting mangas with status: ${entityStatus}`,
+          error,
+        ),
+      );
     }
     return err(
       new ActionError({
@@ -301,7 +293,9 @@ export async function getCarouselMangas(
     }
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error(`error getting carousel mangas`, error));
+      globalThis.waitUntil(
+        logger.error(`error getting carousel mangas`, error),
+      );
     }
     return err(
       new ActionError({

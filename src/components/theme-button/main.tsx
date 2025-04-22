@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toggleTheme } from "./utils";
 import { MoonIcon } from "../ui/moon";
 import { SunIcon } from "../ui/sun";
@@ -7,10 +7,8 @@ import { cn } from "@/lib/utils";
 import type { IconRef } from "@/lib/types";
 import { themeButtonId } from "@/lib/constants";
 
-export function ThemeButton(props: {
-  isDarkMode: boolean;
-}) {
-  const [isDarkMode, setIsDarkMode] = useState(props.isDarkMode);
+export function ThemeButton() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const ref = useRef<HTMLLabelElement>(null);
   const moonRef = useRef<IconRef>(null);
   const sunRef = useRef<IconRef>(null);
@@ -18,6 +16,11 @@ export function ThemeButton(props: {
   function cb(isDarkMode: boolean) {
     setIsDarkMode(isDarkMode);
   }
+
+  useEffect(() => {
+    const isDarkMode = document.cookie.includes("theme=dark");
+    setIsDarkMode(isDarkMode);
+  }, [])
 
   return (
     <div className="flex flex-col justify-center">

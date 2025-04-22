@@ -1,6 +1,7 @@
 import {
   CalendarCheck,
   CheckCircle,
+  Clock,
   MonitorPlay,
   PauseCircle,
   Trash,
@@ -26,8 +27,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { actions } from "astro:actions";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import type { User } from "better-auth";
+import { useEffect, useState } from "react";
 import type {
   EntityStatus,
   FullAnimeRecord,
@@ -45,74 +45,76 @@ import {
 } from "@/lib/manga/pglite-queries";
 import { entityStatuses } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 type Props = {
-  user: User | null;
   className?: string;
-  status?: EntityStatus;
-  setStatus: Dispatch<SetStateAction<EntityStatus>>;
 } & (
-  | {
+    | {
       entityType: "ANIME";
-      data: FullAnimeRecord & {
-        entityStatus?: EntityStatus;
-        embedding: number[];
-      };
+      data: FullAnimeRecord;
     }
-  | {
+    | {
       entityType: "MANGA";
-      data: FullMangaRecord & {
-        entityStatus?: EntityStatus;
-        embedding: number[];
-      };
+      data: FullMangaRecord;
     }
-);
+  );
 
 export function StatusSelector({
   data,
   entityType,
-  user,
   className,
-  status,
-  setStatus,
 }: Props) {
+  const [status, setStatus] = useState<EntityStatus | 'loading'>('loading');
+  const [embedding, setEmbedding] = useState<number[] | null>(null);
   const [open, setOpen] = useState(false);
+  const session = authClient.useSession();
 
   useEffect(() => {
-    if (!user) {
-      if (entityType === "ANIME") {
-        getAnimeFromLocalDB(data.mal_id!)
-          .then((record) => {
-            if (record) {
-              setStatus(record.entityStatus);
-            } else {
-              setStatus("not-started");
-            }
-          })
-          .catch(console.error);
-      } else {
-        getMangaFromLocalDB(data.mal_id!)
-          .then((record) => {
-            if (record) {
-              setStatus(record.entityStatus);
-            } else {
-              setStatus("not-started");
-            }
-          })
-          .catch(console.error);
-      }
+    if (session.isPending) return;
+    if (session.data?.user) {
+      actions.getStatusFromMalId({
+        mal_id: data.mal_id,
+        entity: entityType,
+      }).then((result) => {
+        if (result.data) {
+          setStatus(result.data);
+        }
+      });
+      return;
     }
-  }, []);
+    if (entityType === "ANIME" && status === 'loading') {
+      getAnimeFromLocalDB(data.mal_id!)
+        .then((record) => {
+          if (record) {
+            setStatus(record.entityStatus);
+          } else {
+            setStatus("not-started");
+          }
+        })
+        .catch(console.error);
+    } else if (entityType === "MANGA" && status === 'loading') {
+      getMangaFromLocalDB(data.mal_id!)
+        .then((record) => {
+          if (record) {
+            setStatus(record.entityStatus);
+          } else {
+            setStatus("not-started");
+          }
+        })
+        .catch(console.error);
+    }
+  }, [session]);
 
   async function handleStatusChange(newStatus: EntityStatus) {
+    if (session.isPending) return;
     setStatus(newStatus);
     setOpen(false);
 
     if (!data.mal_id) return;
-    if (user) {
+    if (session.data?.user) {
       if (newStatus === "not-started") {
         await actions.deleteEntity({ mal_id: data.mal_id });
-        return;
       } else {
         await actions.updateEntity({
           mal_id: data.mal_id,
@@ -130,10 +132,21 @@ export function StatusSelector({
       }
       return;
     }
+    let _embedding = embedding;
+    if (!_embedding) {
+      const embedding = await actions.getEmbeddingFromMalId({
+        mal_id: data.mal_id,
+        entity: entityType,
+      })
+      if (embedding.data) {
+        _embedding = embedding.data;
+        setEmbedding(embedding.data);
+      } else return;
+    }
     if (entityType === "ANIME") {
-      await updateLocalAnime(data, newStatus);
+      await updateLocalAnime(data, _embedding, newStatus);
     } else {
-      await updateLocalManga(data, newStatus);
+      await updateLocalManga(data, _embedding, newStatus);
     }
   }
 
@@ -157,7 +170,6 @@ export function StatusSelector({
     </>
   );
 
-  // Create the trigger button that's common to both components
   const triggerButton = (
     <Button className={cn("rounded-sm mr-2", className)}>
       <RenderStatus status={status} />
@@ -196,7 +208,9 @@ export function StatusSelector({
       {/* Show Drawer on small screens */}
       <div className="md:hidden">
         <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+          <DrawerTrigger asChild>
+            {triggerButton}
+          </DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Change Status</DrawerTitle>
@@ -216,10 +230,8 @@ export function StatusSelector({
   );
 }
 
-function RenderStatus({ status }: { status?: string }) {
+function RenderStatus({ status }: { status: EntityStatus | 'loading' }) {
   switch (status) {
-    case undefined:
-      return <>Loading...</>;
     case "completed":
       return (
         <>
@@ -255,7 +267,14 @@ function RenderStatus({ status }: { status?: string }) {
           On hold
         </>
       );
+    case 'not-started':
+      return (
+        <>
+          <Clock className="h-4 w-4" />
+          Not started
+        </>
+      );
     default:
-      return <>Not started</>;
+      return <>loading...</>;
   }
 }
