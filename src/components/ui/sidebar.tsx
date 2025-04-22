@@ -69,6 +69,7 @@ function SidebarProvider({
   const [firstRender, setFirstRender] = React.useState(true);
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
+  console.log('------------')
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -101,6 +102,7 @@ function SidebarProvider({
       setFirstRender(false);
     }
     const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
+    console.log('useEffect - is sidebar open from cookie: ', isSidebarOpen)
     if (isSidebarOpen) {
       isMobile ? setOpenMobile(true) : setOpen(true);
     } else {
@@ -126,7 +128,9 @@ function SidebarProvider({
   if (firstRender && 'document' in globalThis) {
     console.log('firstRender - setting state ', Date.now())
     state = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`) ? 'expanded' : 'collapsed';
+    console.log('firstRender - state value: ', state)
   }
+  console.log('render - current state value: ', state)
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
