@@ -71,7 +71,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       // Run on initial load
       updateSidebarState();
 
-      document.addEventListener('astro:after-swap', updateSidebarState);
+      document.addEventListener('astro:before-swap', updateSidebarState);
     </script>
   </body>
 </html>
