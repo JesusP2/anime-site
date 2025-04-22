@@ -66,10 +66,8 @@ function SidebarProvider({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
-  const [firstRender, setFirstRender] = React.useState(true);
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
-  console.log('------------')
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -97,17 +95,6 @@ function SidebarProvider({
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
-    if (firstRender && 'document' in globalThis) {
-      console.log('firstRender to false ', Date.now())
-      setFirstRender(false);
-    }
-    const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
-    console.log('useEffect - is sidebar open from cookie: ', isSidebarOpen)
-    if (isSidebarOpen) {
-      isMobile ? setOpenMobile(true) : setOpen(true);
-    } else {
-      isMobile ? setOpenMobile(false) : setOpen(false);
-    }
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -124,14 +111,7 @@ function SidebarProvider({
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
-  let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
-  if (firstRender && 'document' in globalThis) {
-    console.log('firstRender - setting state ', Date.now())
-    state = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`) ? 'expanded' : 'collapsed';
-    console.log('firstRender - state value: ', state)
-  }
-  console.log('render - current state value: ', state)
-
+  const state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
@@ -184,7 +164,6 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
-  console.log('sidebar log - state: ', state, "collapsible: ", collapsible)
   if (collapsible === "none") {
     return (
       <div
@@ -225,7 +204,6 @@ function Sidebar({
     );
   }
 
-  console.log('sidebar log - state x2: ', state, "collapsible: ", collapsible)
   return (
     <div
       suppressHydrationWarning
