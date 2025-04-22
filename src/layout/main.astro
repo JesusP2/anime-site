@@ -51,6 +51,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       </NavUserWrapper>
     </AppSidebar>
     <script is:inline>
+    console.log('script running')
       const $sidebar = document.getElementById("sidebar");
       const isSidebarOpen = document.cookie.includes(`sidebar_state=true`);
       $sidebar?.setAttribute("data-state", isSidebarOpen ? "expanded" : "collapsed");
