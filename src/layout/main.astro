@@ -62,6 +62,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
           );
         if ($sidebar) {
           console.log("inline script:", Date.now());
+          console.log('isSidebarOpen: ', isSidebarOpen);
           $sidebar.setAttribute(
             "data-state",
             isSidebarOpen ? "expanded" : "collapsed",
@@ -77,8 +78,8 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       }
 
       updateSidebarState(document);
-      document.addEventListener("astro:before-swap", (event) => {
-        updateSidebarState(event.newDocument);
+      document.addEventListener("astro:after-swap", (event) => {
+        updateSidebarState(event.document);
       });
     </script>
   </body>
