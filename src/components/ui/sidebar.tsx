@@ -66,6 +66,7 @@ function SidebarProvider({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
+  const [firstRender, setFirstRender] = React.useState(true);
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
 
@@ -96,7 +97,6 @@ function SidebarProvider({
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
     const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
-    console.log('is sidebar open:', isSidebarOpen)
     if (isSidebarOpen) {
       isMobile ? setOpenMobile(true) : setOpen(true);
     } else {
@@ -118,7 +118,11 @@ function SidebarProvider({
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
-  const state = open ? "expanded" : "collapsed";
+  let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
+  if (firstRender && 'document' in globalThis) {
+    setFirstRender(false);
+    state = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`) ? 'expanded' : 'collapsed';
+  }
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
