@@ -96,6 +96,7 @@ function SidebarProvider({
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
     const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
+    console.log('is sidebar open:', isSidebarOpen)
     if (isSidebarOpen) {
       isMobile ? setOpenMobile(true) : setOpen(true);
     } else {
@@ -213,12 +214,14 @@ function Sidebar({
 
   return (
     <div
+      suppressHydrationWarning
       className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
+      id="sidebar"
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div

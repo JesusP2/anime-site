@@ -1,7 +1,6 @@
 ---
 import Head from "@/components/head.astro";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
 import type { Entity, EntityStatus } from "@/lib/types";
 import { createReadPresignedUrl } from "@/lib/s3";
 import NavUserWrapper from "@/components/nav-user-wrapper.astro";
@@ -51,5 +50,11 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         <SignInButton slot="fallback" client:load />
       </NavUserWrapper>
     </AppSidebar>
+    <!-- <script is:inline> -->
+    <!--   const $sidebar = document.getElementById("sidebar"); -->
+    <!--   const isSidebarOpen = document.cookie.includes(`sidebar_state=true`); -->
+    <!--   $sidebar?.setAttribute("data-state", isSidebarOpen ? "expanded" : "collapsed"); -->
+    <!--   $sidebar?.setAttribute("data-collapsible", isSidebarOpen ? "" : "icon"); -->
+    <!-- </script> -->
   </body>
 </html>
