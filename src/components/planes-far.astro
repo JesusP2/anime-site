@@ -7,15 +7,19 @@
 <div class="top-[15rem] plane-container plane-far"></div>
 <script>
   import { createPlaneAnimations } from "@/lib/animations/planes";
-  const planes = document.querySelectorAll<HTMLElement>(".plane-far");
-  planes.forEach((plane) => {
-    const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
-      | "LTR"
-      | "RTL";
-    createPlaneAnimations(plane, direction, {
-      sizeOptions: [40, 60, 80]
+  function runPlaneAnimations() {
+    const planes = document.querySelectorAll<HTMLElement>(".plane-far");
+    planes.forEach((plane) => {
+      const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
+        | "LTR"
+        | "RTL";
+      createPlaneAnimations(plane, direction, {
+        sizeOptions: [40, 60, 80],
+      });
     });
-  });
+  }
+  runPlaneAnimations();
+  document.addEventListener("astro:after-swap", runPlaneAnimations);
 </script>
 <style>
   .plane-container {
@@ -25,4 +29,3 @@
     will-change: transform, left, background-image;
   }
 </style>
-

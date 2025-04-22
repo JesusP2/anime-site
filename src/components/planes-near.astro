@@ -7,13 +7,17 @@
 <div class="top-[15rem] plane-container plane-near"></div>
 <script>
   import { createPlaneAnimations } from "@/lib/animations/planes";
-  const planes = document.querySelectorAll<HTMLElement>(".plane-near");
-  planes.forEach((plane) => {
-    const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
-      | "LTR"
-      | "RTL";
-    createPlaneAnimations(plane, direction);
-  });
+  function runPlaneAnimations() {
+    const planes = document.querySelectorAll<HTMLElement>(".plane-near");
+    planes.forEach((plane) => {
+      const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
+        | "LTR"
+        | "RTL";
+      createPlaneAnimations(plane, direction);
+    });
+  }
+  runPlaneAnimations();
+  document.addEventListener("astro:after-swap", runPlaneAnimations);
 </script>
 <style>
   .plane-container {

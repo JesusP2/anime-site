@@ -54,9 +54,13 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
     </div>
     <script>
       import { createCloudAnimations } from "@/lib/animations/clouds";
-      const clouds1 = document.querySelectorAll(".clouds");
-      const clouds2 = document.querySelectorAll(".clouds-2");
-      createCloudAnimations(clouds1, clouds2);
+      function runCloudAnimations() {
+        const clouds1 = document.querySelectorAll(".clouds");
+        const clouds2 = document.querySelectorAll(".clouds-2");
+        createCloudAnimations(clouds1, clouds2);
+      }
+      runCloudAnimations();
+      document.addEventListener('astro:after-swap', runCloudAnimations);
     </script>
   </body>
 </html>

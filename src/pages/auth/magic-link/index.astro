@@ -26,9 +26,7 @@ if (Astro.locals.user) {
             placeholder="example@gmail.com"
             required
           />
-          <span id="email-error" class="text-sm text-red-500"
-            ></span
-          >
+          <span id="email-error" class="text-sm text-red-500"></span>
         </div>
 
         <button
@@ -47,19 +45,23 @@ if (Astro.locals.user) {
 </AuthLayout>
 <script>
   import { authClient } from "@/lib/auth-client";
-  const form = document.querySelector("form");
-  const emailError = document.querySelector<HTMLSpanElement>("#email-error");
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const { error } = await authClient.signIn.magicLink({
-      email: formData.get("email") as string,
+  function initializeEvents() {
+    const form = document.querySelector("form");
+    const emailError = document.querySelector<HTMLSpanElement>("#email-error");
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target as HTMLFormElement);
+      const { error } = await authClient.signIn.magicLink({
+        email: formData.get("email") as string,
+      });
+      if (error?.message && emailError) {
+        emailError.innerText = error.message;
+      } else if (!error) {
+        window.location.href =
+          "/auth/magic-link/sent?email=" + formData.get("email");
+      }
     });
-    if (error?.message && emailError) {
-      emailError.innerText = error.message;
-    } else if (!error) {
-      window.location.href =
-        "/auth/magic-link/sent?email=" + formData.get("email");
-    }
-  });
+  }
+  initializeEvents();
+  document.addEventListener("astro:after-swap", initializeEvents);
 </script>

@@ -56,11 +56,15 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
     async
     defer></script>
   <script is:inline>
-    const isDarkMode = document.cookie.includes("theme=dark");
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    function updateTheme() {
+      const isDarkMode = document.cookie.includes("theme=dark");
+      if (isDarkMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
+    updateTheme();
+    document.addEventListener("astro:after-swap", updateTheme);
   </script>
 </head>

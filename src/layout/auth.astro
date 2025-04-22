@@ -72,5 +72,15 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         </div>
       </div>
     </main>
+    <script>
+      import { createCloudAnimations } from "@/lib/animations/clouds";
+      function runCloudAnimations() {
+        const clouds1 = document.querySelectorAll(".clouds");
+        const clouds2 = document.querySelectorAll(".clouds-2");
+        createCloudAnimations(clouds1, clouds2);
+      }
+      runCloudAnimations();
+      document.addEventListener("astro:after-swap", runCloudAnimations);
+    </script>
   </body>
 </html>

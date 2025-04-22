@@ -11,7 +11,7 @@ import { Eye, EyeOff } from "lucide-react";
 if (Astro.locals.user) {
   return Astro.redirect("/");
 }
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
 <AuthLayout title="Login">
@@ -118,34 +118,35 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
 </AuthLayout>
 
 <script>
-  import { createCloudAnimations } from "@/lib/animations/clouds";
-  const clouds1 = document.querySelectorAll(".clouds");
-  const clouds2 = document.querySelectorAll(".clouds-2");
-  createCloudAnimations(clouds1, clouds2);
-</script>
-<script>
   import { authClient } from "@/lib/auth-client";
   import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-events";
-  googleBtnEvent();
-  eyeBtnEvent();
+  function initializeEvents() {
+    googleBtnEvent();
+    eyeBtnEvent();
 
-  const form = document.querySelector("form");
-  const formError = document.querySelector<HTMLSpanElement>("#form-error");
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const { error } = await authClient.signIn.email({
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      callbackURL: "/",
-      fetchOptions: {
-        headers: {
-          "x-captcha-response": formData.get("cf-turnstile-response") as string,
+    const form = document.querySelector("form");
+    const formError = document.querySelector<HTMLSpanElement>("#form-error");
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target as HTMLFormElement);
+      const { error } = await authClient.signIn.email({
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+        callbackURL: "/",
+        fetchOptions: {
+          headers: {
+            "x-captcha-response": formData.get(
+              "cf-turnstile-response",
+            ) as string,
+          },
         },
-      },
+      });
+      if (error?.message && formError) {
+        formError.innerText = error.message;
+      }
     });
-    if (error?.message && formError) {
-      formError.innerText = error.message;
-    }
-  });
+  }
+
+  initializeEvents();
+  document.addEventListener("astro:after-swap", initializeEvents);
 </script>

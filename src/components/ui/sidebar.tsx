@@ -98,11 +98,9 @@ function SidebarProvider({
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
     if (firstRender && 'document' in globalThis) {
-      console.log('firstRender to false ', Date.now())
       setFirstRender(false);
     }
     const isSidebarOpen = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`)
-    console.log('useEffect - is sidebar open from cookie: ', isSidebarOpen)
     if (isSidebarOpen) {
       isMobile ? setOpenMobile(true) : setOpen(true);
     } else {
@@ -126,11 +124,8 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
   if (firstRender && 'document' in globalThis) {
-    console.log('firstRender - setting state ', Date.now())
     state = document.cookie.includes(`${SIDEBAR_COOKIE_NAME}=true`) ? 'expanded' : 'collapsed';
-    console.log('firstRender - state value: ', state)
   }
-  console.log('render - current state value: ', state)
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
@@ -184,7 +179,6 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
-  console.log('sidebar log - state: ', state, "collapsible: ", collapsible)
   if (collapsible === "none") {
     return (
       <div
@@ -224,8 +218,6 @@ function Sidebar({
       </Sheet>
     );
   }
-
-  console.log('sidebar log - state x2: ', state, "collapsible: ", collapsible)
   return (
     <div
       suppressHydrationWarning

@@ -65,35 +65,36 @@ if (Astro.locals.user) {
     </form>
   </Fragment>
 </AuthLayout>
-
-<script>
-</script>
 <script>
   import { authClient } from "@/lib/auth-client";
   import { eyeBtnEvent } from "@/lib/auth-events";
-  eyeBtnEvent();
-  eyeBtnEvent("2");
-  const form = document.querySelector("form");
-  const formError = document.querySelector<HTMLSpanElement>("#form-error");
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    if (!formError) return;
-    if (!formData.get("password") || !formData.get("token")) {
-      formError.innerText = "Please fill in all fields";
-      return;
-    } else if (formData.get("password") !== formData.get("confirmPassword")) {
-      formError.innerText = "Passwords do not match";
-      return;
-    }
-    const { error } = await authClient.resetPassword({
-      newPassword: formData.get("password") as string,
-      token: formData.get("token") as string,
+  function initializeEvents() {
+    eyeBtnEvent();
+    eyeBtnEvent("2");
+    const form = document.querySelector("form");
+    const formError = document.querySelector<HTMLSpanElement>("#form-error");
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target as HTMLFormElement);
+      if (!formError) return;
+      if (!formData.get("password") || !formData.get("token")) {
+        formError.innerText = "Please fill in all fields";
+        return;
+      } else if (formData.get("password") !== formData.get("confirmPassword")) {
+        formError.innerText = "Passwords do not match";
+        return;
+      }
+      const { error } = await authClient.resetPassword({
+        newPassword: formData.get("password") as string,
+        token: formData.get("token") as string,
+      });
+      if (error?.message) {
+        formError.innerText = error.message;
+      } else if (!error) {
+        window.location.href = "/auth/signin";
+      }
     });
-    if (error?.message) {
-      formError.innerText = error.message;
-    } else if (!error) {
-      window.location.href = "/auth/signin";
-    }
-  });
+  }
+  initializeEvents();
+  document.addEventListener("astro:after-swap", initializeEvents);
 </script>
