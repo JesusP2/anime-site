@@ -37,21 +37,6 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 <html lang="en" class={isDarkMode ? "dark" : ""}>
   <Head title={title} description={description} image={image} path={path} />
   <body class="bg-sidebar">
-    <div class="texture" style="view-transition-name: page-texture"></div>
-    <AppSidebar
-      variant="inset"
-      user={user}
-      title={title}
-      url={Astro.url.toString()}
-      searchProps={props}
-      client:load
-    >
-      <slot />
-      <NavUserWrapper server:defer slot="dropdown">
-        <SignInButton slot="fallback" client:load />
-      </NavUserWrapper>
-    </AppSidebar>
-
     <script define:vars={{ SIDEBAR_COOKIE_NAME }} is:inline>
       function updateSidebarStateFromCookie(newDocument) {
         let localDocument = document;
@@ -69,20 +54,16 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         const sidebarElement = localDocument.getElementById("sidebar");
 
         if (sidebarElement) {
-          // Update data-state regardless
           if (sidebarElement.dataset.state !== targetState) {
             sidebarElement.dataset.state = targetState;
           }
 
-          // If expanding, ensure data-collapsible is cleared
           if (
             targetState === "expanded" &&
             sidebarElement.dataset.collapsible !== ""
           ) {
             sidebarElement.dataset.collapsible = "";
           }
-          // If collapsing, we assume the server-rendered data-collapsible
-          // (based on the collapsible prop) is already correct, so no change needed here.
         }
       }
 
@@ -92,5 +73,19 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         updateSidebarStateFromCookie(e.newDocument),
       );
     </script>
+    <div class="texture" style="view-transition-name: page-texture"></div>
+    <AppSidebar
+      variant="inset"
+      user={user}
+      title={title}
+      url={Astro.url.toString()}
+      searchProps={props}
+      client:load
+    >
+      <slot />
+      <NavUserWrapper server:defer slot="dropdown">
+        <SignInButton slot="fallback" client:load />
+      </NavUserWrapper>
+    </AppSidebar>
   </body>
 </html>
