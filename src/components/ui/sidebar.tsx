@@ -34,7 +34,6 @@ const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
-  isLoading: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
   openMobile: boolean;
@@ -73,7 +72,6 @@ function SidebarProvider({
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen);
-  const [isLoading, setIsLoading] = React.useState(false);
   const open = openProp ?? _open;
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
@@ -90,12 +88,6 @@ function SidebarProvider({
     },
     [setOpenProp, open],
   );
-
-  React.useEffect(() => {
-    if (isLoading) {
-      setIsLoading(false);
-    }
-  }, [])
 
   // Helper to toggle the sidebar.
   const toggleSidebar = React.useCallback(() => {
@@ -121,9 +113,9 @@ function SidebarProvider({
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
   const state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
+  console.log('current open: ', open, "state: ", state)
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
-      isLoading,
       state,
       open,
       setOpen,
@@ -172,7 +164,7 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
-  const { isMobile, state, isLoading, openMobile, setOpenMobile } = useSidebar();
+  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
   if (collapsible === "none") {
     return (
@@ -218,8 +210,8 @@ function Sidebar({
     <div
       suppressHydrationWarning
       className="group peer text-sidebar-foreground hidden md:block"
-      data-state={isLoading ? "collapsed" : state}
-      data-collapsible={isLoading ? "icon" : state === "collapsed" ? collapsible : ""}
+      data-state={state}
+      data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
