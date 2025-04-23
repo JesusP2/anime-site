@@ -5,6 +5,7 @@ import type { Entity, EntityStatus } from "@/lib/types";
 import { createReadPresignedUrl } from "@/lib/s3";
 import NavUserWrapper from "@/components/nav-user-wrapper.astro";
 import { SignInButton } from "@/components/signin-button";
+import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar";
 
 type Props = {
   title: string;
@@ -50,5 +51,37 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         <SignInButton slot="fallback" client:load />
       </NavUserWrapper>
     </AppSidebar>
+
+    <script define:vars={{ SIDEBAR_COOKIE_NAME }} is:inline>
+      function updateSidebarStateFromCookie() {
+        const cookieValue = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
+          ?.split('=')[1];
+
+        const shouldBeOpen = cookieValue === 'true';
+        const targetState = shouldBeOpen ? 'expanded' : 'collapsed';
+
+        const sidebarElement = document.getElementById('sidebar');
+
+        if (sidebarElement) {
+          // Update data-state regardless
+          if (sidebarElement.dataset.state !== targetState) {
+            sidebarElement.dataset.state = targetState;
+          }
+
+          // If expanding, ensure data-collapsible is cleared
+          if (targetState === 'expanded' && sidebarElement.dataset.collapsible !== '') {
+            sidebarElement.dataset.collapsible = '';
+          }
+          // If collapsing, we assume the server-rendered data-collapsible
+          // (based on the collapsible prop) is already correct, so no change needed here.
+        }
+      }
+
+      updateSidebarStateFromCookie();
+
+      document.addEventListener('astro:after-swap', updateSidebarStateFromCookie);
+    </script>
   </body>
 </html>
