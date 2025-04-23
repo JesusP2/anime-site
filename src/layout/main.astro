@@ -90,7 +90,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         updateSidebarStateFromCookie,
       );
       document.addEventListener("astro:before-swap", (e) => {
-        console.log("new document: ", e.newDocument);
+        console.log("new document: ", e.newDocument.body);
       });
     </script>
   </body>
