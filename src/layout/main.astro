@@ -55,15 +55,15 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     <script define:vars={{ SIDEBAR_COOKIE_NAME }} is:inline>
       function updateSidebarStateFromCookie() {
         const cookieValue = document.cookie
-          .split('; ')
-          .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
-          ?.split('=')[1];
+          .split("; ")
+          .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME + "="))
+          ?.split("=")[1];
 
-        console.log('cookie with value: ', cookieValue);
-        const shouldBeOpen = cookieValue === 'true';
-        const targetState = shouldBeOpen ? 'expanded' : 'collapsed';
+        console.log("cookie with value: ", cookieValue);
+        const shouldBeOpen = cookieValue === "true";
+        const targetState = shouldBeOpen ? "expanded" : "collapsed";
 
-        const sidebarElement = document.getElementById('sidebar');
+        const sidebarElement = document.getElementById("sidebar");
 
         if (sidebarElement) {
           // Update data-state regardless
@@ -72,8 +72,11 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
           }
 
           // If expanding, ensure data-collapsible is cleared
-          if (targetState === 'expanded' && sidebarElement.dataset.collapsible !== '') {
-            sidebarElement.dataset.collapsible = '';
+          if (
+            targetState === "expanded" &&
+            sidebarElement.dataset.collapsible !== ""
+          ) {
+            sidebarElement.dataset.collapsible = "";
           }
           // If collapsing, we assume the server-rendered data-collapsible
           // (based on the collapsible prop) is already correct, so no change needed here.
@@ -82,7 +85,13 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 
       updateSidebarStateFromCookie();
 
-      document.addEventListener('astro:after-swap', updateSidebarStateFromCookie);
+      document.addEventListener(
+        "astro:after-swap",
+        updateSidebarStateFromCookie,
+      );
+      document.addEventListener("astro:before-swap", (e) => {
+        console.log("new document: ", e.newDocument);
+      });
     </script>
   </body>
 </html>
