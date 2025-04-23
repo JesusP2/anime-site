@@ -87,7 +87,7 @@ function SidebarProvider({
       // This sets the cookie to keep the sidebar state.
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
     },
-    [setOpenProp, open],
+    [setOpenProp, openProp, _open],
   );
 
   // Helper to toggle the sidebar.
@@ -98,6 +98,12 @@ function SidebarProvider({
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
     setIsLoading(false);
+
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
+      ?.split('=')[1];
+    setOpen(cookieValue === 'true');
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -116,10 +122,10 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
   if (isLoading && 'document' in globalThis) {
-        const cookieValue = document.cookie
-          .split('; ')
-          .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
-          ?.split('=')[1];
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
+      ?.split('=')[1];
     state = cookieValue === 'true' ? 'expanded' : 'collapsed';
     open = state === 'expanded';
   }
