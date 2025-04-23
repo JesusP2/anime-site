@@ -68,6 +68,7 @@ function SidebarProvider({
 }) {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -95,6 +96,7 @@ function SidebarProvider({
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
+    setIsLoading(false);
     const cookieValue = document.cookie
       .split('; ')
       .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
@@ -117,6 +119,13 @@ function SidebarProvider({
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
   let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
+  if (isLoading && 'document' in globalThis) {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME + "="))
+      ?.split("=")[1];
+    state = cookieValue === "true" ? "expanded" : "collapsed";
+  }
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
