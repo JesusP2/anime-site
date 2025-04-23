@@ -59,6 +59,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
           .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
           ?.split('=')[1];
 
+        console.log('cookie with value: ', cookieValue);
         const shouldBeOpen = cookieValue === 'true';
         const targetState = shouldBeOpen ? 'expanded' : 'collapsed';
 
