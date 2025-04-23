@@ -53,17 +53,20 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     </AppSidebar>
 
     <script define:vars={{ SIDEBAR_COOKIE_NAME }} is:inline>
-      function updateSidebarStateFromCookie() {
+      function updateSidebarStateFromCookie(newDocument) {
+        let localDocument = document;
+        if (newDocument) {
+          localDocument = newDocument;
+        }
         const cookieValue = document.cookie
           .split("; ")
           .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME + "="))
           ?.split("=")[1];
 
-        console.log("cookie with value: ", cookieValue);
         const shouldBeOpen = cookieValue === "true";
         const targetState = shouldBeOpen ? "expanded" : "collapsed";
 
-        const sidebarElement = document.getElementById("sidebar");
+        const sidebarElement = localDocument.getElementById("sidebar");
 
         if (sidebarElement) {
           // Update data-state regardless
@@ -85,13 +88,9 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 
       updateSidebarStateFromCookie();
 
-      document.addEventListener(
-        "astro:after-swap",
-        updateSidebarStateFromCookie,
+      document.addEventListener("astro:before-swap", (e) =>
+        updateSidebarStateFromCookie(e.newDocument),
       );
-      document.addEventListener("astro:before-swap", (e) => {
-        console.log("new document: ", e.newDocument.body);
-      });
     </script>
   </body>
 </html>
