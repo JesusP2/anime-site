@@ -1,3 +1,4 @@
+import { gridClassName } from "@/lib/constants";
 import { Skeleton } from "./ui/skeleton";
 
 function MangaCardSkeleton() {
@@ -32,7 +33,7 @@ function MangaCardSkeleton() {
 
 export function LoadingCardGrid() {
   return (
-    <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
+    <div className={gridClassName}>
       {Array(6)
         .fill(0)
         .map((_, i) => (

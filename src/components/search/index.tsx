@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { FilterModal } from "./modal";
-import { objectEntries } from "@/lib/utils";
+import { cn, objectEntries } from "@/lib/utils";
 import { animeFilters, type AnimeFilters } from "@/lib/anime/filters";
 import { mangaFilters, type MangaFilters } from "@/lib/manga/filters";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
@@ -127,7 +127,7 @@ export function SearchWithFilters(props: Props) {
       <div className="flex space-x-2 max-w-4xl w-full">
         <Input
           id="search-query"
-          type="text"
+          type="search"
           name="q"
           placeholder="Enter your search query..."
           className="max-w-4xl w-full"
@@ -136,28 +136,21 @@ export function SearchWithFilters(props: Props) {
             setFilters((prev) => ({ ...prev, q: e.target.value }))
           }
         />
-        <Button
-          variant="outline"
-          type="button"
-          className="min-w-[4.5rem]"
-          onClick={() => {
-            const newType = searchType === animeEntity ? mangaEntity : animeEntity;
-            setSearchType(newType);
-          }}
-        >
-          {searchType}
-        </Button>
         <FilterModal
           filters={filters}
           options={options}
           setFilters={setFilters}
+          searchType={searchType}
+          setSearchType={setSearchType}
         >
           <Button type="button" variant="outline" className="whitespace-nowrap"
             onMouseEnter={() => buttonRef.current?.startAnimation?.()}
             onMouseLeave={() => buttonRef.current?.stopAnimation?.()}
           >
             <SettingsIcon className="size-4 p-0" ref={buttonRef} />
-            Filters
+            <span className="hidden sm:inline">
+              Filters
+            </span>
             {getActiveFiltersCount() > 0 && (
               <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
                 {getActiveFiltersCount()}
@@ -165,7 +158,7 @@ export function SearchWithFilters(props: Props) {
             )}
           </Button>
         </FilterModal>
-        <a href={createSearchLink()} className={buttonVariants()} data-astro-prefetch="hover">
+        <a href={createSearchLink()} className={cn(buttonVariants(), "hidden sm:block")} data-astro-prefetch="hover">
           Search
         </a>
       </div>

@@ -21,6 +21,8 @@ import type { MangaFilters } from "@/lib/manga/filters";
 import type { AnimeFilters } from "@/lib/anime/filters";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Separator } from "../ui/separator";
+import { animeEntity, mangaEntity } from "@/lib/constants";
+import type { Entity } from "@/lib/types";
 
 type CommonProps = {
   options: AnimeFilters | MangaFilters;
@@ -43,8 +45,12 @@ export function FilterModal({
   filters,
   children,
   setFilters,
+  searchType,
+  setSearchType,
 }: {
   children: ReactNode;
+  searchType: Entity;
+  setSearchType: (searchType: Entity) => void;
 } & CommonProps) {
   const [_filters, _setFilters] = useState(filters);
 
@@ -88,6 +94,18 @@ export function FilterModal({
               <h3 className="text-sm font-medium text-foreground">
                 Basic Filters
               </h3>
+
+              <Button
+                variant="outline"
+                type="button"
+                className="min-w-[4.5rem]"
+                onClick={() => {
+                  const newType = searchType === animeEntity ? mangaEntity : animeEntity;
+                  setSearchType(newType);
+                }}
+              >
+                {searchType}
+              </Button>
               <div className="space-y-4">
                 <RadioGroupFiltersSelector
                   options={basicFilters}

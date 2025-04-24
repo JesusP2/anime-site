@@ -6,6 +6,7 @@ import { AnimeCard } from "@/components/anime-card";
 import type { AnimeCardItem, MangaCardItem } from "@/lib/types";
 import { MangaCard } from "./manga-card";
 import { Pagination } from "@/components/pagination";
+import { gridClassName } from "@/lib/constants";
 
 export function Grid({
   records,
@@ -28,7 +29,7 @@ export function Grid({
   }
   return (
     <>
-      <div className="grid auto-fill-grid gap-6 px-10 w-full mx-auto">
+      <div className={gridClassName}>
         {records.value.data.map((item, idx) =>
           "rating" in item ? (
             <AnimeCard idx={idx} key={item.mal_id} data={item} />

@@ -36,7 +36,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
             </p>
           </div>
         </section>
-        <div className="w-[13.5rem] h-[11rem]">
+        <div className="w-[13.5rem] h-[11rem] hidden sm:block">
           <section>
             <h3
               style={{

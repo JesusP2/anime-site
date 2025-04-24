@@ -13,4 +13,3 @@ BASE_URL="https://notmyanimelist.com"
 [[hyperdrive]]
 binding = 'HYPERDRIVE'
 id = "8fdc5e1c1cfb4abebeb98d25ab1b34cf"
-localConnectionString = "postgres://lotus:PleaseDoNotFuckingHackMeYouPieceOfShit12345@db.notmyanimelist.com:5432/anime_site?sslmode=require"
