@@ -68,7 +68,7 @@ export function MediaReviews({
             </div>
           ) : reviews && reviews.length > 0 ? (
             reviews.map((review, index) => (
-              <div key={index} className="border rounded-lg p-4 space-y-3">
+              <div key={index} className="border rounded-lg p-4 space-y-3 mx-2">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={review.user?.images?.jpg?.image_url} />

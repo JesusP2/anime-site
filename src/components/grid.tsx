@@ -34,7 +34,7 @@ export function Grid({
           "rating" in item ? (
             <AnimeCard idx={idx} key={item.mal_id} data={item} />
           ) : "chapters" in item ? (
-            <MangaCard idx={idx} data={item} key={item.mal_id} />
+            <MangaCard idx={idx} key={item.mal_id} data={item} />
           ) : null,
         )}
       </div>

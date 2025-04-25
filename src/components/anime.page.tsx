@@ -86,11 +86,11 @@ export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
       style={{ viewTransitionName: `anime-card-${anime.mal_id}` }}
     >
       {/* Hero Section - Using flex instead of grid for better control */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 h-content">
         {/* Anime Image - with fixed width constraints */}
-        <div className="w-2/3 lg:w-[320px] flex-shrink-0 mx-auto">
+        <div className="h-full w-2/3 lg:w-[320px] flex-shrink-0 mx-auto">
           <Card>
-            <CardContent className="p-4">
+            <CardContent>
               <div className="aspect-[2/3] relative overflow-hidden rounded-md"
               >
                 <img

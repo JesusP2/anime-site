@@ -11,19 +11,19 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
   return (
     <a
       href={`/anime/${data.mal_id}`}
-      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl relative z-50 bg-background shadow-xl"
+      className="cursor-pointer h-fit overflow-hidden mx-auto border rounded-xl relative z-50 bg-background shadow-xl group w-full max-w-[250px] sm:w-fit sm:max-w-none"
       style={{ viewTransitionName: `anime-card-${data.mal_id}` }}
     >
-      <article className="p-[0.5rem] h-[12rem] w-fit flex gap-x-[1rem]">
+      <article className="p-[0.5rem] flex flex-col sm:flex-row gap-y-[0.5rem] sm:gap-x-[1rem] h-auto sm:h-[12rem] w-full">
         <section
-          className="h-[11rem] w-[12rem] overflow-hidden rounded-xl relative"
+          className="aspect-square sm:aspect-auto sm:h-[11rem] w-full sm:w-[12rem] overflow-hidden rounded-xl relative"
             style={{
               viewTransitionName: `anime-card-img-${data.mal_id}`,
             }}
         >
           <img
             loading="lazy"
-            className="duration-200 group-hover:scale-110 object-cover h-[11rem] w-[12rem] rounded-xl"
+            className="duration-200 group-hover:scale-110 object-cover h-full w-full rounded-xl"
             src={data.images?.webp?.image_url || ""}
             alt={animeTitle}
           />
@@ -36,7 +36,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
             </p>
           </div>
         </section>
-        <div className="w-[13.5rem] h-[11rem] hidden sm:block">
+        <div className="w-full sm:w-[13.5rem] h-auto sm:h-[11rem]">
           <section>
             <h3
               style={{
