@@ -16,13 +16,18 @@ export function eyeBtnEvent(btn: "1" | "2" = "1") {
   const eyeLineIcon = eyeBtn?.querySelector(`.eye-line${prefix}`);
   const eyeOffLineIcon = eyeBtn?.querySelector(`.eye-off-line${prefix}`);
   const frameContainer = document.getElementById("frame-animation") as HTMLElement | null;
-  const hiddenFrameContainer = document.getElementById("frame-animation-hidden") as HTMLElement | null;
+  const hiddenFrameContainer = document.getElementById("hidden-frame-animation") as HTMLElement | null;
+  const cardContainer = document.querySelector(".card") as HTMLElement | null;
   const passwordInput = document.querySelector<HTMLInputElement>("#password");
   const totalFrames = 30;
   const frameRate = 15;
   const animationDuration = (totalFrames / frameRate) * 600;
 
-  if (!eyeBtn || !frameContainer || !eyeLineIcon || !eyeOffLineIcon || !passwordInput) return;
+  if (!eyeBtn || !frameContainer || !eyeLineIcon || !eyeOffLineIcon || !passwordInput || !cardContainer) return;
+
+  const { top } = cardContainer.getBoundingClientRect();
+  const { height } = frameContainer.getBoundingClientRect();
+  frameContainer.style.top = `${top - height + 40}px`;
 
   const keyframesForward: {
     backgroundImage: string;

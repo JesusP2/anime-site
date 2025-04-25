@@ -12,6 +12,23 @@ if (Astro.locals.user) {
 ---
 
 <AuthLayout title="Login">
+  <Fragment slot="animation">
+    <div
+      id="frame-animation"
+      class="absolute left-[calc(50%)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center z-30"
+      style={{
+        "background-image": `url('/frames/frame001.avif')`,
+        "view-transition-name": "auth-layer-1",
+      }}
+    >
+    </div>
+    <div
+      id="hidden-frame-animation"
+      class="absolute left-[calc(50%-100px)] top-[20px] w-[200px] h-[200px] bg-contain bg-no-repeat bg-center"
+      style="background-image: url('/frames/frame001.avif'); opacity: 0;"
+    >
+    </div>
+  </Fragment>
   <h1 slot="card-title">Reset password</h1>
   <Fragment slot="card-content">
     <form method="POST">
