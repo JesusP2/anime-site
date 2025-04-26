@@ -5,7 +5,7 @@ import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import ThemeButton from "@/components/theme-button/landing.astro";
 const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
 <html lang="en" class={isDarkMode ? "dark" : ""}>
@@ -15,7 +15,10 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
   >
     <div class="texture" style="view-transition-name: page-texture"></div>
     <ThemeButton isDarkMode={isDarkMode} />
-    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="view-transition-name: landing-layer-1">
+    <div
+      class="absolute inset-0 overflow-hidden pointer-events-none z-10"
+      style="view-transition-name: landing-layer-1"
+    >
       <div
         class="bg-[url('/landing/light/cloud2.avif')] dark:bg-[url('/landing/night/cloud2.avif')] bg-no-repeat bg-[length:100%_auto] overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
       >
@@ -28,7 +31,10 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
     <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
       <PlanesFar />
     </div>
-    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="view-transition-name: landing-layer-5">
+    <div
+      class="absolute inset-0 overflow-hidden pointer-events-none z-10"
+      style="view-transition-name: landing-layer-5"
+    >
       <div
         class="bg-[url('/landing/light/cloud1.avif')] dark:bg-[url('/landing/night/cloud1.avif')] bg-no-repeat bg-[length:100%_auto] overflow-hidden absolute top-0 left-0 w-full h-full z-10 clouds-2"
       >
@@ -59,8 +65,10 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
         const clouds2 = document.querySelectorAll(".clouds-2");
         createCloudAnimations(clouds1, clouds2);
       }
-      runCloudAnimations();
-      document.addEventListener('astro:after-swap', runCloudAnimations);
+      if (window.innerWidth > 640) {
+        runCloudAnimations();
+        document.addEventListener("astro:after-swap", runCloudAnimations);
+      }
     </script>
   </body>
 </html>

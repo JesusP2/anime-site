@@ -16,8 +16,10 @@
       createPlaneAnimations(plane, direction);
     });
   }
-  runPlaneAnimations();
-  document.addEventListener("astro:after-swap", runPlaneAnimations);
+  if (window.innerWidth > 640) {
+    runPlaneAnimations();
+    document.addEventListener("astro:after-swap", runPlaneAnimations);
+  }
 </script>
 <style>
   .plane-container {

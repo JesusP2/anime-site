@@ -36,6 +36,7 @@ export function ThemeButton() {
         ref={ref}
         className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'size-8 relative right-[1px]')}
         htmlFor={themeButtonId}
+        suppressHydrationWarning
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
         onMouseEnter={() => {
           moonRef.current?.startAnimation?.()

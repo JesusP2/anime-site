@@ -57,6 +57,7 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
     defer></script>
   <script is:inline>
     function updateTheme() {
+      console.log("updateTheme");
       const isDarkMode = document.cookie.includes("theme=dark");
       if (isDarkMode) {
         document.documentElement.classList.add("dark");

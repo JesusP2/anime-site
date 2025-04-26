@@ -54,6 +54,9 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       class="grid place-items-center bg-[url('/auth/light/bg1.avif')] dark:bg-[url('/auth/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
       style="view-transition-name: auth-layer-4"
     >
+      <a id="wood-sign" class="absolute hidden md:block" href="/">
+        <img src="/auth/wood-sign.avif" />
+      </a>
       <div
         class="rounded-xl border bg-card text-card-foreground shadow mx-auto max-w-sm w-full card"
       >
@@ -72,6 +75,32 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         </div>
       </div>
     </main>
+    <script is:inline>
+      function repositionWoodSign() {
+        const woodSign = document.getElementById("wood-sign");
+        const targetPosition = {
+          left: 90,
+          top: 550,
+          size: 112,
+        };
+        const defaultImgSize = {
+          width: 1536,
+          height: 1024,
+        };
+        const heightAspectRatio = window.innerHeight / defaultImgSize.height;
+        const widthAspectRatio = window.innerWidth / defaultImgSize.width;
+        let aspectRatio = heightAspectRatio;
+        if (widthAspectRatio > heightAspectRatio) {
+          aspectRatio = widthAspectRatio;
+        }
+        woodSign.style.left = Number(targetPosition.left) * aspectRatio + "px";
+        woodSign.style.top = Number(targetPosition.top) * aspectRatio + "px";
+        woodSign.style.width = targetPosition.size * aspectRatio + "px";
+        woodSign.style.height = targetPosition.size * aspectRatio + "px";
+      }
+      repositionWoodSign();
+      document.addEventListener("astro:page-load", repositionWoodSign);
+    </script>
     <script>
       import { createCloudAnimations } from "@/lib/animations/clouds";
       function runCloudAnimations() {
@@ -79,8 +108,10 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
         const clouds2 = document.querySelectorAll(".clouds-2");
         createCloudAnimations(clouds1, clouds2);
       }
-      runCloudAnimations();
-      document.addEventListener("astro:after-swap", runCloudAnimations);
+      if (window.innerWidth > 640) {
+        runCloudAnimations();
+        document.addEventListener("astro:after-swap", runCloudAnimations);
+      }
     </script>
   </body>
 </html>

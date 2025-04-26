@@ -8,6 +8,7 @@
 <script>
   import { createPlaneAnimations } from "@/lib/animations/planes";
   function runPlaneAnimations() {
+    console.log('runPlaneAnimations');
     const planes = document.querySelectorAll<HTMLElement>(".plane-far");
     planes.forEach((plane) => {
       const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
@@ -18,8 +19,10 @@
       });
     });
   }
-  runPlaneAnimations();
-  document.addEventListener("astro:after-swap", runPlaneAnimations);
+  if (window.innerWidth > 640) {
+    runPlaneAnimations();
+    document.addEventListener("astro:after-swap", runPlaneAnimations);
+  }
 </script>
 <style>
   .plane-container {
