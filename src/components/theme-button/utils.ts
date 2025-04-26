@@ -37,7 +37,9 @@ export async function toggleTheme(
       setTheme(isDarkMode, cb);
   });
   try {
+    console.log('transition.ready');
     await transition.ready;
+    console.log('transition.finished');
     document.documentElement.animate(
       {
         clipPath: [
@@ -52,6 +54,8 @@ export async function toggleTheme(
       },
     );
     await transition.finished;
+  } catch(err) {
+    console.error(err);
   } finally {
     document.querySelectorAll("[data-saved-transition]").forEach((_el) => {
       const el = _el as HTMLElement;

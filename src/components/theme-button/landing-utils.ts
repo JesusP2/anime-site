@@ -172,9 +172,8 @@ export async function toggleTheme(
       duration,
       pseudoElement: "::view-transition-new(auth-layer-4)",
     });
-
-
     await transition.finished;
-  } finally {
+  } catch (err) {
+    console.error(err);
   }
 }

@@ -55,7 +55,7 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
         <span class="bg-background px-2"> Or sign up via email </span>
       </div>
     </section>
-    <form method="POST">
+    <form method="POST" id="signup-form">
       <span class="text-sm text-red-500" id="form-error"></span>
       <section class="grid gap-4">
         <div class="grid gap-2">
@@ -107,7 +107,7 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
   function initializeEvents() {
     googleBtnEvent();
     eyeBtnEvent();
-    const form = document.querySelector("form");
+    const form = document.getElementById("signup-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -127,8 +127,6 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
       });
       if (error?.message && formError) {
         formError.innerText = error.message;
-      } else if (!error) {
-        window.location.href = "/";
       }
     });
   }

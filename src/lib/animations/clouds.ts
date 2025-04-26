@@ -18,18 +18,16 @@ export function createCloudAnimations(
     { transform: "translate(0%, 0px)" },
   ];
 
-  // Define timing for the cloud animation
   const cloudTiming = {
-    duration: 240_000, // 90 seconds for a full cycle (adjust as needed)
-    iterations: Infinity, // Loop forever
-    easing: "linear", // Constant speed
+    duration: 240_000,
+    iterations: Infinity,
+    easing: "linear"
   };
 
-  // Apply the same animation to all cloud elements
-  clouds1?.forEach((cloud) => {
+  clouds1.forEach((cloud) => {
     cloud.animate(cloudKeyframes1, cloudTiming);
   });
-  clouds2?.forEach((cloud) => {
+  clouds2.forEach((cloud) => {
     cloud.animate(cloudKeyframes2, cloudTiming);
   });
 }

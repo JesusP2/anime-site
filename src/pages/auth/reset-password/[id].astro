@@ -31,7 +31,7 @@ if (Astro.locals.user) {
   </Fragment>
   <h1 slot="card-title">Reset password</h1>
   <Fragment slot="card-content">
-    <form method="POST">
+    <form method="POST" id="reset-password-form">
       <section class="grid gap-4">
         <span id="form-error" class="text-sm text-red-500"></span>
         <input type="hidden" name="token" value={token} />
@@ -88,7 +88,7 @@ if (Astro.locals.user) {
   function initializeEvents() {
     eyeBtnEvent();
     eyeBtnEvent("2");
-    const form = document.querySelector("form");
+    const form = document.getElementById("reset-password-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();

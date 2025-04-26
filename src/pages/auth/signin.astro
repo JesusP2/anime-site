@@ -55,7 +55,7 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
         <span class="bg-background px-2"> Or continue with email </span>
       </div>
     </section>
-    <form method="POST">
+    <form method="POST" id="signin-form">
       <span id="form-error" class="text-sm text-red-500"></span>
       <section class="grid gap-4">
         <div class="grid gap-2">
@@ -98,7 +98,7 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
           />
         </div>
         <Turnstile />
-        <button class={cn(buttonVariants({ variant: "default" }), "w-full")}>
+        <button type="submit" class={cn(buttonVariants({ variant: "default" }), "w-full")}>
           Login
         </button>
         <a
@@ -123,7 +123,7 @@ Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
     googleBtnEvent();
     eyeBtnEvent();
 
-    const form = document.querySelector("form");
+    const form = document.getElementById("signin-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();
