@@ -2,20 +2,23 @@
 
 ---
 
-<div class="top-[15rem] plane-container plane-far"></div>
-<div class="top-[15rem] plane-container plane-far"></div>
-<div class="top-[15rem] plane-container plane-far"></div>
+<div class="top-[15rem] plane-container plane-far 1"></div>
+<div class="top-[15rem] plane-container plane-far 2"></div>
+<div class="top-[15rem] plane-container plane-far 3"></div>
 <script>
   import { createPlaneAnimations } from "@/lib/animations/planes";
+  let animations: (Animation | undefined)[] = [];
   function runPlaneAnimations() {
     const planes = document.querySelectorAll<HTMLElement>(".plane-far");
+    animations.forEach((animation) => animation?.cancel());
+    animations = [];
     planes.forEach((plane) => {
       const direction = ["LTR", "RTL"][Math.floor(Math.random() * 2)] as
         | "LTR"
         | "RTL";
       createPlaneAnimations(plane, direction, {
         sizeOptions: [40, 60, 80],
-      });
+      }, animations);
     });
   }
   if (window.innerWidth > 640) {

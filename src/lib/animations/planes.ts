@@ -28,6 +28,7 @@ export function createPlaneAnimations(
   plane: HTMLElement | null,
   direction: "LTR" | "RTL",
   config?: Partial<Config>,
+  animations: (Animation | undefined)[] = [],
 ) {
   if (!plane) return;
 
@@ -93,6 +94,7 @@ export function createPlaneAnimations(
 
   function runMovement() {
     const movementAnimation = plane?.animate(movementKeyframes, movementTiming);
+    animations.push(movementAnimation);
     const maxTop = calculateMaxTop();
     const randomTop = Math.random() * maxTop;
     if (plane) {
@@ -117,7 +119,7 @@ export function createPlaneAnimations(
     iterations: Infinity,
     easing: "steps(2, start)",
   };
-  plane.animate(swapKeyframes, swapTiming);
+  animations.push(plane.animate(swapKeyframes, swapTiming));
   const delay = calculateDelay(maxLoopDelay, minLoopDelay);
   setTimeout(runMovement, delay);
 }

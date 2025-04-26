@@ -4,17 +4,16 @@ import LandingPage from "@/components/landing/index.astro";
 import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import ThemeButton from "@/components/theme-button/landing.astro";
-const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
 Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
 ---
 
-<html lang="en" class={isDarkMode ? "dark" : ""}>
+<html lang="en">
   <Head title={"NotMyAnimeList"} description={"description"} />
   <body
     class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
     <div class="texture" style="view-transition-name: page-texture"></div>
-    <ThemeButton isDarkMode={isDarkMode} />
+    <ThemeButton />
     <div
       class="absolute inset-0 overflow-hidden pointer-events-none z-10"
       style="view-transition-name: landing-layer-1"

@@ -38,14 +38,6 @@ export function ThemeButton() {
         htmlFor={themeButtonId}
         suppressHydrationWarning
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
-        onMouseEnter={() => {
-          moonRef.current?.startAnimation?.()
-          sunRef.current?.startAnimation?.()
-        }}
-        onMouseLeave={() => {
-          moonRef.current?.stopAnimation?.()
-          sunRef.current?.stopAnimation?.()
-        }}
       >
         <MoonIcon
           size={16}

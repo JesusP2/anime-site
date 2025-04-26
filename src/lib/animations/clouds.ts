@@ -21,13 +21,9 @@ export function createCloudAnimations(
   const cloudTiming = {
     duration: 240_000,
     iterations: Infinity,
-    easing: "linear"
+    easing: "linear",
   };
 
-  clouds1.forEach((cloud) => {
-    cloud.animate(cloudKeyframes1, cloudTiming);
-  });
-  clouds2.forEach((cloud) => {
-    cloud.animate(cloudKeyframes2, cloudTiming);
-  });
+  clouds1.forEach((cloud) => cloud.animate(cloudKeyframes1, cloudTiming));
+  clouds2.forEach((cloud) => cloud.animate(cloudKeyframes2, cloudTiming));
 }

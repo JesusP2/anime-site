@@ -1,15 +1,20 @@
 ---
-
+import { landingThemeButtonId } from "@/lib/constants";
 ---
 
 <div
   class="flex flex-col justify-center absolute top-0 left-[calc(50%-80px)] size-40"
 >
-  <input type="checkbox" name="theme" id="theme" class="peer sr-only z-50" />
+  <input
+    type="checkbox"
+    name={landingThemeButtonId}
+    id={landingThemeButtonId}
+    class="peer sr-only z-50"
+  />
   <label
     class="absolute top-0 size-40 z-50 cursor-pointer"
     id="theme-label"
-    for="theme"></label>
+    for={landingThemeButtonId}></label>
 
   <div
     class="bg-[url('/sun.avif')] bg-cover bg-no-repeat absolute top-0 size-40 z-10 dark:opacity-0 dark:invisible transition-opacity duration-300"
@@ -28,11 +33,16 @@
   >
   </div>
 </div>
+
 <script>
   import { toggleTheme } from "./landing-utils";
+  import { landingThemeButtonId } from "@/lib/constants";
+
   function runEventListeners() {
-    const $label = document.querySelector<HTMLLabelElement>("label");
-    const $input = document.querySelector<HTMLInputElement>("input");
+    const $label = document.querySelector<HTMLLabelElement>("#theme-label");
+    const $input = document.querySelector<HTMLInputElement>(
+      `#${landingThemeButtonId}`,
+    );
     const $iconSun = document.querySelector<HTMLDivElement>("#theme-icon-sun");
     const $iconMoon =
       document.querySelector<HTMLDivElement>("#theme-icon-moon");
