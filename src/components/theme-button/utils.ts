@@ -37,9 +37,7 @@ export async function toggleTheme(
       setTheme(isDarkMode, cb);
   });
   try {
-    console.log('transition.ready');
     await transition.ready;
-    console.log('transition.finished');
     document.documentElement.animate(
       {
         clipPath: [
