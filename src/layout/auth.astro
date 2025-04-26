@@ -78,6 +78,7 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
     <script is:inline>
       function repositionWoodSign() {
         const woodSign = document.getElementById("wood-sign");
+        if (!woodSign) return;
         const targetPosition = {
           left: 90,
           top: 550,
