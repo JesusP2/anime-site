@@ -9,7 +9,7 @@ const mangaTitle =
     manga.value.titles?.find((title) => title.type === "English")?.title) ||
   (manga.success &&
     manga.value.titles?.find((title) => title.type === "Default")?.title);
-Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
 ---
 
 <MainLayout

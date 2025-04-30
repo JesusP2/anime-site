@@ -10,7 +10,7 @@ const animeTitle =
     anime.value.titles?.find((title) => title.type === "English")?.title) ||
   (anime.success &&
     anime.value.titles?.find((title) => title.type === "Default")?.title);
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=86400');
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
 ---
 
 <MainLayout

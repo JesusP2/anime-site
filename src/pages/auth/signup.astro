@@ -11,7 +11,7 @@ import { Eye, EyeSlash } from "@phosphor-icons/react";
 if (Astro.locals.user) {
   return Astro.redirect("/");
 }
-Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=86400");
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
 ---
 
 <AuthLayout title="Sign up">
