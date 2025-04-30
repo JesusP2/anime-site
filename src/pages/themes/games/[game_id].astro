@@ -11,6 +11,11 @@ if (!gameInfo.success) {
 const user = Astro.locals.user;
 ---
 
-<MainLayout title="Game">
-	<GameManager {...gameInfo.value} gameId={gameId} user={user} client:load />
+<MainLayout title="Game" searchType="Anime" page="Search">
+	<GameManager
+		{...gameInfo.value}
+		gameId={gameId}
+		user={user}
+		client:load
+	/>
 </MainLayout>
