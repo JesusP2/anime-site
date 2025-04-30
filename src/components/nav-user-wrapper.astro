@@ -1,6 +1,11 @@
 ---
 import { NavUser } from "@/components/nav-user";
+import { createReadPresignedUrl } from "@/lib/s3";
 const user = Astro.locals.user;
+if (user && !user?.image) {
+  const img = await createReadPresignedUrl(`${user.id}/avatar`);
+  user.image = img;
+}
 ---
 
 <NavUser user={user} client:load />
