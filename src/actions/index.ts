@@ -36,12 +36,12 @@ export const server = {
           userId: userId,
           entityType,
           entityStatus: status,
-          userIdMalId: `${userId}-${mal_id}`,
+          userIdMalId: `${userId}-${entityType}-${mal_id}`,
           mal_id,
         })
         .onConflictDoUpdate({
           target: trackedEntityTable.userIdMalId,
-          set: { mal_id, entityStatus: status },
+          set: { mal_id, entityStatus: status, entityType },
         });
     },
   }),
