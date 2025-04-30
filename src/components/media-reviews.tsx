@@ -51,7 +51,7 @@ export function MediaReviews({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="secondary" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2">
           <ChatCircleText size={18} />
           Reviews
         </Button>
