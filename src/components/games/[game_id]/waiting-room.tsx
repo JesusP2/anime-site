@@ -8,10 +8,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UsersThree, Play, Plus, Crown } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils";
 import type { Player } from "./types";
 import type { GameType } from "@/lib/types";
 
+export type WaitingRoomProps = {
+  quizTitle: string;
+  quizDescription: string;
+  players: Player[];
+  isHost: boolean;
+  gameType: GameType;
+  onStartGame: () => void;
+}
 export function WaitingRoom({
   quizTitle,
   quizDescription,
@@ -19,14 +26,7 @@ export function WaitingRoom({
   isHost,
   gameType,
   onStartGame,
-}: {
-  quizTitle: string;
-  quizDescription: string;
-  players: Player[];
-  isHost: boolean;
-  gameType: GameType;
-  onStartGame: () => void;
-}) {
+}: WaitingRoomProps) {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Card className="overflow-hidden relative shadow-lg">
@@ -73,7 +73,7 @@ export function WaitingRoom({
                     </Avatar>
                     <div>
                       <div className="font-semibold text-xl">{player.name}</div>
-                      {player.isHost && (
+                      {isHost && (
                         <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
                           <Crown weight="fill" className="w-3 h-3 mr-1" />
                           Host
@@ -108,13 +108,10 @@ export function WaitingRoom({
             <div className="flex justify-center pt-4">
               <Button
                 size="lg"
-                className={cn(
-                  "text-lg font-medium px-8 py-6 transition-all duration-300 shadow-md hover:scale-105",
-                )}
                 onClick={onStartGame}
               >
                 <Play weight="fill" className="w-5 h-5 mr-2" />
-                Start {gameType === "multiplayer" ? "Multiplayer" : "Solo"} Game
+                Start Game
               </Button>
             </div>
           )}

@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
 import type { Player } from "./types";
 import { cn } from "@/lib/utils";
-import type { Song } from "@/lib/types";
+import type { GameManagerProps, GameState, Song } from "@/lib/types";
+import { WaitingRoom } from "./waiting-room";
+import { ResultView } from "./result-view";
+import { Toaster } from "@/components/ui/sonner";
 
 function embedUrl(_url?: string) {
   if (!_url) return "";
@@ -12,16 +15,74 @@ function embedUrl(_url?: string) {
 }
 
 const TIMEOUT = 5;
-export function SoloGameView({
+export function SinglePlayer(props: GameManagerProps) {
+  const [gameState, setGameState] = useState<GameState>("waiting");
+  const [player, setPlayer] = useState(
+    {
+      id: props.currentPlayer.id,
+      name: props.currentPlayer.name,
+      score: 0,
+    },
+  );
+
+  function handleStartGame() {
+    setGameState("playing");
+  }
+
+  function handleGameComplete() {
+    setGameState("results");
+  }
+
+  if (gameState === "waiting") {
+    return (
+      <>
+        <WaitingRoom
+          quizTitle={props.title}
+          quizDescription={props.description}
+          players={[player]}
+          isHost={player.id === props.host.id}
+          gameType="solo"
+          onStartGame={handleStartGame}
+        />
+        <Toaster />
+      </>
+    )
+  } else if (gameState === "playing") {
+    return (
+      <>
+        <SinglePlayerGame
+          songs={props.songs}
+          player={player}
+          setPlayer={setPlayer}
+          handleGameComplete={handleGameComplete}
+        />
+        <Toaster />
+      </>
+    )
+  } else if (gameState === "results") {
+    return (
+      <>
+        <ResultView
+          quizTitle={props.title}
+          results={[]}
+        />
+        <Toaster />
+      </>
+    )
+  }
+  return null;
+}
+
+export function SinglePlayerGame({
   songs,
-  players,
-  currentPlayerId,
-  onGameComplete,
+  player,
+  setPlayer,
+  handleGameComplete,
 }: {
   songs: Song[];
-  players: Player[];
-  currentPlayerId: string;
-  onGameComplete: (props: { id: string; score: number }) => void;
+  player: Player;
+  setPlayer: (player: Player) => void;
+  handleGameComplete: () => void;
 }) {
   const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -53,29 +114,15 @@ export function SoloGameView({
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
     setIsPlaying(false);
-
-    // In a real implementation, this would check against the actual answer
     const isCorrect = item.key === currentSong?.id;
     if (isCorrect) {
-      // Update player score
-      const updatedPlayers = players.map((player) => {
-        if (player.id === currentPlayerId) {
-          return { ...player, score: player.score + timeLeft };
-        }
-        return player;
-      });
+      setPlayer({ ...player, score: player.score + timeLeft });
     }
   };
 
   const handleNextTheme = async () => {
     if (songIdx >= songs.length - 1) {
-      const player = players[0];
-      if (player) {
-        onGameComplete({
-          id: player.id,
-          score: player.score,
-        });
-      }
+      handleGameComplete();
       return;
     }
     setSongIdx(songIdx + 1);

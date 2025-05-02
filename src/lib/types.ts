@@ -1,3 +1,4 @@
+import type { User } from "better-auth";
 import type { components } from "./api/jikan.openapi";
 import type { entityStatuses, animeEntity, mangaEntity } from "./constants";
 
@@ -51,8 +52,20 @@ export type MangaCardItem = Pick<
 
 export type EntityStatus = (typeof entityStatuses)[number];
 
-export type GameState = "waiting" | "solo" | "multiplayer" | "results";
+export type GameState = "waiting" | "playing" | "results";
 export type GameType = "solo" | "multiplayer";
+
+export type GameManagerProps = {
+  creatorId?: string | null;
+  title?: string | null;
+  description?: string | null;
+  difficulty?: string | null;
+  public?: boolean | null;
+  quizId?: string | null;
+  songs: Song[];
+  host: User;
+  currentPlayer: User;
+}
 
 export type Song = {
   id: string;

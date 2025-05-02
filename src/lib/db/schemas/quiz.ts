@@ -13,6 +13,7 @@ export const quizTable = pgTable("quiz", (t) => ({
 }));
 
 export const quizToThemeTable = pgTable("quiz_to_theme", (t) => ({
+  id: t.text("id").primaryKey(),
   quizId: t
     .text("quiz_id")
     .notNull()

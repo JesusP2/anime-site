@@ -68,9 +68,9 @@ export const gameActions = {
   createQuiz: defineAction({
     accept: "json",
     input: createQuizSchema,
-    handler: async (data) => {
+    handler: async (data, ctx) => {
       const db = getDb();
-      db;
+      const creatorId = ctx.locals.user?.id ?? data.creatorId;
       const quizId = ulid();
       if (data.isRandom) {
         const { difficulty, themeCount } = data;
@@ -83,6 +83,7 @@ export const gameActions = {
         await db.transaction(async (tx) => {
           await tx.insert(quizTable).values({
             id: quizId,
+            creatorId,
             title: data.title,
             description: data.description,
             difficulty: data.difficulty,
@@ -92,6 +93,7 @@ export const gameActions = {
           });
           for (const theme of themes) {
             await tx.insert(quizToThemeTable).values({
+              id: ulid(),
               quizId,
               themeId: theme.id,
             });
@@ -103,11 +105,13 @@ export const gameActions = {
           await tx.insert(quizTable).values({
             id: quizId,
             ...rest,
+            creatorId,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
           for (const song of songs) {
             await tx.insert(quizToThemeTable).values({
+              id: ulid(),
               quizId,
               themeId: song.id,
             });
@@ -121,15 +125,24 @@ export const gameActions = {
     accept: "json",
     input: z.object({
       quizId: z.string().ulid(),
+      creatorId: z.string().optional(),
       gameType: z.enum(["solo", "multiplayer"]),
     }),
-    handler: async (data) => {
+    handler: async (data, ctx) => {
       const db = getDb();
       const { quizId } = data;
+      let creatorId = ctx.locals.user?.id ?? data.creatorId;
+      if (!creatorId) {
+        return new ActionError({
+          code: "UNAUTHORIZED",
+          message: "Invalid user",
+        });
+      }
 
       const gameId = ulid();
       await db.insert(gameTable).values({
         id: gameId,
+        creatorId,
         gameType: data.gameType,
         public: true,
         quizId,

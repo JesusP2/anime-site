@@ -86,7 +86,7 @@ export function CreateGame(props: QuizInfo) {
         </CardContent>
         <CardFooter className="flex justify-between space-x-6">
           <Button
-            className="w-full"
+            className="flex-1"
             size="lg"
             onClick={() => handleCreateGame("solo")}
           >
@@ -94,7 +94,7 @@ export function CreateGame(props: QuizInfo) {
             Create Single Player Game
           </Button>
           <Button
-            className="w-full"
+            className="flex-1"
             size="lg"
             onClick={() => handleCreateGame("multiplayer")}
           >

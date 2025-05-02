@@ -97,6 +97,7 @@ export const createQuizSchema = z.discriminatedUnion("isRandom", [
   z
     .object({
       isRandom: z.literal(true),
+      creatorId: z.string().ulid().nullish(),
       difficulty: z.enum(["easy", "medium", "hard", "impossible"]),
       themeType: z.enum(["opening", "ending", "all"]),
       themeCount: z
@@ -108,6 +109,7 @@ export const createQuizSchema = z.discriminatedUnion("isRandom", [
   z
     .object({
       isRandom: z.literal(false),
+      creatorId: z.string().ulid().nullish(),
       difficulty: z.literal("custom"),
     })
     .merge(createQuizInfoSectionBaseSchema)
