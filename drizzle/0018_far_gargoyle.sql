@@ -1,0 +1,1 @@
+ALTER TABLE "anime_themes_dump" ADD COLUMN "mal_id" integer NOT NULL;

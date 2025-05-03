@@ -113,6 +113,34 @@
       "when": 1746066630997,
       "tag": "0015_fluffy_whirlwind",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1746175727700,
+      "tag": "0016_motionless_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1746178733144,
+      "tag": "0017_strange_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1746179117882,
+      "tag": "0018_far_gargoyle",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1746225990528,
+      "tag": "0019_nasty_the_captain",
+      "breakpoints": true
     }
   ]
 }
