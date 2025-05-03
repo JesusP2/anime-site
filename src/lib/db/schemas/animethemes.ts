@@ -16,6 +16,7 @@ export const animeThemeTable = pgTable("anime_theme", {
   slug: text("slug").notNull(),
   type: text("type"),
   title: text("title"),
+  textSearch: text("text_search"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

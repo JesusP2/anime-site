@@ -32,7 +32,7 @@ export function InfoSection({
       description: "",
       public: false,
       isRandom: false,
-      themeType: "opening",
+      themeType: "OP",
       difficulty: "custom",
       themeCount: 10,
     } as z.infer<typeof createQuizInfoSectionSchema>,
@@ -128,15 +128,15 @@ export function InfoSection({
                           >
                             <div className="flex space-x-4">
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="opening" id="opening" />
+                                <RadioGroupItem value="OP" id="opening" />
                                 <Label htmlFor="opening">Opening</Label>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="ending" id="ending" />
+                                <RadioGroupItem value="ED" id="ending" />
                                 <Label htmlFor="ending">Ending</Label>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="all" id="all" />
+                                <RadioGroupItem value="ALL" id="all" />
                                 <Label htmlFor="all">All</Label>
                               </div>
                             </div>

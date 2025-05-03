@@ -57,12 +57,14 @@ export const createQuizInfoSectionBaseSchema = z.object({
   public: z.boolean(),
 });
 
+const difficultySchema = z.enum(["easy", "medium", "hard", "impossible"]);
+const themeTypeSchema = z.enum(["OP", "ED", "ALL"]);
 export const createQuizInfoSectionSchema = z.discriminatedUnion("isRandom", [
   z
     .object({
       isRandom: z.literal(true),
-      themeType: z.enum(["opening", "ending", "all"]),
-      difficulty: z.enum(["easy", "medium", "hard", "impossible"]),
+      themeType: themeTypeSchema,
+      difficulty: difficultySchema,
       themeCount: z
         .number()
         .min(5, "Theme count must be at least 5")
@@ -98,8 +100,8 @@ export const createQuizSchema = z.discriminatedUnion("isRandom", [
     .object({
       isRandom: z.literal(true),
       creatorId: z.string().ulid().nullish(),
-      difficulty: z.enum(["easy", "medium", "hard", "impossible"]),
-      themeType: z.enum(["opening", "ending", "all"]),
+      difficulty: difficultySchema,
+      themeType: themeTypeSchema,
       themeCount: z
         .number()
         .min(5, "Theme count must be at least 5")

@@ -141,6 +141,27 @@
       "when": 1746225990528,
       "tag": "0019_nasty_the_captain",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1746299756840,
+      "tag": "0020_needy_junta",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1746310829143,
+      "tag": "0021_thin_leper_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1746312035937,
+      "tag": "0022_wet_blue_shield",
+      "breakpoints": true
     }
   ]
 }

@@ -5,7 +5,9 @@ import {
   gameTable,
   quizTable,
   quizToThemeTable,
-  themeTable,
+  animeThemeTable,
+  themeVideoTable,
+  themeEntryTable,
 } from "../db/schemas";
 import { err, ok } from "../result";
 import { ActionError } from "astro:actions";
@@ -27,21 +29,29 @@ export async function getGameInfo(gameId: string) {
     .leftJoin(quizTable, eq(gameTable.quizId, quizTable.id))
     .where(eq(gameTable.id, gameId))
     .limit(1);
-  const songsPromise = db
+  const songsPromises = db
     .select({
-      id: themeTable.id,
-      name: themeTable.name,
-      url: themeTable.url,
+      id: animeThemeTable.id,
+      name: animeThemeTable.title,
+      url: themeVideoTable.link,
       titles: animeTable.titles,
     })
     .from(animeTable)
-    .innerJoin(themeTable, eq(animeTable.id, themeTable.animeId))
-    .innerJoin(quizToThemeTable, eq(themeTable.id, quizToThemeTable.themeId))
+    .innerJoin(animeThemeTable, eq(animeThemeTable.animeId, animeTable.id))
+    .innerJoin(
+      quizToThemeTable,
+      eq(quizToThemeTable.themeId, animeThemeTable.id),
+    )
     .innerJoin(gameTable, eq(quizToThemeTable.quizId, gameTable.quizId))
+    .innerJoin(themeEntryTable, eq(themeEntryTable.themeId, animeThemeTable.id))
+    .innerJoin(
+      themeVideoTable,
+      eq(themeVideoTable.themeEntryId, themeEntryTable.id),
+    )
     .where(eq(gameTable.id, gameId));
   const promisesResult = await Promise.allSettled([
     gameInfoPromise,
-    songsPromise,
+    songsPromises,
   ]);
   if (
     promisesResult[0].status === "rejected" ||

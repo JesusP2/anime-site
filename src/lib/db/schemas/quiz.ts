@@ -1,5 +1,5 @@
 import { pgTable } from "drizzle-orm/pg-core";
-import { themeTable } from "./theme";
+import { animeThemeTable } from "./animethemes";
 
 export const quizTable = pgTable("quiz", (t) => ({
   id: t.text("id").primaryKey(),
@@ -21,5 +21,5 @@ export const quizToThemeTable = pgTable("quiz_to_theme", (t) => ({
   themeId: t
     .text("theme_id")
     .notNull()
-    .references(() => themeTable.id),
+    .references(() => animeThemeTable.id),
 }));

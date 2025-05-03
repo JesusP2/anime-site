@@ -1,0 +1,1 @@
+ALTER TABLE "anime_theme" ADD COLUMN "text_search" text;

@@ -9,12 +9,12 @@ import {
   gameTable,
   quizTable,
   quizToThemeTable,
-  themeTable,
+  animeThemeTable,
 } from "@/lib/db/schemas";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as schema from "@/lib/db/schemas";
 
-function getThemePoolNumber(
+function getThemePoolLimits(
   difficulty: Omit<z.infer<typeof createQuizSchema>["difficulty"], "custom">,
 ) {
   switch (difficulty) {
@@ -34,28 +34,28 @@ function getThemePoolNumber(
 async function getThemePool(
   db: PostgresJsDatabase<typeof schema>,
   difficulty: Omit<z.infer<typeof createQuizSchema>["difficulty"], "custom">,
-  type: "opening" | "ending" | "all",
+  type: "OP" | "ED" | "ALL",
   themeCount: number,
 ) {
-  const [offset, limit] = getThemePoolNumber(difficulty) as [number, number];
+  const [offset, limit] = getThemePoolLimits(difficulty) as [number, number];
   let themePositions: number[] = [];
   for (let i = 0; i < themeCount; i++) {
     themePositions.push(Math.floor(Math.random() * (limit - offset)) + offset);
   }
   let where: SQL | undefined = gt(animeTable.popularity, 0);
-  if (type !== "all") {
-    where = and(where, eq(themeTable.type, type));
+  if (type !== "ALL") {
+    where = and(where, eq(animeThemeTable.type, type));
   }
   const sq = db
     .select({
-      id: themeTable.id,
+      id: animeThemeTable.id,
       position:
         sql<number>`ROW_NUMBER() OVER (ORDER BY ${animeTable.popularity})`.as(
           "position",
         ),
     })
-    .from(themeTable)
-    .innerJoin(animeTable, eq(themeTable.animeId, animeTable.id))
+    .from(animeThemeTable)
+    .innerJoin(animeTable, eq(animeThemeTable.animeId, animeTable.id))
     .where(where)
     .as("sq");
   const themes = await db
@@ -133,7 +133,7 @@ export const gameActions = {
       const { quizId } = data;
       let creatorId = ctx.locals.user?.id ?? data.creatorId;
       if (!creatorId) {
-        return new ActionError({
+        throw new ActionError({
           code: "UNAUTHORIZED",
           message: "Invalid user",
         });
