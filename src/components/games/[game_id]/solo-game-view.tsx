@@ -81,7 +81,7 @@ export function SinglePlayerGame({
   const [isPlaying, setIsPlaying] = useState(true);
   const [songIdx, setSongIdx] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{ id: string; correct: boolean } | null>(null);
+  const [currentAnswer, setCurrentAnswer] = useState<{ id: string; name: string; correct: boolean } | null>(null);
   const [songResults, setSongResults] = useState<Array<{ songId: string; correct: boolean; pointsEarned: number }>>([]);
   const currentSong = songs[songIdx];
 
@@ -92,8 +92,6 @@ export function SinglePlayerGame({
       const newTimeLeft = timeLeft - 1;
       if (newTimeLeft <= 0) {
         clearInterval(timer);
-        // Time's up, consider it an incorrect answer
-        setCurrentAnswer({ id: 'timeout', correct: false });
         handleNextTheme();
         return;
       }
@@ -116,7 +114,7 @@ export function SinglePlayerGame({
     const isCorrect = item.key === currentSong?.themeId;
     const pointsEarned = isCorrect ? 1 : 0;
 
-    setCurrentAnswer({ id: item.key, correct: isCorrect });
+    setCurrentAnswer({ id: item.key, correct: isCorrect, name: item.label });
 
     if (isCorrect) {
       setPlayer({ ...player, score: player.score + pointsEarned });
@@ -141,14 +139,14 @@ export function SinglePlayerGame({
 
     // If there's no answer for the current song, record it as a timeout/skip
     if (!currentAnswer) {
-      setSongResults([
-        ...songResults,
+      setSongResults((prev) => ([
+        ...prev,
         {
-          songId: currentSong?.id || '',
+          songId: currentSong?.id ?? '',
           correct: false,
           pointsEarned: 0
         }
-      ]);
+      ]));
     }
 
     setSongIdx(songIdx + 1);
@@ -215,20 +213,12 @@ export function SinglePlayerGame({
       </div>
       <div className="h-[6rem]">
         <div className="mt-4 w-[90%] mx-auto">
-          {isPlaying ? (
-            <SongAutocomplete
-              ignoreThemes={[]}
-              disabled={!isPlaying || !videoReady}
-              onSelectedValueChange={handleGuess}
-            />
-          ) : (
-            <button
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-              onClick={handleNextTheme}
-            >
-              {songIdx >= songs.length - 1 ? "See Results" : "Next Song"}
-            </button>
-          )}
+          <SongAutocomplete
+            ignoreThemes={[]}
+            disabled={!isPlaying || !videoReady || !!currentAnswer?.name}
+            value={currentAnswer?.name ?? ''}
+            onSelectedValueChange={handleGuess}
+          />
         </div>
       </div>
     </div>

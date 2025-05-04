@@ -12,6 +12,7 @@ export function SongAutocomplete({
   ignoreThemes,
   onSelectedValueChange,
   disabled,
+  value,
 }: {
   ignoreThemes: {
     id: string;
@@ -20,6 +21,7 @@ export function SongAutocomplete({
   }[];
   onSelectedValueChange: (value: Item) => void;
   disabled?: boolean;
+  value?: string;
 }) {
   const cache = useRef<{ [key: string]: Item[] }>({});
   const [items, setItems] = useState<Item[]>([]);
@@ -27,6 +29,12 @@ export function SongAutocomplete({
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const [isLoading, setIsLoading] = useState(false);
+
+  // when value changes, reset the search to the new value
+  useEffect(() => {
+    setSearch(value ?? '');
+  }, [value])
+
   useEffect(() => {
     const controller = new AbortController();
     startTransition(async () => {
