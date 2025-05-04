@@ -1,6 +1,8 @@
 import type { User } from "better-auth";
 import type { components } from "./api/jikan.openapi";
 import type { entityStatuses, animeEntity, mangaEntity } from "./constants";
+import type { getGameInfo } from "./games/queries";
+import type { Ok } from "./result";
 
 export type FullAnimeRecord = components["schemas"]["anime_full"] & {
   episodes_info: components["schemas"]["anime_episodes"]["data"];
@@ -56,23 +58,17 @@ export type GameState = "waiting" | "playing" | "results";
 export type GameType = "solo" | "multiplayer";
 
 export type GameManagerProps = {
-  creatorId?: string | null;
-  title?: string | null;
-  description?: string | null;
-  difficulty?: string | null;
-  public?: boolean | null;
-  quizId?: string | null;
-  songs: Song[];
   host: User;
   currentPlayer: User;
-}
+} & GetReturnType<typeof getGameInfo>;
 
-export type Song = {
-  id: string;
-  name: string;
-  url: string;
-  animeName: string;
-};
+type GetReturnType<T extends (...args: any) => any> = T extends (
+  ...args: any
+) => Promise<infer R>
+  ? R extends Ok<infer T1>
+    ? T1
+    : never
+  : never;
 
 export type Entity = typeof animeEntity | typeof mangaEntity;
 

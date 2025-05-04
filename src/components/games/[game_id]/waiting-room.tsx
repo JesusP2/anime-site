@@ -12,8 +12,8 @@ import type { Player } from "./types";
 import type { GameType } from "@/lib/types";
 
 export type WaitingRoomProps = {
-  quizTitle: string;
-  quizDescription: string;
+  quizTitle?: string | null;
+  quizDescription?: string | null;
   players: Player[];
   isHost: boolean;
   gameType: GameType;

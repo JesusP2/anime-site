@@ -26,17 +26,22 @@ export async function getGameInfo(gameId: string) {
       gameType: gameTable.gameType,
     })
     .from(gameTable)
-    .leftJoin(quizTable, eq(gameTable.quizId, quizTable.id))
     .where(eq(gameTable.id, gameId))
+    .leftJoin(quizTable, eq(gameTable.quizId, quizTable.id))
     .limit(1);
   const songsPromises = db
     .select({
-      id: animeThemeTable.id,
+      id: themeVideoTable.id,
+      lyrics: themeVideoTable.lyrics,
+      themeId: animeThemeTable.id,
+      themeEntryId: themeEntryTable.id,
+      resolution: themeVideoTable.resolution,
       name: animeThemeTable.title,
       url: themeVideoTable.link,
       titles: animeTable.titles,
     })
     .from(animeTable)
+    .where(eq(gameTable.id, gameId))
     .innerJoin(animeThemeTable, eq(animeThemeTable.animeId, animeTable.id))
     .innerJoin(
       quizToThemeTable,
@@ -47,8 +52,7 @@ export async function getGameInfo(gameId: string) {
     .innerJoin(
       themeVideoTable,
       eq(themeVideoTable.themeEntryId, themeEntryTable.id),
-    )
-    .where(eq(gameTable.id, gameId));
+    );
   const promisesResult = await Promise.allSettled([
     gameInfoPromise,
     songsPromises,
@@ -68,14 +72,45 @@ export async function getGameInfo(gameId: string) {
       new ActionError({ code: "NOT_FOUND", message: "Songs not found" }),
     );
   }
+  promisesResult.forEach((result) => {
+    console.log(result);
+  });
   const _gameInfo = promisesResult[0].value[0];
-  const songs = promisesResult[1].value;
+  type Song = {
+    id: string;
+    lyrics: boolean | null;
+    themeId: string;
+    themeEntryId: string;
+    resolution: number | null;
+    name: string | null;
+    url: string;
+    animeName: string;
+  };
+  let songs: Song[] = [];
+  for (const song of promisesResult[1].value) {
+    const savedSong = songs.find((s) => s.themeId === song.themeId);
+    const savedSongIdx = songs.findIndex((s) => s.themeId === song.themeId);
+    const isCurrentSongResolutionHigher =
+      savedSong?.resolution &&
+      song.resolution &&
+      savedSong.resolution < song.resolution;
+    if (!savedSong) {
+      songs.push({
+        ...song,
+        animeName: getRecordTitle(song.titles),
+      });
+    } else if (
+      isCurrentSongResolutionHigher ||
+      (!savedSong.lyrics && song.lyrics)
+    ) {
+      songs[savedSongIdx] = {
+        ...song,
+        animeName: getRecordTitle(song.titles),
+      };
+    }
+  }
   return ok({
     ..._gameInfo,
-    songs: songs.map((song) => ({
-      ...song,
-      url: song.url[0] as string,
-      animeName: getRecordTitle(song.titles),
-    })),
+    songs,
   });
 }

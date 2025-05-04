@@ -1,8 +1,8 @@
-import { useState, useEffect, type JSX } from "react";
+import { useState, useEffect } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
 import type { Player } from "./types";
 import { cn } from "@/lib/utils";
-import type { GameManagerProps, GameState, Song } from "@/lib/types";
+import type { GameManagerProps, GameState } from "@/lib/types";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 import { Toaster } from "@/components/ui/sonner";
@@ -79,7 +79,7 @@ export function SinglePlayerGame({
   setPlayer,
   handleGameComplete,
 }: {
-  songs: Song[];
+  songs: GameManagerProps['songs'];
   player: Player;
   setPlayer: (player: Player) => void;
   handleGameComplete: () => void;

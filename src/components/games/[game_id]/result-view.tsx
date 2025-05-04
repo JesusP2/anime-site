@@ -13,7 +13,7 @@ export function ResultView({
   quizTitle,
   results,
 }: {
-  quizTitle: string;
+  quizTitle?: string | null;
   results: Array<{ id: string; name: string; score: number }>;
 }) {
   const sortedResults = [...results].sort((a, b) => b.score - a.score);
