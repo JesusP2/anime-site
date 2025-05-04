@@ -10,7 +10,6 @@ import {
   GameController,
   PlusCircle,
   Trophy,
-  UsersThree,
   Shuffle,
 } from "@phosphor-icons/react";
 
@@ -23,7 +22,7 @@ export function QuizHub() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card className="border-2 border-purple-200 dark:border-purple-900">
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GameController className="w-5 h-5" />
