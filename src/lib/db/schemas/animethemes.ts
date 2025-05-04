@@ -10,7 +10,7 @@ export const animeThemesDump = pgTable("anime_themes_dump", {
 // Theme table
 export const animeThemeTable = pgTable("anime_theme", {
   id: text("id").primaryKey(),
-  animeId: text("anime_id").references(() => animeTable.id),
+  animeId: text("anime_id").references(() => animeTable.id, { onDelete: "cascade" }),
   animethemesId: integer("animethemes_id").unique().notNull(),
   sequence: integer("sequence"),
   slug: text("slug").notNull(),
@@ -37,10 +37,10 @@ export const songToArtistTable = pgTable("theme_song_to_artist", {
   id: text("id").primaryKey(),
   themeId: text("theme_id")
     .notNull()
-    .references(() => animeThemeTable.id),
+    .references(() => animeThemeTable.id, { onDelete: "cascade" }),
   artistId: text("artist_id")
     .notNull()
-    .references(() => themeArtistTable.id),
+    .references(() => themeArtistTable.id, { onDelete: "cascade" }),
 });
 
 // Theme entry table
@@ -48,7 +48,7 @@ export const themeEntryTable = pgTable("theme_entry", {
   id: text("id").primaryKey(),
   themeId: text("theme_id")
     .notNull()
-    .references(() => animeThemeTable.id),
+    .references(() => animeThemeTable.id, { onDelete: "cascade" }),
   animethemesId: integer("animethemes_id").unique().notNull(),
   episodes: text("episodes"),
   sfw: boolean("sfw"),
@@ -62,7 +62,7 @@ export const themeVideoTable = pgTable("theme_video", {
   id: text("id").primaryKey(),
   themeEntryId: text("theme_entry_id")
     .notNull()
-    .references(() => themeEntryTable.id),
+    .references(() => themeEntryTable.id, { onDelete: "cascade" }),
   animethemesId: integer("animethemes_id").unique().notNull(),
   basename: text("basename"),
   filename: text("filename"),
@@ -85,7 +85,7 @@ export const themeAudioTable = pgTable("theme_audio", {
   id: text("id").primaryKey(),
   videoId: text("video_id")
     .notNull()
-    .references(() => themeVideoTable.id),
+    .references(() => themeVideoTable.id, { onDelete: "cascade" }),
   animethemesId: integer("animethemes_id").unique().notNull(),
   basename: text("basename"),
   filename: text("filename"),

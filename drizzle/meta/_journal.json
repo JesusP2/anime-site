@@ -162,6 +162,13 @@
       "when": 1746312035937,
       "tag": "0022_wet_blue_shield",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1746402325995,
+      "tag": "0023_old_stone_men",
+      "breakpoints": true
     }
   ]
 }

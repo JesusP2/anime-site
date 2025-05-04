@@ -17,9 +17,9 @@ export const quizToThemeTable = pgTable("quiz_to_theme", (t) => ({
   quizId: t
     .text("quiz_id")
     .notNull()
-    .references(() => quizTable.id),
+    .references(() => quizTable.id, { onDelete: "cascade" }),
   themeId: t
     .text("theme_id")
     .notNull()
-    .references(() => animeThemeTable.id),
+    .references(() => animeThemeTable.id, { onDelete: "cascade" }),
 }));

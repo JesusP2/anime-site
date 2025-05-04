@@ -7,7 +7,7 @@ export const gameTable = pgTable("game", (t) => ({
   quizId: t
     .text("quiz_id")
     .notNull()
-    .references(() => quizTable.id),
+    .references(() => quizTable.id, { onDelete: "cascade" }),
   gameType: t.text("game_type").notNull(),
   public: t.boolean("public").notNull(),
   createdAt: t.timestamp("created_at").defaultNow(),
