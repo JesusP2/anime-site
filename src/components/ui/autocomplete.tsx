@@ -70,7 +70,7 @@ export function AutoComplete<T extends string>({
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <Command shouldFilter={false}>
           <PopoverAnchor asChild>
@@ -99,7 +99,7 @@ export function AutoComplete<T extends string>({
                 e.preventDefault();
               }
             }}
-            className="w-[--radix-popover-trigger-width] p-0"
+            className="w-[350px]"
           >
             <CommandList>
               {isLoading && (

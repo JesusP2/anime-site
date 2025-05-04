@@ -12,7 +12,7 @@ type Query = {
   }[];
   type: "OP" | "ED";
   number: number;
-  name: string;
+  title: string;
   text_searc: string;
   rank: number;
 };
@@ -23,7 +23,7 @@ function parseResult(result: Query) {
       result.titles?.find((title) => title.type === "English")?.title ||
       result.titles?.find((title) => title.type === "Default")?.title ||
       "Title",
-    songName: result.name,
+    songName: result.title,
     id: result.id,
   };
 }
@@ -44,6 +44,7 @@ export const GET: APIRoute = async (ctx) => {
 	ORDER BY rank DESC
 	LIMIT 10`;
   const result: Query[] = await db.execute(query);
+  console.log(result);
   return new Response(JSON.stringify(result.map(parseResult)), {
     status: 200,
   });

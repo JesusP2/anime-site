@@ -7,7 +7,7 @@ import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 import { Toaster } from "@/components/ui/sonner";
 
-const TIMEOUT = 5;
+const TIMEOUT = 10;
 export function SinglePlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
   const [player, setPlayer] = useState(
@@ -114,7 +114,7 @@ export function SinglePlayerGame({
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
     setIsPlaying(false);
-    const isCorrect = item.key === currentSong?.id;
+    const isCorrect = item.key === currentSong?.themeId;
     const pointsEarned = isCorrect ? timeLeft : 0;
     
     setCurrentAnswer({ id: item.key, correct: isCorrect });

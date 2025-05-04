@@ -56,7 +56,7 @@ export function SongAutocomplete({
         (data) => !ignoreThemes.some((theme) => theme.id === data.id),
       );
       cache.current[debouncedSearch] = filtered.map((d) => ({
-        label: `${d.animeTitle}`,
+        label: `${d.animeTitle} - ${d.songName}`,
         value: d.songName,
         key: d.id,
       }));
