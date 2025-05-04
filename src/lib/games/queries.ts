@@ -72,9 +72,6 @@ export async function getGameInfo(gameId: string) {
       new ActionError({ code: "NOT_FOUND", message: "Songs not found" }),
     );
   }
-  promisesResult.forEach((result) => {
-    console.log(result);
-  });
   const _gameInfo = promisesResult[0].value[0];
   type Song = {
     id: string;
