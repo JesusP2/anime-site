@@ -10,7 +10,7 @@ type Query = {
     title?: string;
     type?: string;
   }[];
-  type: "opening" | "ending";
+  type: "OP" | "ED";
   number: number;
   name: string;
   text_searc: string;
@@ -18,15 +18,12 @@ type Query = {
 };
 
 function parseResult(result: Query) {
-  let link = `${result.type} ${result.number}`;
-  link = link[0]?.toUpperCase() + link.slice(1);
   return {
     animeTitle:
       result.titles?.find((title) => title.type === "English")?.title ||
       result.titles?.find((title) => title.type === "Default")?.title ||
       "Title",
-    songName: result.name.split('"')[1] || "",
-    link: link,
+    songName: result.name,
     id: result.id,
   };
 }
@@ -39,12 +36,13 @@ export const GET: APIRoute = async (ctx) => {
     });
   }
   const db = getDb();
-  const query = sql`SELECT theme.id, anime.titles, theme.type, theme.number, theme.name, ts_rank_cd(theme.search_vector, q.query) AS rank
-	FROM theme
+  const query = sql`SELECT anime_theme.id, anime.titles, anime_theme.type, anime_theme.title, ts_rank_cd(anime_theme.search_vector, q.query) AS rank
+	FROM anime_theme
 	CROSS JOIN (SELECT plainto_tsquery('english', ${q.data}) AS query) as q
-	INNER JOIN anime ON theme.anime_id = anime.id
+	INNER JOIN anime ON anime_theme.anime_id = anime.id
 	WHERE search_vector @@ q.query
-	ORDER BY rank DESC`;
+	ORDER BY rank DESC
+	LIMIT 10`;
   const result: Query[] = await db.execute(query);
   return new Response(JSON.stringify(result.map(parseResult)), {
     status: 200,

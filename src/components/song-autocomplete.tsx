@@ -50,14 +50,13 @@ export function SongAutocomplete({
       const data = (await res.json()) as {
         id: string;
         animeTitle: string;
-        link: string;
         songName: string;
       }[];
       const filtered = data.filter(
         (data) => !ignoreThemes.some((theme) => theme.id === data.id),
       );
       cache.current[debouncedSearch] = filtered.map((d) => ({
-        label: `${d.animeTitle} - ${d.link.toLowerCase()}`,
+        label: `${d.animeTitle}`,
         value: d.songName,
         key: d.id,
       }));
