@@ -7,13 +7,6 @@ import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 import { Toaster } from "@/components/ui/sonner";
 
-function embedUrl(_url?: string) {
-  if (!_url) return "";
-  const url = new URL(_url);
-  const v = url.searchParams.get("v");
-  return `https://www.youtube-nocookie.com/embed/${v}?autoplay=1`;
-}
-
 const TIMEOUT = 5;
 export function SinglePlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
@@ -87,9 +80,12 @@ export function SinglePlayerGame({
   const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
   const [isPlaying, setIsPlaying] = useState(true);
   const [songIdx, setSongIdx] = useState(0);
+  const [videoReady, setVideoReady] = useState(false);
   const currentSong = songs[songIdx];
 
   useEffect(() => {
+    if (!videoReady) return;
+    
     const timer = setInterval(() => {
       const newTimeLeft = timeLeft - 1;
       if (newTimeLeft <= 0) {
@@ -106,7 +102,7 @@ export function SinglePlayerGame({
     return () => {
       clearInterval(timer);
     };
-  }, [isPlaying, timeLeft]);
+  }, [isPlaying, timeLeft, videoReady]);
 
   const handleTimerEnd = () => {
     setIsPlaying(false);
@@ -128,6 +124,11 @@ export function SinglePlayerGame({
     setSongIdx(songIdx + 1);
     setIsPlaying(true);
     setTimeLeft(TIMEOUT * 2);
+    setVideoReady(false);
+  };
+
+  const handleVideoReady = () => {
+    setVideoReady(true);
   };
 
   return (
@@ -145,32 +146,34 @@ export function SinglePlayerGame({
         <div className="relative h-full w-full">
           <div
             className={cn(
-              "absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center",
+              "absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center z-10",
               isPlaying ? "opacity-100" : "hidden",
             )}
           >
-            {timeLeft - TIMEOUT === 0 ? (
+            {!videoReady ? (
+              <div>Loading video...</div>
+            ) : timeLeft - TIMEOUT === 0 ? (
               <div>The answer is...</div>
             ) : (
               timeLeft - TIMEOUT
             )}
           </div>
-          <iframe
-            src={embedUrl(currentSong?.url)}
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
+          <video
+            src={currentSong?.url}
+            autoPlay
+            muted={false}
+            controls
             className="w-full h-full"
             style={{ display: "block" }}
-          ></iframe>
+            onCanPlay={handleVideoReady}
+          ></video>
         </div>
       </div>
       <div className="h-[6rem]">
         <div className="mt-4 w-[90%] mx-auto">
           <SongAutocomplete
             ignoreThemes={[]}
-            disabled={!isPlaying}
+            disabled={!isPlaying || !videoReady}
             onSelectedValueChange={handleGuess}
           />
         </div>
