@@ -81,13 +81,13 @@ export function SinglePlayerGame({
   const [isPlaying, setIsPlaying] = useState(true);
   const [songIdx, setSongIdx] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{id: string; correct: boolean} | null>(null);
-  const [songResults, setSongResults] = useState<Array<{songId: string; correct: boolean; pointsEarned: number}>>([]);
+  const [currentAnswer, setCurrentAnswer] = useState<{ id: string; correct: boolean } | null>(null);
+  const [songResults, setSongResults] = useState<Array<{ songId: string; correct: boolean; pointsEarned: number }>>([]);
   const currentSong = songs[songIdx];
 
   useEffect(() => {
     if (!videoReady) return;
-    
+
     const timer = setInterval(() => {
       const newTimeLeft = timeLeft - 1;
       if (newTimeLeft <= 0) {
@@ -113,21 +113,20 @@ export function SinglePlayerGame({
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
-    setIsPlaying(false);
     const isCorrect = item.key === currentSong?.themeId;
-    const pointsEarned = isCorrect ? timeLeft : 0;
-    
+    const pointsEarned = isCorrect ? 1 : 0;
+
     setCurrentAnswer({ id: item.key, correct: isCorrect });
-    
+
     if (isCorrect) {
       setPlayer({ ...player, score: player.score + pointsEarned });
     }
-    
+
     // Record the result for this song
     setSongResults([
-      ...songResults, 
-      { 
-        songId: currentSong?.id || '', 
+      ...songResults,
+      {
+        songId: currentSong?.id || '',
         correct: isCorrect,
         pointsEarned
       }
@@ -139,19 +138,19 @@ export function SinglePlayerGame({
       handleGameComplete();
       return;
     }
-    
+
     // If there's no answer for the current song, record it as a timeout/skip
     if (!currentAnswer) {
       setSongResults([
-        ...songResults, 
-        { 
-          songId: currentSong?.id || '', 
+        ...songResults,
+        {
+          songId: currentSong?.id || '',
           correct: false,
           pointsEarned: 0
         }
       ]);
     }
-    
+
     setSongIdx(songIdx + 1);
     setIsPlaying(true);
     setTimeLeft(TIMEOUT * 2);
@@ -165,7 +164,7 @@ export function SinglePlayerGame({
 
   return (
     <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full">
-      <div className="h-[6rem] text-center py-2">
+      <div className="min-h-[6rem] text-center py-2">
         <div className="flex justify-between items-center mb-2">
           <div className="text-left">
             <span className="font-bold">Song</span>: {songIdx + 1} / {songs.length}
@@ -174,20 +173,16 @@ export function SinglePlayerGame({
             <span className="font-bold">Score</span>: {player.score}
           </div>
         </div>
-        <div className="text-center">
-          <span className="font-bold">Time Left</span>: {timeLeft > TIMEOUT ? timeLeft - TIMEOUT : 0}
-        </div>
         {!isPlaying && (
           <div className="mt-2">
-            {currentAnswer && (
+            {currentAnswer ? (
               <div className={`font-medium ${currentAnswer.correct ? 'text-green-600' : 'text-red-600'}`}>
-                {currentAnswer.correct ? 
-                  `Correct! +${timeLeft} points` : 
+                {currentAnswer.correct ?
+                  `Correct! +1 points` :
                   'Incorrect!'}
               </div>
-            )}
-            <h1 className="text-xl font-bold">{currentSong?.animeName}</h1>
-            <h2 className="text-lg">{currentSong?.name}</h2>
+            ) : <div className="font-medium text-ed-600">Time's up!</div>}
+            <h1 className="text-xl font-bold">{currentSong?.animeName} - {currentSong?.name}</h1>
           </div>
         )}
       </div>
@@ -227,7 +222,7 @@ export function SinglePlayerGame({
               onSelectedValueChange={handleGuess}
             />
           ) : (
-            <button 
+            <button
               className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
               onClick={handleNextTheme}
             >
