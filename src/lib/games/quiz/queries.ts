@@ -8,11 +8,41 @@ import {
   themeEntryTable,
   themeVideoTable,
 } from "@/lib/db/schemas";
+import { logger } from "@/lib/logger";
+import { err, ok } from "@/lib/result";
+import { ActionError } from "astro:actions";
 import { eq } from "drizzle-orm";
 
-export async function getQuizInfo(
-  quizId: string,
-) {
+export async function getQuizzes(userId: string) {
+  const db = getDb();
+  try {
+    const result = await db
+      .select({
+        id: quizTable.id,
+        quizTitle: quizTable.title,
+        description: quizTable.description,
+        difficulty: quizTable.difficulty,
+        public: quizTable.public,
+        createdAt: quizTable.createdAt,
+      })
+      .from(quizTable)
+      .where(eq(quizTable.creatorId, userId))
+      .orderBy(quizTable.createdAt);
+    return ok(result)
+  } catch (error) {
+    if (error instanceof Error) {
+      globalThis.waitUntil(logger.error("error getting quizzes", error));
+    }
+    return err(
+      new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error",
+      }),
+    );
+  }
+}
+
+export async function getQuizInfo(quizId: string) {
   const db = getDb();
   const result = await db
     .select({
@@ -35,9 +65,7 @@ export async function getQuizInfo(
   return quizInfo;
 }
 
-export async function getQuizCompleteInfo(
-  quizId: string,
-) {
+export async function getQuizCompleteInfo(quizId: string) {
   const db = getDb();
   const result = await db
     .select({
@@ -59,7 +87,7 @@ export async function getQuizCompleteInfo(
     .innerJoin(
       themeVideoTable,
       eq(themeVideoTable.themeEntryId, themeEntryTable.id),
-    )
+    );
   const themes = result.map((theme) => ({
     id: theme.themeId,
     title: theme.themeName,

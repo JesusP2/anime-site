@@ -61,7 +61,7 @@ export function CreateQuiz() {
 
   async function onReviewSectionCompleted() {
     try {
-      const res = await actions.games.createQuiz(values);
+      const res = await actions.quizzes.createQuiz(values);
       if (res.error) {
         console.error(res.error);
         return;

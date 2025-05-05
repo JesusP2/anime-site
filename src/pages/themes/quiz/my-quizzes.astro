@@ -1,12 +1,28 @@
 ---
 import Head from "@/components/head.astro";
 import QuizLayout from "@/layout/quiz.astro";
+import { MyQuizzes } from "@/components/my-quizzes";
+import { getQuizzes } from "@/lib/games/quiz/queries";
 
-const title = "Challenge Results | Guess the Anime Theme";
-const description = "See how well you did on the anime theme quiz!";
+const title = "My Quizzes | Guess the Anime Theme";
+const description = "Manage your created anime theme quizzes.";
+
+const user = Astro.locals.user;
+const userId = user?.id;
+
+if (!userId) {
+  return Astro.redirect("/login");
+}
+let quizzes = await getQuizzes(userId);
 ---
 
 <QuizLayout title={title}>
   <Head title={title} description={description} />
-  My Quizzes
+  {
+    !quizzes.success ? (
+      quizzes.error && <p>{quizzes.error}</p>
+    ) : (
+      <MyQuizzes quizzes={quizzes.value} client:load />
+    )
+  }
 </QuizLayout>
