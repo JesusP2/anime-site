@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -55,10 +55,10 @@ export function QuizHub() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" variant="outline" size="lg">
+            <a className={buttonVariants({ variant: "outline", size: 'lg', className: 'w-full' })} href="/themes/quiz/create">
               <PlusCircle className="mr-2 w-5 h-5" />
               Create New Quiz
-            </Button>
+            </a>
           </CardContent>
         </Card>
       </div>

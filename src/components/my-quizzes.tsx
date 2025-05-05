@@ -11,6 +11,7 @@ import { actions } from "astro:actions";
 import type { getQuizzes } from "@/lib/games/quiz/queries";
 import type { Ok } from "@/lib/result";
 import { useState } from "react";
+import { PlusCircle } from "@phosphor-icons/react";
 
 type Props = ReturnType<(typeof getQuizzes)> extends Promise<infer T> ? T extends Ok<infer U> ? U : never : never;
 
@@ -37,11 +38,12 @@ export function MyQuizzes({ quizzes }: { quizzes: Props }) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">My Quizzes</h1>
         <a className={buttonVariants({ variant: "outline" })} href="/themes/quiz/create">
+          <PlusCircle className="mr-2 w-5 h-5" />
           Create New Quiz
         </a>
       </div>
       {
-        !_quizzes ? (
+        !_quizzes.length ? (
           <p className="text-center text-gray-500 dark:text-gray-400">
             You haven't created any quizzes yet.
           </p>
