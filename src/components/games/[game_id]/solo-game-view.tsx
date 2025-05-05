@@ -161,8 +161,8 @@ export function SinglePlayerGame({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full">
-      <div className="min-h-[6rem] text-center py-2">
+    <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full flex flex-col">
+      <div className="min-h-[6rem] text-center py-2 shrink-0">
         <div className="flex justify-between items-center mb-2">
           <div className="text-left">
             <span className="font-bold">Song</span>: {songIdx + 1} / {songs.length}
@@ -184,11 +184,11 @@ export function SinglePlayerGame({
           </div>
         )}
       </div>
-      <div className="w-full h-[calc(100%-20rem)]">
-        <div className="relative h-full w-full">
+      <div className="w-full flex-grow relative">
+        <div className="relative w-full aspect-video">
           <div
             className={cn(
-              "absolute top-0 left-0 w-full h-full bg-black text-3xl grid place-items-center z-10",
+              "absolute inset-0 bg-black text-3xl grid place-items-center z-10",
               isPlaying ? "opacity-100" : "hidden",
             )}
           >
@@ -205,13 +205,13 @@ export function SinglePlayerGame({
             autoPlay
             muted={false}
             controls
-            className="w-full h-full"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ display: "block" }}
             onCanPlay={handleVideoReady}
           ></video>
         </div>
       </div>
-      <div className="h-[6rem]">
+      <div className="h-[6rem] shrink-0">
         <div className="mt-4 w-[90%] mx-auto">
           <SongAutocomplete
             ignoreThemes={[]}
