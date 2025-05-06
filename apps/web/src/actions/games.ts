@@ -2,9 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { getDb } from "@/lib/db/pool";
 import { ulid } from "ulidx";
-import {
-  gameTable,
-} from "@/lib/db/schemas";
+import { gameTable } from "@/lib/db/schemas";
 
 export const gameActions = {
   createGame: defineAction({

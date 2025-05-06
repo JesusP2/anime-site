@@ -21,16 +21,16 @@ import { ArrowLeft } from "@phosphor-icons/react";
 
 type SearchProps =
   | {
-    page: "Search";
-    searchType: Entity;
-  }
+      page: "Search";
+      searchType: Entity;
+    }
   | {
-    page: "mal_id";
-  }
+      page: "mal_id";
+    }
   | {
-    page: Entity;
-    entityStatus: EntityStatus;
-  };
+      page: Entity;
+      entityStatus: EntityStatus;
+    };
 
 export function AppSidebar({
   children,
@@ -53,7 +53,10 @@ export function AppSidebar({
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton className="truncate font-semibold hover:bg-inherit" asChild>
+              <SidebarMenuButton
+                className="truncate font-semibold hover:bg-inherit"
+                asChild
+              >
                 <a href="/">
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
@@ -72,9 +75,7 @@ export function AppSidebar({
             <ThemeButton />
           </div>
         </SidebarContent>
-        <SidebarFooter>
-          {dropdown}
-        </SidebarFooter>
+        <SidebarFooter>{dropdown}</SidebarFooter>
       </Sidebar>
       <SidebarInset className="border">
         <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-14 flex h-14 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
@@ -84,7 +85,7 @@ export function AppSidebar({
               orientation="vertical"
               className="mx-2 data-[orientation=vertical]:h-4"
             />
-            {searchProps.page === 'mal_id' && (
+            {searchProps.page === "mal_id" && (
               <Button variant="ghost" onClick={() => window.history.back()}>
                 <ArrowLeft className="size-4" weight="bold" />
               </Button>

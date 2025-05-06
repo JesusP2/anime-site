@@ -9,13 +9,11 @@ import { ResultView } from "./result-view";
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
-  const [player, setPlayer] = useState(
-    {
-      id: props.currentPlayer.id,
-      name: props.currentPlayer.name,
-      score: 0,
-    },
-  );
+  const [player, setPlayer] = useState({
+    id: props.currentPlayer.id,
+    name: props.currentPlayer.name,
+    score: 0,
+  });
 
   function handleStartGame() {
     setGameState("playing");
@@ -27,31 +25,26 @@ export function MultiPlayer(props: GameManagerProps) {
 
   if (gameState === "waiting") {
     return (
-        <WaitingRoom
-          quizTitle={props.title}
-          quizDescription={props.description}
-          players={[player]}
-          isHost={player.id === props.host.id}
-          gameType="solo"
-          onStartGame={handleStartGame}
-        />
-    )
+      <WaitingRoom
+        quizTitle={props.title}
+        quizDescription={props.description}
+        players={[player]}
+        isHost={player.id === props.host.id}
+        gameType="solo"
+        onStartGame={handleStartGame}
+      />
+    );
   } else if (gameState === "playing") {
     return (
-        <MultiPlayerGame
-          songs={props.songs}
-          player={player}
-          setPlayer={setPlayer}
-          handleGameComplete={handleGameComplete}
-        />
-    )
+      <MultiPlayerGame
+        songs={props.songs}
+        player={player}
+        setPlayer={setPlayer}
+        handleGameComplete={handleGameComplete}
+      />
+    );
   } else if (gameState === "results") {
-    return (
-        <ResultView
-          quizTitle={props.title}
-          results={[player]}
-        />
-    )
+    return <ResultView quizTitle={props.title} results={[player]} />;
   }
   return null;
 }
@@ -62,7 +55,7 @@ export function MultiPlayerGame({
   setPlayer,
   handleGameComplete,
 }: {
-  songs: GameManagerProps['songs'];
+  songs: GameManagerProps["songs"];
   player: Player;
   setPlayer: (player: Player) => void;
   handleGameComplete: () => void;
@@ -71,8 +64,14 @@ export function MultiPlayerGame({
   const [isPlaying, setIsPlaying] = useState(true);
   const [songIdx, setSongIdx] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{ id: string; name: string; correct: boolean } | null>(null);
-  const [songResults, setSongResults] = useState<Array<{ songId: string; correct: boolean; pointsEarned: number }>>([]);
+  const [currentAnswer, setCurrentAnswer] = useState<{
+    id: string;
+    name: string;
+    correct: boolean;
+  } | null>(null);
+  const [songResults, setSongResults] = useState<
+    Array<{ songId: string; correct: boolean; pointsEarned: number }>
+  >([]);
   const currentSong = songs[songIdx];
 
   useEffect(() => {
@@ -114,10 +113,10 @@ export function MultiPlayerGame({
     setSongResults([
       ...songResults,
       {
-        songId: currentSong?.id || '',
+        songId: currentSong?.id || "",
         correct: isCorrect,
-        pointsEarned
-      }
+        pointsEarned,
+      },
     ]);
   };
 
@@ -129,14 +128,14 @@ export function MultiPlayerGame({
 
     // If there's no answer for the current song, record it as a timeout/skip
     if (!currentAnswer) {
-      setSongResults((prev) => ([
+      setSongResults((prev) => [
         ...prev,
         {
-          songId: currentSong?.id ?? '',
+          songId: currentSong?.id ?? "",
           correct: false,
-          pointsEarned: 0
-        }
-      ]));
+          pointsEarned: 0,
+        },
+      ]);
     }
 
     setSongIdx(songIdx + 1);
@@ -155,7 +154,8 @@ export function MultiPlayerGame({
       <div className="min-h-[6rem] text-center py-2 shrink-0">
         <div className="flex justify-between items-center mb-2">
           <div className="text-left">
-            <span className="font-bold">Song</span>: {songIdx + 1} / {songs.length}
+            <span className="font-bold">Song</span>: {songIdx + 1} /{" "}
+            {songs.length}
           </div>
           <div className="text-right">
             <span className="font-bold">Score</span>: {player.score}
@@ -164,13 +164,17 @@ export function MultiPlayerGame({
         {!isPlaying && (
           <div className="mt-2">
             {currentAnswer ? (
-              <div className={`font-medium ${currentAnswer.correct ? 'text-green-600' : 'text-red-600'}`}>
-                {currentAnswer.correct ?
-                  `Correct! +1 points` :
-                  'Incorrect!'}
+              <div
+                className={`font-medium ${currentAnswer.correct ? "text-green-600" : "text-red-600"}`}
+              >
+                {currentAnswer.correct ? `Correct! +1 points` : "Incorrect!"}
               </div>
-            ) : <div className="font-medium text-ed-600">Time's up!</div>}
-            <h1 className="text-xl font-bold">{currentSong?.animeName} - {currentSong?.name}</h1>
+            ) : (
+              <div className="font-medium text-ed-600">Time's up!</div>
+            )}
+            <h1 className="text-xl font-bold">
+              {currentSong?.animeName} - {currentSong?.name}
+            </h1>
           </div>
         )}
       </div>
@@ -206,7 +210,7 @@ export function MultiPlayerGame({
           <SongAutocomplete
             ignoreThemes={[]}
             disabled={!isPlaying || !videoReady || !!currentAnswer?.name}
-            value={currentAnswer?.name ?? ''}
+            value={currentAnswer?.name ?? ""}
             onSelectedValueChange={handleGuess}
           />
         </div>

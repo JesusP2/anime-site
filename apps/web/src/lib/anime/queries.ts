@@ -32,12 +32,7 @@ const animeCardKeys = {
 
 export async function getAnime(
   mal_id: number,
-): Promise<
-  Result<
-    FullAnimeRecord,
-    ActionError
-  >
-> {
+): Promise<Result<FullAnimeRecord, ActionError>> {
   try {
     const selectKeys = {
       titles: animeTable.titles,
@@ -71,7 +66,7 @@ export async function getAnime(
     const [anime] = await db
       .select(selectKeys)
       .from(animeTable)
-      .where(eq(animeTable.mal_id, mal_id))
+      .where(eq(animeTable.mal_id, mal_id));
     if (anime) {
       return ok(anime);
     }
@@ -248,7 +243,9 @@ export async function getAnimesWithStatus(
     });
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error(`error getting anime with status: ${entityStatus}`, error));
+      globalThis.waitUntil(
+        logger.error(`error getting anime with status: ${entityStatus}`, error),
+      );
     }
     return err(
       new ActionError({
@@ -298,7 +295,9 @@ export async function getCarouselAnimes(
     }
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error(`error getting carousel animes`, error));
+      globalThis.waitUntil(
+        logger.error(`error getting carousel animes`, error),
+      );
     }
     return err(
       new ActionError({

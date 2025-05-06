@@ -51,7 +51,7 @@ export function getAuth(context: APIContext | ActionAPIContext) {
     },
     plugins: [
       captcha({
-        provider: 'cloudflare-turnstile',
+        provider: "cloudflare-turnstile",
         secretKey: CLOUDFLARE_TURNSTILE_SECRET_KEY,
       }),
       username(),

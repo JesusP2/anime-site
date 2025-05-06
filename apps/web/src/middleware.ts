@@ -5,9 +5,11 @@ import { getConnectionString } from "./lib/utils";
 import { logger } from "./lib/logger";
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  context.locals.runtime.ctx.waitUntil(logger.info("running middleware", {
-    path: context.request.url.toString(),
-  }));
+  context.locals.runtime.ctx.waitUntil(
+    logger.info("running middleware", {
+      path: context.request.url.toString(),
+    }),
+  );
   const res = await ratelimit.limit(context.clientAddress);
   if (!res.success) {
     return new Response("Too many requests", {

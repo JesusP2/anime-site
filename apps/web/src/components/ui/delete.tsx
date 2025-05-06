@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import type { Variants } from 'motion/react';
-import { motion, useAnimation } from 'motion/react';
-import type { HTMLAttributes } from 'react';
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import type { Variants } from "motion/react";
+import { motion, useAnimation } from "motion/react";
+import type { HTMLAttributes } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 export interface DeleteIconHandle {
   startAnimation: () => void;
@@ -21,7 +21,7 @@ const lidVariants: Variants = {
 };
 
 const springTransition = {
-  type: 'spring',
+  type: "spring",
   stiffness: 500,
   damping: 30,
 };
@@ -35,38 +35,38 @@ const DeleteIcon = forwardRef<DeleteIconHandle, DeleteIconProps>(
       isControlledRef.current = true;
 
       return {
-        startAnimation: () => controls.start('animate'),
-        stopAnimation: () => controls.start('normal'),
+        startAnimation: () => controls.start("animate"),
+        stopAnimation: () => controls.start("normal"),
       };
     });
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
         if (!isControlledRef.current) {
-          controls.start('animate');
+          controls.start("animate");
         } else {
           onMouseEnter?.(e);
         }
       },
-      [controls, onMouseEnter]
+      [controls, onMouseEnter],
     );
 
     const handleMouseLeave = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
         if (!isControlledRef.current) {
-          controls.start('normal');
+          controls.start("normal");
         } else {
           onMouseLeave?.(e);
         }
       },
-      [controls, onMouseLeave]
+      [controls, onMouseLeave],
     );
 
     return (
       <div
         className={cn(
           `cursor-pointer select-none rounded-md transition-colors duration-200 flex items-center justify-center`,
-          className
+          className,
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -94,8 +94,8 @@ const DeleteIcon = forwardRef<DeleteIconHandle, DeleteIconProps>(
           <motion.path
             d="M19 8v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V8"
             variants={{
-              normal: { d: 'M19 8v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V8' },
-              animate: { d: 'M19 9v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V9' },
+              normal: { d: "M19 8v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V8" },
+              animate: { d: "M19 9v12c0 1-1 2-2 2H7c-1 0-2-1-2-2V9" },
             }}
             animate={controls}
             transition={springTransition}
@@ -127,9 +127,9 @@ const DeleteIcon = forwardRef<DeleteIconHandle, DeleteIconProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
-DeleteIcon.displayName = 'DeleteIcon';
+DeleteIcon.displayName = "DeleteIcon";
 
 export { DeleteIcon };

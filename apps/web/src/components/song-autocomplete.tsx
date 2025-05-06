@@ -32,8 +32,8 @@ export function SongAutocomplete({
 
   // when value changes, reset the search to the new value
   useEffect(() => {
-    setSearch(value ?? '');
-  }, [value])
+    setSearch(value ?? "");
+  }, [value]);
 
   useEffect(() => {
     const controller = new AbortController();

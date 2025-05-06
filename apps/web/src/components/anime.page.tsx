@@ -93,8 +93,7 @@ export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
         <div className="h-full w-2/3 lg:w-[320px] flex-shrink-0 mx-auto">
           <Card>
             <CardContent>
-              <div className="aspect-[2/3] relative overflow-hidden rounded-md"
-              >
+              <div className="aspect-[2/3] relative overflow-hidden rounded-md">
                 <img
                   src={
                     anime.images?.jpg?.large_image_url ||
@@ -248,12 +247,24 @@ export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
 
       <Tabs defaultValue="details" className="w-full mt-2">
         <TabsList className="grid grid-cols-6 max-w-2xl mx-auto bg-background">
-          <TabsTrigger className="cursor-pointer" value="details">Details</TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="episodes">Episodes</TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="characters">Characters</TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="staff">Staff</TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="streaming">Streaming</TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="themes">Themes</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="details">
+            Details
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="episodes">
+            Episodes
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="characters">
+            Characters
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="staff">
+            Staff
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="streaming">
+            Streaming
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="themes">
+            Themes
+          </TabsTrigger>
         </TabsList>
 
         {/* Details Tab */}
@@ -338,34 +349,34 @@ export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
 
               {(anime.theme?.openings?.length ||
                 anime.theme?.endings?.length) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {anime.theme?.openings && anime.theme.openings.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-medium mb-2">
-                          Opening Themes
-                        </h3>
-                        <ul className="text-sm space-y-1">
-                          {anime.theme.openings.map((opening, index) => (
-                            <li key={index}>{opening}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {anime.theme?.openings && anime.theme.openings.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium mb-2">
+                        Opening Themes
+                      </h3>
+                      <ul className="text-sm space-y-1">
+                        {anime.theme.openings.map((opening, index) => (
+                          <li key={index}>{opening}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                    {anime.theme?.endings && anime.theme.endings.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-medium mb-2">
-                          Ending Themes
-                        </h3>
-                        <ul className="text-sm space-y-1">
-                          {anime.theme.endings.map((ending, index) => (
-                            <li key={index}>{ending}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
+                  {anime.theme?.endings && anime.theme.endings.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium mb-2">
+                        Ending Themes
+                      </h3>
+                      <ul className="text-sm space-y-1">
+                        {anime.theme.endings.map((ending, index) => (
+                          <li key={index}>{ending}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Related Anime */}
               {anime.relations && anime.relations.length > 0 && (
@@ -662,82 +673,104 @@ export function AnimeDetailsPage({ anime }: { anime: FullAnimeRecord }) {
           <Card>
             <CardHeader>
               <CardTitle>Openings & Endings</CardTitle>
-              <CardDescription>
-                Theme songs from the anime
-              </CardDescription>
+              <CardDescription>Theme songs from the anime</CardDescription>
             </CardHeader>
             <CardContent>
               {anime.animethemes && anime.animethemes.length > 0 ? (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium">THEMES ({anime.animethemes.length})</h3>
-                    <Badge className="bg-[#e8d9b5] text-[#8b6e44] hover:bg-[#e0cfa6] border-none">OP & ED</Badge>
+                    <h3 className="text-lg font-medium">
+                      THEMES ({anime.animethemes.length})
+                    </h3>
+                    <Badge className="bg-[#e8d9b5] text-[#8b6e44] hover:bg-[#e0cfa6] border-none">
+                      OP & ED
+                    </Badge>
                   </div>
-                  
+
                   {/* Group themes by type (OP/ED) */}
                   {anime.animethemes.map((theme, index) => (
-                    <div key={index} className="border-l-2 border-[#c4a775] pl-4 py-2 mb-4 bg-[#f8f0dd]">
+                    <div
+                      key={index}
+                      className="border-l-2 border-[#c4a775] pl-4 py-2 mb-4 bg-[#f8f0dd]"
+                    >
                       <div className="flex justify-between items-center mb-3">
                         <div>
-                          <span className="font-medium text-[#8b6e44] mr-2">{theme.slug}</span>
+                          <span className="font-medium text-[#8b6e44] mr-2">
+                            {theme.slug}
+                          </span>
                           <span className="text-[#a3845f]">
-                            {theme.song?.title} by {theme.song?.artists?.map(a => a.name).join(', ')}
+                            {theme.song?.title} by{" "}
+                            {theme.song?.artists?.map((a) => a.name).join(", ")}
                           </span>
                         </div>
                         <button className="h-8 w-8 p-0 text-[#8b6e44]">
                           <DotsThreeVertical size={20} />
                         </button>
                       </div>
-                      
+
                       {theme.animethemeentries?.map((entry) => (
                         <div key={entry.id} className="mb-4">
                           <div className="flex items-center mb-3">
-                            <span className="text-sm font-medium mr-3">v{entry.version || '1'}</span>
+                            <span className="text-sm font-medium mr-3">
+                              v{entry.version || "1"}
+                            </span>
                             <span className="text-sm flex items-center mr-3">
                               <IconVideo className="mr-1" size={16} />
                               {entry.episodes}
                             </span>
                           </div>
-                          
+
                           <div className="flex flex-wrap gap-2">
                             {/* 720p version */}
-                            {entry.videos?.filter(v => v.resolution === 720).map((video, i) => (
-                              <a 
-                                key={`720-${i}`}
-                                href={video.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 py-1.5 px-3 bg-[#ebe0c3] hover:bg-[#e5d8b3] rounded-full text-sm"
-                              >
-                                <PlayCircle size={20} weight="fill" className="text-[#a3845f]" />
-                                <span className="font-medium">720P</span>
-                                <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 uppercase text-xs font-normal">
-                                  {video.source}
-                                </Badge>
-                              </a>
-                            ))}
-                            
-                            {/* 1080p version */}
-                            {entry.videos?.filter(v => v.resolution === 1080).map((video, i) => (
-                              <a 
-                                key={`1080-${i}`}
-                                href={video.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 py-1.5 px-3 bg-[#ebe0c3] hover:bg-[#e5d8b3] rounded-full text-sm"
-                              >
-                                <PlayCircle size={20} weight="fill" className="text-[#a3845f]" />
-                                <span className="font-medium">1080P</span>
-                                <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 uppercase text-xs font-normal">
-                                  {video.source}
-                                </Badge>
-                                {video.nc && (
-                                  <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 text-xs font-normal">
-                                    NC
+                            {entry.videos
+                              ?.filter((v) => v.resolution === 720)
+                              .map((video, i) => (
+                                <a
+                                  key={`720-${i}`}
+                                  href={video.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-2 py-1.5 px-3 bg-[#ebe0c3] hover:bg-[#e5d8b3] rounded-full text-sm"
+                                >
+                                  <PlayCircle
+                                    size={20}
+                                    weight="fill"
+                                    className="text-[#a3845f]"
+                                  />
+                                  <span className="font-medium">720P</span>
+                                  <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 uppercase text-xs font-normal">
+                                    {video.source}
                                   </Badge>
-                                )}
-                              </a>
-                            ))}
+                                </a>
+                              ))}
+
+                            {/* 1080p version */}
+                            {entry.videos
+                              ?.filter((v) => v.resolution === 1080)
+                              .map((video, i) => (
+                                <a
+                                  key={`1080-${i}`}
+                                  href={video.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-2 py-1.5 px-3 bg-[#ebe0c3] hover:bg-[#e5d8b3] rounded-full text-sm"
+                                >
+                                  <PlayCircle
+                                    size={20}
+                                    weight="fill"
+                                    className="text-[#a3845f]"
+                                  />
+                                  <span className="font-medium">1080P</span>
+                                  <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 uppercase text-xs font-normal">
+                                    {video.source}
+                                  </Badge>
+                                  {video.nc && (
+                                    <Badge className="bg-[#dfd0a9] text-[#8b6e44] border-none ml-1 text-xs font-normal">
+                                      NC
+                                    </Badge>
+                                  )}
+                                </a>
+                              ))}
                           </div>
                         </div>
                       ))}

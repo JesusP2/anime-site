@@ -50,22 +50,18 @@ import { authClient } from "@/lib/auth-client";
 type Props = {
   className?: string;
 } & (
-    | {
+  | {
       entityType: "ANIME";
       data: FullAnimeRecord;
     }
-    | {
+  | {
       entityType: "MANGA";
       data: FullMangaRecord;
     }
-  );
+);
 
-export function StatusSelector({
-  data,
-  entityType,
-  className,
-}: Props) {
-  const [status, setStatus] = useState<EntityStatus | 'loading'>('loading');
+export function StatusSelector({ data, entityType, className }: Props) {
+  const [status, setStatus] = useState<EntityStatus | "loading">("loading");
   const [embedding, setEmbedding] = useState<number[] | null>(null);
   const [open, setOpen] = useState(false);
   const session = authClient.useSession();
@@ -73,17 +69,19 @@ export function StatusSelector({
   useEffect(() => {
     if (session.isPending) return;
     if (session.data?.user) {
-      actions.getStatusFromMalId({
-        mal_id: data.mal_id,
-        entity: entityType,
-      }).then((result) => {
-        if (result.data) {
-          setStatus(result.data);
-        }
-      });
+      actions
+        .getStatusFromMalId({
+          mal_id: data.mal_id,
+          entity: entityType,
+        })
+        .then((result) => {
+          if (result.data) {
+            setStatus(result.data);
+          }
+        });
       return;
     }
-    if (entityType === "ANIME" && status === 'loading') {
+    if (entityType === "ANIME" && status === "loading") {
       getAnimeFromLocalDB(data.mal_id!)
         .then((record) => {
           if (record) {
@@ -93,7 +91,7 @@ export function StatusSelector({
           }
         })
         .catch(console.error);
-    } else if (entityType === "MANGA" && status === 'loading') {
+    } else if (entityType === "MANGA" && status === "loading") {
       getMangaFromLocalDB(data.mal_id!)
         .then((record) => {
           if (record) {
@@ -137,7 +135,7 @@ export function StatusSelector({
       const embedding = await actions.getEmbeddingFromMalId({
         mal_id: data.mal_id,
         entity: entityType,
-      })
+      });
       if (embedding.data) {
         _embedding = embedding.data;
         setEmbedding(embedding.data);
@@ -208,9 +206,7 @@ export function StatusSelector({
       {/* Show Drawer on small screens */}
       <div className="md:hidden">
         <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger asChild>
-            {triggerButton}
-          </DrawerTrigger>
+          <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Change Status</DrawerTitle>
@@ -230,7 +226,7 @@ export function StatusSelector({
   );
 }
 
-function RenderStatus({ status }: { status: EntityStatus | 'loading' }) {
+function RenderStatus({ status }: { status: EntityStatus | "loading" }) {
   switch (status) {
     case "completed":
       return (
@@ -267,7 +263,7 @@ function RenderStatus({ status }: { status: EntityStatus | 'loading' }) {
           On hold
         </>
       );
-    case 'not-started':
+    case "not-started":
       return (
         <>
           <Clock className="h-4 w-4" />

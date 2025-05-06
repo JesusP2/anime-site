@@ -31,9 +31,9 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-      | string[]
-      | string
-      | boolean;
+        | string[]
+        | string
+        | boolean;
     } & { q: string },
   );
 }
@@ -41,29 +41,37 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
 type Props = {
   url: string;
 } & (
-    | {
+  | {
       page: "Search";
       searchType: Entity;
     }
-    | {
+  | {
       page: "mal_id";
     }
-    | {
+  | {
       page: Entity;
       entityStatus: EntityStatus;
     }
-  );
+);
 
 export function SearchWithFilters(props: Props) {
   const buttonRef = useRef<IconRef>(null);
   const [filters, setFilters] = useState(
     setupFilters(
-      'searchType' in props ? props.searchType === mangaEntity ? mangaFilters : animeFilters : animeFilters,
+      "searchType" in props
+        ? props.searchType === mangaEntity
+          ? mangaFilters
+          : animeFilters
+        : animeFilters,
       new URL(props.url),
     ),
   );
   const [searchType, setSearchType] = useState<Entity>(
-    'searchType' in props ? props.searchType === mangaEntity ? mangaEntity : animeEntity : animeEntity,
+    "searchType" in props
+      ? props.searchType === mangaEntity
+        ? mangaEntity
+        : animeEntity
+      : animeEntity,
   );
   const options = searchType === mangaEntity ? mangaFilters : animeFilters;
 
@@ -73,7 +81,7 @@ export function SearchWithFilters(props: Props) {
 
   const getActiveFiltersCount = () => {
     return objectEntries(filters).reduce((acc, [key, value]) => {
-      if (key === "sort" || key === "q" || key === 'sfw') {
+      if (key === "sort" || key === "q" || key === "sfw") {
         return acc;
       }
       if (key === "orderBy") {
@@ -100,8 +108,8 @@ export function SearchWithFilters(props: Props) {
     });
 
     searchParams.set("page", "1");
-    if (props.page === 'Search' || props.page === 'mal_id') {
-      if (searchType !== 'Anime') {
+    if (props.page === "Search" || props.page === "mal_id") {
+      if (searchType !== "Anime") {
         searchParams.set("searchType", searchType);
       }
       const path = searchParams.toString()
@@ -120,10 +128,7 @@ export function SearchWithFilters(props: Props) {
   }
 
   return (
-    <form
-      onSubmit={onSearch}
-      className="max-4-xl w-full"
-    >
+    <form onSubmit={onSearch} className="max-4-xl w-full">
       <div className="flex space-x-2 max-w-4xl w-full">
         <Input
           id="search-query"
@@ -143,14 +148,15 @@ export function SearchWithFilters(props: Props) {
           searchType={searchType}
           setSearchType={setSearchType}
         >
-          <Button type="button" variant="outline" className="whitespace-nowrap"
+          <Button
+            type="button"
+            variant="outline"
+            className="whitespace-nowrap"
             onMouseEnter={() => buttonRef.current?.startAnimation?.()}
             onMouseLeave={() => buttonRef.current?.stopAnimation?.()}
           >
             <SettingsIcon className="size-4 p-0" ref={buttonRef} />
-            <span className="hidden sm:inline">
-              Filters
-            </span>
+            <span className="hidden sm:inline">Filters</span>
             {getActiveFiltersCount() > 0 && (
               <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
                 {getActiveFiltersCount()}
@@ -158,7 +164,11 @@ export function SearchWithFilters(props: Props) {
             )}
           </Button>
         </FilterModal>
-        <a href={createSearchLink()} className={cn(buttonVariants(), "hidden sm:block")} data-astro-prefetch="hover">
+        <a
+          href={createSearchLink()}
+          className={cn(buttonVariants(), "hidden sm:block")}
+          data-astro-prefetch="hover"
+        >
           Search
         </a>
       </div>

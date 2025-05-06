@@ -17,9 +17,9 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
       <article className="p-[0.5rem] flex flex-col sm:flex-row gap-y-[0.5rem] sm:gap-x-[1rem] h-auto sm:h-[12rem] w-full">
         <section
           className="aspect-square sm:aspect-auto sm:h-[11rem] w-full sm:w-[12rem] overflow-hidden rounded-xl relative"
-            style={{
-              viewTransitionName: `anime-card-img-${data.mal_id}`,
-            }}
+          style={{
+            viewTransitionName: `anime-card-img-${data.mal_id}`,
+          }}
         >
           <img
             loading="lazy"
@@ -55,7 +55,9 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
                 : `${data.aired?.prop?.from?.year}`}
             </Badge>
             <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
-              {data.episodes ? `${data.episodes} ${data.episodes > 1 ? 'episodes' : 'episode'}` : "N/A"}
+              {data.episodes
+                ? `${data.episodes} ${data.episodes > 1 ? "episodes" : "episode"}`
+                : "N/A"}
             </Badge>
           </section>
           <section className="flex gap-x-6 [&_p]:leading-4 my-3 dark:text-gray-100">
@@ -69,9 +71,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
                   {data.scored_by} users
                 </p>
               ) : (
-                <p className="text-sm text-stone-600 dark:text-gray-400">
-                  N/A
-                </p>
+                <p className="text-sm text-stone-600 dark:text-gray-400">N/A</p>
               )}
             </div>
             <div>
@@ -90,9 +90,7 @@ export function AnimeCard({ data, idx }: { data: AnimeCardItem; idx: number }) {
                 variant="outline"
                 className="dark:border-gray-700 dark:text-gray-100"
               >
-                <p className="text-ellipsis truncate max-w-24">
-                  {genre.name}
-                </p>
+                <p className="text-ellipsis truncate max-w-24">{genre.name}</p>
               </Badge>
             ))}
             {data.genres?.length && data.genres?.length > 1 && (

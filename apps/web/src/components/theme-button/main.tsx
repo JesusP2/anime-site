@@ -20,7 +20,7 @@ export function ThemeButton() {
   useEffect(() => {
     const isDarkMode = document.cookie.includes("theme=dark");
     setIsDarkMode(isDarkMode);
-  }, [])
+  }, []);
 
   return (
     <div className="flex flex-col justify-center">
@@ -34,7 +34,10 @@ export function ThemeButton() {
       />
       <label
         ref={ref}
-        className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'size-8 relative right-[1px]')}
+        className={cn(
+          buttonVariants({ variant: "outline", size: "sm" }),
+          "size-8 relative right-[1px]",
+        )}
         htmlFor={themeButtonId}
         suppressHydrationWarning
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}

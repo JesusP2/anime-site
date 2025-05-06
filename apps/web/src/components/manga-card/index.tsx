@@ -47,12 +47,12 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
           <section className="flex gap-x-2 my-2">
             <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
               {data.chapters
-                ? `${data.chapters} ${data.chapters > 1 ? 'chapters' : 'chapter'}`
-                : 'N/A'}
+                ? `${data.chapters} ${data.chapters > 1 ? "chapters" : "chapter"}`
+                : "N/A"}
             </Badge>
             <Badge className="w-26 truncate dark:bg-gray-800 dark:text-gray-100">
               {data.volumes
-                ? `${data.volumes} ${data.volumes > 1 ? 'volumes' : 'volume'}`
+                ? `${data.volumes} ${data.volumes > 1 ? "volumes" : "volume"}`
                 : "N/A"}
             </Badge>
           </section>
@@ -67,9 +67,7 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
                   {data.scored_by} users
                 </p>
               ) : (
-                <p className="text-sm text-stone-600 dark:text-gray-400">
-                  N/A
-                </p>
+                <p className="text-sm text-stone-600 dark:text-gray-400">N/A</p>
               )}
             </div>
             <div>
@@ -88,9 +86,7 @@ export function MangaCard({ data, idx }: { data: MangaCardItem; idx: number }) {
                 variant="outline"
                 className="dark:border-gray-700 dark:text-gray-100"
               >
-                <p className="text-ellipsis truncate max-w-24">
-                  {genre.name}
-                </p>
+                <p className="text-ellipsis truncate max-w-24">{genre.name}</p>
               </Badge>
             ))}
             {data.genres?.length && data.genres?.length > 1 && (

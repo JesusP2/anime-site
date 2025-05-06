@@ -29,8 +29,8 @@ export function MultiSelect({
 }: {
   name: string;
   options:
-  | AnimeFilters[keyof AnimeFilters]["options"]
-  | MangaFilters[keyof MangaFilters]["options"];
+    | AnimeFilters[keyof AnimeFilters]["options"]
+    | MangaFilters[keyof MangaFilters]["options"];
   placeholder: string;
   value: (string | boolean)[];
   onChange: (value: (string | boolean)[]) => void;
@@ -58,7 +58,10 @@ export function MultiSelect({
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
           <Command>
-            <CommandInput name={name} placeholder={`Search ${label.toLowerCase()}...`} />
+            <CommandInput
+              name={name}
+              placeholder={`Search ${label.toLowerCase()}...`}
+            />
             <CommandList>
               <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
               <CommandGroup>

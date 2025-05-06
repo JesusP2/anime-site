@@ -98,10 +98,10 @@ function SidebarProvider({
   React.useEffect(() => {
     setIsLoading(false);
     const cookieValue = document.cookie
-      .split('; ')
-      .find(row => row.startsWith(SIDEBAR_COOKIE_NAME + '='))
-      ?.split('=')[1];
-    setOpen(cookieValue === 'true');
+      .split("; ")
+      .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME + "="))
+      ?.split("=")[1];
+    setOpen(cookieValue === "true");
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -118,8 +118,8 @@ function SidebarProvider({
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
-  let state: 'expanded' | 'collapsed' = open ? 'expanded' : 'collapsed';
-  if (isLoading && 'document' in globalThis) {
+  let state: "expanded" | "collapsed" = open ? "expanded" : "collapsed";
+  if (isLoading && "document" in globalThis) {
     const cookieValue = document.cookie
       .split("; ")
       .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME + "="))
@@ -584,7 +584,7 @@ function SidebarMenuAction({
         "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
-        "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+          "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
         className,
       )}
       {...props}

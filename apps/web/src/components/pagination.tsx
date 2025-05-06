@@ -52,11 +52,11 @@ export function Pagination({
             {tab === "..." ? (
               <Select
                 onValueChange={(value) =>
-                (window.location.href = createLink(
-                  url,
-                  value,
-                  lastVisiblePage,
-                ))
+                  (window.location.href = createLink(
+                    url,
+                    value,
+                    lastVisiblePage,
+                  ))
                 }
               >
                 <SelectPrimitive.Trigger

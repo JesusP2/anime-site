@@ -34,7 +34,7 @@ export async function toggleTheme(
   const duration = diagonal / 3;
 
   const transition = document.startViewTransition(() => {
-      setTheme(isDarkMode, cb);
+    setTheme(isDarkMode, cb);
   });
   try {
     await transition.ready;
@@ -52,7 +52,7 @@ export async function toggleTheme(
       },
     );
     await transition.finished;
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   } finally {
     document.querySelectorAll("[data-saved-transition]").forEach((_el) => {

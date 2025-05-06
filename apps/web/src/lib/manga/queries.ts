@@ -29,12 +29,7 @@ const mangaCardKeys = {
 
 export async function getManga(
   mal_id: number,
-): Promise<
-  Result<
-    FullMangaRecord,
-    ActionError
-  >
-> {
+): Promise<Result<FullMangaRecord, ActionError>> {
   try {
     const selectKeys = {
       titles: mangaTable.titles,

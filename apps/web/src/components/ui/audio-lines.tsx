@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { motion, useAnimation } from 'motion/react';
-import type { HTMLAttributes } from 'react';
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import { motion, useAnimation } from "motion/react";
+import type { HTMLAttributes } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 export interface AudioLinesIconHandle {
   startAnimation: () => void;
@@ -23,38 +23,38 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
       isControlledRef.current = true;
 
       return {
-        startAnimation: () => controls.start('animate'),
-        stopAnimation: () => controls.start('normal'),
+        startAnimation: () => controls.start("animate"),
+        stopAnimation: () => controls.start("normal"),
       };
     });
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
         if (!isControlledRef.current) {
-          controls.start('animate');
+          controls.start("animate");
         } else {
           onMouseEnter?.(e);
         }
       },
-      [controls, onMouseEnter]
+      [controls, onMouseEnter],
     );
 
     const handleMouseLeave = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
         if (!isControlledRef.current) {
-          controls.start('normal');
+          controls.start("normal");
         } else {
           onMouseLeave?.(e);
         }
       },
-      [controls, onMouseLeave]
+      [controls, onMouseLeave],
     );
 
     return (
       <div
         className={cn(
           `cursor-pointer select-none rounded-md transition-colors duration-200 flex items-center justify-center`,
-          className
+          className,
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -74,9 +74,9 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
           <path d="M2 10v3" />
           <motion.path
             variants={{
-              normal: { d: 'M6 6v11' },
+              normal: { d: "M6 6v11" },
               animate: {
-                d: ['M6 6v11', 'M6 10v3', 'M6 6v11'],
+                d: ["M6 6v11", "M6 10v3", "M6 6v11"],
                 transition: {
                   duration: 1.5,
                   repeat: Infinity,
@@ -88,9 +88,9 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M10 3v18' },
+              normal: { d: "M10 3v18" },
               animate: {
-                d: ['M10 3v18', 'M10 9v5', 'M10 3v18'],
+                d: ["M10 3v18", "M10 9v5", "M10 3v18"],
                 transition: {
                   duration: 1,
                   repeat: Infinity,
@@ -102,9 +102,9 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M14 8v7' },
+              normal: { d: "M14 8v7" },
               animate: {
-                d: ['M14 8v7', 'M14 6v11', 'M14 8v7'],
+                d: ["M14 8v7", "M14 6v11", "M14 8v7"],
                 transition: {
                   duration: 0.8,
                   repeat: Infinity,
@@ -116,9 +116,9 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M18 5v13' },
+              normal: { d: "M18 5v13" },
               animate: {
-                d: ['M18 5v13', 'M18 7v9', 'M18 5v13'],
+                d: ["M18 5v13", "M18 7v9", "M18 5v13"],
                 transition: {
                   duration: 1.5,
                   repeat: Infinity,
@@ -132,9 +132,9 @@ const AudioLinesIcon = forwardRef<AudioLinesIconHandle, AudioLinesIconProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
-AudioLinesIcon.displayName = 'AudioLinesIcon';
+AudioLinesIcon.displayName = "AudioLinesIcon";
 
 export { AudioLinesIcon };

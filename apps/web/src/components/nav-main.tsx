@@ -26,10 +26,7 @@ import { DeleteIcon } from "./ui/delete";
 import { MonitorCheckIcon } from "./ui/monitor-check";
 import { PauseIcon } from "./ui/pause";
 
-import {
-  CalendarCheck,
-  MusicNote,
-} from "@phosphor-icons/react";
+import { CalendarCheck, MusicNote } from "@phosphor-icons/react";
 import { AudioLinesIcon } from "./ui/audio-lines";
 
 const nav = [
@@ -119,7 +116,7 @@ const nav = [
       },
     ],
   },
-]
+];
 
 export function NavMain() {
   const searchRef = useRef<IconRef>(null);
@@ -129,7 +126,8 @@ export function NavMain() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton asChild>
-            <a href="/search"
+            <a
+              href="/search"
               onMouseEnter={() => searchRef.current?.startAnimation()}
               onMouseLeave={() => searchRef.current?.stopAnimation()}
             >
@@ -141,14 +139,11 @@ export function NavMain() {
         {nav.map((item) => {
           const ref = useRef<IconRef>(null);
           return (
-            <Collapsible
-              key={item.title}
-              asChild
-              className="group/collapsible"
-            >
+            <Collapsible key={item.title} asChild className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}
+                  <SidebarMenuButton
+                    tooltip={item.title}
                     onMouseEnter={() => ref.current?.startAnimation?.()}
                     onMouseLeave={() => ref.current?.stopAnimation?.()}
                   >
@@ -166,23 +161,26 @@ export function NavMain() {
                       const ref = useRef<IconRef>(null);
                       return (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild
+                          <SidebarMenuSubButton
+                            asChild
                             onMouseEnter={() => ref.current?.startAnimation?.()}
                             onMouseLeave={() => ref.current?.stopAnimation?.()}
                           >
                             <a href={subItem.url}>
-                              {subItem.Icon && <subItem.Icon ref={ref} size={16} />}
+                              {subItem.Icon && (
+                                <subItem.Icon ref={ref} size={16} />
+                              )}
                               <span>{subItem.title}</span>
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
-                      )
+                      );
                     })}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
-          )
+          );
         })}
       </SidebarMenu>
     </SidebarGroup>

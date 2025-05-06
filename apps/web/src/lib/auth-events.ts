@@ -15,15 +15,27 @@ export function eyeBtnEvent(btn: "1" | "2" = "1") {
   const eyeBtn = document.querySelector(`.eye-btn${prefix}`);
   const eyeLineIcon = eyeBtn?.querySelector(`.eye-line${prefix}`);
   const eyeOffLineIcon = eyeBtn?.querySelector(`.eye-off-line${prefix}`);
-  const frameContainer = document.getElementById("frame-animation") as HTMLElement | null;
-  const hiddenFrameContainer = document.getElementById("hidden-frame-animation") as HTMLElement | null;
+  const frameContainer = document.getElementById(
+    "frame-animation",
+  ) as HTMLElement | null;
+  const hiddenFrameContainer = document.getElementById(
+    "hidden-frame-animation",
+  ) as HTMLElement | null;
   const cardContainer = document.querySelector(".card") as HTMLElement | null;
   const passwordInput = document.querySelector<HTMLInputElement>("#password");
   const totalFrames = 30;
   const frameRate = 15;
   const animationDuration = (totalFrames / frameRate) * 600;
 
-  if (!eyeBtn || !frameContainer || !eyeLineIcon || !eyeOffLineIcon || !passwordInput || !cardContainer) return;
+  if (
+    !eyeBtn ||
+    !frameContainer ||
+    !eyeLineIcon ||
+    !eyeOffLineIcon ||
+    !passwordInput ||
+    !cardContainer
+  )
+    return;
 
   const { top } = cardContainer.getBoundingClientRect();
   const { height } = frameContainer.getBoundingClientRect();
@@ -57,17 +69,17 @@ export function eyeBtnEvent(btn: "1" | "2" = "1") {
 
   const runInvisibleAnimation = async () => {
     if (!hiddenFrameContainer) return;
-    const invisibleAnimation = hiddenFrameContainer.animate(keyframesForward,{
+    const invisibleAnimation = hiddenFrameContainer.animate(keyframesForward, {
       ...animationOptions,
       duration: 1_000,
     });
     try {
       await invisibleAnimation.finished;
     } catch (e) {
-      if (e instanceof DOMException && e.name !== 'AbortError') {
+      if (e instanceof DOMException && e.name !== "AbortError") {
         console.error("Invisible animation pre-run failed:", e);
       } else if (!(e instanceof DOMException)) {
-         console.error("Invisible animation pre-run failed:", e);
+        console.error("Invisible animation pre-run failed:", e);
       }
     } finally {
       invisibleAnimation.cancel();

@@ -11,7 +11,7 @@ import {
   ArrowLeft,
 } from "@phosphor-icons/react";
 import { Toaster } from "@/components/ui/sonner";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ export function AccountPage({ user }: { user: User }) {
   // Show error toast when error state changes
   useEffect(() => {
     if (error) {
-      toast.error(error)
+      toast.error(error);
       setError(null);
     }
   }, [error, toast]);
@@ -86,7 +86,7 @@ export function AccountPage({ user }: { user: User }) {
         key: `${user.id}/avatar`,
         type: file.type,
         size: file.size,
-      })
+      });
       if (result.error) {
         throw new Error("Failed to update profile picture");
       }
@@ -94,7 +94,7 @@ export function AccountPage({ user }: { user: User }) {
         method: "PUT",
         body: file,
         headers: {
-          'Content-Type': file.type,
+          "Content-Type": file.type,
         },
       });
       if (res.ok) {

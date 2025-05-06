@@ -18,7 +18,7 @@ export type WaitingRoomProps = {
   isHost: boolean;
   gameType: GameType;
   onStartGame: () => void;
-}
+};
 export function WaitingRoom({
   quizTitle,
   quizDescription,
@@ -106,10 +106,7 @@ export function WaitingRoom({
           {/* Start button (only show if user is host) */}
           {isHost && (
             <div className="flex justify-center pt-4">
-              <Button
-                size="lg"
-                onClick={onStartGame}
-              >
+              <Button size="lg" onClick={onStartGame}>
                 <Play weight="fill" className="w-5 h-5 mr-2" />
                 Start Game
               </Button>

@@ -28,7 +28,7 @@ export async function getQuizzes(userId: string) {
       .from(quizTable)
       .where(eq(quizTable.creatorId, userId))
       .orderBy(quizTable.createdAt);
-    return ok(result)
+    return ok(result);
   } catch (error) {
     if (error instanceof Error) {
       globalThis.waitUntil(logger.error("error getting quizzes", error));

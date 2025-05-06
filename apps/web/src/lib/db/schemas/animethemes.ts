@@ -1,4 +1,11 @@
-import { pgTable, text, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  integer,
+  boolean,
+  jsonb,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { animeTable } from "./anime";
 
 export const animeThemesDump = pgTable("anime_themes_dump", {
@@ -10,7 +17,9 @@ export const animeThemesDump = pgTable("anime_themes_dump", {
 // Theme table
 export const animeThemeTable = pgTable("anime_theme", {
   id: text("id").primaryKey(),
-  animeId: text("anime_id").references(() => animeTable.id, { onDelete: "cascade" }),
+  animeId: text("anime_id").references(() => animeTable.id, {
+    onDelete: "cascade",
+  }),
   animethemesId: integer("animethemes_id").unique().notNull(),
   sequence: integer("sequence"),
   slug: text("slug").notNull(),

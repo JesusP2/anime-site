@@ -33,9 +33,9 @@ type CommonProps = {
     SetStateAction<
       {
         [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
+          | string[]
+          | string
+          | boolean;
       } & { q: string }
     >
   >;
@@ -100,7 +100,8 @@ export function FilterModal({
                 type="button"
                 className="min-w-[4.5rem]"
                 onClick={() => {
-                  const newType = searchType === animeEntity ? mangaEntity : animeEntity;
+                  const newType =
+                    searchType === animeEntity ? mangaEntity : animeEntity;
                   setSearchType(newType);
                 }}
               >
@@ -154,7 +155,11 @@ export function FilterModal({
   );
 }
 
-function RadioGroupFiltersSelector({ options, filters, setFilters }: CommonProps) {
+function RadioGroupFiltersSelector({
+  options,
+  filters,
+  setFilters,
+}: CommonProps) {
   return objectEntries(options).map(([key, value]) => {
     if (
       "type" in value &&
@@ -203,8 +208,8 @@ function RadioGroupFilters({
   name: string;
   label: string;
   options:
-  | AnimeFilters[keyof AnimeFilters]["options"]
-  | MangaFilters[keyof MangaFilters]["options"];
+    | AnimeFilters[keyof AnimeFilters]["options"]
+    | MangaFilters[keyof MangaFilters]["options"];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {

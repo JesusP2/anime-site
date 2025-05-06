@@ -38,7 +38,10 @@ export function NavUser({ user }: { user: User | null }) {
             <button
               data-slot="sidebar-menu-button"
               data-sidebar="menu-button"
-              className={cn(sidebarMenuButtonVariants({ variant: 'default', size: 'lg' }), "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground")}
+              className={cn(
+                sidebarMenuButtonVariants({ variant: "default", size: "lg" }),
+                "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
+              )}
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
