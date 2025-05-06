@@ -1,225 +1,216 @@
-import { useEffect, useState } from "react";
-import type { Player } from "./types";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useState, useEffect } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
-import { PlayCircle } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
+import type { Player } from "./types";
+import { cn } from "@/lib/utils";
+import type { GameManagerProps, GameState } from "@/lib/types";
+import { WaitingRoom } from "./waiting-room";
+import { ResultView } from "./result-view";
 
-export function MultiPlayerGameView({
-  quizTitle,
-  players,
-  currentPlayerId,
-  onGameComplete,
+const TIMEOUT = 10;
+export function MultiPlayer(props: GameManagerProps) {
+  const [gameState, setGameState] = useState<GameState>("waiting");
+  const [player, setPlayer] = useState(
+    {
+      id: props.currentPlayer.id,
+      name: props.currentPlayer.name,
+      score: 0,
+    },
+  );
+
+  function handleStartGame() {
+    setGameState("playing");
+  }
+
+  function handleGameComplete() {
+    setGameState("results");
+  }
+
+  if (gameState === "waiting") {
+    return (
+        <WaitingRoom
+          quizTitle={props.title}
+          quizDescription={props.description}
+          players={[player]}
+          isHost={player.id === props.host.id}
+          gameType="solo"
+          onStartGame={handleStartGame}
+        />
+    )
+  } else if (gameState === "playing") {
+    return (
+        <MultiPlayerGame
+          songs={props.songs}
+          player={player}
+          setPlayer={setPlayer}
+          handleGameComplete={handleGameComplete}
+        />
+    )
+  } else if (gameState === "results") {
+    return (
+        <ResultView
+          quizTitle={props.title}
+          results={[player]}
+        />
+    )
+  }
+  return null;
+}
+
+export function MultiPlayerGame({
+  songs,
+  player,
+  setPlayer,
+  handleGameComplete,
 }: {
-  quizTitle: string;
-  players: Player[];
-  currentPlayerId: string;
-  onGameComplete: () => void;
+  songs: GameManagerProps['songs'];
+  player: Player;
+  setPlayer: (player: Player) => void;
+  handleGameComplete: () => void;
 }) {
-  const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [guessed, setGuessed] = useState(false);
-  const [currentAnswer, setCurrentAnswer] = useState<{
-    id: string;
-    correct: boolean;
-  } | null>(null);
-  const [themes, setThemes] = useState<Array<{ id: string; url: string }>>([]);
-  const [loading, setLoading] = useState(true);
-  const totalThemes = 5; // This would come from the API
+  const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [songIdx, setSongIdx] = useState(0);
+  const [videoReady, setVideoReady] = useState(false);
+  const [currentAnswer, setCurrentAnswer] = useState<{ id: string; name: string; correct: boolean } | null>(null);
+  const [songResults, setSongResults] = useState<Array<{ songId: string; correct: boolean; pointsEarned: number }>>([]);
+  const currentSong = songs[songIdx];
 
-  // Same fetch theme logic as SoloGameView
   useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await fetch(`/api/games/themes`);
-        const data = await response.json();
-        setThemes(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching themes:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, []);
-
-  // Timer effect
-  useEffect(() => {
-    if (!isPlaying || guessed) return;
+    if (!videoReady) return;
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleTimerEnd();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      const newTimeLeft = timeLeft - 1;
+      if (newTimeLeft <= 0) {
+        clearInterval(timer);
+        handleNextTheme();
+        return;
+      }
+      if (newTimeLeft <= TIMEOUT && isPlaying) {
+        handleTimerEnd();
+      }
+      setTimeLeft(newTimeLeft);
+    }, 1_000);
 
-    return () => clearInterval(timer);
-  }, [isPlaying, guessed]);
-
-  const handleStartPlaying = () => {
-    setIsPlaying(true);
-    setTimeLeft(30);
-  };
+    return () => {
+      clearInterval(timer);
+    };
+  }, [isPlaying, timeLeft, videoReady]);
 
   const handleTimerEnd = () => {
-    setGuessed(true);
     setIsPlaying(false);
-    setCurrentAnswer({ id: "timeout", correct: false });
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
-    setGuessed(true);
-    setIsPlaying(false);
+    const isCorrect = item.key === currentSong?.themeId;
+    const pointsEarned = isCorrect ? 1 : 0;
 
-    // In a real implementation, this would check against the actual answer
-    const isCorrect = Math.random() > 0.5; // Simulate a check
-    setCurrentAnswer({ id: item.key, correct: isCorrect });
+    setCurrentAnswer({ id: item.key, correct: isCorrect, name: item.label });
 
     if (isCorrect) {
-      // Update player score - in a real implementation this would update via API
-      const updatedPlayers = players.map((player) => {
-        if (player.id === currentPlayerId) {
-          return { ...player, score: player.score + timeLeft };
-        }
-        return player;
-      });
+      setPlayer({ ...player, score: player.score + pointsEarned });
     }
+
+    // Record the result for this song
+    setSongResults([
+      ...songResults,
+      {
+        songId: currentSong?.id || '',
+        correct: isCorrect,
+        pointsEarned
+      }
+    ]);
   };
 
-  const handleNextTheme = () => {
-    if (currentThemeIndex >= totalThemes - 1) {
-      onGameComplete();
-    } else {
-      setCurrentThemeIndex((prev) => prev + 1);
-      setIsPlaying(false);
-      setGuessed(false);
-      setCurrentAnswer(null);
-      setTimeLeft(30);
+  const handleNextTheme = async () => {
+    if (songIdx >= songs.length - 1) {
+      handleGameComplete();
+      return;
     }
+
+    // If there's no answer for the current song, record it as a timeout/skip
+    if (!currentAnswer) {
+      setSongResults((prev) => ([
+        ...prev,
+        {
+          songId: currentSong?.id ?? '',
+          correct: false,
+          pointsEarned: 0
+        }
+      ]));
+    }
+
+    setSongIdx(songIdx + 1);
+    setIsPlaying(true);
+    setTimeLeft(TIMEOUT * 2);
+    setVideoReady(false);
+    setCurrentAnswer(null);
+  };
+
+  const handleVideoReady = () => {
+    setVideoReady(true);
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>{quizTitle}</CardTitle>
-            <CardDescription>
-              Theme {currentThemeIndex + 1} of {totalThemes}
-            </CardDescription>
+    <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full flex flex-col">
+      <div className="min-h-[6rem] text-center py-2 shrink-0">
+        <div className="flex justify-between items-center mb-2">
+          <div className="text-left">
+            <span className="font-bold">Song</span>: {songIdx + 1} / {songs.length}
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">Time Left</p>
-            <p className="text-2xl font-bold">{timeLeft}s</p>
+            <span className="font-bold">Score</span>: {player.score}
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Player Scores */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          {players.map((player) => (
-            <div
-              key={player.id}
-              className={`p-3 rounded-md border ${
-                player.id === currentPlayerId
-                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage src={player.avatar} />
-                  <AvatarFallback>{player.name.substring(0, 2)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium truncate">{player.name}</p>
-                  <p className="text-sm">{player.score} pts</p>
-                </div>
+        {!isPlaying && (
+          <div className="mt-2">
+            {currentAnswer ? (
+              <div className={`font-medium ${currentAnswer.correct ? 'text-green-600' : 'text-red-600'}`}>
+                {currentAnswer.correct ?
+                  `Correct! +1 points` :
+                  'Incorrect!'}
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Video Player */}
-        <div className="aspect-video bg-black rounded-md overflow-hidden">
-          {!loading &&
-          themes.length > 0 &&
-          currentThemeIndex < themes.length ? (
-            <iframe
-              src={themes[currentThemeIndex]?.url}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-white">
-              Loading theme...
-            </div>
-          )}
-        </div>
-
-        {/* Controls */}
-        <div className="flex justify-center">
-          {!isPlaying && !guessed && (
-            <Button onClick={handleStartPlaying} disabled={loading}>
-              <PlayCircle className="mr-2 w-5 h-5" />
-              Play Theme
-            </Button>
-          )}
-        </div>
-
-        {/* Guess Input */}
-        {isPlaying && !guessed && (
-          <div>
-            <h3 className="font-medium mb-2">Guess the Anime:</h3>
-            <SongAutocomplete
-              ignoreThemes={[]}
-              onSelectedValueChange={handleGuess}
-            />
+            ) : <div className="font-medium text-ed-600">Time's up!</div>}
+            <h1 className="text-xl font-bold">{currentSong?.animeName} - {currentSong?.name}</h1>
           </div>
         )}
-
-        {/* Result */}
-        {currentAnswer && (
+      </div>
+      <div className="w-full flex-grow relative">
+        <div className="relative w-full aspect-video">
           <div
-            className={`p-4 rounded-md ${currentAnswer.correct ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"}`}
+            className={cn(
+              "absolute inset-0 bg-black text-3xl grid place-items-center z-10",
+              isPlaying ? "opacity-100" : "hidden",
+            )}
           >
-            <h3 className="font-bold text-lg mb-1">
-              {currentAnswer.correct ? "Correct!" : "Wrong!"}
-            </h3>
-            <p>
-              {currentAnswer.correct
-                ? `You earned ${timeLeft} points!`
-                : "Better luck next time!"}
-            </p>
+            {!videoReady ? (
+              <div>Loading video...</div>
+            ) : timeLeft - TIMEOUT === 0 ? (
+              <div>The answer is...</div>
+            ) : (
+              timeLeft - TIMEOUT
+            )}
           </div>
-        )}
-
-        {/* Next */}
-        {guessed && (
-          <div className="flex justify-end">
-            <Button onClick={handleNextTheme}>
-              {currentThemeIndex >= totalThemes - 1
-                ? "See Results"
-                : "Next Theme"}
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          <video
+            src={currentSong?.url}
+            autoPlay
+            muted={false}
+            controls
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ display: "block" }}
+            onCanPlay={handleVideoReady}
+          ></video>
+        </div>
+      </div>
+      <div className="h-[6rem] shrink-0">
+        <div className="mt-4 w-[90%] mx-auto">
+          <SongAutocomplete
+            ignoreThemes={[]}
+            disabled={!isPlaying || !videoReady || !!currentAnswer?.name}
+            value={currentAnswer?.name ?? ''}
+            onSelectedValueChange={handleGuess}
+          />
+        </div>
+      </div>
+    </div>
   );
 }

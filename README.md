@@ -15,3 +15,7 @@ landing page:
 ### cache notes:
 - cloudflare respects cache headers set in the page but you need to create a rule for it.
 - setting cache headers in a page or layout will apply to all pages in that layout.
+
+
+####
+Add empty items to grid for quizzes

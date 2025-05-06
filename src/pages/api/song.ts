@@ -44,7 +44,6 @@ export const GET: APIRoute = async (ctx) => {
 	ORDER BY rank DESC
 	LIMIT 10`;
   const result: Query[] = await db.execute(query);
-  console.log(result);
   return new Response(JSON.stringify(result.map(parseResult)), {
     status: 200,
   });

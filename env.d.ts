@@ -13,14 +13,24 @@ declare namespace App {
   }
 }
 
-type KVNamespace = import("@cloudflare/workers-types").KVNamespace;
-type HYPERDRIVE = import("@cloudflare/workers-types").Hyperdrive;
-type R2 = import("@cloudflare/workers-types").R2Bucket;
-type ENV = {
-  // replace `MY_KV` with your KV namespace
-  HYPERDRIVE: HYPERDRIVE;
-  R2: R2;
-};
+type Hyperdrive = import("@cloudflare/workers-types").Hyperdrive;
+type DurableObjectNamespace =
+  import("@cloudflare/workers-types").DurableObjectNamespace;
+interface Env {
+  ANIME_API: "https://api.jikan.moe/v4";
+  BETTER_AUTH_URL: "https://notmyanimelist.com";
+  EMAIL_FROM: "noreply@notmyanimelist.com";
+  GOOGLE_REDIRECT_URI: "https://notmyanimelist.com/api/auth/callback/google";
+  BASE_URL: "https://notmyanimelist.com";
+  MY_COUNTER: DurableObjectNamespace /* Counter */;
+  HYPERDRIVE: Hyperdrive;
+}
+
+// use a default runtime configuration (advanced mode).
+type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
+declare namespace App {
+  interface Locals extends Runtime {}
+}
 
 // use a default runtime configuration (advanced mode).
 type Runtime = import("@astrojs/cloudflare").Runtime<ENV>;
