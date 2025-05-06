@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import type { GameManagerProps, GameState } from "@/lib/types";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
-import { Toaster } from "@/components/ui/sonner";
 
 const TIMEOUT = 10;
 export function SinglePlayer(props: GameManagerProps) {
@@ -28,7 +27,6 @@ export function SinglePlayer(props: GameManagerProps) {
 
   if (gameState === "waiting") {
     return (
-      <>
         <WaitingRoom
           quizTitle={props.title}
           quizDescription={props.description}
@@ -37,30 +35,22 @@ export function SinglePlayer(props: GameManagerProps) {
           gameType="solo"
           onStartGame={handleStartGame}
         />
-        <Toaster />
-      </>
     )
   } else if (gameState === "playing") {
     return (
-      <>
         <SinglePlayerGame
           songs={props.songs}
           player={player}
           setPlayer={setPlayer}
           handleGameComplete={handleGameComplete}
         />
-        <Toaster />
-      </>
     )
   } else if (gameState === "results") {
     return (
-      <>
         <ResultView
           quizTitle={props.title}
           results={[player]}
         />
-        <Toaster />
-      </>
     )
   }
   return null;
