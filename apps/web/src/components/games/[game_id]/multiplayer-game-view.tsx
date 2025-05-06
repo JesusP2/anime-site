@@ -23,16 +23,27 @@ export function MultiPlayer(props: GameManagerProps) {
     setGameState("results");
   }
 
+  async function handleCounter() {
+    const res = await fetch("http://localhost:8787/api/counter")
+    if (res.ok) {
+      const data = await res.json()
+      console.log(data)
+    }
+  }
+
   if (gameState === "waiting") {
     return (
-      <WaitingRoom
-        quizTitle={props.title}
-        quizDescription={props.description}
-        players={[player]}
-        isHost={player.id === props.host.id}
-        gameType="solo"
-        onStartGame={handleStartGame}
-      />
+      <>
+        <WaitingRoom
+          quizTitle={props.title}
+          quizDescription={props.description}
+          players={[player]}
+          isHost={player.id === props.host.id}
+          gameType="solo"
+          onStartGame={handleStartGame}
+        />
+        <button onClick={handleCounter}>increment</button>
+      </>
     );
   } else if (gameState === "playing") {
     return (
