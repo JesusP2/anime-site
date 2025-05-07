@@ -64,6 +64,7 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       }),
       emailOTP({
         async sendVerificationOTP({ email, otp }) {
+          console.log(otp)
           const template = forgotPasswordTemplate(otp);
           await sendEmail(email, "Reset password", template);
         },

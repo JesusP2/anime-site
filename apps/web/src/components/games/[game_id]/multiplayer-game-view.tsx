@@ -39,7 +39,7 @@ export function MultiPlayer(props: GameManagerProps) {
           quizDescription={props.description}
           players={[player]}
           isHost={player.id === props.host.id}
-          gameType="solo"
+          gameType="multiplayer"
           onStartGame={handleStartGame}
         />
         <button onClick={handleCounter}>increment</button>
