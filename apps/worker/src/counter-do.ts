@@ -1,22 +1,17 @@
 import { DurableObject } from "cloudflare:workers";
 import type { Bindings } from "./types";
+import type { Player } from "@repo/shared";
 
 export class Game extends DurableObject<Bindings> {
-  async fetch(request: Request) {
-    // Creates two ends of a WebSocket connection.
-    const webSocketPair = new WebSocketPair();
-    const [client, server] = Object.values(webSocketPair);
+  private players: Player[] = [];
+  private sessions: Map<WebSocket, string> = new Map();
 
-    // Calling `acceptWebSocket()` informs the runtime that this WebSocket is to begin terminating
-    // request within the Durable Object. It has the effect of "accepting" the connection,
-    // and allowing the WebSocket to send and receive messages.
-    // Unlike `ws.accept()`, `state.acceptWebSocket(ws)` informs the Workers Runtime that the WebSocket
-    // is "hibernatable", so the runtime does not need to pin this Durable Object to memory while
-    // the connection is open. During periods of inactivity, the Durable Object can be evicted
-    // from memory, but the WebSocket connection will remain open. If at some later point the
-    // WebSocket receives a message, the runtime will recreate the Durable Object
-    // (run the `constructor`) and deliver the message to the appropriate handler.
-    this.ctx.acceptWebSocket(webSocketPair[1]);
+  async fetch(request: Request) {
+    console.log("Fetching counter DO:", request.url);
+    const webSocketPair = new WebSocketPair();
+    const client = webSocketPair[0];
+    const server = webSocketPair[1];
+    this.ctx.acceptWebSocket(server);
 
     return new Response(null, {
       status: 101,
@@ -24,17 +19,125 @@ export class Game extends DurableObject<Bindings> {
     });
   }
 
-  async webSocketMessage(ws, message) {
-    // Upon receiving a message from the client, reply with the same message,
-    // but will prefix the message with "[Durable Object]: " and return the
-    // total number of connections.
-    ws.send(
-      `[Durable Object] message: ${message}, connections: ${this.ctx.getWebSockets().length}`,
-    );
+  async webSocketMessage(ws: WebSocket, messageData: string | ArrayBuffer) {
+    if (typeof messageData !== "string") {
+      console.error("Received non-string WebSocket message:", messageData);
+      return;
+    }
+
+    try {
+      const message = JSON.parse(messageData);
+      console.log("DO received message: ", message);
+
+      switch (message.type) {
+        case "player_join": {
+          const { id, name } = message.payload;
+          if (!id || !name) {
+            console.error(
+              "Invalid player_join message payload:",
+              message.payload,
+            );
+            return;
+          }
+          const existingPlayer = this.players.find((p) => p.id === id);
+          if (!existingPlayer) {
+            this.players.push({ id, name, score: 0 });
+          } else {
+            // Optionally update existing player's name or reset score if rejoining
+            existingPlayer.name = name;
+          }
+          this.sessions.set(ws, id);
+          this.broadcastPlayerUpdate();
+          break;
+        }
+        case "start_game": {
+          this.broadcastGameStart();
+          break;
+        }
+        case "ping": {
+          ws.send(
+            JSON.stringify({
+              type: "pong",
+              timestamp: new Date().toISOString(),
+            }),
+          );
+          break;
+        }
+        default:
+          console.log("Received unknown message type:", message.type);
+      }
+    } catch (error) {
+      console.error(
+        "Failed to parse WebSocket message or handle it:",
+        error,
+        messageData,
+      );
+    }
   }
 
-  async webSocketClose(ws, code, reason, wasClean) {
-    // If the client closes the connection, the runtime will invoke the webSocketClose() handler.
-    ws.close(code, "Durable Object is closing WebSocket");
+  async webSocketClose(
+    ws: WebSocket,
+    code: number,
+    reason: string,
+    wasClean: boolean,
+  ) {
+    const playerId = this.sessions.get(ws);
+    if (playerId) {
+      this.players = this.players.filter((p) => p.id !== playerId);
+      this.sessions.delete(ws);
+      this.broadcastPlayerUpdate();
+    }
+    console.log(
+      `WebSocket closed for player ${playerId || "unknown"}:`,
+      code,
+      reason,
+      wasClean,
+    );
+    // ws.close(code, "Durable Object is closing WebSocket"); // Runtime handles actual close
+  }
+
+  private broadcastPlayerUpdate() {
+    const updateMsg = JSON.stringify({
+      type: "player_update",
+      players: this.players,
+    });
+    console.log("Broadcasting player_update:", this.players);
+    this.ctx.getWebSockets().forEach((socket) => {
+      try {
+        socket.send(updateMsg);
+      } catch (e) {
+        console.error(
+          "Failed to send to a websocket, attempting to close it:",
+          e,
+        );
+        // If send fails, the socket might be dead, try to close it.
+        // This might be redundant if webSocketClose is reliably called.
+        try {
+          socket.close(1011, "Send failed");
+        } catch (closeError) {
+          console.error("Failed to close dead websocket:", closeError);
+        }
+      }
+    });
+  }
+
+  private broadcastGameStart() {
+    const startMsg = JSON.stringify({ type: "game_start" });
+    console.log("Broadcasting game_start");
+    this.ctx.getWebSockets().forEach((socket) => {
+      try {
+        socket.send(startMsg);
+      } catch (e) {
+        console.error(
+          "Failed to send to a websocket, attempting to close it:",
+          e,
+        );
+        try {
+          socket.close(1011, "Send failed");
+        } catch (closeError) {
+          console.error("Failed to close dead websocket:", closeError);
+        }
+      }
+    });
   }
 }
