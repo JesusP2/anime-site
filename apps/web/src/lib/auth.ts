@@ -50,10 +50,10 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       },
     },
     plugins: [
-      captcha({
-        provider: "cloudflare-turnstile",
-        secretKey: CLOUDFLARE_TURNSTILE_SECRET_KEY,
-      }),
+      // captcha({
+      //   provider: "cloudflare-turnstile",
+      //   secretKey: CLOUDFLARE_TURNSTILE_SECRET_KEY,
+      // }),
       username(),
       passkey(),
       magicLink({
@@ -64,7 +64,6 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       }),
       emailOTP({
         async sendVerificationOTP({ email, otp }) {
-          console.log(otp)
           const template = forgotPasswordTemplate(otp);
           await sendEmail(email, "Reset password", template);
         },
