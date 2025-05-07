@@ -1,21 +1,76 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
-import type { Player } from "./types";
 import { cn } from "@/lib/utils";
-import type { GameManagerProps, GameState } from "@/lib/types";
+import type { GameManagerProps } from "@/lib/types";
+import type { GameState, Player } from "@repo/shared/types";
+import { messageSchema, responseSchema } from "@repo/shared/schemas/game";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
-  const [player, setPlayer] = useState({
-    id: props.currentPlayer.id,
-    name: props.currentPlayer.name,
-    score: 0,
-  });
+  const [players, setPlayers] = useState<Player[]>([
+    { id: props.currentPlayer.id, name: props.currentPlayer.name, score: 0 },
+  ]);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    const socket = new WebSocket(
+      `ws://localhost:8787/api/ws?matchId=${props.gameId}`,
+    );
+    ws.current = socket;
+
+    socket.onopen = () => {
+      const joinMessage = messageSchema.parse({
+        type: "player_join",
+        payload: {
+          id: props.currentPlayer.id,
+          name: props.currentPlayer.name,
+        },
+      });
+      socket.send(JSON.stringify(joinMessage));
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const message = responseSchema.parse(JSON.parse(event.data as string));
+        if (
+          message.type === "player_join_response"
+        ) {
+          setPlayers(message.payload.map((p) => ({ ...p, score: 0 })));
+        } else if (message.type === "game_start_response") {
+          setGameState("playing");
+        }
+      } catch (error) {
+        console.error(
+          "Failed to parse WebSocket message or invalid message format:",
+          error,
+        );
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    socket.onclose = (event) => {
+      console.log("WebSocket connection closed:", event.code, event.reason);
+    };
+
+    return () => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.close();
+      }
+      ws.current = null;
+    };
+  }, [props.gameId, props.currentPlayer.id, props.currentPlayer.name]);
 
   function handleStartGame() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const startMessage = { type: "start_game" };
+      ws.current.send(JSON.stringify(startMessage));
+    }
     setGameState("playing");
   }
 
@@ -23,39 +78,40 @@ export function MultiPlayer(props: GameManagerProps) {
     setGameState("results");
   }
 
-  async function handleCounter() {
-    const res = await fetch("http://localhost:8787/api/counter")
-    if (res.ok) {
-      const data = await res.json()
-      console.log(data)
-    }
-  }
+  const localPlayer = players.find((p) => p.id === props.currentPlayer.id) || {
+    id: props.currentPlayer.id,
+    name: props.currentPlayer.name,
+    score: 0,
+  };
+
+  const updateLocalPlayerInList = (updatedPlayer: Player) => {
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((p) => (p.id === updatedPlayer.id ? updatedPlayer : p)),
+    );
+  };
 
   if (gameState === "waiting") {
     return (
-      <>
-        <WaitingRoom
-          quizTitle={props.title}
-          quizDescription={props.description}
-          players={[player]}
-          isHost={player.id === props.host.id}
-          gameType="multiplayer"
-          onStartGame={handleStartGame}
-        />
-        <button onClick={handleCounter}>increment</button>
-      </>
+      <WaitingRoom
+        quizTitle={props.title}
+        quizDescription={props.description}
+        players={players}
+        isHost={props.currentPlayer.id === props.host.id}
+        gameType="multiplayer"
+        onStartGame={handleStartGame}
+      />
     );
   } else if (gameState === "playing") {
     return (
       <MultiPlayerGame
         songs={props.songs}
-        player={player}
-        setPlayer={setPlayer}
+        player={localPlayer}
+        setPlayer={updateLocalPlayerInList}
         handleGameComplete={handleGameComplete}
       />
     );
   } else if (gameState === "results") {
-    return <ResultView quizTitle={props.title} results={[player]} />;
+    return <ResultView quizTitle={props.title} results={players} />;
   }
   return null;
 }

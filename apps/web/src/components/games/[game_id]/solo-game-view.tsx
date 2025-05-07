@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { SongAutocomplete } from "@/components/song-autocomplete";
-import type { Player } from "./types";
 import { cn } from "@/lib/utils";
-import type { GameManagerProps, GameState } from "@/lib/types";
+import type { GameManagerProps } from "@/lib/types";
+import type { GameState, Player } from "@repo/shared/types";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 

@@ -10,10 +10,10 @@ if (!gameInfo.success) {
 }
 const user = Astro.locals.user;
 if (!user) {
-	return Astro.redirect("/login");
+	return Astro.redirect("/auth/signin");
 }
 ---
 
 <MainLayout title="Game" searchType="Anime" page="Search">
-	<GameManager {...gameInfo.value} currentPlayer={user} host={user} client:load />
+	<GameManager {...gameInfo.value} gameId={gameId} currentPlayer={user} host={user} client:load />
 </MainLayout>

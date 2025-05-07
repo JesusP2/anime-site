@@ -54,12 +54,12 @@ export type MangaCardItem = Pick<
 
 export type EntityStatus = (typeof entityStatuses)[number];
 
-export type GameState = "waiting" | "playing" | "results";
 export type GameType = "solo" | "multiplayer";
 
 export type GameManagerProps = {
   host: User;
   currentPlayer: User;
+  gameId: string;
 } & GetReturnType<typeof getGameInfo>;
 
 type GetReturnType<T extends (...args: any) => any> = T extends (
