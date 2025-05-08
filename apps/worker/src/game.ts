@@ -16,13 +16,13 @@ export class Game extends DurableObject<Bindings> {
 
   private initializeStorage(): void {
     this.ctx.storage.sql.exec(
-      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, score INTEGER DEFAULT 0)",
+      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, score INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
   }
 
   private fetchPlayersFromDb(): Player[] {
     const cursor = this.ctx.storage.sql.exec(
-      "SELECT id, name, score FROM players",
+      "SELECT id, name, score, created_at FROM players ORDER BY created_at ASC",
     );
     const results = cursor.toArray();
     return (results as Player[]) || [];
@@ -64,7 +64,7 @@ export class Game extends DurableObject<Bindings> {
         }
 
         this.ctx.storage.sql.exec(
-          "INSERT OR REPLACE INTO players (id, name, score) VALUES (?, ?, ?)",
+          "INSERT OR IGNORE INTO players (id, name, score, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
           id,
           name,
           0,
@@ -116,14 +116,8 @@ export class Game extends DurableObject<Bindings> {
     return this.ctx.getWebSockets().filter((socket) => socket.readyState === 1);
   }
 
-  async webSocketClose(
-    ws: WebSocket,
-    code: number,
-    reason: string,
-    wasClean: boolean,
-  ) {
-    console.log("Closing web socket:", code, reason, wasClean);
-    ws.close(1011, "Game DO closed");
+  async webSocketClose(ws: WebSocket) {
+    ws.close(1011, "Game closed");
     if (this.getWebSockets().length === 0) {
       console.log(
         "All players disconnected, clearing DB and closing Durable Object.",
