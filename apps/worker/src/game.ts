@@ -20,12 +20,23 @@ export class Game extends DurableObject<Bindings> {
     );
   }
 
-  private fetchPlayersFromDb(): Player[] {
+  private fetchPlayersFromDb() {
     const cursor = this.ctx.storage.sql.exec(
-      "SELECT id, name, score, created_at FROM players ORDER BY created_at ASC",
+      "SELECT id, name, score FROM players ORDER BY created_at ASC",
     );
     const results = cursor.toArray();
-    return (results as Player[]) || [];
+    return (results as { id: string; name: string; score: number }[]) || [];
+  }
+
+  private fetchHostId(): string | null {
+    const statement = "SELECT id FROM players ORDER BY created_at ASC LIMIT 1";
+    const queryResults = this.ctx.storage.sql.exec(statement);
+    const player = queryResults.one() as { id: string };
+
+    if (player) {
+      return player.id;
+    }
+    return null;
   }
 
   async fetch(request: Request) {
@@ -69,10 +80,13 @@ export class Game extends DurableObject<Bindings> {
           name,
           0,
         );
-        // ws.serializeAttachment({ id });
+        ws.serializeAttachment({ id });
         // this.sessions.set(ws, id);
 
-        const currentPlayers = this.fetchPlayersFromDb();
+        const currentPlayers = this.fetchPlayersFromDb().map((player, idx) => ({
+          ...player,
+          isHost: idx === 0,
+        }));
         const response = JSON.stringify(
           responseSchema.parse({
             type: "player_join_response",
@@ -85,6 +99,24 @@ export class Game extends DurableObject<Bindings> {
         break;
       }
       case "game_start": {
+        const attachment = ws.deserializeAttachment();
+        if (!attachment || !attachment.id) {
+          console.error("No attachment or attachment ID:", attachment);
+          ws.close(1011, "Player not properly joined");
+          return;
+        }
+        const hostId = this.fetchHostId();
+        if (!hostId) {
+          console.error("No game master found (no players in the game).");
+          ws.close(1011, "No game master found");
+          return;
+        }
+        if (attachment.id !== hostId) {
+          console.error("Player not authorized to start the game:", attachment);
+          ws.close(1011, "Only the game master can start the game.");
+          return;
+        }
+
         const response = JSON.stringify(
           responseSchema.parse({
             type: "game_start_response",
