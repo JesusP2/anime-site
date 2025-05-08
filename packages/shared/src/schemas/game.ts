@@ -9,6 +9,7 @@ export const playerJoinMessageSchema = z.object({
   payload: z.object({
     id: z.string(),
     name: z.string(),
+    avatar: z.string().optional(),
   }),
 });
 
@@ -21,7 +22,6 @@ export const updatePlayersMessageSchema = z.object({
   players: z.array(
     z.object({
       id: z.string(),
-      name: z.string(),
       score: z.number(),
     }),
   ),
@@ -40,6 +40,9 @@ export const playerJoinResponseSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
+      score: z.number(),
+      isHost: z.boolean(),
+      avatar: z.string().optional(),
     }),
   ),
 });
