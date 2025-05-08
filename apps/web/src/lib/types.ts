@@ -57,7 +57,6 @@ export type EntityStatus = (typeof entityStatuses)[number];
 export type GameType = "solo" | "multiplayer";
 
 export type GameManagerProps = {
-  host: User;
   currentPlayer: User;
   gameId: string;
 } & GetReturnType<typeof getGameInfo>;

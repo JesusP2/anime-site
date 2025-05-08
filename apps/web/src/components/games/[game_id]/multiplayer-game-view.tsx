@@ -31,7 +31,6 @@ export function MultiPlayer(props: GameManagerProps) {
     };
 
     socket.onmessage = (event) => {
-      console.log('onmessage', event.data)
       const message = responseSchema.safeParse(JSON.parse(event.data as string));
       if (!message.success) {
         console.error("Failed to parse WebSocket message:", message.error);
@@ -40,12 +39,11 @@ export function MultiPlayer(props: GameManagerProps) {
       if (
         message.data.type === "player_join_response"
       ) {
-        setPlayers(message.data.payload.map((p) => ({ ...p, score: 0 })));
+        setPlayers(message.data.payload);
       } else if (message.data.type === "game_start_response") {
         setGameState("playing");
       } else if (message.data.type === "pong") {
         console.log("Pong received");
-        return;
       }
     };
 
@@ -70,7 +68,6 @@ export function MultiPlayer(props: GameManagerProps) {
       const startMessage = JSON.stringify(messageSchema.parse({ type: "game_start" }));
       ws.current.send(startMessage);
     }
-    setGameState("playing");
   }
 
   function handleGameComplete() {
@@ -80,6 +77,7 @@ export function MultiPlayer(props: GameManagerProps) {
   const localPlayer = players.find((p) => p.id === props.currentPlayer.id) || {
     id: props.currentPlayer.id,
     name: props.currentPlayer.name,
+    isHost: false,
     score: 0,
   };
 
@@ -92,14 +90,14 @@ export function MultiPlayer(props: GameManagerProps) {
   if (gameState === "waiting") {
     return (
       <>
-      <WaitingRoom
-        quizTitle={props.title}
-        quizDescription={props.description}
-        players={players}
-        isHost={props.currentPlayer.id === props.host.id}
-        gameType="multiplayer"
-        onStartGame={handleStartGame}
-      />
+        <WaitingRoom
+          quizTitle={props.title}
+          quizDescription={props.description}
+          players={players}
+          isHost={players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false}
+          gameType="multiplayer"
+          onStartGame={handleStartGame}
+        />
         <button onClick={() => ws.current?.send(JSON.stringify({
           type: "ping"
         }))}>ping</button>

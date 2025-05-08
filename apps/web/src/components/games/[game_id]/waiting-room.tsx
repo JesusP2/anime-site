@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UsersThree, Play, Plus, Crown } from "@phosphor-icons/react";
-import type { Player } from "./types";
+import type { Player } from "@repo/shared/types";
 import type { GameType } from "@/lib/types";
 
 export type WaitingRoomProps = {
@@ -73,7 +73,7 @@ export function WaitingRoom({
                     </Avatar>
                     <div>
                       <div className="font-semibold text-xl">{player.name}</div>
-                      {isHost && (
+                      {player.isHost && (
                         <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
                           <Crown weight="fill" className="w-3 h-3 mr-1" />
                           Host
