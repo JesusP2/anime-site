@@ -10,15 +10,13 @@ import { ResultView } from "./result-view";
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
-  const [players, setPlayers] = useState<Player[]>([
-    { id: props.currentPlayer.id, name: props.currentPlayer.name, score: 0 },
-  ]);
+  const [players, setPlayers] = useState<Player[]>([]);
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket(
-      `ws://localhost:8787/api/ws?matchId=${props.gameId}`,
-    );
+    const url = new URL('ws://localhost:8787/api/ws');
+    url.searchParams.append('matchId', props.gameId);
+    const socket = new WebSocket(url);
     ws.current = socket;
 
     socket.onopen = () => {
@@ -33,20 +31,20 @@ export function MultiPlayer(props: GameManagerProps) {
     };
 
     socket.onmessage = (event) => {
-      try {
-        const message = responseSchema.parse(JSON.parse(event.data as string));
-        if (
-          message.type === "player_join_response"
-        ) {
-          setPlayers(message.payload.map((p) => ({ ...p, score: 0 })));
-        } else if (message.type === "game_start_response") {
-          setGameState("playing");
-        }
-      } catch (error) {
-        console.error(
-          "Failed to parse WebSocket message or invalid message format:",
-          error,
-        );
+      const message = responseSchema.safeParse(JSON.parse(event.data as string));
+      if (!message.success) {
+        console.error("Failed to parse WebSocket message:", message.error);
+        return;
+      }
+      if (
+        message.data.type === "player_join_response"
+      ) {
+        setPlayers(message.data.payload.map((p) => ({ ...p, score: 0 })));
+      } else if (message.data.type === "game_start_response") {
+        setGameState("playing");
+      } else if (message.data.type === "pong") {
+        console.log("Pong received");
+        return;
       }
     };
 
@@ -64,12 +62,12 @@ export function MultiPlayer(props: GameManagerProps) {
       }
       ws.current = null;
     };
-  }, [props.gameId, props.currentPlayer.id, props.currentPlayer.name]);
+  }, [props.gameId]);
 
   function handleStartGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const startMessage = { type: "start_game" };
-      ws.current.send(JSON.stringify(startMessage));
+      const startMessage = JSON.stringify(messageSchema.parse({ type: "game_start" }));
+      ws.current.send(startMessage);
     }
     setGameState("playing");
   }

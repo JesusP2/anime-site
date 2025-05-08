@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { api } from "./api";
 import { cors } from "hono/cors";
-export { Game } from "./counter-do";
+export { Game } from "./game";
 
 const app = new Hono()
   .use(

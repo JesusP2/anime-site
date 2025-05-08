@@ -13,7 +13,18 @@ export const playerJoinMessageSchema = z.object({
 });
 
 export const gameStartMessageSchema = z.object({
-  type: z.literal("start_game"),
+  type: z.literal("game_start"),
+});
+
+export const updatePlayersMessageSchema = z.object({
+  type: z.literal("player_update"),
+  players: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      score: z.number(),
+    }),
+  ),
 });
 
 export const messageSchema = z.discriminatedUnion("type", [
