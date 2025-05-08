@@ -31,6 +31,7 @@ export function MultiPlayer(props: GameManagerProps) {
     };
 
     socket.onmessage = (event) => {
+      console.log('onmessage', event.data)
       const message = responseSchema.safeParse(JSON.parse(event.data as string));
       if (!message.success) {
         console.error("Failed to parse WebSocket message:", message.error);
@@ -90,6 +91,7 @@ export function MultiPlayer(props: GameManagerProps) {
 
   if (gameState === "waiting") {
     return (
+      <>
       <WaitingRoom
         quizTitle={props.title}
         quizDescription={props.description}
@@ -98,6 +100,10 @@ export function MultiPlayer(props: GameManagerProps) {
         gameType="multiplayer"
         onStartGame={handleStartGame}
       />
+        <button onClick={() => ws.current?.send(JSON.stringify({
+          type: "ping"
+        }))}>ping</button>
+      </>
     );
   } else if (gameState === "playing") {
     return (

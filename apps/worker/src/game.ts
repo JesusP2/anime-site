@@ -4,8 +4,29 @@ import type { Player } from "@repo/shared/types";
 import { messageSchema, responseSchema } from "@repo/shared/schemas/game";
 
 export class Game extends DurableObject<Bindings> {
-  private players: Player[] = [];
-  private sessions: Map<WebSocket, string> = new Map();
+  // sessions: Map<WebSocket, string> = new Map();
+  constructor(state: DurableObjectState, env: Bindings) {
+    super(state, env);
+    this.initializeStorage();
+    // this.ctx.getWebSockets().forEach((socket) => {
+    //   const metadata = socket.deserializeAttachment();
+    //   this.sessions.set(socket, metadata.id);
+    // });
+  }
+
+  private initializeStorage(): void {
+    this.ctx.storage.sql.exec(
+      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, score INTEGER DEFAULT 0)",
+    );
+  }
+
+  private fetchPlayersFromDb(): Player[] {
+    const cursor = this.ctx.storage.sql.exec(
+      "SELECT id, name, score FROM players",
+    );
+    const results = cursor.toArray();
+    return (results as Player[]) || [];
+  }
 
   async fetch(request: Request) {
     console.log("Fetching game DO:", request.url);
@@ -23,102 +44,92 @@ export class Game extends DurableObject<Bindings> {
   async webSocketMessage(ws: WebSocket, messageData: string | ArrayBuffer) {
     if (typeof messageData !== "string") {
       console.error("Received non-string WebSocket message:", messageData);
+      ws.send(
+        JSON.stringify({ type: "error", message: "Invalid message format" }),
+      );
       return;
     }
 
-    try {
-      const message = messageSchema.parse(JSON.parse(messageData));
-      switch (message.type) {
-        case "player_join": {
-          const { id, name } = message.payload;
-          if (!id || !name) {
-            console.error(
-              "Invalid player_join message payload:",
-              message.payload,
-            );
-            return;
-          }
-          const existingPlayer = this.players.find((p) => p.id === id);
-          if (!existingPlayer) {
-            this.players.push({ id, name, score: 0 });
-          }
-          this.sessions.set(ws, id);
-          const response = JSON.stringify(
-            responseSchema.parse({
-              type: "player_join_response",
-              payload: this.players,
-            }),
+    const message = messageSchema.parse(JSON.parse(messageData));
+    switch (message.type) {
+      case "player_join": {
+        const { id, name } = message.payload;
+        if (!id || !name) {
+          console.error(
+            "Invalid player_join message payload:",
+            message.payload,
           );
-          this.ctx.getWebSockets().forEach((socket) => {
-            socket.send(response);
-          });
-          break;
+          ws.close(1011, "Invalid player_join payload");
+          return;
         }
-        case "game_start": {
-          this.broadcastGameStart();
-          const response = JSON.stringify(
-            responseSchema.parse({
-              type: "game_start_response",
-            }),
-          );
-          this.ctx.getWebSockets().forEach((socket) => {
-            socket.send(response);
-          });
-          break;
-        }
-        case "ping": {
-          this.ctx.getWebSockets().forEach((socket) => {
-            socket.send(
-              JSON.stringify({
-                type: "pong",
-                timestamp: new Date().toISOString(),
-              }),
-            );
-          });
-          break;
-        }
-        default:
-          console.error("Received unknown message type:", message);
+
+        this.ctx.storage.sql.exec(
+          "INSERT OR REPLACE INTO players (id, name, score) VALUES (?, ?, ?)",
+          id,
+          name,
+          0,
+        );
+        // ws.serializeAttachment({ id });
+        // this.sessions.set(ws, id);
+
+        const currentPlayers = this.fetchPlayersFromDb();
+        const response = JSON.stringify(
+          responseSchema.parse({
+            type: "player_join_response",
+            payload: currentPlayers,
+          }),
+        );
+        this.getWebSockets().forEach((socket) => {
+          socket.send(response);
+        });
+        break;
       }
-    } catch (error) {
-      console.error(
-        "Failed to parse WebSocket message or handle it:",
-        error,
-        messageData,
-      );
+      case "game_start": {
+        const response = JSON.stringify(
+          responseSchema.parse({
+            type: "game_start_response",
+          }),
+        );
+        this.getWebSockets().forEach((socket) => {
+          socket.send(response);
+        });
+        break;
+      }
+      case "ping": {
+        this.getWebSockets().forEach((socket) => {
+          socket.send(
+            JSON.stringify({
+              type: "pong",
+              timestamp: new Date().toISOString(),
+            }),
+          );
+        });
+        break;
+      }
+      default:
+        console.error("Received unknown message type:", message);
+        ws.close(1011, "Unknown message type");
     }
+  }
+
+  getWebSockets() {
+    return this.ctx.getWebSockets().filter((socket) => socket.readyState === 1);
   }
 
   async webSocketClose(
     ws: WebSocket,
-    // code: number,
-    // reason: string,
-    // wasClean: boolean,
+    code: number,
+    reason: string,
+    wasClean: boolean,
   ) {
-    const playerId = this.sessions.get(ws);
-    if (playerId) {
-      this.players = this.players.filter((p) => p.id !== playerId);
-      this.sessions.delete(ws);
-      this.broadcastPlayerUpdate();
+    console.log("Closing web socket:", code, reason, wasClean);
+    ws.close(1011, "Game DO closed");
+    if (this.getWebSockets().length === 0) {
+      console.log(
+        "All players disconnected, clearing DB and closing Durable Object.",
+      );
+      this.ctx.storage.deleteAll();
+      this.ctx.storage.deleteAlarm();
     }
-  }
-
-  private broadcastPlayerUpdate() {
-    const updateMsg = JSON.stringify({
-      type: "player_update",
-      players: this.players,
-    });
-    this.ctx.getWebSockets().forEach((socket) => {
-      socket.send(updateMsg);
-    });
-  }
-
-  private broadcastGameStart() {
-    const startMsg = JSON.stringify(
-      responseSchema.parse({ type: "game_start" }),
-    );
-    this.ctx.getWebSockets().forEach((socket) => {
-      socket.send(startMsg);
-    });
   }
 }
