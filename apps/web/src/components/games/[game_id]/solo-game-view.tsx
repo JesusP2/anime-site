@@ -6,12 +6,13 @@ import type { GameState, Player } from "@repo/shared/types";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 
-const TIMEOUT = 10;
+const TIMEOUT = 2;
 export function SinglePlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState>("waiting");
   const [player, setPlayer] = useState({
     id: props.currentPlayer.id,
     name: props.currentPlayer.name,
+    isHost: true,
     score: 0,
   });
 
@@ -29,7 +30,7 @@ export function SinglePlayer(props: GameManagerProps) {
         quizTitle={props.title}
         quizDescription={props.description}
         players={[player]}
-        isHost={player.id === props.host.id}
+        isHost={true}
         gameType="solo"
         onStartGame={handleStartGame}
       />
@@ -73,6 +74,7 @@ export function SinglePlayerGame({
     Array<{ songId: string; correct: boolean; pointsEarned: number }>
   >([]);
   const currentSong = songs[songIdx];
+  const nextSong = songs[songIdx + 1];
 
   useEffect(() => {
     if (!videoReady) return;
@@ -202,6 +204,12 @@ export function SinglePlayerGame({
             className="absolute inset-0 w-full h-full object-cover"
             style={{ display: "block" }}
             onCanPlay={handleVideoReady}
+          ></video>
+          <video
+            src={nextSong?.url}
+            muted={false}
+            controls
+            className="absolute inset-0 w-full h-full object-cover hidden"
           ></video>
         </div>
       </div>

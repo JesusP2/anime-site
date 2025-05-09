@@ -9,9 +9,11 @@ import { ResultView } from "./result-view";
 
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
+  const [songIdx, setSongIdx] = useState(0);
   const [gameState, setGameState] = useState<GameState>("waiting");
   const [players, setPlayers] = useState<Player[]>([]);
   const ws = useRef<WebSocket | null>(null);
+  const isUserHost = players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false;
 
   useEffect(() => {
     const url = new URL('ws://localhost:8787/api/ws');
@@ -25,28 +27,14 @@ export function MultiPlayer(props: GameManagerProps) {
         payload: {
           id: props.currentPlayer.id,
           name: props.currentPlayer.name,
+          songs: props.songs,
         },
       });
+      console.log('sending join message')
       socket.send(JSON.stringify(joinMessage));
     };
 
-    socket.onmessage = (event) => {
-      const message = responseSchema.safeParse(JSON.parse(event.data as string));
-      if (!message.success) {
-        console.error("Failed to parse WebSocket message:", message.error);
-        return;
-      }
-      if (
-        message.data.type === "player_join_response"
-      ) {
-        setPlayers(message.data.payload);
-      } else if (message.data.type === "game_start_response") {
-        setGameState("playing");
-      } else if (message.data.type === "pong") {
-        console.log("Pong received");
-      }
-    };
-
+    ws.current.onmessage = onMessage;
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
@@ -63,30 +51,51 @@ export function MultiPlayer(props: GameManagerProps) {
     };
   }, [props.gameId]);
 
-  function handleStartGame() {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const startMessage = JSON.stringify(messageSchema.parse({ type: "game_start" }));
-      ws.current.send(startMessage);
+  // we need to update onmessage to handle songIdx changes
+  useEffect(() => {
+    if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
+    ws.current.onmessage = onMessage;
+  }, [songIdx])
+
+  function onMessage(event: MessageEvent) {
+    const message = responseSchema.safeParse(JSON.parse(event.data as string));
+    if (!message.success) {
+      console.error("Failed to parse WebSocket message:", message.error);
+      return;
+    }
+    if (
+      message.data.type === "player_join_response"
+    ) {
+      const currentPlayer = message.data.payload.find((p) => p.id === props.currentPlayer.id);
+      if (currentPlayer && currentPlayer.songIdx > 0 && songIdx === 0) {
+        setSongIdx(currentPlayer.songIdx)
+      }
+      setPlayers(message.data.payload);
+    } else if (message.data.type === "game_start_response") {
+      setGameState("playing");
+    } else if (message.data.type === "pong") {
+      console.log("Pong received");
     }
   }
+
+  function handleStartGame() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN && isUserHost) {
+      const message = JSON.stringify(messageSchema.parse({ type: "game_start" }));
+      ws.current.send(message);
+    }
+  }
+
+  function handleGuess({ songIdx, guess, score }: { songIdx: number; guess: string; score: number }) {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify(messageSchema.parse({ type: "player_update", player: { songIdx, id: guess, score } }));
+      ws.current.send(message);
+    }
+  }
+
 
   function handleGameComplete() {
     setGameState("results");
   }
-
-  const localPlayer = players.find((p) => p.id === props.currentPlayer.id) || {
-    id: props.currentPlayer.id,
-    name: props.currentPlayer.name,
-    isHost: false,
-    score: 0,
-  };
-
-  const updateLocalPlayerInList = (updatedPlayer: Player) => {
-    setPlayers((prevPlayers) =>
-      prevPlayers.map((p) => (p.id === updatedPlayer.id ? updatedPlayer : p)),
-    );
-  };
-
   if (gameState === "waiting") {
     return (
       <>
@@ -98,18 +107,18 @@ export function MultiPlayer(props: GameManagerProps) {
           gameType="multiplayer"
           onStartGame={handleStartGame}
         />
-        <button onClick={() => ws.current?.send(JSON.stringify({
-          type: "ping"
-        }))}>ping</button>
+        {songIdx > 0 ? <button onClick={() => setGameState('playing')}>play</button> : <button onClick={() => setGameState('ready')}>ready</button>}
       </>
     );
   } else if (gameState === "playing") {
     return (
       <MultiPlayerGame
         songs={props.songs}
-        player={localPlayer}
-        setPlayer={updateLocalPlayerInList}
+        handleGuess={handleGuess}
+        currentPlayer={players.find((p) => p.id === props.currentPlayer.id)}
         handleGameComplete={handleGameComplete}
+        songIdx={songIdx}
+        setSongIdx={setSongIdx}
       />
     );
   } else if (gameState === "results") {
@@ -120,27 +129,27 @@ export function MultiPlayer(props: GameManagerProps) {
 
 export function MultiPlayerGame({
   songs,
-  player,
-  setPlayer,
+  currentPlayer,
+  handleGuess: handleWsGuess,
   handleGameComplete,
+  songIdx,
+  setSongIdx,
 }: {
   songs: GameManagerProps["songs"];
-  player: Player;
-  setPlayer: (player: Player) => void;
+  currentPlayer?: Player;
+  handleGuess: ({ songIdx, guess, score }: { songIdx: number; guess: string; score: number }) => void;
   handleGameComplete: () => void;
+  songIdx: number;
+  setSongIdx: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [timeLeft, setTimeLeft] = useState(TIMEOUT * 2);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [songIdx, setSongIdx] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<{
     id: string;
     name: string;
     correct: boolean;
   } | null>(null);
-  const [songResults, setSongResults] = useState<
-    Array<{ songId: string; correct: boolean; pointsEarned: number }>
-  >([]);
   const currentSong = songs[songIdx];
 
   useEffect(() => {
@@ -165,28 +174,17 @@ export function MultiPlayerGame({
   }, [isPlaying, timeLeft, videoReady]);
 
   const handleTimerEnd = () => {
+    if (!currentAnswer) {
+      handleWsGuess({ songIdx, guess: 'timeout', score: 0 });
+    }
     setIsPlaying(false);
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
     const isCorrect = item.key === currentSong?.themeId;
     const pointsEarned = isCorrect ? 1 : 0;
-
+    handleWsGuess({ songIdx, guess: item.key, score: pointsEarned });
     setCurrentAnswer({ id: item.key, correct: isCorrect, name: item.label });
-
-    if (isCorrect) {
-      setPlayer({ ...player, score: player.score + pointsEarned });
-    }
-
-    // Record the result for this song
-    setSongResults([
-      ...songResults,
-      {
-        songId: currentSong?.id || "",
-        correct: isCorrect,
-        pointsEarned,
-      },
-    ]);
   };
 
   const handleNextTheme = async () => {
@@ -194,19 +192,6 @@ export function MultiPlayerGame({
       handleGameComplete();
       return;
     }
-
-    // If there's no answer for the current song, record it as a timeout/skip
-    if (!currentAnswer) {
-      setSongResults((prev) => [
-        ...prev,
-        {
-          songId: currentSong?.id ?? "",
-          correct: false,
-          pointsEarned: 0,
-        },
-      ]);
-    }
-
     setSongIdx(songIdx + 1);
     setIsPlaying(true);
     setTimeLeft(TIMEOUT * 2);
@@ -227,7 +212,7 @@ export function MultiPlayerGame({
             {songs.length}
           </div>
           <div className="text-right">
-            <span className="font-bold">Score</span>: {player.score}
+            <span className="font-bold">Score</span>: {currentPlayer?.score || 0}
           </div>
         </div>
         {!isPlaying && (
