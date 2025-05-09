@@ -10,7 +10,7 @@ import { ResultView } from "./result-view";
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
   const [songIdx, setSongIdx] = useState(0);
-  const [gameState, setGameState] = useState<GameState>("waiting");
+  const [gameState, setGameState] = useState<GameState | "ready">("waiting");
   const [players, setPlayers] = useState<Player[]>([]);
   const ws = useRef<WebSocket | null>(null);
   const isUserHost = players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false;
@@ -96,7 +96,14 @@ export function MultiPlayer(props: GameManagerProps) {
   function handleGameComplete() {
     setGameState("results");
   }
-  if (gameState === "waiting") {
+
+  function handleDeleteGame() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN && import.meta.env.DEV) {
+      ws.current?.send(JSON.stringify(messageSchema.parse({ type: "delete_do" })));
+    }
+  }
+
+  if (gameState === "waiting" || gameState === "ready") {
     return (
       <>
         <WaitingRoom
@@ -106,8 +113,12 @@ export function MultiPlayer(props: GameManagerProps) {
           isHost={players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false}
           gameType="multiplayer"
           onStartGame={handleStartGame}
+          onUserReady={() => setGameState('ready')}
+          onResumeGame={() => setGameState('playing')}
+          gameState={gameState}
+          songIdx={songIdx}
         />
-        {songIdx > 0 ? <button onClick={() => setGameState('playing')}>play</button> : <button onClick={() => setGameState('ready')}>ready</button>}
+        {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
       </>
     );
   } else if (gameState === "playing") {

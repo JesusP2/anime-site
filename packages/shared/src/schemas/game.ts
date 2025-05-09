@@ -51,11 +51,16 @@ export const pingMessageSchema = z.object({
   type: z.literal("ping"),
 });
 
+export const deleteDurableObjectMessageSchema = z.object({
+  type: z.literal("delete_do"),
+});
+
 export const messageSchema = z.discriminatedUnion("type", [
   pingMessageSchema,
   playerJoinMessageSchema,
   gameStartMessageSchema,
   playerUpdateMessageSchema,
+  deleteDurableObjectMessageSchema,
   // timerEndMessageSchema,
   // nextThemeMessageSchema,
   // videoReadyMessageSchema,

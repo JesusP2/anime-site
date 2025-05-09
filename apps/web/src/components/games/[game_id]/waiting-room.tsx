@@ -8,24 +8,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UsersThree, Play, Plus, Crown } from "@phosphor-icons/react";
-import type { Player } from "@repo/shared/types";
-import type { GameType } from "@/lib/types";
+import type { GameState, Player } from "@repo/shared/types";
 
 export type WaitingRoomProps = {
   quizTitle?: string | null;
   quizDescription?: string | null;
   players: Player[];
   isHost: boolean;
-  gameType: GameType;
   onStartGame: () => void;
-};
+} & ({
+  gameType: 'solo';
+} | {
+  gameType: 'multiplayer';
+  gameState: GameState | 'ready';
+  songIdx: number;
+  onUserReady: () => void;
+  onResumeGame: () => void;
+});
 export function WaitingRoom({
   quizTitle,
   quizDescription,
   players,
   isHost,
-  gameType,
   onStartGame,
+  ...extraProps
 }: WaitingRoomProps) {
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -53,7 +59,7 @@ export function WaitingRoom({
             <h2 className="text-xl font-semibold mb-4 flex items-center">
               Players ({players.length})
               <span className="ml-2 text-sm text-muted-foreground font-normal">
-                {gameType === "multiplayer" ? "Multiplayer" : "Solo"} Game
+                {extraProps.gameType === "multiplayer" ? "Multiplayer" : "Solo"} Game
               </span>
             </h2>
 
@@ -86,7 +92,7 @@ export function WaitingRoom({
             </div>
 
             {/* Empty slots for multiplayer games */}
-            {gameType === "multiplayer" && players.length < 4 && (
+            {extraProps.gameType === "multiplayer" && players.length < 4 && (
               <div className="grid gap-3">
                 {Array.from({ length: 4 - players.length }).map((_, index) => (
                   <div
@@ -104,7 +110,7 @@ export function WaitingRoom({
           </div>
 
           {/* Start button (only show if user is host) */}
-          {isHost && (
+          {isHost && extraProps.gameType === 'solo' && (
             <div className="flex justify-center pt-4">
               <Button size="lg" onClick={onStartGame}>
                 <Play weight="fill" className="w-5 h-5 mr-2" />
@@ -112,11 +118,35 @@ export function WaitingRoom({
               </Button>
             </div>
           )}
-
-          {!isHost && (
+          {isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && (
+            <div className="flex justify-center pt-4">
+              <Button size="lg" onClick={onStartGame}>
+                <Play weight="fill" className="w-5 h-5 mr-2" />
+                Start Game
+              </Button>
+            </div>
+          )}
+          {isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx > 0 && (
+            <div className="flex justify-center pt-4">
+              <Button size="lg" onClick={extraProps.onResumeGame}>
+                Resume Game
+              </Button>
+            </div>
+          )}
+          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && extraProps.gameState === 'ready' && (
             <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
               Waiting for the host to start the game...
             </div>
+          )}
+          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && extraProps.gameState === 'waiting' && (
+            <Button size="lg" onClick={extraProps.onUserReady}>
+              Ready
+            </Button>
+          )}
+          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx > 0 && extraProps.gameState === 'waiting' && (
+            <Button size="lg" onClick={extraProps.onResumeGame}>
+              Resume Game
+            </Button>
           )}
         </CardContent>
       </Card>

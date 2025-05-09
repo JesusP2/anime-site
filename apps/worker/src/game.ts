@@ -4,16 +4,11 @@ import { messageSchema, responseSchema } from "@repo/shared/schemas/game";
 import { ulid } from "ulidx";
 
 export class Game extends DurableObject<Bindings> {
-  // sessions: Map<WebSocket, string> = new Map();
   TIMEOUT = 10;
   startedAt: Date | null = null;
   constructor(state: DurableObjectState, env: Bindings) {
     super(state, env);
     this.initializeStorage();
-    // this.ctx.getWebSockets().forEach((socket) => {
-    //   const metadata = socket.deserializeAttachment();
-    //   this.sessions.set(socket, metadata.id);
-    // });
   }
 
   async fetch() {
@@ -22,10 +17,9 @@ export class Game extends DurableObject<Bindings> {
     const server = webSocketPair[1];
     this.ctx.acceptWebSocket(server);
 
-    const songsLength = 100;
-    // max time a game can last
-    const time = this.TIMEOUT * 2 * songsLength * 1000;
-    this.ctx.storage.setAlarm(new Date(Date.now() + time));
+    // the game will last 5 minutes if it never starts
+    const time = 1000 * 60 * 5;
+    await this.ctx.storage.setAlarm(new Date(Date.now() + time));
     return new Response(null, {
       status: 101,
       webSocket: client,
@@ -43,7 +37,10 @@ export class Game extends DurableObject<Bindings> {
     switch (message.type) {
       case "player_join": {
         this.storePlayerInfo(ws, message.payload);
-        this.storeGameInfo(message.payload.songs);
+        const gameInfo = this.getGameInfo();
+        if (!gameInfo || !("id" in gameInfo)) {
+          this.storeGameInfo(message.payload.songs);
+        }
         const currentPlayers = this.fetchPlayersFromDb().map((player, idx) => ({
           ...player,
           isHost: idx === 0,
@@ -65,6 +62,18 @@ export class Game extends DurableObject<Bindings> {
           console.error("Unauthorized: game_start");
           ws.close(1011, "Unauthorized");
           return;
+        }
+        const gameInfo = this.getGameInfo();
+        if (!gameInfo?.game_started) {
+          this.ctx.storage.sql.exec(
+            "UPDATE game_info SET game_started = TRUE WHERE id = ?",
+            gameInfo?.id,
+          );
+          const parsedSongs = JSON.parse(gameInfo?.songs ?? "[]");
+          // TIMEOUT = half the time for 1 round. We use 10 instead of 2 because we need to take into account the the time for videos to load and reconnect.
+          const time = this.TIMEOUT * 10 * (parsedSongs.length + 1) * 1000;
+          await this.ctx.storage.deleteAlarm();
+          await this.ctx.storage.setAlarm(new Date(Date.now() + time));
         }
         const response = JSON.stringify(
           responseSchema.parse({
@@ -97,25 +106,7 @@ export class Game extends DurableObject<Bindings> {
           message.player.score,
           attachment.id,
         );
-
-        const { songs } = this.ctx.storage.sql
-          .exec("SELECT * FROM game_info")
-          .one() as { songs: string };
-        const parsedSongs = JSON.parse(songs);
-        const guesses = this.ctx.storage.sql
-          .exec(
-            "SELECT * FROM player_guess WHERE song_idx = ?",
-            parsedSongs.length - 1,
-          )
-          .toArray() as { id: string; player_id: string; song_idx: number }[];
         const players = this.fetchPlayersFromDb();
-        const didAllPlayersFinished =
-          guesses.filter(
-            (guess) => !players.some((player) => player.id === guess.player_id),
-          ).length === 0;
-        if (didAllPlayersFinished) {
-          this.ctx.storage.setAlarm(new Date(Date.now() + 1000 * 60));
-        }
         this.getWebSockets().forEach((socket) => {
           socket.send(
             JSON.stringify(
@@ -139,6 +130,14 @@ export class Game extends DurableObject<Bindings> {
         });
         break;
       }
+      case "delete_do": {
+        this.ctx.storage.deleteAll();
+        this.ctx.storage.deleteAlarm();
+        this.ctx.getWebSockets().forEach((socket) => {
+          socket.close(1011, "Game closed");
+        });
+        break;
+      }
       default:
         console.error("Received unknown message type:", message);
         ws.close(1011, "Unknown message type");
@@ -155,27 +154,15 @@ export class Game extends DurableObject<Bindings> {
         attachment.id,
       );
     }
-    if (
-      this.getWebSockets().length === 0 ||
-      this.ctx.storage.sql
-        .exec("SELECT COUNT(*) FROM players WHERE online = TRUE")
-        .one()["COUNT(*)"] === 0
-    ) {
-      console.log(
-        "All players disconnected, clearing DB and closing Durable Object.",
-      );
-      this.ctx.storage.deleteAll();
-      this.ctx.storage.deleteAlarm();
-    }
   }
 
   async alarm() {
     console.log("Alarm triggered, clearing DB and closing Durable Object.");
+    await this.ctx.storage.deleteAll();
+    await this.ctx.storage.deleteAlarm();
     this.getWebSockets().forEach((socket) => {
       socket.close(1011, "Game closed");
     });
-    this.ctx.storage.deleteAll();
-    this.ctx.storage.deleteAlarm();
   }
 
   private getWebSockets() {
@@ -187,7 +174,7 @@ export class Game extends DurableObject<Bindings> {
       "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, score INTEGER DEFAULT 0, avatar TEXT, online BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
     this.ctx.storage.sql.exec(
-      "CREATE TABLE IF NOT EXISTS game_info (id TEXT PRIMARY KEY, songs TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+      "CREATE TABLE IF NOT EXISTS game_info (id TEXT PRIMARY KEY, songs TEXT, game_started BOOLEAN DEFAULT FALSE, game_finished BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
     this.ctx.storage.sql.exec(
       "CREATE TABLE IF NOT EXISTS player_guess (id TEXT PRIMARY KEY, player_id TEXT, song_idx INTEGER, guess TEXT, score INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
@@ -261,28 +248,25 @@ export class Game extends DurableObject<Bindings> {
   }
 
   private storeGameInfo(songs: any[]) {
-    const [gameInfo] = this.ctx.storage.sql
-      .exec("SELECT * FROM game_info")
-      .toArray();
-    if (!gameInfo || !("id" in gameInfo)) {
-      this.ctx.storage.sql.exec(
-        "INSERT INTO game_info (id, songs) VALUES (?, ?)",
-        ulid(),
-        JSON.stringify(songs),
-      );
-    }
+    this.ctx.storage.sql.exec(
+      "INSERT INTO game_info (id, songs) VALUES (?, ?)",
+      ulid(),
+      JSON.stringify(songs),
+    );
   }
 
-  private getGameStartedAt() {
-    if (!this.startedAt) {
-      const [gameInfo] = this.ctx.storage.sql
-        .exec("SELECT * FROM game_info")
-        .toArray() as { started_at: string }[];
-      if (!gameInfo) {
-        throw new Error("Invalid action");
-      }
-      this.startedAt = new Date(gameInfo.started_at);
+  private getGameInfo() {
+    const [gameInfo] = this.ctx.storage.sql
+      .exec("SELECT * FROM game_info")
+      .toArray() as {
+      id: string;
+      game_started: 0 | 1;
+      game_finished: 0 | 1;
+      songs: string;
+    }[];
+    if (!gameInfo) {
+      return null;
     }
-    return this.startedAt;
+    return gameInfo;
   }
 }
