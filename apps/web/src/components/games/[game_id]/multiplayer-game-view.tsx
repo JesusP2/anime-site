@@ -6,6 +6,8 @@ import type { GameState, Player } from "@repo/shared/types";
 import { messageSchema, responseSchema } from "@repo/shared/schemas/game";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
@@ -16,6 +18,7 @@ export function MultiPlayer(props: GameManagerProps) {
   const ws = useRef<WebSocket | null>(null);
   const [isJoining, setIsJoining] = useState(true);
   const isUserHost = players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false;
+  const [showNotReadyMessage, setShowNotReadyMessage] = useState(false);
 
   useEffect(() => {
     const url = new URL('ws://localhost:8787/api/ws');
@@ -87,6 +90,8 @@ export function MultiPlayer(props: GameManagerProps) {
     } else if (message.data.type === "reveal_theme_response") {
       const messagePlayers = message.data.payload;
       setPlayers(players => players.map(p => ({ ...p, score: messagePlayers.find(p2 => p2.id === p.id)?.score ?? 0 })));
+    } else if (message.data.type === "players_not_ready_response") {
+      setShowNotReadyMessage(true);
     } else if (message.data.type === "pong") {
       console.log("Pong received");
     }
@@ -95,6 +100,13 @@ export function MultiPlayer(props: GameManagerProps) {
   function handleStartGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN && isUserHost) {
       const message = JSON.stringify(messageSchema.parse({ type: "game_start" }));
+      ws.current.send(message);
+    }
+  }
+
+  function handleConfirmStartGame() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN && isUserHost) {
+      const message = JSON.stringify(messageSchema.parse({ type: "force_game_start" }));
       ws.current.send(message);
     }
   }
@@ -117,6 +129,14 @@ export function MultiPlayer(props: GameManagerProps) {
     setGameState("results");
   }
 
+  function handlePlayerReady() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify(messageSchema.parse({ type: "player_ready" }));
+      ws.current.send(message);
+    }
+    setGameState("ready");
+  }
+
   function handleDeleteGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN && import.meta.env.DEV) {
       ws.current?.send(JSON.stringify(messageSchema.parse({ type: "delete_do" })));
@@ -133,13 +153,31 @@ export function MultiPlayer(props: GameManagerProps) {
           isHost={players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false}
           gameType="multiplayer"
           onStartGame={handleStartGame}
-          onUserReady={() => setGameState('ready')}
+          onUserReady={handlePlayerReady}
           onResumeGame={() => setGameState('playing')}
           gameState={gameState}
           isJoining={isJoining}
           hasGameStarted={hasGameStarted}
           songIdx={songIdx}
         />
+        <Dialog open={showNotReadyMessage} onOpenChange={setShowNotReadyMessage}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Not All Players Are Ready</DialogTitle>
+              <DialogDescription>
+                Some players haven't marked themselves as ready. Are you sure you want to start the game anyway?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNotReadyMessage(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleConfirmStartGame}>
+                Start Game Anyway
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
       </>
     );

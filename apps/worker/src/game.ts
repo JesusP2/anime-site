@@ -62,11 +62,31 @@ export class Game extends DurableObject<Bindings> {
         });
         break;
       }
-      case "game_start": {
+      case "force_game_start":
+      case "game_start":
         const isHost = this.isHost(ws);
         if (!isHost) {
           console.error("Unauthorized: game_start");
           ws.close(1011, "Unauthorized");
+          return;
+        }
+        const attachment = ws.deserializeAttachment();
+        if (!attachment || !attachment.id) {
+          console.error("No attachment or attachment ID:", attachment);
+          ws.close(1011, "Player not properly joined");
+          return;
+        }
+        const areAllPlayersReady = this.fetchPlayersFromDb().every(
+          (player) => player.id === attachment.id || player.isReady,
+        );
+        console.log('are all players ready', areAllPlayersReady);
+        if (!areAllPlayersReady && message.type === "game_start") {
+          const response = JSON.stringify(
+            responseSchema.parse({
+              type: "players_not_ready_response",
+            }),
+          );
+          ws.send(response);
           return;
         }
         this.ctx.storage.sql.exec(
@@ -92,6 +112,18 @@ export class Game extends DurableObject<Bindings> {
         this.getWebSockets().forEach((socket) => {
           socket.send(response);
         });
+        break;
+      case "player_ready": {
+        const attachment = ws.deserializeAttachment();
+        if (!attachment || !attachment.id) {
+          console.error("No attachment or attachment ID:", attachment);
+          ws.close(1011, "Player not properly joined");
+          return;
+        }
+        this.ctx.storage.sql.exec(
+          "UPDATE players SET is_ready = TRUE WHERE id = ?",
+          attachment.id,
+        );
         break;
       }
       case "player_update": {
@@ -211,7 +243,7 @@ export class Game extends DurableObject<Bindings> {
 
   private initializeStorage(): void {
     this.ctx.storage.sql.exec(
-      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, current_song_idx INTEGER, score INTEGER DEFAULT 0, avatar TEXT, online BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, current_song_idx INTEGER, score INTEGER DEFAULT 0, avatar TEXT, is_ready BOOLEAN DEFAULT FALSE, online BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
     this.ctx.storage.sql.exec(
       "CREATE TABLE IF NOT EXISTS game_info (id TEXT PRIMARY KEY, songs TEXT, game_started BOOLEAN DEFAULT FALSE, game_finished BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
@@ -223,22 +255,27 @@ export class Game extends DurableObject<Bindings> {
 
   private fetchPlayersFromDb() {
     const cursor = this.ctx.storage.sql.exec(
-      "SELECT id, name, score, avatar, current_song_idx  FROM players ORDER BY created_at ASC",
+      "SELECT id, name, score, avatar, current_song_idx, is_ready FROM players ORDER BY created_at ASC",
     );
     type Player = {
       id: string;
       name: string;
       score: number;
       avatar: string | null;
-      current_song_idx?: number;
+      isHost: boolean;
+      isReady: boolean;
+      songIdx: number;
     };
-    const players = cursor.toArray() as Player[];
-    return players.map((player, idx) => ({
+    const players = cursor.toArray() as any[];
+    const yo = players.map((player, idx) => ({
       ...player,
       songIdx: player.current_song_idx ?? 0,
       avatar: player.avatar ?? undefined,
+      isReady: !!player.is_ready,
       isHost: idx === 0,
-    }));
+    })) as Player[];
+    console.log(yo)
+    return yo;
   }
 
   private isHost(ws: WebSocket) {

@@ -22,6 +22,10 @@ export const gameStartMessageSchema = z.object({
   type: z.literal("game_start"),
 });
 
+export const forceGameStartMessageSchema = z.object({
+  type: z.literal("force_game_start"),
+});
+
 export const playerUpdateMessageSchema = z.object({
   type: z.literal("player_update"),
   player: z.object({
@@ -35,22 +39,10 @@ export const revealThemeMessageSchema = z.object({
   type: z.literal("reveal_theme"),
 });
 
-// export const timerEndMessageSchema = z.object({
-//   type: z.literal("timer_end"),
-// });
-//
-// export const nextThemeMessageSchema = z.object({
-//   type: z.literal("next_theme"),
-// });
-//
-// export const videoReadyMessageSchema = z.object({
-//   type: z.literal("video_ready"),
-// });
-//
-// export const gameCompleteMessageSchema = z.object({
-//   type: z.literal("game_complete"),
-// });
-//
+export const playerReadyMessageSchema = z.object({
+  type: z.literal("player_ready"),
+});
+
 export const pingMessageSchema = z.object({
   type: z.literal("ping"),
 });
@@ -63,16 +55,13 @@ export const messageSchema = z.discriminatedUnion("type", [
   pingMessageSchema,
   playerJoinMessageSchema,
   gameStartMessageSchema,
+  forceGameStartMessageSchema,
   playerUpdateMessageSchema,
   deleteDurableObjectMessageSchema,
   revealThemeMessageSchema,
-  // timerEndMessageSchema,
-  // nextThemeMessageSchema,
-  // videoReadyMessageSchema,
-  // gameCompleteMessageSchema,
+  playerReadyMessageSchema,
 ]);
 
-// ---------- Responses ----------
 export const playerJoinResponseSchema = z.object({
   type: z.literal("player_join_response"),
   payload: z.object({
@@ -116,21 +105,9 @@ export const revealThemeResponseSchema = z.object({
   ),
 });
 
-// export const timerEndResponseSchema = z.object({
-//   type: z.literal("timer_end_response"),
-// });
-//
-// export const nextThemeResponseSchema = z.object({
-//   type: z.literal("next_theme_response"),
-// });
-//
-// export const videoReadyResponseSchema = z.object({
-//   type: z.literal("video_ready_response"),
-// });
-//
-// export const gameCompleteResponseSchema = z.object({
-//   type: z.literal("game_complete_response"),
-// });
+export const playersNotReadyResponseSchema = z.object({
+  type: z.literal("players_not_ready_response"),
+});
 
 export const pongResponseSchema = z.object({
   type: z.literal("pong"),
@@ -142,4 +119,5 @@ export const responseSchema = z.discriminatedUnion("type", [
   playerUpdateResponseSchema,
   pongResponseSchema,
   revealThemeResponseSchema,
+  playersNotReadyResponseSchema,
 ]);
