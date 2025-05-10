@@ -31,6 +31,10 @@ export const playerUpdateMessageSchema = z.object({
   }),
 });
 
+export const revealThemeMessageSchema = z.object({
+  type: z.literal("reveal_theme"),
+});
+
 // export const timerEndMessageSchema = z.object({
 //   type: z.literal("timer_end"),
 // });
@@ -61,6 +65,7 @@ export const messageSchema = z.discriminatedUnion("type", [
   gameStartMessageSchema,
   playerUpdateMessageSchema,
   deleteDurableObjectMessageSchema,
+  revealThemeMessageSchema,
   // timerEndMessageSchema,
   // nextThemeMessageSchema,
   // videoReadyMessageSchema,
@@ -92,7 +97,18 @@ export const playerUpdateResponseSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-      score: z.number()
+      score: z.number(),
+    }),
+  ),
+});
+
+export const revealThemeResponseSchema = z.object({
+  type: z.literal("reveal_theme_response"),
+  payload: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      score: z.number(),
     }),
   ),
 });
@@ -122,4 +138,5 @@ export const responseSchema = z.discriminatedUnion("type", [
   gameStartResponseSchema,
   playerUpdateResponseSchema,
   pongResponseSchema,
+  revealThemeResponseSchema,
 ]);

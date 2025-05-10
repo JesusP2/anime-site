@@ -22,6 +22,7 @@ export type WaitingRoomProps = {
   gameType: 'multiplayer';
   gameState: GameState | 'ready';
   songIdx: number;
+  isJoining: boolean;
   onUserReady: () => void;
   onResumeGame: () => void;
 });
@@ -63,8 +64,7 @@ export function WaitingRoom({
               </span>
             </h2>
 
-            <div className="grid gap-4 mb-6">
-              {/* Player cards */}
+            {extraProps.gameType === 'solo' && (<div className="grid gap-4 mb-6">
               {players.map((player) => (
                 <div
                   key={player.id}
@@ -90,10 +90,36 @@ export function WaitingRoom({
                 </div>
               ))}
             </div>
+            )
+            }
 
             {/* Empty slots for multiplayer games */}
             {extraProps.gameType === "multiplayer" && players.length < 4 && (
               <div className="grid gap-3">
+                {players.map((player) => (
+                  <div
+                    key={player.id}
+                    className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border border-border flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12 border border-border">
+                        <AvatarImage src={player.avatar || undefined} />
+                        <AvatarFallback className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
+                          {player.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-semibold text-xl">{player.name}</div>
+                        {player.isHost && (
+                          <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
+                            <Crown weight="fill" className="w-3 h-3 mr-1" />
+                            Host
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
                 {Array.from({ length: 4 - players.length }).map((_, index) => (
                   <div
                     key={`empty-${index}`}
@@ -108,48 +134,81 @@ export function WaitingRoom({
               </div>
             )}
           </div>
+          <Actions
+            {
+            ...{
+              quizTitle,
+              quizDescription,
+              players,
+              isHost,
+              onStartGame,
+              ...extraProps
+            }
+            }
+          />
 
-          {/* Start button (only show if user is host) */}
-          {isHost && extraProps.gameType === 'solo' && (
-            <div className="flex justify-center pt-4">
-              <Button size="lg" onClick={onStartGame}>
-                <Play weight="fill" className="w-5 h-5 mr-2" />
-                Start Game
-              </Button>
-            </div>
-          )}
-          {isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && (
-            <div className="flex justify-center pt-4">
-              <Button size="lg" onClick={onStartGame}>
-                <Play weight="fill" className="w-5 h-5 mr-2" />
-                Start Game
-              </Button>
-            </div>
-          )}
-          {isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx > 0 && (
-            <div className="flex justify-center pt-4">
-              <Button size="lg" onClick={extraProps.onResumeGame}>
-                Resume Game
-              </Button>
-            </div>
-          )}
-          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && extraProps.gameState === 'ready' && (
-            <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
-              Waiting for the host to start the game...
-            </div>
-          )}
-          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx === 0 && extraProps.gameState === 'waiting' && (
-            <Button size="lg" onClick={extraProps.onUserReady}>
-              Ready
-            </Button>
-          )}
-          {!isHost && extraProps.gameType === 'multiplayer' && extraProps.songIdx > 0 && extraProps.gameState === 'waiting' && (
-            <Button size="lg" onClick={extraProps.onResumeGame}>
-              Resume Game
-            </Button>
-          )}
         </CardContent>
       </Card>
     </div>
   );
+}
+
+function Actions(props: WaitingRoomProps) {
+  if (props.gameType === 'solo') {
+    return (
+      <div className="flex justify-center pt-4">
+        <Button size="lg" className="w-40" onClick={props.onStartGame}>
+          <Play weight="fill" className="w-5 h-5 mr-2" />
+          Start Game
+        </Button>
+      </div>
+    )
+  } else if (props.isJoining) {
+    return (
+      <div className="flex justify-center pt-4">
+        <Button size="lg" className="w-40" disabled>
+          <Play weight="fill" className="w-5 h-5 mr-2" />
+          Joining Game...
+        </Button>
+      </div>
+    )
+  } else if (props.isHost && props.songIdx === 0) {
+    return (
+      <div className="flex justify-center pt-4">
+        <Button size="lg" className="w-40" onClick={props.onStartGame}>
+          <Play weight="fill" className="w-5 h-5 mr-2" />
+          Start Game
+        </Button>
+      </div>
+    )
+  } else if (props.isHost && props.songIdx > 0) {
+    return (
+      <div className="flex justify-center pt-4">
+        <Button size="lg" className="w-40" onClick={props.onResumeGame}>
+          Resume Game
+        </Button>
+      </div>
+    )
+  } else if (!props.isHost && props.gameState === 'ready' && props.songIdx === 0) {
+    return (
+      <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
+        Waiting for the host to start the game...
+      </div>
+    )
+  } else if (!props.isHost && props.gameState === 'waiting' && props.songIdx === 0) {
+    return (
+      <div className="flex justify-center pt-4">
+        <Button size="lg" className="w-40" onClick={props.onUserReady}>
+          Ready
+        </Button>
+      </div>
+    )
+  } else if (!props.isHost && props.gameState === 'waiting' && props.songIdx > 0) {
+    return (<div className="flex justify-center pt-4">
+      <Button size="lg" className="w-40" onClick={props.onResumeGame}>
+        Resume Game
+      </Button>
+    </div>
+    )
+  }
 }

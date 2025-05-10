@@ -41,14 +41,22 @@ export class Game extends DurableObject<Bindings> {
         if (!gameInfo || !("id" in gameInfo)) {
           this.storeGameInfo(message.payload.songs);
         }
-        const currentPlayers = this.fetchPlayersFromDb().map((player, idx) => ({
-          ...player,
-          isHost: idx === 0,
-        }));
+        const attachment = ws.deserializeAttachment();
+        if (!attachment || !attachment.id) {
+          console.error("No attachment or attachment ID:", attachment);
+          ws.close(1011, "Player not properly joined");
+          return;
+        }
+        const players = this.fetchPlayersFromDb(attachment.id).map(
+          (player, idx) => ({
+            ...player,
+            isHost: idx === 0,
+          }),
+        );
         const response = JSON.stringify(
           responseSchema.parse({
             type: "player_join_response",
-            payload: currentPlayers,
+            payload: players,
           }),
         );
         this.getWebSockets().forEach((socket) => {
@@ -106,12 +114,40 @@ export class Game extends DurableObject<Bindings> {
           message.player.score,
           attachment.id,
         );
-        const players = this.fetchPlayersFromDb();
+        if (message.player.id === "timeout") {
+          const attachment = ws.deserializeAttachment();
+          if (!attachment || !attachment.id) {
+            console.error("No attachment or attachment ID:", attachment);
+            ws.close(1011, "Player not properly joined");
+            return;
+          }
+          const players = this.fetchPlayersFromDb(attachment.id);
+          this.getWebSockets().forEach((socket) => {
+            socket.send(
+              JSON.stringify(
+                responseSchema.parse({
+                  type: "player_update_response",
+                  payload: players,
+                }),
+              ),
+            );
+          });
+        }
+        break;
+      }
+      case "reveal_theme": {
+        const attachment = ws.deserializeAttachment();
+        if (!attachment || !attachment.id) {
+          console.error("No attachment or attachment ID:", attachment);
+          ws.close(1011, "Player not properly joined");
+          return;
+        }
+        const players = this.fetchPlayersFromDb(attachment.id);
         this.getWebSockets().forEach((socket) => {
           socket.send(
             JSON.stringify(
               responseSchema.parse({
-                type: "player_update_response",
+                type: "reveal_theme_response",
                 payload: players,
               }),
             ),
@@ -131,11 +167,11 @@ export class Game extends DurableObject<Bindings> {
         break;
       }
       case "delete_do": {
-        this.ctx.storage.deleteAll();
-        this.ctx.storage.deleteAlarm();
-        this.ctx.getWebSockets().forEach((socket) => {
-          socket.close(1011, "Game closed");
-        });
+        this.ctx
+          .getWebSockets()
+          .forEach((socket) => socket.close(1011, "Game closed"));
+        await this.ctx.storage.deleteAll();
+        await this.ctx.storage.deleteAlarm();
         break;
       }
       default:
@@ -144,25 +180,27 @@ export class Game extends DurableObject<Bindings> {
     }
   }
 
-  async webSocketClose(ws: WebSocket) {
-    console.log("Closing WebSocket:", ws);
-    ws.close(1011, "Game closed");
+  webSocketClose(ws: WebSocket) {
     const attachment = ws.deserializeAttachment();
     if (attachment && attachment.id) {
-      this.ctx.storage.sql.exec(
-        "UPDATE players SET online = FALSE WHERE id = ?",
-        attachment.id,
-      );
+      try {
+        this.ctx.storage.sql.exec(
+          "UPDATE players SET online = FALSE WHERE id = ?",
+          attachment.id,
+        );
+      } catch (err) {
+        console.error("Error while updating player online status:", err);
+      }
     }
   }
 
   async alarm() {
     console.log("Alarm triggered, clearing DB and closing Durable Object.");
-    await this.ctx.storage.deleteAll();
-    await this.ctx.storage.deleteAlarm();
     this.getWebSockets().forEach((socket) => {
       socket.close(1011, "Game closed");
     });
+    await this.ctx.storage.deleteAll();
+    await this.ctx.storage.deleteAlarm();
   }
 
   private getWebSockets() {
@@ -181,7 +219,7 @@ export class Game extends DurableObject<Bindings> {
     );
   }
 
-  private fetchPlayersFromDb() {
+  private fetchPlayersFromDb(currentPlayerId: string) {
     const cursor = this.ctx.storage.sql.exec(
       "SELECT players.id, players.name, players.score, players.avatar, player_guess.song_idx FROM players LEFT JOIN player_guess ON players.id = player_guess.player_id WHERE players.online = TRUE ORDER BY players.created_at ASC",
     );
@@ -196,6 +234,7 @@ export class Game extends DurableObject<Bindings> {
       avatar: string | null;
     })[];
     const players = [] as (Omit<Player, "song_idx"> & { songIdx: number })[];
+    const gameInfo = this.getGameInfo();
     for (const result of results) {
       const idx = players.findIndex((player) => player.id === result.id);
       const player = players[idx];
@@ -205,7 +244,14 @@ export class Game extends DurableObject<Bindings> {
           name: result.name,
           score: result.score,
           avatar: result.avatar ?? undefined,
-          songIdx: typeof result.song_idx == "number" ? result.song_idx + 1 : 0,
+          songIdx:
+            typeof result.song_idx == "number"
+              ? result.song_idx + 1
+              : currentPlayerId === result.id
+                ? gameInfo?.game_started
+                  ? 1
+                  : 0
+                : 0,
         });
         continue;
       }

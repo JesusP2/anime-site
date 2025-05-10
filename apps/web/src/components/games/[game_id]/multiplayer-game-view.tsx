@@ -13,6 +13,7 @@ export function MultiPlayer(props: GameManagerProps) {
   const [gameState, setGameState] = useState<GameState | "ready">("waiting");
   const [players, setPlayers] = useState<Player[]>([]);
   const ws = useRef<WebSocket | null>(null);
+  const [isJoining, setIsJoining] = useState(true);
   const isUserHost = players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false;
 
   useEffect(() => {
@@ -30,7 +31,6 @@ export function MultiPlayer(props: GameManagerProps) {
           songs: props.songs,
         },
       });
-      console.log('sending join message')
       socket.send(JSON.stringify(joinMessage));
     };
 
@@ -66,13 +66,25 @@ export function MultiPlayer(props: GameManagerProps) {
     if (
       message.data.type === "player_join_response"
     ) {
+      setIsJoining(false);
       const currentPlayer = message.data.payload.find((p) => p.id === props.currentPlayer.id);
+      if (currentPlayer && currentPlayer.songIdx > props.songs.length - 1) {
+        setGameState('results');
+        setPlayers(message.data.payload);
+        return;
+      }
       if (currentPlayer && currentPlayer.songIdx > 0 && songIdx === 0) {
         setSongIdx(currentPlayer.songIdx)
       }
       setPlayers(message.data.payload);
     } else if (message.data.type === "game_start_response") {
       setGameState("playing");
+    } else if (message.data.type === 'player_update_response') {
+      const messagePlayers = message.data.payload;
+      setPlayers(players => players.map(p => ({ ...p, score: messagePlayers.find(p2 => p2.id === p.id)?.score ?? 0 })));
+    } else if (message.data.type === "reveal_theme_response") {
+      const messagePlayers = message.data.payload;
+      setPlayers(players => players.map(p => ({ ...p, score: messagePlayers.find(p2 => p2.id === p.id)?.score ?? 0 })));
     } else if (message.data.type === "pong") {
       console.log("Pong received");
     }
@@ -92,6 +104,12 @@ export function MultiPlayer(props: GameManagerProps) {
     }
   }
 
+  function handleRevealTheme() {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify(messageSchema.parse({ type: "reveal_theme" }));
+      ws.current.send(message);
+    }
+  }
 
   function handleGameComplete() {
     setGameState("results");
@@ -116,6 +134,7 @@ export function MultiPlayer(props: GameManagerProps) {
           onUserReady={() => setGameState('ready')}
           onResumeGame={() => setGameState('playing')}
           gameState={gameState}
+          isJoining={isJoining}
           songIdx={songIdx}
         />
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
@@ -128,12 +147,18 @@ export function MultiPlayer(props: GameManagerProps) {
         handleGuess={handleGuess}
         currentPlayer={players.find((p) => p.id === props.currentPlayer.id)}
         handleGameComplete={handleGameComplete}
+        handleRevealTheme={handleRevealTheme}
         songIdx={songIdx}
         setSongIdx={setSongIdx}
       />
     );
   } else if (gameState === "results") {
-    return <ResultView quizTitle={props.title} results={players} />;
+    return (
+      <>
+        <ResultView quizTitle={props.title} results={players} />;
+        {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
+      </>
+    )
   }
   return null;
 }
@@ -143,6 +168,7 @@ export function MultiPlayerGame({
   currentPlayer,
   handleGuess: handleWsGuess,
   handleGameComplete,
+  handleRevealTheme,
   songIdx,
   setSongIdx,
 }: {
@@ -150,6 +176,7 @@ export function MultiPlayerGame({
   currentPlayer?: Player;
   handleGuess: ({ songIdx, guess, score }: { songIdx: number; guess: string; score: number }) => void;
   handleGameComplete: () => void;
+  handleRevealTheme: () => void;
   songIdx: number;
   setSongIdx: React.Dispatch<React.SetStateAction<number>>;
 }) {
@@ -187,7 +214,10 @@ export function MultiPlayerGame({
   const handleTimerEnd = () => {
     if (!currentAnswer) {
       handleWsGuess({ songIdx, guess: 'timeout', score: 0 });
+      setIsPlaying(false);
+      return;
     }
+    handleRevealTheme();
     setIsPlaying(false);
   };
 
