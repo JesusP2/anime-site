@@ -41,12 +41,6 @@ export class Game extends DurableObject<Bindings> {
         if (!gameInfo || !("id" in gameInfo)) {
           this.storeGameInfo(message.payload.songs);
         }
-        const attachment = ws.deserializeAttachment();
-        if (!attachment || !attachment.id) {
-          console.error("No attachment or attachment ID:", attachment);
-          ws.close(1011, "Player not properly joined");
-          return;
-        }
         const players = this.fetchPlayersFromDb();
         const response = JSON.stringify(
           responseSchema.parse({
@@ -70,14 +64,8 @@ export class Game extends DurableObject<Bindings> {
           ws.close(1011, "Unauthorized");
           return;
         }
-        const attachment = ws.deserializeAttachment();
-        if (!attachment || !attachment.id) {
-          console.error("No attachment or attachment ID:", attachment);
-          ws.close(1011, "Player not properly joined");
-          return;
-        }
         const areAllPlayersReady = this.fetchPlayersFromDb().every(
-          (player) => player.id === attachment.id || player.isReady,
+          (player) => player.id === message.senderId || player.isReady,
         );
         console.log('are all players ready', areAllPlayersReady);
         if (!areAllPlayersReady && message.type === "game_start") {
@@ -114,30 +102,18 @@ export class Game extends DurableObject<Bindings> {
         });
         break;
       case "player_ready": {
-        const attachment = ws.deserializeAttachment();
-        if (!attachment || !attachment.id) {
-          console.error("No attachment or attachment ID:", attachment);
-          ws.close(1011, "Player not properly joined");
-          return;
-        }
         this.ctx.storage.sql.exec(
           "UPDATE players SET is_ready = TRUE WHERE id = ?",
-          attachment.id,
+          message.senderId,
         );
         break;
       }
       case "player_update": {
         const id = ulid();
-        const attachment = ws.deserializeAttachment();
-        if (!attachment || !attachment.id) {
-          console.error("No attachment or attachment ID:", attachment);
-          ws.close(1011, "Player not properly joined");
-          return;
-        }
         this.ctx.storage.sql.exec(
           "INSERT INTO player_guess (id, player_id, song_idx, guess, score) VALUES (?, ?, ?, ?, ?)",
           id,
-          attachment.id,
+          message.senderId,
           message.player.songIdx,
           message.player.id,
           message.player.score,
@@ -146,15 +122,9 @@ export class Game extends DurableObject<Bindings> {
           "UPDATE players SET score = score + ?, current_song_idx = ? WHERE id = ?",
           message.player.score,
           message.player.songIdx + 1,
-          attachment.id,
+          message.senderId,
         );
         if (message.player.id === "timeout") {
-          const attachment = ws.deserializeAttachment();
-          if (!attachment || !attachment.id) {
-            console.error("No attachment or attachment ID:", attachment);
-            ws.close(1011, "Player not properly joined");
-            return;
-          }
           const players = this.fetchPlayersFromDb();
           this.getWebSockets().forEach((socket) => {
             socket.send(
@@ -170,12 +140,6 @@ export class Game extends DurableObject<Bindings> {
         break;
       }
       case "reveal_theme": {
-        const attachment = ws.deserializeAttachment();
-        if (!attachment || !attachment.id) {
-          console.error("No attachment or attachment ID:", attachment);
-          ws.close(1011, "Player not properly joined");
-          return;
-        }
         const players = this.fetchPlayersFromDb();
         this.getWebSockets().forEach((socket) => {
           socket.send(
@@ -223,7 +187,6 @@ export class Game extends DurableObject<Bindings> {
           attachment.id,
         );
       } catch (err) {
-        console.error("Error while updating player online status:", err);
       }
     }
   }

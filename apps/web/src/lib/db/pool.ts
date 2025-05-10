@@ -8,8 +8,8 @@ declare global {
 }
 export function getDb() {
   const client = postgres(globalThis.connectionString);
-  // if (globalThis.db) return globalThis.db;
+  if (globalThis.db) return globalThis.db;
   const db = drizzle(client, { schema });
-  // globalThis.db = db;
+  globalThis.db = db;
   return db;
 }

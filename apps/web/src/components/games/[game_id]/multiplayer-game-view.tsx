@@ -29,6 +29,7 @@ export function MultiPlayer(props: GameManagerProps) {
     socket.onopen = () => {
       const joinMessage = messageSchema.parse({
         type: "player_join",
+        senderId: props.currentPlayer.id,
         payload: {
           id: props.currentPlayer.id,
           name: props.currentPlayer.name,
@@ -99,28 +100,28 @@ export function MultiPlayer(props: GameManagerProps) {
 
   function handleStartGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN && isUserHost) {
-      const message = JSON.stringify(messageSchema.parse({ type: "game_start" }));
+      const message = JSON.stringify(messageSchema.parse({ type: "game_start", senderId: props.currentPlayer.id }));
       ws.current.send(message);
     }
   }
 
   function handleConfirmStartGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN && isUserHost) {
-      const message = JSON.stringify(messageSchema.parse({ type: "force_game_start" }));
+      const message = JSON.stringify(messageSchema.parse({ type: "force_game_start", senderId: props.currentPlayer.id }));
       ws.current.send(message);
     }
   }
 
   function handleGuess({ songIdx, guess, score }: { songIdx: number; guess: string; score: number }) {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify(messageSchema.parse({ type: "player_update", player: { songIdx, id: guess, score } }));
+      const message = JSON.stringify(messageSchema.parse({ type: "player_update", senderId: props.currentPlayer.id, player: { songIdx, id: guess, score } }));
       ws.current.send(message);
     }
   }
 
   function handleRevealTheme() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify(messageSchema.parse({ type: "reveal_theme" }));
+      const message = JSON.stringify(messageSchema.parse({ type: "reveal_theme", senderId: props.currentPlayer.id }));
       ws.current.send(message);
     }
   }
@@ -131,7 +132,7 @@ export function MultiPlayer(props: GameManagerProps) {
 
   function handlePlayerReady() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify(messageSchema.parse({ type: "player_ready" }));
+      const message = JSON.stringify(messageSchema.parse({ type: "player_ready", senderId: props.currentPlayer.id }));
       ws.current.send(message);
     }
     setGameState("ready");
@@ -139,7 +140,7 @@ export function MultiPlayer(props: GameManagerProps) {
 
   function handleDeleteGame() {
     if (ws.current && ws.current.readyState === WebSocket.OPEN && import.meta.env.DEV) {
-      ws.current?.send(JSON.stringify(messageSchema.parse({ type: "delete_do" })));
+      ws.current.send(JSON.stringify(messageSchema.parse({ type: "delete_do", senderId: props.currentPlayer.id })));
     }
   }
 

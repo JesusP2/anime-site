@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const playerJoinMessageSchema = z.object({
   type: z.literal("player_join"),
+  senderId: z.string(),
   payload: z.object({
     id: z.string(),
     name: z.string(),
@@ -20,14 +21,17 @@ export const playerJoinMessageSchema = z.object({
 
 export const gameStartMessageSchema = z.object({
   type: z.literal("game_start"),
+  senderId: z.string(),
 });
 
 export const forceGameStartMessageSchema = z.object({
   type: z.literal("force_game_start"),
+  senderId: z.string(),
 });
 
 export const playerUpdateMessageSchema = z.object({
   type: z.literal("player_update"),
+  senderId: z.string(),
   player: z.object({
     id: z.string(),
     songIdx: z.number(),
@@ -37,18 +41,22 @@ export const playerUpdateMessageSchema = z.object({
 
 export const revealThemeMessageSchema = z.object({
   type: z.literal("reveal_theme"),
+  senderId: z.string(),
 });
 
 export const playerReadyMessageSchema = z.object({
   type: z.literal("player_ready"),
+  senderId: z.string(),
 });
 
 export const pingMessageSchema = z.object({
   type: z.literal("ping"),
+  senderId: z.string(),
 });
 
 export const deleteDurableObjectMessageSchema = z.object({
   type: z.literal("delete_do"),
+  senderId: z.string(),
 });
 
 export const messageSchema = z.discriminatedUnion("type", [
