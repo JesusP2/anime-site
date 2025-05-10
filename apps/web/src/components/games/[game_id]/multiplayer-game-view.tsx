@@ -11,6 +11,7 @@ const TIMEOUT = 10;
 export function MultiPlayer(props: GameManagerProps) {
   const [songIdx, setSongIdx] = useState(0);
   const [gameState, setGameState] = useState<GameState | "ready">("waiting");
+  const [hasGameStarted, setHasGameStarted] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
   const ws = useRef<WebSocket | null>(null);
   const [isJoining, setIsJoining] = useState(true);
@@ -67,16 +68,17 @@ export function MultiPlayer(props: GameManagerProps) {
       message.data.type === "player_join_response"
     ) {
       setIsJoining(false);
-      const currentPlayer = message.data.payload.find((p) => p.id === props.currentPlayer.id);
+      setHasGameStarted(message.data.payload.hasGameStarted);
+      const currentPlayer = message.data.payload.players.find((p) => p.id === props.currentPlayer.id);
       if (currentPlayer && currentPlayer.songIdx > props.songs.length - 1) {
         setGameState('results');
-        setPlayers(message.data.payload);
+        setPlayers(message.data.payload.players);
         return;
       }
       if (currentPlayer && currentPlayer.songIdx > 0 && songIdx === 0) {
         setSongIdx(currentPlayer.songIdx)
       }
-      setPlayers(message.data.payload);
+      setPlayers(message.data.payload.players);
     } else if (message.data.type === "game_start_response") {
       setGameState("playing");
     } else if (message.data.type === 'player_update_response') {
@@ -135,6 +137,7 @@ export function MultiPlayer(props: GameManagerProps) {
           onResumeGame={() => setGameState('playing')}
           gameState={gameState}
           isJoining={isJoining}
+          hasGameStarted={hasGameStarted}
           songIdx={songIdx}
         />
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}

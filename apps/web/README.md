@@ -5,11 +5,12 @@
 - fix google auth
 - change console.logs for logger
 - add auth to durable object
-- improve UX of song autocomplete
+- [x] improve UX of song autocomplete
 - [x] fix button layout shift
-- if the songIdx is the last song, player should be redirected to the results page
+- [x] if the songIdx is the last song, player should be redirected to the results page
+- [x] score is not being updated correctly
 - if player has autocomplete opened when time is up, it should close the autocomplete
-- score is not being updated correctly
+- [] ready button functionality
 
 landing page:
 

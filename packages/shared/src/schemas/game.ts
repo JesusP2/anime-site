@@ -75,16 +75,19 @@ export const messageSchema = z.discriminatedUnion("type", [
 // ---------- Responses ----------
 export const playerJoinResponseSchema = z.object({
   type: z.literal("player_join_response"),
-  payload: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      score: z.number(),
-      isHost: z.boolean(),
-      avatar: z.string().optional(),
-      songIdx: z.number(),
-    }),
-  ),
+  payload: z.object({
+    hasGameStarted: z.boolean(),
+    players: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        score: z.number(),
+        isHost: z.boolean(),
+        avatar: z.string().optional(),
+        songIdx: z.number(),
+      }),
+    ),
+  }),
 });
 
 export const gameStartResponseSchema = z.object({

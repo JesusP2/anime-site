@@ -25,6 +25,7 @@ export type WaitingRoomProps = {
   isJoining: boolean;
   onUserReady: () => void;
   onResumeGame: () => void;
+  hasGameStarted: boolean;
 });
 export function WaitingRoom({
   quizTitle,
@@ -154,7 +155,7 @@ export function WaitingRoom({
 }
 
 function Actions(props: WaitingRoomProps) {
-  if (props.gameType === 'solo') {
+  if (props.gameType === 'solo' || (props.isHost && !props.hasGameStarted)) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onStartGame}>
@@ -172,16 +173,7 @@ function Actions(props: WaitingRoomProps) {
         </Button>
       </div>
     )
-  } else if (props.isHost && props.songIdx === 0) {
-    return (
-      <div className="flex justify-center pt-4">
-        <Button size="lg" className="w-40" onClick={props.onStartGame}>
-          <Play weight="fill" className="w-5 h-5 mr-2" />
-          Start Game
-        </Button>
-      </div>
-    )
-  } else if (props.isHost && props.songIdx > 0) {
+  } else if (props.hasGameStarted && (props.isHost || !props.isHost && props.gameState == 'waiting')) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onResumeGame}>
@@ -189,26 +181,19 @@ function Actions(props: WaitingRoomProps) {
         </Button>
       </div>
     )
-  } else if (!props.isHost && props.gameState === 'ready' && props.songIdx === 0) {
+  } else if (!props.isHost && props.gameState === 'ready') {
     return (
       <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
         Waiting for the host to start the game...
       </div>
     )
-  } else if (!props.isHost && props.gameState === 'waiting' && props.songIdx === 0) {
+  } else if (!props.isHost && props.gameState === 'waiting' && !props.hasGameStarted) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onUserReady}>
           Ready
         </Button>
       </div>
-    )
-  } else if (!props.isHost && props.gameState === 'waiting' && props.songIdx > 0) {
-    return (<div className="flex justify-center pt-4">
-      <Button size="lg" className="w-40" onClick={props.onResumeGame}>
-        Resume Game
-      </Button>
-    </div>
     )
   }
 }

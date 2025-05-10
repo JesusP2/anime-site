@@ -47,16 +47,14 @@ export class Game extends DurableObject<Bindings> {
           ws.close(1011, "Player not properly joined");
           return;
         }
-        const players = this.fetchPlayersFromDb(attachment.id).map(
-          (player, idx) => ({
-            ...player,
-            isHost: idx === 0,
-          }),
-        );
+        const players = this.fetchPlayersFromDb();
         const response = JSON.stringify(
           responseSchema.parse({
             type: "player_join_response",
-            payload: players,
+            payload: {
+              players,
+              hasGameStarted: !!gameInfo?.game_started,
+            },
           }),
         );
         this.getWebSockets().forEach((socket) => {
@@ -71,6 +69,9 @@ export class Game extends DurableObject<Bindings> {
           ws.close(1011, "Unauthorized");
           return;
         }
+        this.ctx.storage.sql.exec(
+          "UPDATE players SET score = 0, current_song_idx = 0",
+        );
         const gameInfo = this.getGameInfo();
         if (!gameInfo?.game_started) {
           this.ctx.storage.sql.exec(
@@ -110,8 +111,9 @@ export class Game extends DurableObject<Bindings> {
           message.player.score,
         );
         this.ctx.storage.sql.exec(
-          "UPDATE players SET score = score + ? WHERE id = ?",
+          "UPDATE players SET score = score + ?, current_song_idx = ? WHERE id = ?",
           message.player.score,
+          message.player.songIdx + 1,
           attachment.id,
         );
         if (message.player.id === "timeout") {
@@ -121,7 +123,7 @@ export class Game extends DurableObject<Bindings> {
             ws.close(1011, "Player not properly joined");
             return;
           }
-          const players = this.fetchPlayersFromDb(attachment.id);
+          const players = this.fetchPlayersFromDb();
           this.getWebSockets().forEach((socket) => {
             socket.send(
               JSON.stringify(
@@ -142,7 +144,7 @@ export class Game extends DurableObject<Bindings> {
           ws.close(1011, "Player not properly joined");
           return;
         }
-        const players = this.fetchPlayersFromDb(attachment.id);
+        const players = this.fetchPlayersFromDb();
         this.getWebSockets().forEach((socket) => {
           socket.send(
             JSON.stringify(
@@ -209,7 +211,7 @@ export class Game extends DurableObject<Bindings> {
 
   private initializeStorage(): void {
     this.ctx.storage.sql.exec(
-      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, score INTEGER DEFAULT 0, avatar TEXT, online BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+      "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT, current_song_idx INTEGER, score INTEGER DEFAULT 0, avatar TEXT, online BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
     this.ctx.storage.sql.exec(
       "CREATE TABLE IF NOT EXISTS game_info (id TEXT PRIMARY KEY, songs TEXT, game_started BOOLEAN DEFAULT FALSE, game_finished BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
@@ -219,48 +221,24 @@ export class Game extends DurableObject<Bindings> {
     );
   }
 
-  private fetchPlayersFromDb(currentPlayerId: string) {
+  private fetchPlayersFromDb() {
     const cursor = this.ctx.storage.sql.exec(
-      "SELECT players.id, players.name, players.score, players.avatar, player_guess.song_idx FROM players LEFT JOIN player_guess ON players.id = player_guess.player_id WHERE players.online = TRUE ORDER BY players.created_at ASC",
+      "SELECT id, name, score, avatar, current_song_idx  FROM players ORDER BY created_at ASC",
     );
     type Player = {
       id: string;
       name: string;
       score: number;
-      avatar?: string;
-      song_idx: number;
-    };
-    const results = cursor.toArray() as (Omit<Player, "avatar"> & {
       avatar: string | null;
-    })[];
-    const players = [] as (Omit<Player, "song_idx"> & { songIdx: number })[];
-    const gameInfo = this.getGameInfo();
-    for (const result of results) {
-      const idx = players.findIndex((player) => player.id === result.id);
-      const player = players[idx];
-      if (!player) {
-        players.push({
-          id: result.id,
-          name: result.name,
-          score: result.score,
-          avatar: result.avatar ?? undefined,
-          songIdx:
-            typeof result.song_idx == "number"
-              ? result.song_idx + 1
-              : currentPlayerId === result.id
-                ? gameInfo?.game_started
-                  ? 1
-                  : 0
-                : 0,
-        });
-        continue;
-      }
-      if (player.songIdx < result.song_idx + 1) {
-        player.songIdx = result.song_idx + 1;
-      }
-      continue;
-    }
-    return players;
+      current_song_idx?: number;
+    };
+    const players = cursor.toArray() as Player[];
+    return players.map((player, idx) => ({
+      ...player,
+      songIdx: player.current_song_idx ?? 0,
+      avatar: player.avatar ?? undefined,
+      isHost: idx === 0,
+    }));
   }
 
   private isHost(ws: WebSocket) {
