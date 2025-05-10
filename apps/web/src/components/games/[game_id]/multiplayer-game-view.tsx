@@ -222,6 +222,9 @@ export function MultiPlayerGame({
   };
 
   const handleGuess = (item: { key: string; value: string; label: string }) => {
+    if (timeLeft - TIMEOUT < 0) {
+      return;
+    }
     const isCorrect = item.key === currentSong?.themeId;
     const pointsEarned = isCorrect ? 1 : 0;
     handleWsGuess({ songIdx, guess: item.key, score: pointsEarned });
@@ -303,6 +306,7 @@ export function MultiPlayerGame({
       <div className="h-[6rem] shrink-0">
         <div className="mt-4 w-[90%] mx-auto">
           <SongAutocomplete
+            debounce={100}
             ignoreThemes={[]}
             disabled={!isPlaying || !videoReady || !!currentAnswer?.name}
             value={currentAnswer?.name ?? ""}

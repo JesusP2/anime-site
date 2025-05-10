@@ -99,7 +99,7 @@ export function AutoComplete<T extends string>({
                 e.preventDefault();
               }
             }}
-            className="w-[350px]"
+            className="w-full"
           >
             <CommandList>
               {isLoading && (
