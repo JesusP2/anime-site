@@ -158,7 +158,7 @@ export function MultiPlayer(props: GameManagerProps) {
   } else if (gameState === "results") {
     return (
       <>
-        <ResultView quizTitle={props.title} results={players} />;
+        <ResultView quizTitle={props.title} results={players} />
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
       </>
     )
