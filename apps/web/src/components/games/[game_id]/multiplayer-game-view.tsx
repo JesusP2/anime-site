@@ -3,13 +3,18 @@ import { SongAutocomplete } from "@/components/song-autocomplete";
 import { cn } from "@/lib/utils";
 import type { GameManagerProps } from "@/lib/types";
 import type { GameState, Player } from "@repo/shared/types";
-import { messageSchema, responseSchema } from "@repo/shared/schemas/game";
+import { messageSchema, responseSchema, serverChatBroadcastSchema } from "@repo/shared/schemas/game";
+import { z } from "zod";
 import { WaitingRoom } from "./waiting-room";
 import { ResultView } from "./result-view";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ChatView } from "./chat-view";
 
-const TIMEOUT = 10;
+const TIMEOUT = 120;
+
+type ChatMessage = z.infer<typeof serverChatBroadcastSchema>['payload'];
+
 export function MultiPlayer(props: GameManagerProps) {
   const [songIdx, setSongIdx] = useState(0);
   const [gameState, setGameState] = useState<GameState | "ready">("waiting");
@@ -19,6 +24,7 @@ export function MultiPlayer(props: GameManagerProps) {
   const [isJoining, setIsJoining] = useState(true);
   const isUserHost = players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false;
   const [showNotReadyMessage, setShowNotReadyMessage] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     const url = new URL('ws://localhost:8787/api/ws');
@@ -56,7 +62,6 @@ export function MultiPlayer(props: GameManagerProps) {
     };
   }, [props.gameId]);
 
-  // we need to update onmessage to handle songIdx changes
   useEffect(() => {
     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
     ws.current.onmessage = onMessage;
@@ -95,6 +100,9 @@ export function MultiPlayer(props: GameManagerProps) {
       setShowNotReadyMessage(true);
     } else if (message.data.type === "pong") {
       console.log("Pong received");
+    } else if (message.data.type === "server_chat_broadcast") {
+      const chatPayload = message.data.payload;
+      setChatMessages((prevMessages) => [...prevMessages, chatPayload]);
     }
   }
 
@@ -144,23 +152,45 @@ export function MultiPlayer(props: GameManagerProps) {
     }
   }
 
+  function handleSendChatMessage(text: string) {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const chatMessage = messageSchema.parse({
+        type: "client_chat_message",
+        senderId: props.currentPlayer.id,
+        payload: { text },
+      });
+      ws.current.send(JSON.stringify(chatMessage));
+    }
+  }
+
   if (gameState === "waiting" || gameState === "ready") {
     return (
       <>
-        <WaitingRoom
-          quizTitle={props.title}
-          quizDescription={props.description}
-          players={players}
-          isHost={players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false}
-          gameType="multiplayer"
-          onStartGame={handleStartGame}
-          onUserReady={handlePlayerReady}
-          onResumeGame={() => setGameState('playing')}
-          gameState={gameState}
-          isJoining={isJoining}
-          hasGameStarted={hasGameStarted}
-          songIdx={songIdx}
-        />
+        <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto">
+          <div className="md:w-2/3">
+            <WaitingRoom
+              quizTitle={props.title}
+              quizDescription={props.description}
+              players={players}
+              isHost={players.find((p) => p.id === props.currentPlayer.id)?.isHost ?? false}
+              gameType="multiplayer"
+              onStartGame={handleStartGame}
+              onUserReady={handlePlayerReady}
+              onResumeGame={() => setGameState('playing')}
+              gameState={gameState}
+              isJoining={isJoining}
+              hasGameStarted={hasGameStarted}
+              songIdx={songIdx}
+            />
+          </div>
+          <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
+            <ChatView
+              messages={chatMessages}
+              onSendMessage={handleSendChatMessage}
+              currentPlayerId={props.currentPlayer.id}
+            />
+          </div>
+        </div>
         <Dialog open={showNotReadyMessage} onOpenChange={setShowNotReadyMessage}>
           <DialogContent>
             <DialogHeader>
@@ -184,20 +214,42 @@ export function MultiPlayer(props: GameManagerProps) {
     );
   } else if (gameState === "playing") {
     return (
-      <MultiPlayerGame
-        songs={props.songs}
-        handleGuess={handleGuess}
-        currentPlayer={players.find((p) => p.id === props.currentPlayer.id)}
-        handleGameComplete={handleGameComplete}
-        handleRevealTheme={handleRevealTheme}
-        songIdx={songIdx}
-        setSongIdx={setSongIdx}
-      />
+      <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto h-full">
+        <div className="md:w-2/3 h-full">
+          <MultiPlayerGame
+            songs={props.songs}
+            handleGuess={handleGuess}
+            currentPlayer={players.find((p) => p.id === props.currentPlayer.id)}
+            handleGameComplete={handleGameComplete}
+            handleRevealTheme={handleRevealTheme}
+            songIdx={songIdx}
+            setSongIdx={setSongIdx}
+          />
+        </div>
+        <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
+          <ChatView
+            messages={chatMessages}
+            onSendMessage={handleSendChatMessage}
+            currentPlayerId={props.currentPlayer.id}
+          />
+        </div>
+      </div>
     );
   } else if (gameState === "results") {
     return (
       <>
-        <ResultView quizTitle={props.title} results={players} />
+        <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto">
+          <div className="md:w-2/3">
+            <ResultView quizTitle={props.title} results={players} />
+          </div>
+          <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
+            <ChatView
+              messages={chatMessages}
+              onSendMessage={handleSendChatMessage}
+              currentPlayerId={props.currentPlayer.id}
+            />
+          </div>
+        </div>
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
       </>
     )

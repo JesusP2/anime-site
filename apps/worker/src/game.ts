@@ -42,18 +42,46 @@ export class Game extends DurableObject<Bindings> {
           this.storeGameInfo(message.payload.songs);
         }
         const players = this.fetchPlayersFromDb();
-        const response = JSON.stringify(
-          responseSchema.parse({
-            type: "player_join_response",
-            payload: {
-              players,
-              hasGameStarted: !!gameInfo?.game_started,
-            },
-          }),
-        );
-        this.getWebSockets().forEach((socket) => {
-          socket.send(response);
+        const response = responseSchema.parse({
+          type: "player_join_response",
+          payload: {
+            players,
+            hasGameStarted: !!gameInfo?.game_started,
+          },
         });
+        this.broadcast(response);
+
+        // Fetch and send recent chat history to the joining player
+        const chatHistoryCursor = this.ctx.storage.sql.exec(
+          "SELECT id, player_id, player_name, text, message_type, timestamp FROM chat_messages ORDER BY timestamp DESC LIMIT 50",
+        );
+        const chatHistory = chatHistoryCursor.toArray().reverse() as {
+          id: string;
+          player_id: string;
+          player_name: string;
+          text: string;
+          message_type: "player" | "system" | "game_event";
+          timestamp: number;
+        }[];
+
+        if (chatHistory.length > 0) {
+          // Send as individual messages to allow client to process them sequentially
+          chatHistory.forEach((msg) => {
+            const historyMessage = responseSchema.parse({
+              type: "server_chat_broadcast",
+              payload: {
+                messageId: msg.id,
+                senderId: msg.player_id,
+                senderName: msg.player_name,
+                text: msg.text,
+                timestamp: msg.timestamp,
+                chatMessageType: msg.message_type,
+              },
+            });
+            ws.send(JSON.stringify(historyMessage)); // Send directly to the joining player
+          });
+        }
+
         break;
       }
       case "force_game_start":
@@ -67,14 +95,11 @@ export class Game extends DurableObject<Bindings> {
         const areAllPlayersReady = this.fetchPlayersFromDb().every(
           (player) => player.id === message.senderId || player.isReady,
         );
-        console.log('are all players ready', areAllPlayersReady);
         if (!areAllPlayersReady && message.type === "game_start") {
-          const response = JSON.stringify(
-            responseSchema.parse({
-              type: "players_not_ready_response",
-            }),
-          );
-          ws.send(response);
+          const response = responseSchema.parse({
+            type: "players_not_ready_response",
+          });
+          ws.send(JSON.stringify(response));
           return;
         }
         this.ctx.storage.sql.exec(
@@ -92,14 +117,10 @@ export class Game extends DurableObject<Bindings> {
           await this.ctx.storage.deleteAlarm();
           await this.ctx.storage.setAlarm(new Date(Date.now() + time));
         }
-        const response = JSON.stringify(
-          responseSchema.parse({
-            type: "game_start_response",
-          }),
-        );
-        this.getWebSockets().forEach((socket) => {
-          socket.send(response);
+        const response = responseSchema.parse({
+          type: "game_start_response",
         });
+        this.broadcast(response);
         break;
       case "player_ready": {
         this.ctx.storage.sql.exec(
@@ -126,42 +147,69 @@ export class Game extends DurableObject<Bindings> {
         );
         if (message.player.id === "timeout") {
           const players = this.fetchPlayersFromDb();
-          this.getWebSockets().forEach((socket) => {
-            socket.send(
-              JSON.stringify(
-                responseSchema.parse({
-                  type: "player_update_response",
-                  payload: players,
-                }),
-              ),
-            );
-          });
+          this.broadcast(
+            responseSchema.parse({
+              type: "player_update_response",
+              payload: players,
+            }),
+          );
         }
         break;
       }
       case "reveal_theme": {
         const players = this.fetchPlayersFromDb();
-        this.getWebSockets().forEach((socket) => {
-          socket.send(
-            JSON.stringify(
-              responseSchema.parse({
-                type: "reveal_theme_response",
-                payload: players,
-              }),
-            ),
-          );
-        });
+        this.broadcast(
+          responseSchema.parse({
+            type: "reveal_theme_response",
+            payload: players,
+          }),
+        );
         break;
       }
       case "ping": {
-        this.getWebSockets().forEach((socket) => {
-          socket.send(
-            JSON.stringify({
-              type: "pong",
-              timestamp: new Date().toISOString(),
-            }),
-          );
+        this.broadcast({
+          type: "pong",
+          timestamp: new Date().toISOString(),
         });
+        break;
+      }
+      case "client_chat_message": {
+        const senderId = message.senderId;
+        // Basic XSS sanitization: replace < and >. For more robust sanitization, a library would be needed.
+        const sanitizedText = message.payload.text
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+        const player = this.ctx.storage.sql
+          .exec("SELECT name FROM players WHERE id = ?", senderId)
+          .one() as { name: string } | null;
+        const senderName = player?.name || "Unknown Player";
+
+        const messageId = ulid();
+        const timestamp = Date.now();
+
+        this.ctx.storage.sql.exec(
+          "INSERT INTO chat_messages (id, player_id, player_name, text, message_type, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+          messageId,
+          senderId,
+          senderName,
+          sanitizedText,
+          "player",
+          timestamp,
+        );
+
+        const chatResponse = responseSchema.parse({
+          type: "server_chat_broadcast",
+          payload: {
+            messageId,
+            senderId,
+            senderName,
+            text: sanitizedText,
+            timestamp,
+            chatMessageType: "player",
+          },
+        });
+        this.broadcast(chatResponse);
         break;
       }
       case "delete_do": {
@@ -186,8 +234,7 @@ export class Game extends DurableObject<Bindings> {
           "UPDATE players SET online = FALSE WHERE id = ?",
           attachment.id,
         );
-      } catch (err) {
-      }
+      } catch (err) {}
     }
   }
 
@@ -214,6 +261,9 @@ export class Game extends DurableObject<Bindings> {
     this.ctx.storage.sql.exec(
       "CREATE TABLE IF NOT EXISTS player_guess (id TEXT PRIMARY KEY, player_id TEXT, song_idx INTEGER, guess TEXT, score INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     );
+    this.ctx.storage.sql.exec(
+      "CREATE TABLE IF NOT EXISTS chat_messages (id TEXT PRIMARY KEY, player_id TEXT, player_name TEXT, text TEXT, message_type TEXT CHECK(message_type IN ('player', 'system', 'game_event')), timestamp INTEGER, FOREIGN KEY (player_id) REFERENCES players(id))",
+    );
   }
 
   private fetchPlayersFromDb() {
@@ -230,15 +280,13 @@ export class Game extends DurableObject<Bindings> {
       songIdx: number;
     };
     const players = cursor.toArray() as any[];
-    const yo = players.map((player, idx) => ({
+    return players.map((player, idx) => ({
       ...player,
       songIdx: player.current_song_idx ?? 0,
       avatar: player.avatar ?? undefined,
       isReady: !!player.is_ready,
       isHost: idx === 0,
     })) as Player[];
-    console.log(yo)
-    return yo;
   }
 
   private isHost(ws: WebSocket) {
@@ -292,5 +340,12 @@ export class Game extends DurableObject<Bindings> {
       return null;
     }
     return gameInfo;
+  }
+
+  private broadcast(message: object): void {
+    const serializedMessage = JSON.stringify(message);
+    this.getWebSockets().forEach((socket) => {
+      socket.send(serializedMessage);
+    });
   }
 }
