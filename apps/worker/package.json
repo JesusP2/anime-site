@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev ./src/index.ts",
-    "build": "tsc -b",
+    "build": "tsdown",
     "typecheck": "tsc"
   },
   "keywords": [],
@@ -13,14 +13,15 @@
   "license": "ISC",
   "dependencies": {
     "@hono/zod-validator": "^0.5.0",
+    "@repo/shared": "workspace:*",
     "hono": "^4.7.8",
     "ulidx": "^2.4.1",
-    "@repo/shared": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250415.0",
     "prettier": "^3.5.3",
+    "tsdown": "^0.11.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "wrangler": "4.14.1"
