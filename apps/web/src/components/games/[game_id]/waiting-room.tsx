@@ -16,17 +16,20 @@ export type WaitingRoomProps = {
   players: Player[];
   isHost: boolean;
   onStartGame: () => void;
-} & ({
-  gameType: 'solo';
-} | {
-  gameType: 'multiplayer';
-  gameState: GameState | 'ready';
-  songIdx: number;
-  isJoining: boolean;
-  onUserReady: () => void;
-  onResumeGame: () => void;
-  hasGameStarted: boolean;
-});
+} & (
+  | {
+      gameType: "solo";
+    }
+  | {
+      gameType: "multiplayer";
+      gameState: GameState | "ready";
+      songIdx: number;
+      isJoining: boolean;
+      onUserReady: () => void;
+      onResumeGame: () => void;
+      hasGameStarted: boolean;
+    }
+);
 export function WaitingRoom({
   quizTitle,
   quizDescription,
@@ -61,38 +64,41 @@ export function WaitingRoom({
             <h2 className="text-xl font-semibold mb-4 flex items-center">
               Players ({players.length})
               <span className="ml-2 text-sm text-muted-foreground font-normal">
-                {extraProps.gameType === "multiplayer" ? "Multiplayer" : "Solo"} Game
+                {extraProps.gameType === "multiplayer" ? "Multiplayer" : "Solo"}{" "}
+                Game
               </span>
             </h2>
 
-            {extraProps.gameType === 'solo' && (<div className="grid gap-4 mb-6">
-              {players.map((player) => (
-                <div
-                  key={player.id}
-                  className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border border-border flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-12 w-12 border border-border">
-                      <AvatarImage src={player.avatar || undefined} />
-                      <AvatarFallback className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
-                        {player.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-semibold text-xl">{player.name}</div>
-                      {player.isHost && (
-                        <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
-                          <Crown weight="fill" className="w-3 h-3 mr-1" />
-                          Host
+            {extraProps.gameType === "solo" && (
+              <div className="grid gap-4 mb-6">
+                {players.map((player) => (
+                  <div
+                    key={player.id}
+                    className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border border-border flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12 border border-border">
+                        <AvatarImage src={player.avatar || undefined} />
+                        <AvatarFallback className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
+                          {player.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-semibold text-xl">
+                          {player.name}
                         </div>
-                      )}
+                        {player.isHost && (
+                          <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
+                            <Crown weight="fill" className="w-3 h-3 mr-1" />
+                            Host
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            )
-            }
+                ))}
+              </div>
+            )}
 
             {/* Empty slots for multiplayer games */}
             {extraProps.gameType === "multiplayer" && players.length < 4 && (
@@ -110,7 +116,9 @@ export function WaitingRoom({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-semibold text-xl">{player.name}</div>
+                        <div className="font-semibold text-xl">
+                          {player.name}
+                        </div>
                         {player.isHost && (
                           <div className="text-xs flex items-center text-amber-600 dark:text-amber-400">
                             <Crown weight="fill" className="w-3 h-3 mr-1" />
@@ -136,18 +144,15 @@ export function WaitingRoom({
             )}
           </div>
           <Actions
-            {
-            ...{
+            {...{
               quizTitle,
               quizDescription,
               players,
               isHost,
               onStartGame,
-              ...extraProps
-            }
-            }
+              ...extraProps,
+            }}
           />
-
         </CardContent>
       </Card>
     </div>
@@ -155,7 +160,7 @@ export function WaitingRoom({
 }
 
 function Actions(props: WaitingRoomProps) {
-  if (props.gameType === 'solo' || (props.isHost && !props.hasGameStarted)) {
+  if (props.gameType === "solo" || (props.isHost && !props.hasGameStarted)) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onStartGame}>
@@ -163,7 +168,7 @@ function Actions(props: WaitingRoomProps) {
           Start Game
         </Button>
       </div>
-    )
+    );
   } else if (props.isJoining) {
     return (
       <div className="flex justify-center pt-4">
@@ -172,28 +177,35 @@ function Actions(props: WaitingRoomProps) {
           Joining Game...
         </Button>
       </div>
-    )
-  } else if (props.hasGameStarted && (props.isHost || !props.isHost && props.gameState == 'waiting')) {
+    );
+  } else if (
+    props.hasGameStarted &&
+    (props.isHost || (!props.isHost && props.gameState == "waiting"))
+  ) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onResumeGame}>
           Resume Game
         </Button>
       </div>
-    )
-  } else if (!props.isHost && props.gameState === 'ready') {
+    );
+  } else if (!props.isHost && props.gameState === "ready") {
     return (
       <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-lg">
         Waiting for the host to start the game...
       </div>
-    )
-  } else if (!props.isHost && props.gameState === 'waiting' && !props.hasGameStarted) {
+    );
+  } else if (
+    !props.isHost &&
+    props.gameState === "waiting" &&
+    !props.hasGameStarted
+  ) {
     return (
       <div className="flex justify-center pt-4">
         <Button size="lg" className="w-40" onClick={props.onUserReady}>
           Ready
         </Button>
       </div>
-    )
+    );
   }
 }
