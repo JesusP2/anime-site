@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChatView } from "./chat-view";
+import { WS_URL } from "astro:env/client";
 
 const TIMEOUT = 20;
 
@@ -39,7 +40,7 @@ export function MultiPlayer(props: GameManagerProps) {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
-    const url = new URL("ws://localhost:8787/api/ws");
+    const url = new URL(WS_URL);
     url.searchParams.append("matchId", props.gameId);
     const socket = new WebSocket(url);
     ws.current = socket;
