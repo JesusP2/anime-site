@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { ChatView } from "./chat-view";
 
-const TIMEOUT = 120;
+const TIMEOUT = 20;
 
 type ChatMessage = z.infer<typeof serverChatBroadcastSchema>['payload'];
 
@@ -166,8 +166,8 @@ export function MultiPlayer(props: GameManagerProps) {
   if (gameState === "waiting" || gameState === "ready") {
     return (
       <>
-        <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto">
-          <div className="md:w-2/3">
+        <div className={cn("flex flex-col md:flex-row gap-4 p-4 py-2 mx-auto max-w-full")}>
+          <div className="md:w-full">
             <WaitingRoom
               quizTitle={props.title}
               quizDescription={props.description}
@@ -183,13 +183,10 @@ export function MultiPlayer(props: GameManagerProps) {
               songIdx={songIdx}
             />
           </div>
-          <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
-            <ChatView
-              messages={chatMessages}
-              onSendMessage={handleSendChatMessage}
-              currentPlayerId={props.currentPlayer.id}
-            />
-          </div>
+          <ChatView
+            messages={chatMessages}
+            onSendMessage={handleSendChatMessage}
+          />
         </div>
         <Dialog open={showNotReadyMessage} onOpenChange={setShowNotReadyMessage}>
           <DialogContent>
@@ -214,8 +211,8 @@ export function MultiPlayer(props: GameManagerProps) {
     );
   } else if (gameState === "playing") {
     return (
-      <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto h-full">
-        <div className="md:w-2/3 h-full">
+      <div className="flex flex-col lg:flex-row gap-4 p-4 mx-auto h-full max-w-full">
+        <div className="md:w-full">
           <MultiPlayerGame
             songs={props.songs}
             handleGuess={handleGuess}
@@ -226,29 +223,23 @@ export function MultiPlayer(props: GameManagerProps) {
             setSongIdx={setSongIdx}
           />
         </div>
-        <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
-          <ChatView
-            messages={chatMessages}
-            onSendMessage={handleSendChatMessage}
-            currentPlayerId={props.currentPlayer.id}
-          />
-        </div>
+        <ChatView
+          messages={chatMessages}
+          onSendMessage={handleSendChatMessage}
+        />
       </div>
     );
   } else if (gameState === "results") {
     return (
       <>
-        <div className="flex flex-col md:flex-row gap-4 p-4 max-w-6xl mx-auto">
-          <div className="md:w-2/3">
+        <div className="flex flex-col md:flex-row gap-4 p-4 mx-auto max-w-full">
+          <div className="md:w-full mx-6">
             <ResultView quizTitle={props.title} results={players} />
           </div>
-          <div className="md:w-1/3 h-[300px] md:h-[calc(100vh-10rem)]">
-            <ChatView
-              messages={chatMessages}
-              onSendMessage={handleSendChatMessage}
-              currentPlayerId={props.currentPlayer.id}
-            />
-          </div>
+          <ChatView
+            messages={chatMessages}
+            onSendMessage={handleSendChatMessage}
+          />
         </div>
         {import.meta.env.DEV && <button onClick={handleDeleteGame}>Delete Game</button>}
       </>
@@ -342,35 +333,37 @@ export function MultiPlayerGame({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 mb-8 w-full h-full flex flex-col">
-      <div className="min-h-[6rem] text-center py-2 shrink-0">
-        <div className="flex justify-between items-center mb-2">
+    <div className="mx-auto px-6 lg:px-0 w-full h-full flex flex-col max-w-full">
+      <div className="text-center py-2 shrink-0">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
           <div className="text-left">
             <span className="font-bold">Song</span>: {songIdx + 1} /{" "}
             {songs.length}
+          </div>
+          <div>
+            {!isPlaying && (
+              <>
+                <h1 className="text-xl font-bold">
+                  {currentSong?.animeName} - {currentSong?.name}
+                  {currentAnswer ? (
+                    <span
+                      className={`font-medium ml-2 ${currentAnswer.correct ? "text-green-600" : "text-red-600"}`}
+                    >
+                      {currentAnswer.correct ? `Correct! +1 points` : "Incorrect!"}
+                    </span>
+                  ) : (
+                    <span className="font-medium text-ed-600">Time's up!</span>
+                  )}
+                </h1>
+              </>
+            )}
           </div>
           <div className="text-right">
             <span className="font-bold">Score</span>: {currentPlayer?.score || 0}
           </div>
         </div>
-        {!isPlaying && (
-          <div className="mt-2">
-            {currentAnswer ? (
-              <div
-                className={`font-medium ${currentAnswer.correct ? "text-green-600" : "text-red-600"}`}
-              >
-                {currentAnswer.correct ? `Correct! +1 points` : "Incorrect!"}
-              </div>
-            ) : (
-              <div className="font-medium text-ed-600">Time's up!</div>
-            )}
-            <h1 className="text-xl font-bold">
-              {currentSong?.animeName} - {currentSong?.name}
-            </h1>
-          </div>
-        )}
       </div>
-      <div className="w-full flex-grow relative">
+      <div className="w-full relative max-w-6xl mx-auto">
         <div className="relative w-full aspect-video">
           <div
             className={cn(
@@ -396,9 +389,7 @@ export function MultiPlayerGame({
             onCanPlay={handleVideoReady}
           ></video>
         </div>
-      </div>
-      <div className="h-[6rem] shrink-0">
-        <div className="mt-4 w-[90%] mx-auto">
+        <div className="mt-4 mx-auto">
           <SongAutocomplete
             debounce={100}
             ignoreThemes={[]}

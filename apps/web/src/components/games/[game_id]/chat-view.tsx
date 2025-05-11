@@ -21,9 +21,9 @@ export function ChatView({ messages, onSendMessage }: { messages: ChatMessage[],
   }, [messages]);
 
   return (
-    <Card className="lg:w-80">
-      <CardContent>
-        <div className="space-y-4 overflow-x-hidden overflow-y-scroll max-h-[500px] h-screen px-1 pagination-scrollbar" ref={scrollAreaViewportRef}>
+    <Card className="lg:w-80 h-[80vh] min-w-[300px] overflow-hidden flex flex-col justify-end mx-6">
+      <CardContent className="overflow-y-scroll pagination-scrollbar" ref={scrollAreaViewportRef}>
+        <div className="space-y-4 px-1" >
           {messages.map((message, index) => (
             <p
               key={index}
@@ -37,12 +37,6 @@ export function ChatView({ messages, onSendMessage }: { messages: ChatMessage[],
       </CardContent>
       <CardFooter>
         <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (inputLength === 0) return;
-            onSendMessage(input);
-            setInput("");
-          }}
           className="w-full items-center space-y-2">
           <Textarea
             id="message"
@@ -52,8 +46,16 @@ export function ChatView({ messages, onSendMessage }: { messages: ChatMessage[],
             value={input}
             rows={1}
             onChange={(event) => setInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                if (inputLength === 0) return;
+                onSendMessage(input);
+                setInput("");
+              }
+            }}
           />
-          <Button type="submit" size="icon" disabled={inputLength === 0}>
+          <Button type="submit" size="icon" disabled={inputLength === 0} onClick={() => onSendMessage(input)}>
             <Send className="size-5" />
             <span className="sr-only">Send</span>
           </Button>
