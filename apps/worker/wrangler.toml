@@ -1,5 +1,6 @@
 name = "quiz-game"
 compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2025-05-11"
 main="src/index.ts"
 
 [[durable_objects.bindings]]
