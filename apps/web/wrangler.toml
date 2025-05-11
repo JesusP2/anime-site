@@ -9,7 +9,7 @@ BETTER_AUTH_URL = "https://notmyanimelist.com"
 EMAIL_FROM = "noreply@notmyanimelist.com"
 GOOGLE_REDIRECT_URI="https://notmyanimelist.com/api/auth/callback/google"
 BASE_URL="https://notmyanimelist.com"
-WS_URL="ws://localhost:8787/api/ws"
+WS_URL="https://my-hono-app.jesusprzprz-e.workers.dev/api/ws"
 
 [[hyperdrive]]
 binding = 'HYPERDRIVE'
