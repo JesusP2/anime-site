@@ -437,7 +437,7 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+              <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
                 <StatItem icon={<FilmStrip size={18} />} label="Episodes" value={anime.episodes} />
                 <StatItem icon={<Clock size={18} />} label="Duration" value={anime.duration} />
                 {anime.broadcast?.string && <StatItem icon={<IconBroadcast size={18} />} label="Broadcast" value={anime.broadcast.string} />}
@@ -599,50 +599,6 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
         </div>
       </Card>
 
-      {anime.episodes_info && anime.episodes_info.length > 0 && (
-        <SectionCard title="Episodes" icon={<FilmStrip size={24} className="text-primary" />}>
-          <CardDescription className="mb-4">
-            {anime.episodes
-              ? `Total of ${anime.episodes} episodes.`
-              : "Episode information available."}
-          </CardDescription>
-          <ScrollArea className="h-[500px] border rounded-md">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-16">#</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead className="w-32 hidden md:table-cell">Aired</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {anime.episodes_info.map((episode: EpisodeInfo) => (
-                  <TableRow key={episode.mal_id}>
-                    <TableCell className="font-medium">
-                      {episode.mal_id}
-                    </TableCell>
-                    <TableCell>
-                      {episode.title}
-                      {(episode.filler || episode.recap) && (
-                        <div className="flex gap-1 mt-1">
-                          {episode.filler && (
-                            <Badge variant="destructive" className="text-xs">Filler</Badge>
-                          )}
-                          {episode.recap && (
-                            <Badge variant="secondary" className="text-xs">Recap</Badge>
-                          )}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">{formatDate(episode.aired)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
-        </SectionCard>
-      )}
-
       {anime.characters && anime.characters.length > 0 && (
         <SectionCard title="Characters & Voice Actors" icon={<UsersThree size={24} className="text-primary" />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -712,95 +668,6 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
               </Card>
             ))}
           </div>
-        </SectionCard>
-      )}
-
-      {anime.staff && anime.staff.length > 0 && (
-        <SectionCard title="Staff" icon={<IdentificationBadge size={24} className="text-primary" />}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {anime.staff.map((staffMember: StaffEntry, index: number) => (
-              <Card key={`${staffMember.person.mal_id}-${index}`} className="border p-4 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex gap-4 items-start">
-                  <Avatar className="h-16 w-16 rounded-md">
-                    <AvatarImage
-                      src={staffMember.person.images?.jpg?.image_url || ""}
-                      alt={staffMember.person.name}
-                    />
-                    <AvatarFallback className="rounded-md">
-                      {staffMember.person.name?.substring(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <h4 className="text-md font-semibold">
-                      {staffMember.person.name}
-                    </h4>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {staffMember.positions?.map((position: string, idx: number) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {position}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </SectionCard>
-      )}
-
-      {(anime.streaming && anime.streaming.length > 0 || anime.external && anime.external.length > 0) && (
-        <SectionCard title="Where to Watch & Links" icon={<PlayCircle size={24} className="text-primary" />}>
-          {anime.streaming && anime.streaming.length > 0 && (
-            <>
-              <h4 className="text-lg font-medium mb-2">Streaming Services</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {anime.streaming.map((stream: StreamingService, index: number) => (
-                  <a
-                    key={index}
-                    href={stream.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="no-underline"
-                  >
-                    <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md">
-                      <CardContent className="p-4 flex items-center gap-2">
-                        <Globe size={20} />
-                        <span>{stream.name}</span>
-                      </CardContent>
-                    </Card>
-                  </a>
-                ))}
-              </div>
-            </>
-          )}
-
-          {anime.external && anime.external.length > 0 && (
-            <>
-              <h4 className="text-lg font-medium mt-6 mb-2">External Links</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {anime.external.map((link: ExternalLink, index: number) => (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="no-underline"
-                  >
-                    <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md">
-                      <CardContent className="p-4 flex items-center gap-2">
-                        <IconLink size={20} />
-                        <span>{link.name}</span>
-                      </CardContent>
-                    </Card>
-                  </a>
-                ))}
-              </div>
-            </>
-          )}
-          {(!anime.streaming || anime.streaming.length === 0) && (!anime.external || anime.external.length === 0) && (
-            <p className="text-muted-foreground">No streaming or external link information available.</p>
-          )}
         </SectionCard>
       )}
 
@@ -879,6 +746,139 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
               </div>
             ))}
           </div>
+        </SectionCard>
+      )}
+
+      {anime.episodes_info && anime.episodes_info.length > 0 && (
+        <SectionCard title="Episodes" icon={<FilmStrip size={24} className="text-primary" />}>
+          <CardDescription className="mb-4">
+            {anime.episodes
+              ? `Total of ${anime.episodes} episodes.`
+              : "Episode information available."}
+          </CardDescription>
+          <ScrollArea className="h-[500px] border rounded-md">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-16">#</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead className="w-32 hidden md:table-cell">Aired</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {anime.episodes_info.map((episode: EpisodeInfo) => (
+                  <TableRow key={episode.mal_id}>
+                    <TableCell className="font-medium">
+                      {episode.mal_id}
+                    </TableCell>
+                    <TableCell>
+                      {episode.title}
+                      {(episode.filler || episode.recap) && (
+                        <div className="flex gap-1 mt-1">
+                          {episode.filler && (
+                            <Badge variant="destructive" className="text-xs">Filler</Badge>
+                          )}
+                          {episode.recap && (
+                            <Badge variant="secondary" className="text-xs">Recap</Badge>
+                          )}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{formatDate(episode.aired)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
+        </SectionCard>
+      )}
+
+      {anime.staff && anime.staff.length > 0 && (
+        <SectionCard title="Staff" icon={<IdentificationBadge size={24} className="text-primary" />}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {anime.staff.map((staffMember: StaffEntry, index: number) => (
+              <Card key={`${staffMember.person.mal_id}-${index}`} className="border p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex gap-4 items-start">
+                  <Avatar className="h-16 w-16 rounded-md">
+                    <AvatarImage
+                      src={staffMember.person.images?.jpg?.image_url || ""}
+                      alt={staffMember.person.name}
+                    />
+                    <AvatarFallback className="rounded-md">
+                      {staffMember.person.name?.substring(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <h4 className="text-md font-semibold">
+                      {staffMember.person.name}
+                    </h4>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {staffMember.positions?.map((position: string, idx: number) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {position}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </SectionCard>
+      )}
+
+      {(anime.streaming && anime.streaming.length > 0 || anime.external && anime.external.length > 0) && (
+        <SectionCard title="Where to Watch & Links" icon={<PlayCircle size={24} className="text-primary" />}>
+          {anime.streaming && anime.streaming.length > 0 && (
+            <>
+              <h4 className="text-lg font-medium mb-2">Streaming Services</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {anime.streaming.map((stream: StreamingService, index: number) => (
+                  <a
+                    key={index}
+                    href={stream.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="no-underline"
+                  >
+                    <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md p-2 rounded-sm">
+                      <CardContent className="flex items-center gap-1.5 text-sm p-0">
+                        <Globe size={16} />
+                        <span>{stream.name}</span>
+                      </CardContent>
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
+
+          {anime.external && anime.external.length > 0 && (
+            <>
+              <h4 className="text-lg font-medium mt-6 mb-2">External Links</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {anime.external.map((link: ExternalLink, index: number) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="no-underline"
+                  >
+                    <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md">
+                      <CardContent className="flex items-center gap-1.5 text-sm">
+                        <IconLink size={16} />
+                        <span>{link.name}</span>
+                      </CardContent>
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
+          {(!anime.streaming || anime.streaming.length === 0) && (!anime.external || anime.external.length === 0) && (
+            <p className="text-muted-foreground">No streaming or external link information available.</p>
+          )}
         </SectionCard>
       )}
 
