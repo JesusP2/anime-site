@@ -1,5 +1,4 @@
 ---
-import { mockData } from "@/mock_data";
 import MainLayout from "@/layout/main.astro";
 
 import { AnimeDetailsPage } from "@/components/anime.page.tsx";
@@ -12,7 +11,6 @@ const animeTitle =
   (anime.success &&
     anime.value.titles?.find((title) => title.type === "Default")?.title);
 Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
-anime.value.animethemes = mockData.anime[0].animethemes;
 ---
 
 <MainLayout

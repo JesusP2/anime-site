@@ -1,5 +1,13 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
-import { animeTable, trackedEntityTable } from "../db/schemas";
+import {
+  animeTable,
+  animeThemeTable,
+  songToArtistTable,
+  themeArtistTable,
+  themeEntryTable,
+  themeVideoTable,
+  trackedEntityTable,
+} from "../db/schemas";
 import { animeSearchParamsToDrizzleQuery } from "./searchparams-to-drizzle";
 import { getDb } from "../db/pool";
 import { animeFilters } from "./filters";
@@ -30,9 +38,7 @@ const animeCardKeys = {
   status: animeTable.status,
 } as const;
 
-export async function getAnime(
-  mal_id: number,
-): Promise<Result<FullAnimeRecord, ActionError>> {
+export async function getAnime(mal_id: number) {
   try {
     const selectKeys = {
       titles: animeTable.titles,
@@ -61,14 +67,90 @@ export async function getAnime(
       staff: animeTable.staff,
       episodes_info: animeTable.episodes_info,
       streaming: animeTable.streaming,
+      themes: animeTable.themes,
+      relations: animeTable.relations,
     } as const;
     const db = getDb();
     const [anime] = await db
       .select(selectKeys)
       .from(animeTable)
       .where(eq(animeTable.mal_id, mal_id));
+    const animeThemesRaw = await db
+      .select({
+        themeId: animeThemeTable.id,
+        entryId: themeEntryTable.id,
+        videoId: themeVideoTable.id,
+        title: animeThemeTable.title,
+        slug: animeThemeTable.slug,
+        type: animeThemeTable.type,
+        artist: themeArtistTable.name,
+        version: themeEntryTable.version,
+        episodes: themeEntryTable.episodes,
+        resolution: themeVideoTable.resolution,
+        link: themeVideoTable.link,
+        source: themeVideoTable.source,
+        nc: themeVideoTable.nc,
+      })
+      .from(animeTable)
+      .leftJoin(animeThemeTable, eq(animeTable.id, animeThemeTable.animeId))
+      .leftJoin(
+        songToArtistTable,
+        eq(animeThemeTable.id, songToArtistTable.themeId),
+      )
+      .leftJoin(
+        themeArtistTable,
+        eq(songToArtistTable.artistId, themeArtistTable.id),
+      )
+      .leftJoin(
+        themeEntryTable,
+        eq(animeThemeTable.id, themeEntryTable.themeId),
+      )
+      .leftJoin(
+        themeVideoTable,
+        eq(themeEntryTable.id, themeVideoTable.themeEntryId),
+      )
+      .where(eq(animeTable.mal_id, mal_id));
+    const animeThemesGroupedByThemeId = Object.values(
+      Object.groupBy(animeThemesRaw, (t) => t.themeId ?? ""),
+    );
+    const animeThemes = animeThemesGroupedByThemeId.map((t) =>
+      Object.values(Object.groupBy(t ?? [], (tt) => tt.entryId ?? "")),
+    ).map((t) => {
+      if (!t[0] || !t[0]?.[0]) return;
+      const { themeId, title, slug, type, artist } = t[0][0];
+      return {
+        id: themeId,
+        title,
+        slug,
+        type,
+        artist,
+        entries: t.map((tt) => {
+          if (!tt?.[0]) return;
+          const { version, episodes, entryId } = tt[0];
+          return {
+            version,
+            episodes,
+            id: entryId,
+            videos: tt?.map((ttt) => {
+              if (!ttt) return;
+              const { resolution, link, source, nc, videoId } = ttt;
+              return {
+                id: videoId,
+                resolution,
+                link,
+                source,
+                nc,
+              };
+            }),
+          };
+        }),
+      };
+    });
     if (anime) {
-      return ok(anime);
+      return ok({
+        ...anime,
+        animethemes: animeThemes,
+      });
     }
     return err(
       new ActionError({
@@ -77,6 +159,7 @@ export async function getAnime(
       }),
     );
   } catch (error) {
+    console.error(error);
     if (error instanceof Error) {
       globalThis.waitUntil(logger.error("error getting anime", error));
     }

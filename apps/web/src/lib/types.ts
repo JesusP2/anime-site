@@ -61,7 +61,7 @@ export type GameManagerProps = {
   gameId: string;
 } & GetReturnType<typeof getGameInfo>;
 
-type GetReturnType<T extends (...args: any) => any> = T extends (
+export type GetReturnType<T extends (...args: any) => any> = T extends (
   ...args: any
 ) => Promise<infer R>
   ? R extends Ok<infer T1>

@@ -680,6 +680,7 @@ export interface components {
         };
         /** @description Character's Role */
         role?: string;
+        favorites?: number;
         voice_actors?: {
           person?: {
             mal_id?: number;
