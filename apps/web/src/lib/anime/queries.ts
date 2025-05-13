@@ -113,39 +113,41 @@ export async function getAnime(mal_id: number) {
     const animeThemesGroupedByThemeId = Object.values(
       Object.groupBy(animeThemesRaw, (t) => t.themeId ?? ""),
     );
-    const animeThemes = animeThemesGroupedByThemeId.map((t) =>
-      Object.values(Object.groupBy(t ?? [], (tt) => tt.entryId ?? "")),
-    ).map((t) => {
-      if (!t[0] || !t[0]?.[0]) return;
-      const { themeId, title, slug, type, artist } = t[0][0];
-      return {
-        id: themeId,
-        title,
-        slug,
-        type,
-        artist,
-        entries: t.map((tt) => {
-          if (!tt?.[0]) return;
-          const { version, episodes, entryId } = tt[0];
-          return {
-            version,
-            episodes,
-            id: entryId,
-            videos: tt?.map((ttt) => {
-              if (!ttt) return;
-              const { resolution, link, source, nc, videoId } = ttt;
-              return {
-                id: videoId,
-                resolution,
-                link,
-                source,
-                nc,
-              };
-            }),
-          };
-        }),
-      };
-    });
+    const animeThemes = animeThemesGroupedByThemeId
+      .map((t) =>
+        Object.values(Object.groupBy(t ?? [], (tt) => tt.entryId ?? "")),
+      )
+      .map((t) => {
+        if (!t[0] || !t[0]?.[0]) return;
+        const { themeId, title, slug, type, artist } = t[0][0];
+        return {
+          id: themeId,
+          title,
+          slug,
+          type,
+          artist,
+          entries: t.map((tt) => {
+            if (!tt?.[0]) return;
+            const { version, episodes, entryId } = tt[0];
+            return {
+              version,
+              episodes,
+              id: entryId,
+              videos: tt?.map((ttt) => {
+                if (!ttt) return;
+                const { resolution, link, source, nc, videoId } = ttt;
+                return {
+                  id: videoId,
+                  resolution,
+                  link,
+                  source,
+                  nc,
+                };
+              }),
+            };
+          }),
+        };
+      });
     if (anime) {
       return ok({
         ...anime,
