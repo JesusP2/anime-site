@@ -39,7 +39,6 @@ import {
   ListChecks,
   Hash,
   TreeStructure,
-  Palette,
   MicrophoneStage,
   IdentificationBadge,
 } from "@phosphor-icons/react";
@@ -48,7 +47,7 @@ import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
 import { getRecordTitle } from "@/lib/anime-title";
 import { VideoDialog } from "./video-dialog";
-import type { FullAnimeRecord, GetReturnType } from "@/lib/types";
+import type { GetReturnType } from "@/lib/types";
 import type { getAnime } from "@/lib/anime/queries";
 
 export function AnimeDetailsPage({ anime }: { anime: GetReturnType<typeof getAnime> }) {
