@@ -27,7 +27,6 @@ import {
   PlayCircle,
   Star,
   TrendUp,
-  Clock,
   Calendar,
   Globe,
   FilmStrip,
@@ -48,252 +47,14 @@ import { useState, useEffect, useCallback } from "react";
 import { StatusSelector } from "./status-selector";
 import { MediaReviews } from "./media-reviews";
 import { getRecordTitle } from "@/lib/anime-title";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { VideoDialog } from "./video-dialog";
+import type { FullAnimeRecord, GetReturnType } from "@/lib/types";
+import type { getAnime } from "@/lib/anime/queries";
 
-interface MalUrl {
-  mal_id: number;
-  type: string;
-  name: string;
-  url?: string;
-}
-
-interface AnimeTitle {
-  type: string;
-  title: string;
-}
-
-interface AnimeImage {
-  image_url: string;
-  small_image_url?: string;
-  large_image_url?: string;
-}
-
-interface AnimeImages {
-  jpg: AnimeImage;
-  webp: AnimeImage;
-}
-
-interface AiredDateProp {
-  day: number | null;
-  month: number | null;
-  year: number | null;
-}
-
-interface AiredProp {
-  from: AiredDateProp;
-  to: AiredDateProp;
-}
-
-interface Aired {
-  from: string | null;
-  to: string | null;
-  prop: AiredProp;
-  string: string | null;
-}
-
-interface Broadcast {
-  day: string | null;
-  time: string | null;
-  timezone: string | null;
-  string: string | null;
-}
-
-interface TrailerImages {
-  image_url?: string | null;
-  small_image_url?: string | null;
-  medium_image_url?: string | null;
-  large_image_url?: string | null;
-  maximum_image_url?: string | null;
-}
-
-interface Trailer {
-  youtube_id: string | null;
-  url: string | null;
-  embed_url: string | null;
-  images?: TrailerImages;
-}
-
-interface RelationEntry {
-  mal_id: number;
-  type: string;
-  name: string;
-  url: string;
-}
-
-interface Relation {
-  relation: string;
-  entry: RelationEntry[];
-}
-
-interface PersonImage {
-  jpg: { image_url: string };
-}
-
-interface Person {
-  mal_id: number;
-  url: string;
-  images?: PersonImage;
-  name: string;
-}
-
-interface VoiceActor {
-  person: Person;
-  language: string;
-}
-
-interface CharacterInfo {
-  mal_id: number;
-  url: string;
-  images?: AnimeImages;
-  name: string;
-}
-
-interface CharacterEntry {
-  character: CharacterInfo;
-  role: string;
-  favorites?: number;
-  voice_actors: VoiceActor[];
-}
-
-interface StaffEntry {
-  person: Person;
-  positions: string[];
-}
-
-interface EpisodeInfo {
-  mal_id: number;
-  url?: string | null;
-  title: string;
-  title_japanese?: string | null;
-  title_romanji?: string | null;
-  aired: string | null;
-  score?: number | null;
-  filler?: boolean;
-  recap?: boolean;
-  forum_url?: string | null;
-  duration?: number | null;
-}
-
-interface StreamingService {
-  name: string;
-  url: string;
-}
-
-interface ExternalLink {
-  name: string;
-  url: string;
-}
-
-interface AnimeThemeSimple {
-  openings?: string[];
-  endings?: string[];
-}
-
-interface AnimeThemeSongArtist {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface AnimeThemeSong {
-  id: number;
-  title: string;
-  artists?: AnimeThemeSongArtist[];
-}
-
-interface AnimeThemeVideoAudio {
-  link: string;
-}
-
-interface AnimeThemeVideo {
-  id: number;
-  link: string;
-  resolution: number;
-  source: string;
-  nc?: boolean;
-  audio?: AnimeThemeVideoAudio;
-  tags?: string;
-}
-
-interface AnimeThemeEntry {
-  id: number;
-  episodes: string | null;
-  version: number | null;
-  videos?: AnimeThemeVideo[];
-  notes?: string | null;
-  nsfw?: boolean;
-  spoiler?: boolean;
-}
-
-interface AnimeThemeData {
-  id: number;
-  type: string;
-  slug: string;
-  song?: AnimeThemeSong;
-  animethemeentries?: AnimeThemeEntry[];
-}
-
-export type AnimeType = "TV" | "OVA" | "Movie" | "Special" | "ONA" | "Music";
-export type AnimeStatus = "Finished Airing" | "Currently Airing" | "Not yet aired";
-
-interface AnimeData {
-  mal_id: number;
-  url?: string;
-  images?: AnimeImages;
-  trailer?: Trailer;
-  titles: AnimeTitle[];
-  type: AnimeType | null;
-  source?: string;
-  episodes: number | null;
-  status: AnimeStatus | null;
-  airing?: boolean;
-  aired: Aired;
-  duration: string | null;
-  rating: string | null;
-  score: number | null;
-  scored_by: number | null;
-  rank: number | null;
-  popularity: number | null;
-  members: number | null;
-  favorites?: number;
-  synopsis: string | null;
-  background: string | null;
-  season: string | null;
-  year: number | null;
-  broadcast?: Broadcast;
-  producers?: MalUrl[];
-  licensors?: MalUrl[];
-  studios: MalUrl[];
-  genres: MalUrl[];
-  explicit_genres?: MalUrl[];
-  themes?: MalUrl[];
-  demographics?: MalUrl[];
-  relations?: Relation[];
-  theme?: AnimeThemeSimple;
-  external?: ExternalLink[];
-  streaming?: StreamingService[];
-  characters?: CharacterEntry[];
-  staff?: StaffEntry[];
-  episodes_info?: EpisodeInfo[];
-  animethemes?: AnimeThemeData[];
-}
-
-interface AnimeDetailsPageProps {
-  anime: AnimeData;
-}
-
-export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
+export function AnimeDetailsPage({ anime }: { anime: GetReturnType<typeof getAnime> }) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<null | { link: string; resolution: number | string; source: string }>();
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "Unknown";
@@ -427,10 +188,10 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
                   {getRecordTitle(anime.titles)}
                 </CardTitle>
                 {anime.titles
-                  ?.filter((t: AnimeTitle) =>
-                    ["English", "Japanese"].includes(t.type) && t.title !== getRecordTitle(anime.titles)
+                  ?.filter((t) =>
+                    ["English", "Japanese"].includes(t.type ?? '') && t.title !== getRecordTitle(anime.titles)
                   )
-                  .map((title: AnimeTitle) => (
+                  .map((title) => (
                     <p key={title.title} className="text-lg text-muted-foreground">
                       {title.title} ({title.type})
                     </p>
@@ -479,7 +240,6 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
 
               <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
                 <StatItem icon={<FilmStrip size={18} />} label="Episodes" value={anime.episodes} />
-                <StatItem icon={<Clock size={18} />} label="Duration" value={anime.duration} />
                 {anime.broadcast?.string && <StatItem icon={<IconBroadcast size={18} />} label="Broadcast" value={anime.broadcast.string} />}
                 <StatItem icon={<UsersThree size={18} />} label="Members" value={anime.members?.toLocaleString()} />
                 <StatItem icon={<Hash size={18} />} label="Rank" value={anime.rank ? `#${anime.rank.toLocaleString()}` : "N/A"} />
@@ -502,7 +262,7 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Genres</h3>
                 <div className="flex flex-wrap gap-2">
-                  {anime.genres.map((genre: MalUrl) => (
+                  {anime.genres.map((genre) => (
                     <Badge key={genre.mal_id} variant="default" className="px-3 py-1">
                       {genre.name}
                     </Badge>
@@ -511,42 +271,13 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
               </div>
             )}
 
-            {anime.background && (
-              <div>
-                <h4 className="text-lg font-medium mb-2">Background</h4>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{anime.background}</p>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
               {anime.studios && anime.studios.length > 0 && (
                 <div>
                   <h4 className="text-lg font-medium mb-2">Studios</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    {anime.studios.map((studio: MalUrl) => (
+                    {anime.studios.map((studio) => (
                       <li key={studio.mal_id}>{studio.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {anime.producers && anime.producers.length > 0 && (
-                <div>
-                  <h4 className="text-lg font-medium mb-2">Producers</h4>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    {anime.producers.map((producer: MalUrl) => (
-                      <li key={producer.mal_id}>{producer.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {anime.licensors && anime.licensors.length > 0 && (
-                <div>
-                  <h4 className="text-lg font-medium mb-2">Licensors</h4>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    {anime.licensors.map((licensor: MalUrl) => (
-                      <li key={licensor.mal_id}>{licensor.name}</li>
                     ))}
                   </ul>
                 </div>
@@ -556,9 +287,9 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
               {anime.themes && anime.themes.length > 0 && (
                 <div>
-                  <h4 className="text-lg font-medium mb-2 flex items-center"><Palette size={20} className="mr-1 text-primary" />Content Themes</h4>
+                  <h4 className="text-lg font-medium mb-2 flex items-center">Content Themes</h4>
                   <div className="flex flex-wrap gap-2">
-                    {anime.themes.map((theme: MalUrl) => (
+                    {anime.themes.map((theme) => (
                       <Badge key={theme.mal_id} variant="outline">
                         {theme.name}
                       </Badge>
@@ -571,7 +302,7 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
                 <div>
                   <h4 className="text-lg font-medium mb-2 flex items-center">Demographics</h4>
                   <div className="flex flex-wrap gap-2">
-                    {anime.demographics.map((demographic: MalUrl) => (
+                    {anime.demographics.map((demographic) => (
                       <Badge key={demographic.mal_id} variant="outline">
                         {demographic.name}
                       </Badge>
@@ -580,61 +311,6 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
                 </div>
               )}
             </div>
-
-            {(anime.theme?.openings?.length || anime.theme?.endings?.length) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                {anime.theme?.openings && anime.theme.openings.length > 0 && (
-                  <div>
-                    <h4 className="text-lg font-medium mb-2">Opening Themes (Titles)</h4>
-                    <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
-                      {anime.theme.openings.map((opening: string, index: number) => (
-                        <li key={index}>{opening}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {anime.theme?.endings && anime.theme.endings.length > 0 && (
-                  <div>
-                    <h4 className="text-lg font-medium mb-2">Ending Themes (Titles)</h4>
-                    <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
-                      {anime.theme.endings.map((ending: string, index: number) => (
-                        <li key={index}>{ending}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {anime.relations && anime.relations.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-lg font-medium mb-2 flex items-center"><TreeStructure size={20} className="mr-1 text-primary" />Related Anime</h4>
-                <Accordion type="single" collapsible className="w-full">
-                  {anime.relations.map((relation: Relation, index: number) => (
-                    <AccordionItem key={index} value={`relation-${index}`}>
-                      <AccordionTrigger className="text-base">{relation.relation}</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2">
-                          {relation.entry?.map((entry: RelationEntry) => (
-                            <li
-                              key={entry.mal_id}
-                              className="flex items-center justify-between text-sm text-muted-foreground"
-                            >
-                              <a href={entry.url} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">
-                                {entry.name}
-                              </a>
-                              <Badge variant="secondary" className="ml-2">
-                                {entry.type}
-                              </Badge>
-                            </li>
-                          ))}
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </div>
-            )}
           </div>
         </div>
       </Card>
@@ -642,24 +318,24 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
       {anime.characters && anime.characters.length > 0 && (
         <SectionCard title="Characters & Voice Actors" icon={<UsersThree size={24} className="text-primary" />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {anime.characters.map((characterEntry: CharacterEntry) => (
-              <Card key={characterEntry.character.mal_id} className="border p-4 shadow-sm hover:shadow-md transition-shadow">
+            {anime.characters.map((characterEntry) => (
+              <Card key={characterEntry.character?.mal_id} className="border p-4 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex gap-4 items-start">
                   <Avatar className="h-20 w-20 rounded-md">
                     <AvatarImage
                       src={
-                        characterEntry.character.images?.jpg?.image_url ||
+                        characterEntry.character?.images?.jpg?.image_url ||
                         ""
                       }
-                      alt={characterEntry.character.name}
+                      alt={characterEntry.character?.name}
                     />
                     <AvatarFallback className="rounded-md text-lg">
-                      {characterEntry.character.name?.substring(0, 2)}
+                      {characterEntry.character?.name?.substring(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <h4 className="text-lg font-semibold">
-                      {characterEntry.character.name}
+                      {characterEntry.character?.name}
                     </h4>
                     <p className="text-sm text-muted-foreground">
                       {characterEntry.role}
@@ -679,24 +355,24 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
                       <h5 className="text-sm font-medium mb-2 flex items-center"><MicrophoneStage size={16} className="mr-1 text-primary" />Voice Actors</h5>
                       <ScrollArea className="h-32">
                         <div className="space-y-2 pr-2">
-                          {characterEntry.voice_actors.map((va: VoiceActor, index: number) => (
+                          {characterEntry.voice_actors.map((va, index) => (
                             <div
-                              key={`${va.person.mal_id}-${index}`}
+                              key={`${va.person?.mal_id}-${index}`}
                               className="flex items-center gap-2 text-xs"
                             >
                               <Avatar className="h-8 w-8">
                                 <AvatarImage
                                   src={
-                                    va.person.images?.jpg?.image_url || ""
+                                    va.person?.images?.jpg?.image_url || ""
                                   }
-                                  alt={va.person.name}
+                                  alt={va.person?.name}
                                 />
                                 <AvatarFallback className="text-xs">
-                                  {va.person.name?.substring(0, 2)}
+                                  {va.person?.name?.substring(0, 2)}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="overflow-hidden">
-                                <p className="truncate font-medium">{va.person.name}</p>
+                                <p className="truncate font-medium">{va.person?.name}</p>
                                 <p className="text-muted-foreground">{va.language}</p>
                               </div>
                             </div>
@@ -711,78 +387,45 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
         </SectionCard>
       )}
 
-      {anime.animethemes && anime.animethemes.length > 0 && (
+      {anime.animethemes && anime.animethemes.length > 0 && anime.animethemes[0]?.id !== null && (
         <SectionCard title="Theme Songs (OP/ED)" icon={<MusicNotes size={24} className="text-primary" />}>
           <div className="space-y-6">
-            {anime.animethemes.map((theme: AnimeThemeData, index: number) => (
+            {anime.animethemes.map((theme, index) => (
               <div
-                key={`${theme.id}-${index}`}
+                key={`${theme?.id}-${index}`}
                 className="border-l-4 border-primary pl-4 py-3 bg-card shadow-sm"
               >
                 <div className="flex justify-between items-center mb-3">
                   <div>
                     <span className="font-semibold text-primary mr-2 text-lg">
-                      {theme.slug} ({theme.type})
+                      {theme?.slug} ({theme?.type})
                     </span>
                     <span className="text-muted-foreground text-sm">
-                      {theme.song?.title}
-                      {theme.song?.artists && theme.song.artists.length > 0 && (
-                        <> by {theme.song.artists.map((a: AnimeThemeSongArtist) => a.name).join(", ")}</>
-                      )}
+                      {theme?.title} by {theme?.artist}
                     </span>
                   </div>
                 </div>
 
-                {theme.animethemeentries?.map((entry: AnimeThemeEntry) => (
-                  <div key={entry.id} className="mb-4 last:mb-0">
+                {theme?.entries?.map((entry) => (
+                  <div key={entry?.id} className="mb-4 last:mb-0">
                     <div className="flex items-center mb-2 text-sm text-muted-foreground">
-                      {entry.version && (<span className="font-medium mr-3">Version {entry.version}</span>)}
-                      {entry.episodes && (
+                      {entry?.version && (<span className="font-medium mr-3">Version {entry.version}</span>)}
+                      {entry?.episodes && (
                         <span className="flex items-center mr-3">
                           <IconVideo className="mr-1" size={16} />
                           Eps: {entry.episodes}
                         </span>
                       )}
-                      {entry.notes && (<span className="text-xs italic">({entry.notes})</span>)}
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                      {entry.videos
-                        ?.sort((a, b) => (a.resolution || 0) - (b.resolution || 0))
-                        .map((video: AnimeThemeVideo, videoIdx: number) => (
-                          <button
-                            key={`${video.id}-${videoIdx}`}
-                            type="button"
-                            className="flex items-center gap-2 py-2 px-3 bg-secondary hover:bg-secondary/80 rounded-md text-sm text-secondary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
-                            onClick={() => {
-                              setSelectedVideo({
-                                link: video.link,
-                                resolution: video.resolution || 'N/A',
-                                source: video.source,
-                              });
-                              setVideoModalOpen(true);
-                            }}
-                            aria-label={`Play ${video.resolution || 'N/A'}P ${video.source} theme video`}
-                          >
-                            <PlayCircle size={20} weight="fill" />
-                            <span className="font-medium">{video.resolution || 'N/A'}P</span>
-                            <Badge variant="outline" className="uppercase text-xs font-normal">
-                              {video.source}
-                            </Badge>
-                            {video.nc && (
-                              <Badge variant="outline" className="text-xs font-normal">
-                                NC
-                              </Badge>
-                            )}
-                            {video.tags && video.tags.includes("Lyrics") && (
-                              <Badge variant="outline" className="text-xs font-normal">
-                                Lyrics
-                              </Badge>
-                            )}
-                          </button>
+                      {entry?.videos
+                        ?.sort((a, b) => (a?.resolution || 0) - (b?.resolution || 0))
+                        .map((video, videoIdx) => (
+                          <VideoDialog key={`${video?.id}-${videoIdx}`} video={video} />
                         ))}
                     </div>
-                    {(!entry.videos || entry.videos.length === 0) && (
+                    {(!entry?.videos || entry.videos.length === 0) && (
                       <p className="text-xs text-muted-foreground">No video links available for this entry.</p>
                     )}
                   </div>
@@ -790,22 +433,6 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
               </div>
             ))}
           </div>
-          {/* Modal for video playback */}
-          <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
-            <DialogContent className="max-w-[100vw] min-h-[60vh] !w-full p-0 bg-black">
-              {selectedVideo && (
-                <div className="aspect-video w-full h-full rounded-lg overflow-hidden">
-                  <iframe
-                    src={getAutoplayUrl(selectedVideo.link)}
-                    title="Theme Song Video"
-                    className="w-full h-full border-0"
-                    allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
         </SectionCard>
       )}
 
@@ -939,6 +566,56 @@ export function AnimeDetailsPage({ anime }: AnimeDetailsPageProps) {
           {(!anime.streaming || anime.streaming.length === 0) && (!anime.external || anime.external.length === 0) && (
             <p className="text-muted-foreground">No streaming or external link information available.</p>
           )}
+        </SectionCard>
+      )}
+
+      {anime.trailer?.embed_url && (
+        <SectionCard title="Trailer" icon={<IconVideo size={24} className="text-primary" />}>
+          <div className="aspect-video rounded-lg overflow-hidden shadow-lg">
+            <video
+              src={getAutoplayUrl(anime.trailer.embed_url)}
+              className="w-full h-full object-contain bg-black"
+              controls
+              autoPlay
+            />
+          </div>
+        </SectionCard>
+      )}
+
+      {anime.relations && anime.relations.length > 0 && (
+        <SectionCard title="Related Anime" icon={<TreeStructure size={24} className="text-primary" />}>
+          <Accordion type="single" collapsible className="w-full">
+            {anime.relations.map((relation, index) => (
+              <AccordionItem key={index} value={`relation-${index}`}>
+                <AccordionTrigger className="text-base font-geist">{relation.relation}</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-2">
+                    {relation.entry?.map((entry) => {
+                      // Determine the route based on the type
+                      const route = entry.type?.toLowerCase() === 'manga' ? `/manga/${entry.mal_id}` : `/anime/${entry.mal_id}`;
+
+                      return (
+                        <li
+                          key={entry.mal_id}
+                          className="flex items-center justify-between text-sm text-muted-foreground"
+                        >
+                          <a
+                            href={route}
+                            className="hover:text-primary hover:underline"
+                          >
+                            {entry.name}
+                          </a>
+                          <Badge variant="secondary" className="ml-2">
+                            {entry.type}
+                          </Badge>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </SectionCard>
       )}
     </div>
