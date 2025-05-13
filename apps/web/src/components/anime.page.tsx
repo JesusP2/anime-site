@@ -188,13 +188,6 @@ export function AnimeDetailsPage({
                   viewTransitionName: `anime-card-img-${anime.mal_id}`,
                 }}
               />
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent rounded-lg">
-                <StatusSelector
-                  data={anime as any}
-                  entityType="ANIME"
-                  className="w-full"
-                />
-              </div>
             </div>
             <div className="flex-1 space-y-6 bg-card text-card-foreground p-6">
               <div>
@@ -202,9 +195,13 @@ export function AnimeDetailsPage({
                   style={{
                     viewTransitionName: `anime-card-title-${anime.mal_id}`,
                   }}
-                  className="text-4xl font-bold mb-1 text-primary"
+                  className="text-4xl font-bold mb-1 text-primary flex items-center gap-2"
                 >
                   {getRecordTitle(anime.titles)}
+                  <StatusSelector
+                    data={anime}
+                    entityType="ANIME"
+                  />
                 </CardTitle>
                 {anime.titles
                   ?.filter(
@@ -645,67 +642,67 @@ export function AnimeDetailsPage({
 
       {((anime.streaming && anime.streaming.length > 0) ||
         (anime.external && anime.external.length > 0)) && (
-        <SectionCard
-          title="Where to Watch & Links"
-          icon={<PlayCircle size={24} className="text-primary" />}
-        >
-          {anime.streaming && anime.streaming.length > 0 && (
-            <>
-              <h4 className="text-lg font-medium mb-2">Streaming Services</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {anime.streaming.map(
-                  (stream: StreamingService, index: number) => (
+          <SectionCard
+            title="Where to Watch & Links"
+            icon={<PlayCircle size={24} className="text-primary" />}
+          >
+            {anime.streaming && anime.streaming.length > 0 && (
+              <>
+                <h4 className="text-lg font-medium mb-2">Streaming Services</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  {anime.streaming.map(
+                    (stream: StreamingService, index: number) => (
+                      <a
+                        key={index}
+                        href={stream.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="no-underline"
+                      >
+                        <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md p-2 rounded-sm">
+                          <CardContent className="flex items-center gap-1.5 text-sm p-0">
+                            <Globe size={16} />
+                            <span>{stream.name}</span>
+                          </CardContent>
+                        </Card>
+                      </a>
+                    ),
+                  )}
+                </div>
+              </>
+            )}
+
+            {anime.external && anime.external.length > 0 && (
+              <>
+                <h4 className="text-lg font-medium mt-6 mb-2">External Links</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  {anime.external.map((link: ExternalLink, index: number) => (
                     <a
                       key={index}
-                      href={stream.url}
+                      href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="no-underline"
                     >
-                      <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md p-2 rounded-sm">
-                        <CardContent className="flex items-center gap-1.5 text-sm p-0">
-                          <Globe size={16} />
-                          <span>{stream.name}</span>
+                      <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md">
+                        <CardContent className="flex items-center gap-1.5 text-sm">
+                          <IconLink size={16} />
+                          <span>{link.name}</span>
                         </CardContent>
                       </Card>
                     </a>
-                  ),
-                )}
-              </div>
-            </>
-          )}
-
-          {anime.external && anime.external.length > 0 && (
-            <>
-              <h4 className="text-lg font-medium mt-6 mb-2">External Links</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {anime.external.map((link: ExternalLink, index: number) => (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="no-underline"
-                  >
-                    <Card className="hover:bg-accent transition-colors cursor-pointer shadow-sm hover:shadow-md">
-                      <CardContent className="flex items-center gap-1.5 text-sm">
-                        <IconLink size={16} />
-                        <span>{link.name}</span>
-                      </CardContent>
-                    </Card>
-                  </a>
-                ))}
-              </div>
-            </>
-          )}
-          {(!anime.streaming || anime.streaming.length === 0) &&
-            (!anime.external || anime.external.length === 0) && (
-              <p className="text-muted-foreground">
-                No streaming or external link information available.
-              </p>
+                  ))}
+                </div>
+              </>
             )}
-        </SectionCard>
-      )}
+            {(!anime.streaming || anime.streaming.length === 0) &&
+              (!anime.external || anime.external.length === 0) && (
+                <p className="text-muted-foreground">
+                  No streaming or external link information available.
+                </p>
+              )}
+          </SectionCard>
+        )}
 
       {anime.trailer?.embed_url && (
         <SectionCard

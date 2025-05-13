@@ -50,15 +50,15 @@ import { authClient } from "@/lib/auth-client";
 type Props = {
   className?: string;
 } & (
-  | {
+    | {
       entityType: "ANIME";
       data: FullAnimeRecord;
     }
-  | {
+    | {
       entityType: "MANGA";
       data: FullMangaRecord;
     }
-);
+  );
 
 export function StatusSelector({ data, entityType, className }: Props) {
   const [status, setStatus] = useState<EntityStatus | "loading">("loading");
@@ -169,8 +169,8 @@ export function StatusSelector({ data, entityType, className }: Props) {
   );
 
   const triggerButton = (
-    <Button className={cn("rounded-sm mr-2", className)}>
-      <RenderStatus status={status} />
+    <Button size="sm" variant="ghost" className={cn("rounded-sm mr-2 border", className)}>
+      <RenderButtonStatus status={status} />
     </Button>
   );
 
@@ -268,6 +268,49 @@ function RenderStatus({ status }: { status: EntityStatus | "loading" }) {
         <>
           <Clock className="h-4 w-4" />
           Not started
+        </>
+      );
+    default:
+      return <>loading...</>;
+  }
+}
+
+function RenderButtonStatus({ status }: { status: EntityStatus | "loading" }) {
+  switch (status) {
+    case "completed":
+      return (
+        <>
+          <CheckCircle className="h-4 w-4" />
+        </>
+      );
+    case "planned":
+      return (
+        <>
+          <CalendarCheck className="h-4 w-4" />
+        </>
+      );
+    case "dropped":
+      return (
+        <>
+          <Trash className="h-4 w-4" />
+        </>
+      );
+    case "watching":
+      return (
+        <>
+          <MonitorPlay className="h-4 w-4" />
+        </>
+      );
+    case "on-hold":
+      return (
+        <>
+          <PauseCircle className="h-4 w-4" />
+        </>
+      );
+    case "not-started":
+      return (
+        <>
+          <Clock className="h-4 w-4" />
         </>
       );
     default:
