@@ -8,10 +8,56 @@ import {
 } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { FixedSizeList as List } from "react-window";
 import { useCallback } from "react";
+import {
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
+
+export {
+  PaginationLink,
+  PaginationItem,
+  PaginationContent,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+function PaginationFirst(
+  props: React.ComponentProps<typeof PaginationLink>,
+) {
+  return (
+    <PaginationLink
+      aria-label="Go to first page"
+      size="default"
+      className={cn("gap-1 px-2.5 sm:pl-2.5", props.className)}
+      {...props}
+    >
+      <ChevronsLeftIcon className="size-4" />
+      <span className="hidden sm:block">First</span>
+    </PaginationLink>
+  );
+}
+
+function PaginationLast(
+  props: React.ComponentProps<typeof PaginationLink>,
+) {
+  return (
+    <PaginationLink
+      aria-label="Go to last page"
+      size="default"
+      className={cn("gap-1 px-2.5 sm:pr-2.5", props.className)}
+      {...props}
+    >
+      <span className="hidden sm:block">Last</span>
+      <ChevronsRightIcon className="size-4" />
+    </PaginationLink>
+  );
+}
 
 export function Pagination({
   currentPage,
@@ -42,9 +88,23 @@ export function Pagination({
     <BasePagination>
       <PaginationContent>
         <PaginationItem>
+          <PaginationFirst
+            href={currentPage > 1 ? createLink(url, 1, lastVisiblePage) : undefined}
+            className={cn(
+              { "pointer-events-none opacity-50": currentPage <= 1 },
+            )}
+            onClick={(e) => { if (currentPage <= 1) e.preventDefault(); }}
+          />
+        </PaginationItem>
+        <PaginationItem>
           <PaginationPrevious
-            isActive={currentPage > 1}
-            href={createLink(url, currentPage - 1, lastVisiblePage)}
+            href={currentPage > 1 ? createLink(url, currentPage - 1, lastVisiblePage) : undefined}
+            className={cn(
+              {"pointer-events-none opacity-50": currentPage <= 1},
+              // Ensure existing classes from PaginationPrevious are preserved if any specific ones are set by default
+              // For now, this assumes PaginationPrevious doesn't add critical structural classes beyond buttonVariants
+            )}
+            onClick={(e) => { if (currentPage <= 1) e.preventDefault(); }}
           />
         </PaginationItem>
         {tabs.map((tab, idx) => (
@@ -88,8 +148,20 @@ export function Pagination({
         ))}
         <PaginationItem>
           <PaginationNext
-            isActive={currentPage < lastVisiblePage}
-            href={createLink(url, currentPage + 1, lastVisiblePage)}
+            href={currentPage < lastVisiblePage ? createLink(url, currentPage + 1, lastVisiblePage) : undefined}
+            className={cn(
+              {"pointer-events-none opacity-50": currentPage >= lastVisiblePage},
+            )}
+            onClick={(e) => { if (currentPage >= lastVisiblePage) e.preventDefault(); }}
+          />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLast
+            href={currentPage < lastVisiblePage ? createLink(url, lastVisiblePage, lastVisiblePage) : undefined}
+            className={cn(
+              {"pointer-events-none opacity-50": currentPage >= lastVisiblePage},
+            )}
+            onClick={(e) => { if (currentPage >= lastVisiblePage) e.preventDefault(); }}
           />
         </PaginationItem>
       </PaginationContent>
