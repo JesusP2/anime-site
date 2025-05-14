@@ -1,10 +1,9 @@
 ---
 import Head from "@/components/head.astro";
 import QuizLayout from "@/layout/challenge.astro";
-import { MyChallenges } from "@/components/my-challenges";
+import { MyChallenges as MyChallengesInner } from "@/components/my-challenges";
 import { getChallenges } from "@/lib/games/challenge/queries";
 import {
-  getRecordsPerPage,
   getCurrentPage,
 } from "@/lib/utils/records-per-page";
 
@@ -29,7 +28,7 @@ let challenges = await getChallenges(userId, Astro.url.searchParams, recordsPerP
     !challenges.success ? (
       challenges.error && <p>{challenges.error}</p>
     ) : (
-      <MyChallenges
+      <MyChallengesInner
         challenges={challenges.value}
         currentPage={currentPage}
         pageSize={recordsPerPage}
