@@ -54,7 +54,7 @@ export function AppSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                className="truncate font-semibold hover:bg-inherit"
+                className="truncate font-semibold"
                 asChild
               >
                 <a href="/">
