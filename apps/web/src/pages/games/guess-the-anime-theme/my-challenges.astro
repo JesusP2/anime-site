@@ -1,15 +1,15 @@
 ---
 import Head from "@/components/head.astro";
-import QuizLayout from "@/layout/quiz.astro";
-import { MyQuizzes } from "@/components/my-quizzes";
-import { getQuizzes } from "@/lib/games/quiz/queries";
+import QuizLayout from "@/layout/challenge.astro";
+import { MyChallenges } from "@/components/my-challenges";
+import { getChallenges } from "@/lib/games/challenge/queries";
 import {
   getRecordsPerPage,
   getCurrentPage,
 } from "@/lib/utils/records-per-page";
 
 const title = "My Quizzes | Guess the Anime Theme";
-const description = "Manage your created anime theme quizzes.";
+const description = "Manage your created anime theme challenges.";
 
 const user = Astro.locals.user;
 const userId = user?.id;
@@ -20,17 +20,17 @@ if (!userId) {
 const recordsPerPage =
   parseInt(Astro.url.searchParams.get("recordsPerPage") as string) || 10;
 const currentPage = getCurrentPage(Astro.url.searchParams);
-let quizzes = await getQuizzes(userId, Astro.url.searchParams, recordsPerPage);
+let challenges = await getChallenges(userId, Astro.url.searchParams, recordsPerPage);
 ---
 
 <QuizLayout title={title}>
   <Head title={title} description={description} />
   {
-    !quizzes.success ? (
-      quizzes.error && <p>{quizzes.error}</p>
+    !challenges.success ? (
+      challenges.error && <p>{challenges.error}</p>
     ) : (
-      <MyQuizzes
-        quizzes={quizzes.value}
+      <MyChallenges
+        challenges={challenges.value}
         currentPage={currentPage}
         pageSize={recordsPerPage}
         url={Astro.url.toString()}

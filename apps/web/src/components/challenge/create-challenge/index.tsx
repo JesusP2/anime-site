@@ -5,16 +5,16 @@ import { SongsSection } from "./songs-section";
 import { ReviewSection } from "./review-section";
 import type { z } from "astro:content";
 import type {
-  CreateQuiz,
-  createQuizInfoSectionSchema,
+  CreateChallenge,
+  createChallengeInfoSectionSchema,
   SongSelectionSection,
 } from "@/lib/schemas";
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 
 const totalSteps = 3;
-export function CreateQuiz() {
-  const [values, setValues] = React.useState<CreateQuiz>({
+export function CreateChallenge() {
+  const [values, setValues] = React.useState<CreateChallenge>({
     title: "",
     description: "",
     public: false,
@@ -25,7 +25,7 @@ export function CreateQuiz() {
   const [currentStep, setCurrentStep] = React.useState(1);
 
   async function onInfoSectionCompleted(
-    values: z.infer<typeof createQuizInfoSectionSchema>,
+    values: z.infer<typeof createChallengeInfoSectionSchema>,
   ) {
     if (values.isRandom) {
       setValues(() => {
@@ -62,7 +62,7 @@ export function CreateQuiz() {
 
   async function onReviewSectionCompleted() {
     try {
-      const res = await actions.quizzes.createQuiz(values);
+      const res = await actions.challenges.createChallenge(values);
       if (res.error) {
         console.error(res.error);
         return;
@@ -70,7 +70,7 @@ export function CreateQuiz() {
 
       safeStartViewTransition(() => navigate(`/games/guess-the-anime-theme/${res.data}`));
     } catch (error) {
-      console.error("Error creating quiz:", error);
+      console.error("Error creating challenge:", error);
     }
   }
 
@@ -113,7 +113,7 @@ export function CreateQuiz() {
         hide={currentStep !== 3}
         onCompleted={onReviewSectionCompleted}
         onBack={() => setCurrentStep(values.isRandom ? 1 : 2)}
-        quizData={values}
+        challengeData={values}
       />
     </>
   );

@@ -27,8 +27,8 @@ export function SinglePlayer(props: GameManagerProps) {
   if (gameState === "waiting") {
     return (
       <WaitingRoom
-        quizTitle={props.title}
-        quizDescription={props.description}
+        challengeTitle={props.title}
+        challengeDescription={props.description}
         players={[player]}
         isHost={true}
         gameType="solo"
@@ -45,7 +45,7 @@ export function SinglePlayer(props: GameManagerProps) {
       />
     );
   } else if (gameState === "results") {
-    return <ResultView quizTitle={props.title} results={[player]} />;
+    return <ResultView challengeTitle={props.title} results={[player]} />;
   }
   return null;
 }

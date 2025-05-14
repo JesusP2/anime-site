@@ -241,8 +241,8 @@ export function MultiPlayer(props: GameManagerProps) {
         >
           <div className="md:w-full">
             <WaitingRoom
-              quizTitle={props.title}
-              quizDescription={props.description}
+              challengeTitle={props.title}
+              challengeDescription={props.description}
               players={players}
               isHost={
                 players.find((p) => p.id === props.currentPlayer.id)?.isHost ??
@@ -318,7 +318,7 @@ export function MultiPlayer(props: GameManagerProps) {
       <>
         <div className="flex flex-col md:flex-row gap-4 p-4 mx-auto max-w-full">
           <div className="md:w-full mx-6">
-            <ResultView quizTitle={props.title} results={players} />
+            <ResultView challengeTitle={props.title} results={players} />
           </div>
           <ChatView
             messages={chatMessages}

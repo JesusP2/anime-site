@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/table";
 
 export function ResultView({
-  quizTitle,
+  challengeTitle,
   results,
 }: {
-  quizTitle?: string | null;
+  challengeTitle?: string | null;
   results: Array<{ id: string; name: string; score: number }>;
 }) {
   const sortedResults = [...results].sort((a, b) => b.score - a.score);
@@ -21,7 +21,7 @@ export function ResultView({
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle>{quizTitle} - Results</CardTitle>
+        <CardTitle>{challengeTitle} - Results</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

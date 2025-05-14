@@ -51,7 +51,7 @@ export const magicLinkTokenSchema = z.object({
   token: z.string().max(255),
 });
 
-export const createQuizInfoSectionBaseSchema = z.object({
+export const createChallengeInfoSectionBaseSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
   description: z.string(),
   public: z.boolean(),
@@ -59,7 +59,7 @@ export const createQuizInfoSectionBaseSchema = z.object({
 
 const difficultySchema = z.enum(["easy", "medium", "hard", "impossible"]);
 const themeTypeSchema = z.enum(["OP", "ED", "ALL"]);
-export const createQuizInfoSectionSchema = z.discriminatedUnion("isRandom", [
+export const createChallengeInfoSectionSchema = z.discriminatedUnion("isRandom", [
   z
     .object({
       isRandom: z.literal(true),
@@ -70,16 +70,16 @@ export const createQuizInfoSectionSchema = z.discriminatedUnion("isRandom", [
         .min(5, "Theme count must be at least 5")
         .max(100, "Theme count cannot exceeed 100"),
     })
-    .merge(createQuizInfoSectionBaseSchema),
+    .merge(createChallengeInfoSectionBaseSchema),
   z
     .object({
       isRandom: z.literal(false),
       difficulty: z.literal("custom"),
     })
-    .merge(createQuizInfoSectionBaseSchema),
+    .merge(createChallengeInfoSectionBaseSchema),
 ]);
 
-export const createQuizSongSelectionSectionSchema = z.object({
+export const createChallengeSongSelectionSectionSchema = z.object({
   songs: z
     .array(
       z.object({
@@ -92,10 +92,10 @@ export const createQuizSongSelectionSectionSchema = z.object({
 });
 
 export type SongSelectionSection = z.infer<
-  typeof createQuizSongSelectionSectionSchema
+  typeof createChallengeSongSelectionSectionSchema
 >;
 
-export const createQuizSchema = z.discriminatedUnion("isRandom", [
+export const createChallengeSchema = z.discriminatedUnion("isRandom", [
   z
     .object({
       isRandom: z.literal(true),
@@ -107,14 +107,14 @@ export const createQuizSchema = z.discriminatedUnion("isRandom", [
         .min(5, "Theme count must be at least 5")
         .max(100, "Theme count cannot exceeed 100"),
     })
-    .merge(createQuizInfoSectionBaseSchema),
+    .merge(createChallengeInfoSectionBaseSchema),
   z
     .object({
       isRandom: z.literal(false),
       creatorId: z.string().ulid().nullish(),
       difficulty: z.literal("custom"),
     })
-    .merge(createQuizInfoSectionBaseSchema)
-    .merge(createQuizSongSelectionSectionSchema),
+    .merge(createChallengeInfoSectionBaseSchema)
+    .merge(createChallengeSongSelectionSectionSchema),
 ]);
-export type CreateQuiz = z.infer<typeof createQuizSchema>;
+export type CreateChallenge = z.infer<typeof createChallengeSchema>;

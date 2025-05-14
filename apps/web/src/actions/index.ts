@@ -11,11 +11,11 @@ import {
   createReadPresignedUrl,
   createWritePresignedUrl,
 } from "@/lib/s3";
-import { quizActions } from "./quizzes";
+import { challengeActions } from "./challenges";
 
 export const server = {
   games: gameActions,
-  quizzes: quizActions,
+  challenges: challengeActions,
   updateEntity: defineAction({
     accept: "json",
     input: z.object({

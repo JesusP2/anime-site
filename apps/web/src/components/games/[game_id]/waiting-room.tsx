@@ -11,8 +11,8 @@ import { UsersThree, Play, Plus, Crown } from "@phosphor-icons/react";
 import type { GameState, Player } from "@repo/shared/types";
 
 export type WaitingRoomProps = {
-  quizTitle?: string | null;
-  quizDescription?: string | null;
+  challengeTitle?: string | null;
+  challengeDescription?: string | null;
   players: Player[];
   isHost: boolean;
   onStartGame: () => void;
@@ -31,8 +31,8 @@ export type WaitingRoomProps = {
     }
 );
 export function WaitingRoom({
-  quizTitle,
-  quizDescription,
+  challengeTitle,
+  challengeDescription,
   players,
   isHost,
   onStartGame,
@@ -52,10 +52,10 @@ export function WaitingRoom({
                 className="text-gray-600 dark:text-gray-300 w-6 h-6"
               />
             </div>
-            <CardTitle className="text-3xl font-bold">{quizTitle}</CardTitle>
+            <CardTitle className="text-3xl font-bold">{challengeTitle}</CardTitle>
           </div>
           <CardDescription className="text-lg">
-            {quizDescription}
+            {challengeDescription}
           </CardDescription>
         </CardHeader>
 
@@ -145,8 +145,8 @@ export function WaitingRoom({
           </div>
           <Actions
             {...{
-              quizTitle,
-              quizDescription,
+              challengeTitle,
+              challengeDescription,
               players,
               isHost,
               onStartGame,

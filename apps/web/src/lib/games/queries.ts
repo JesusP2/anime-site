@@ -3,8 +3,8 @@ import { getDb } from "../db/pool";
 import {
   animeTable,
   gameTable,
-  quizTable,
-  quizToThemeTable,
+  challengeTable,
+  challengeToThemeTable,
   animeThemeTable,
   themeVideoTable,
   themeEntryTable,
@@ -18,16 +18,16 @@ export async function getGameInfo(gameId: string) {
   const gameInfoPromise = db
     .select({
       creatorId: gameTable.creatorId,
-      title: quizTable.title,
-      description: quizTable.description,
-      difficulty: quizTable.difficulty,
-      public: quizTable.public,
-      quizId: quizTable.id,
+      title: challengeTable.title,
+      description: challengeTable.description,
+      difficulty: challengeTable.difficulty,
+      public: challengeTable.public,
+      challengeId: challengeTable.id,
       gameType: gameTable.gameType,
     })
     .from(gameTable)
     .where(eq(gameTable.id, gameId))
-    .leftJoin(quizTable, eq(gameTable.quizId, quizTable.id))
+    .leftJoin(challengeTable, eq(gameTable.challengeId, challengeTable.id))
     .limit(1);
   const songsPromises = db
     .select({
@@ -44,10 +44,10 @@ export async function getGameInfo(gameId: string) {
     .where(eq(gameTable.id, gameId))
     .innerJoin(animeThemeTable, eq(animeThemeTable.animeId, animeTable.id))
     .innerJoin(
-      quizToThemeTable,
-      eq(quizToThemeTable.themeId, animeThemeTable.id),
+      challengeToThemeTable,
+      eq(challengeToThemeTable.themeId, animeThemeTable.id),
     )
-    .innerJoin(gameTable, eq(quizToThemeTable.quizId, gameTable.quizId))
+    .innerJoin(gameTable, eq(challengeToThemeTable.challengeId, gameTable.challengeId))
     .innerJoin(themeEntryTable, eq(themeEntryTable.themeId, animeThemeTable.id))
     .innerJoin(
       themeVideoTable,

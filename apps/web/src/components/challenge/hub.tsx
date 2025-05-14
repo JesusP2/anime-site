@@ -13,12 +13,12 @@ import {
   Shuffle,
 } from "@phosphor-icons/react";
 
-export function QuizHub() {
+export function ChallengeHub() {
   return (
     <div className="max-w-3xl mx-auto">
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
         Test your anime knowledge by guessing which scene this belongs to.
-        Create your own quizzes or play against others!
+        Create your own challenges or play against others!
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -26,10 +26,10 @@ export function QuizHub() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GameController className="w-5 h-5" />
-              Play a Quiz
+              Play a Challenge
             </CardTitle>
             <CardDescription>
-              Browse quizzes 
+              Browse challenges 
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -39,14 +39,14 @@ export function QuizHub() {
                 size: "lg",
                 className: "w-full",
               })}
-              href="/games/guess-the-anime-theme/my-quizzes"
+              href="/games/guess-the-anime-theme/my-challenges"
             >
               <Trophy className="mr-2 w-5 h-5" />
-              My Quizzes
+              My Challenges
             </a>
             <Button className="w-full" variant="outline" size="lg">
               <Trophy className="mr-2 w-5 h-5" />
-              Browse Quizzes
+              Browse Challenges
             </Button>
           </CardContent>
         </Card>
@@ -55,10 +55,10 @@ export function QuizHub() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PlusCircle className="w-5 h-5" />
-              Create a Quiz
+              Create a Challenge
             </CardTitle>
             <CardDescription>
-              Create your own quiz to share with friends
+              Create your own challenge to share with friends
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -71,11 +71,11 @@ export function QuizHub() {
               href="/games/guess-the-anime-theme/create"
             >
               <PlusCircle className="mr-2 w-5 h-5" />
-              Create New Quiz
+              Create New Challenge
             </a>
             <Button className="w-full" size="lg">
               <Shuffle className="mr-2 w-5 h-5" />
-              Random Quiz
+              Random Challenge
             </Button>
           </CardContent>
         </Card>
@@ -92,7 +92,7 @@ export function QuizHub() {
               <li>Listen to anime opening theme songs</li>
               <li>Choose the correct anime from multiple options</li>
               <li>Score points for correct answers and speed</li>
-              <li>Quiz friends with your own curated song list</li>
+              <li>Challenge friends with your own curated song list</li>
             </ul>
           </div>
 
@@ -108,7 +108,7 @@ export function QuizHub() {
                 real-time with friends
               </li>
               <li>
-                <span className="font-medium">Custom Quizzes:</span> Create and
+                <span className="font-medium">Custom Challenges:</span> Create and
                 share your own collections
               </li>
               <li>

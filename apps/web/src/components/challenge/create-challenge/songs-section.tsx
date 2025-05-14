@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MinusCircle, ArrowRight, ArrowLeft } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import {
-  createQuizSongSelectionSectionSchema,
+  createChallengeSongSelectionSectionSchema,
   type SongSelectionSection,
 } from "@/lib/schemas";
 import { useForm } from "@tanstack/react-form";
@@ -31,7 +31,7 @@ export function SongsSection({
       songs: [] as SongSelectionSection["songs"],
     },
     validators: {
-      onSubmit: createQuizSongSelectionSectionSchema,
+      onSubmit: createChallengeSongSelectionSectionSchema,
     },
     onSubmit: ({ value }) => {
       onCompleted(value.songs);
@@ -51,7 +51,7 @@ export function SongsSection({
         <CardHeader>
           <CardTitle>Add Anime Themes</CardTitle>
           <CardDescription>
-            Add at least 5 openings to your quiz (maximum 20)
+            Add at least 5 openings to your challenge (maximum 20)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 w-[25rem]">
@@ -133,7 +133,7 @@ export function SongsSection({
             Previous
           </Button>
           <Button className="flex items-center">
-            Create quiz
+            Create challenge
             <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </CardFooter>

@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Globe, Lock } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
-import type { CreateQuiz, SongSelectionSection } from "@/lib/schemas";
+import type { CreateChallenge, SongSelectionSection } from "@/lib/schemas";
 
 const getDifficultyLabel = (difficulty: string) => {
   switch (difficulty) {
@@ -31,53 +31,53 @@ export function ReviewSection({
   onCompleted,
   onBack,
   hide,
-  quizData,
+  challengeData,
 }: {
   onCompleted: () => void;
   onBack: () => void;
   hide: boolean;
-  quizData: CreateQuiz;
+  challengeData: CreateChallenge;
 }) {
   if (hide) return null;
   return (
     <Card className="w-[25rem] mx-auto">
       <CardHeader>
-        <CardTitle>Review Your Quiz</CardTitle>
+        <CardTitle>Review Your Challenge</CardTitle>
         <CardDescription>
-          Confirm the details of your quiz before creating it
+          Confirm the details of your challenge before creating it
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="text-sm font-medium mb-2">Quiz Information</h3>
+          <h3 className="text-sm font-medium mb-2">Challenge Information</h3>
           <div className="space-y-3 border rounded-md p-4">
             <div>
               <span className="text-sm text-muted-foreground">Title:</span>
-              <p className="font-medium">{quizData.title}</p>
+              <p className="font-medium">{challengeData.title}</p>
             </div>
 
-            {quizData.description && (
+            {challengeData.description && (
               <div>
                 <span className="text-sm text-muted-foreground">
                   Description:
                 </span>
-                <p className="text-sm">{quizData.description}</p>
+                <p className="text-sm">{challengeData.description}</p>
               </div>
             )}
 
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline">
-                {getDifficultyLabel(quizData.difficulty)}
+                {getDifficultyLabel(challengeData.difficulty)}
               </Badge>
               <Badge
                 variant="outline"
                 className={
-                  quizData.public
+                  challengeData.public
                     ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
                     : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300"
                 }
               >
-                {quizData.public ? (
+                {challengeData.public ? (
                   <>
                     <Globe className="w-3 h-3 mr-1" /> Public
                   </>
@@ -87,12 +87,12 @@ export function ReviewSection({
                   </>
                 )}
               </Badge>
-              {quizData.isRandom && (
+              {challengeData.isRandom && (
                 <Badge
                   variant="outline"
                   className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
                 >
-                  Random Quiz
+                  Random Challenge
                 </Badge>
               )}
             </div>
@@ -110,7 +110,7 @@ export function ReviewSection({
           Back
         </Button>
         <Button className="flex items-center" onClick={onCompleted}>
-          Create Quiz
+          Create Challenge
           <Check className="ml-2 w-4 h-4" />
         </Button>
       </CardFooter>

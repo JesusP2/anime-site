@@ -15,7 +15,7 @@ import { actions } from "astro:actions";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 type QuizInfo = {
-  quizId: string;
+  challengeId: string;
   title: string | undefined;
   difficulty: string | undefined;
   public: boolean | undefined;
@@ -26,7 +26,7 @@ type QuizInfo = {
 export function CreateGame(props: QuizInfo) {
   const handleCreateGame = async (gameType: "solo" | "multiplayer") => {
     const result = await actions.games.createGame({
-      quizId: props.quizId,
+      challengeId: props.challengeId,
       gameType,
     });
     if (result.error) {

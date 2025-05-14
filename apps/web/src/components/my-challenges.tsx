@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/pagination";
 import { actions } from "astro:actions";
-import type { getQuizzes } from "@/lib/games/quiz/queries";
+import type { getChallenges } from "@/lib/games/challenge/queries";
 import { useRef } from "react";
 import type { FormEvent } from "react";
 import { PlusCircle, ArrowUp, ArrowDown, XCircle } from "@phosphor-icons/react";
@@ -26,20 +26,20 @@ import type { GetReturnType } from "@/lib/types";
 import { navigate } from "astro:transitions/client";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
-type QuizzItems = GetReturnType<typeof getQuizzes>;
+type ChallengezItems = GetReturnType<typeof getChallenges>;
 
-type MyQuizzesComponentProps = {
-  quizzes: QuizzItems;
+type MyChallengesComponentProps = {
+  challenges: ChallengezItems;
   currentPage: number;
   pageSize: number;
   url: string;
 };
 
-export function MyQuizzes({
-  quizzes,
+export function MyChallenges({
+  challenges,
   pageSize,
   url,
-}: MyQuizzesComponentProps) {
+}: MyChallengesComponentProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const currentUrl = new URL(url);
   const currentGlobalSearch = currentUrl.searchParams.get("q") || "";
@@ -96,25 +96,25 @@ export function MyQuizzes({
 
   async function handleDelete(
     e: React.FormEvent<HTMLFormElement>,
-    quizId: string,
-    quizName: string,
+    challengeId: string,
+    challengeName: string,
   ) {
     e.preventDefault();
-    if (!quizId) return;
-    if (!window.confirm(`Are you sure you want to delete "${quizName}"?`)) {
+    if (!challengeId) return;
+    if (!window.confirm(`Are you sure you want to delete "${challengeName}"?`)) {
       return;
     }
     try {
-      const res = await actions.quizzes.deleteQuiz({ quizId });
+      const res = await actions.challenges.deleteChallenge({ challengeId });
       if (res.error) {
         console.error(res.error);
-        alert(`Error deleting quiz: ${res.error.message}`);
+        alert(`Error deleting challenge: ${res.error.message}`);
         return;
       }
       window.location.reload();
     } catch (error) {
-      console.error("Error deleting quiz:", error);
-      alert("An unexpected error occurred while deleting the quiz.");
+      console.error("Error deleting challenge:", error);
+      alert("An unexpected error occurred while deleting the challenge.");
     }
   }
 
@@ -160,8 +160,8 @@ export function MyQuizzes({
     }
   };
 
-  const lastVisiblePage = Math.ceil((quizzes.count || 1) / pageSize);
-  console.log(quizzes.count, pageSize, quizzes.data)
+  const lastVisiblePage = Math.ceil((challenges.count || 1) / pageSize);
+  console.log(challenges.count, pageSize, challenges.data)
 
   const renderSortIcon = (columnName: string) => {
     if (currentSortColumn === columnName) {
@@ -182,7 +182,7 @@ export function MyQuizzes({
           href="/games/guess-the-anime-theme/create"
         >
           <PlusCircle className="mr-2 w-5 h-5" />
-          Create New Quiz
+          Create New Challenge
         </a>
       </div>
 
@@ -199,7 +199,7 @@ export function MyQuizzes({
                 id="globalSearch"
                 name="q"
                 type="text"
-                placeholder="Enter quiz name..."
+                placeholder="Enter challenge name..."
                 defaultValue={currentGlobalSearch}
                 className="w-full"
               />
@@ -241,13 +241,13 @@ export function MyQuizzes({
         </div>
       </form>
 
-      {!quizzes.data.length && quizzes.count === 0 ? (
+      {!challenges.data.length && challenges.count === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-10">
-          You haven't created any quizzes yet.
+          You haven't created any challenges yet.
         </p>
-      ) : !quizzes.data.length && quizzes.count > 0 ? (
+      ) : !challenges.data.length && challenges.count > 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-10">
-          No quizzes found for the current filters/page.
+          No challenges found for the current filters/page.
         </p>
       ) : (
         <>
@@ -278,45 +278,45 @@ export function MyQuizzes({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {quizzes.data.map((quiz) => (
-                  <TableRow key={quiz.id}>
-                    <TableCell style={{ viewTransitionName: `record-name-${quiz.id}` }}>
+                {challenges.data.map((challenge) => (
+                  <TableRow key={challenge.id}>
+                    <TableCell style={{ viewTransitionName: `record-name-${challenge.id}` }}>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
                             <div className="truncate max-w-xs">
-                              {quiz.title}
+                              {challenge.title}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>{quiz.title}</p>
+                            <p>{challenge.title}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-difficulty-${quiz.id}` }}>
+                    <TableCell style={{ viewTransitionName: `record-difficulty-${challenge.id}` }}>
                       <Badge
-                        variant={getDifficultyBadgeVariant(quiz.difficulty)}
+                        variant={getDifficultyBadgeVariant(challenge.difficulty)}
                         className="capitalize w-18"
                       >
-                        {quiz.difficulty}
+                        {challenge.difficulty}
                       </Badge>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-visibility-${quiz.id}` }}>
-                      <Badge variant={quiz.public ? "default" : "outline"} className="w-18">
-                        {quiz.public ? "Public" : "Private"}
+                    <TableCell style={{ viewTransitionName: `record-visibility-${challenge.id}` }}>
+                      <Badge variant={challenge.public ? "default" : "outline"} className="w-18">
+                        {challenge.public ? "Public" : "Private"}
                       </Badge>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-createdAt-${quiz.id}` }}>
-                      {quiz.createdAt &&
-                        new Date(quiz.createdAt).toLocaleDateString()}
+                    <TableCell style={{ viewTransitionName: `record-createdAt-${challenge.id}` }}>
+                      {challenge.createdAt &&
+                        new Date(challenge.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex space-x-2 justify-end">
                         <form
                           method="POST"
                           onSubmit={(e) =>
-                            handleDelete(e, quiz.id, quiz.title)
+                            handleDelete(e, challenge.id, challenge.title)
                           }
                           className="inline-block"
                         >

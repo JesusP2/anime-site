@@ -8,13 +8,13 @@ export const gameActions = {
   createGame: defineAction({
     accept: "json",
     input: z.object({
-      quizId: z.string().ulid(),
+      challengeId: z.string().ulid(),
       creatorId: z.string().optional(),
       gameType: z.enum(["solo", "multiplayer"]),
     }),
     handler: async (data, ctx) => {
       const db = getDb();
-      const { quizId } = data;
+      const { challengeId } = data;
       let creatorId = ctx.locals.user?.id ?? data.creatorId;
       if (!creatorId) {
         throw new ActionError({
@@ -29,7 +29,7 @@ export const gameActions = {
         creatorId,
         gameType: data.gameType,
         public: true,
-        quizId,
+        challengeId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

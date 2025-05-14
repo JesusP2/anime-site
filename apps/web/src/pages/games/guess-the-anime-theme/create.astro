@@ -1,10 +1,10 @@
 ---
-import QuizLayout from "@/layout/quiz.astro";
-import { CreateQuiz } from "@/components/quiz/create-quiz/index";
+import ChallengeLayout from "@/layout/challenge.astro";
+import { CreateChallenge } from "@/components/challenge/create-challenge/index";
 
-const title = "Create Quiz | Guess the Anime Theme";
+const title = "Create Challenge | Guess the Anime Theme";
 ---
 
-<QuizLayout title={title}>
-  <CreateQuiz client:load />
-</QuizLayout>
+<ChallengeLayout title={title}>
+  <CreateChallenge client:load />
+</ChallengeLayout>

@@ -1,4 +1,4 @@
-import { createQuizInfoSectionSchema } from "@/lib/schemas";
+import { createChallengeInfoSectionSchema } from "@/lib/schemas";
 import { useForm } from "@tanstack/react-form";
 import {
   Card,
@@ -23,7 +23,7 @@ export function InfoSection({
   onCompleted,
   hide,
 }: {
-  onCompleted: (values: z.infer<typeof createQuizInfoSectionSchema>) => void;
+  onCompleted: (values: z.infer<typeof createChallengeInfoSectionSchema>) => void;
   hide: boolean;
 }) {
   const form = useForm({
@@ -35,9 +35,9 @@ export function InfoSection({
       themeType: "OP",
       difficulty: "custom",
       themeCount: 10,
-    } as z.infer<typeof createQuizInfoSectionSchema>,
+    } as z.infer<typeof createChallengeInfoSectionSchema>,
     validators: {
-      onSubmit: createQuizInfoSectionSchema,
+      onSubmit: createChallengeInfoSectionSchema,
     },
     onSubmit: ({ value }) => {
       onCompleted(value as any);
@@ -55,9 +55,9 @@ export function InfoSection({
     >
       <Card className="w-[25rem] mx-auto">
         <CardHeader>
-          <CardTitle>Quiz Details</CardTitle>
+          <CardTitle>Challenge Details</CardTitle>
           <CardDescription>
-            Enter the basic information about your quiz
+            Enter the basic information about your challenge
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 w-96">
@@ -65,10 +65,10 @@ export function InfoSection({
             name="title"
             children={(field) => (
               <div className="space-y-2">
-                <Label htmlFor="title">Quiz Title</Label>
+                <Label htmlFor="title">Challenge Title</Label>
                 <Input
                   id="title"
-                  placeholder="Enter a catchy title for your quiz"
+                  placeholder="Enter a catchy title for your challenge"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
@@ -84,7 +84,7 @@ export function InfoSection({
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  placeholder="Describe what your quiz is about"
+                  placeholder="Describe what your challenge is about"
                   value={field.state.value}
                   className="min-h-[100px]"
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -98,7 +98,7 @@ export function InfoSection({
             children={(field) => (
               <>
                 <div className="space-x-2 items-center flex">
-                  <Label htmlFor="isRandom">Random Quiz</Label>
+                  <Label htmlFor="isRandom">Random Challenge</Label>
                   <Switch
                     id="isRandom"
                     checked={field.state.value}
@@ -120,7 +120,7 @@ export function InfoSection({
                       name="themeType"
                       children={(field) => (
                         <div className="space-y-2">
-                          <Label htmlFor="themeType">Quiz Type</Label>
+                          <Label htmlFor="themeType">Challenge Type</Label>
                           <RadioGroup
                             value={field.state.value}
                             onValueChange={field.handleChange as any}
@@ -211,7 +211,7 @@ export function InfoSection({
                 />
                 <Label htmlFor="public" className="flex items-center gap-2">
                   <Globe className="w-4 h-4" />
-                  Make quiz public
+                  Make challenge public
                 </Label>
                 <FieldInfo field={field} />
               </div>

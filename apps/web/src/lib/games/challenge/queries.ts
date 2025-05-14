@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db/pool";
-import { quizTable, quizToThemeTable } from "@/lib/db/schemas";
+import { challengeTable, challengeToThemeTable } from "@/lib/db/schemas";
 import { logger } from "@/lib/logger";
 import { err, ok } from "@/lib/result";
 import { ActionError } from "astro:actions";
@@ -56,19 +56,19 @@ function searchParamsToDrizzleQuery(searchParams: URLSearchParams) {
   if (searchParams.get("q")) {
     where = and(
       where,
-      like(quizTable.title, (searchParams.get("q") + "%") as string),
+      like(challengeTable.title, (searchParams.get("q") + "%") as string),
     );
   }
   if (searchParams.get("difficulty")) {
     where = and(
       where,
-      eq(quizTable.difficulty, searchParams.get("difficulty") as string),
+      eq(challengeTable.difficulty, searchParams.get("difficulty") as string),
     );
   }
   if (searchParams.get("visibility")) {
     where = and(
       where,
-      eq(quizTable.public, searchParams.get("visibility") === "public"),
+      eq(challengeTable.public, searchParams.get("visibility") === "public"),
     );
   }
 
@@ -76,7 +76,7 @@ function searchParamsToDrizzleQuery(searchParams: URLSearchParams) {
   let orderBy: SQL | undefined = undefined;
   if (searchParams.get("sort") && searchParams.get("sort") !== "none") {
     const column =
-      quizTable[searchParams.get("sort") as keyof typeof quizTable];
+      challengeTable[searchParams.get("sort") as keyof typeof challengeTable];
     if (column instanceof PgColumn) {
       if (searchParams.get("order") === "desc") {
         orderBy = nullsLast(desc(column));
@@ -100,7 +100,7 @@ function searchParamsToDrizzleQuery(searchParams: URLSearchParams) {
   };
 }
 
-export async function getQuizzes(
+export async function getChallenges(
   userId: string,
   searchParams: URLSearchParams,
   recordsPerPage: number,
@@ -109,27 +109,27 @@ export async function getQuizzes(
   let { where, orderBy, offset } = searchParamsToDrizzleQuery(
     sanitizedSearchParams,
   );
-  where = and(where, eq(quizTable.creatorId, userId));
+  where = and(where, eq(challengeTable.creatorId, userId));
   const limit = Number(sanitizedSearchParams.get("recordsPerPage"));
   const db = getDb();
   try {
     const resultQuery = db
       .select({
-        id: quizTable.id,
-        title: quizTable.title,
-        description: quizTable.description,
-        difficulty: quizTable.difficulty,
-        public: quizTable.public,
-        createdAt: quizTable.createdAt,
+        id: challengeTable.id,
+        title: challengeTable.title,
+        description: challengeTable.description,
+        difficulty: challengeTable.difficulty,
+        public: challengeTable.public,
+        createdAt: challengeTable.createdAt,
       })
-      .from(quizTable)
+      .from(challengeTable)
       .where(where)
       .offset(offset)
       .limit(limit)
-      .orderBy(orderBy ?? desc(quizTable.createdAt));
+      .orderBy(orderBy ?? desc(challengeTable.createdAt));
     const queryCount = db
       .select({ count: count() })
-      .from(quizTable)
+      .from(challengeTable)
       .where(where);
     const [records, recordsCount] = await Promise.all([
       resultQuery,
@@ -141,7 +141,7 @@ export async function getQuizzes(
     });
   } catch (error) {
     if (error instanceof Error) {
-      globalThis.waitUntil(logger.error("error getting quizzes", error));
+      globalThis.waitUntil(logger.error("error getting challenges", error));
     }
     return err(
       new ActionError({
@@ -152,25 +152,25 @@ export async function getQuizzes(
   }
 }
 
-export async function getQuizInfo(quizId: string) {
+export async function getChallengeInfo(challengeId: string) {
   const db = getDb();
   const result = await db
     .select({
-      quizTitle: quizTable.title,
-      difficulty: quizTable.difficulty,
-      public: quizTable.public,
-      createdAt: quizTable.createdAt,
-      themeId: quizToThemeTable.themeId,
+      challengeTitle: challengeTable.title,
+      difficulty: challengeTable.difficulty,
+      public: challengeTable.public,
+      createdAt: challengeTable.createdAt,
+      themeId: challengeToThemeTable.themeId,
     })
-    .from(quizTable)
-    .where(eq(quizTable.id, quizId))
-    .leftJoin(quizToThemeTable, eq(quizTable.id, quizToThemeTable.quizId));
-  const quizInfo = {
-    title: result[0]?.quizTitle,
+    .from(challengeTable)
+    .where(eq(challengeTable.id, challengeId))
+    .leftJoin(challengeToThemeTable, eq(challengeTable.id, challengeToThemeTable.challengeId));
+  const challengeInfo = {
+    title: result[0]?.challengeTitle,
     difficulty: result[0]?.difficulty,
     public: result[0]?.public,
     createdAt: result[0]?.createdAt,
     themesLength: result.length,
   };
-  return quizInfo;
+  return challengeInfo;
 }

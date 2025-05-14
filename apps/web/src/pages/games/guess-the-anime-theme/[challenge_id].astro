@@ -1,0 +1,24 @@
+---
+import { getChallengeInfo } from "@/lib/games/challenge/queries";
+import ChallengeLayout from "@/layout/challenge.astro";
+import { CreateGame } from '@/components/challenge/[challenge_id]'
+const challengeId = Astro.params.challenge_id as string;
+const challenge = await getChallengeInfo(challengeId);
+if (!challenge.title) {
+  return Astro.redirect("/games/guess-the-anime-theme");
+}
+
+const title = "Create Challenge | Guess the Anime Theme";
+const description = "Create your own anime opening guessing challenge!";
+---
+<ChallengeLayout title={title} description={description}>
+  <CreateGame
+    challengeId={challengeId}
+    title={challenge.title}
+    difficulty={challenge.difficulty}
+    public={challenge.public}
+    createdAt={challenge.createdAt}
+    themesLength={challenge.themesLength}
+    client:load
+  />
+</ChallengeLayout>
