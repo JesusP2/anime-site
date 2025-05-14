@@ -11,6 +11,8 @@
 - [x] score is not being updated correctly
 - if player has autocomplete opened when time is up, it should close the autocomplete
 - [] ready button functionality
+- [] clicking icon triggers a wave animation, remove it.
+- [] create error page
 
 landing page:
 

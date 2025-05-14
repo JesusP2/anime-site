@@ -3,6 +3,10 @@ import Head from "@/components/head.astro";
 import QuizLayout from "@/layout/quiz.astro";
 import { MyQuizzes } from "@/components/my-quizzes";
 import { getQuizzes } from "@/lib/games/quiz/queries";
+import {
+  getRecordsPerPage,
+  getCurrentPage,
+} from "@/lib/utils/records-per-page";
 
 const title = "My Quizzes | Guess the Anime Theme";
 const description = "Manage your created anime theme quizzes.";
@@ -11,9 +15,11 @@ const user = Astro.locals.user;
 const userId = user?.id;
 
 if (!userId) {
-  return Astro.redirect("/login");
+  return Astro.redirect("/auth/signin");
 }
-let quizzes = await getQuizzes(userId);
+const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
+const currentPage = getCurrentPage(Astro.url.searchParams);
+let quizzes = await getQuizzes(userId, Astro.url.searchParams);
 ---
 
 <QuizLayout title={title}>
@@ -22,7 +28,13 @@ let quizzes = await getQuizzes(userId);
     !quizzes.success ? (
       quizzes.error && <p>{quizzes.error}</p>
     ) : (
-      <MyQuizzes quizzes={quizzes.value} client:load />
+      <MyQuizzes
+        quizzes={quizzes.value}
+        currentPage={currentPage}
+        pageSize={recordsPerPage}
+        url={Astro.url.toString()}
+        client:load
+      />
     )
   }
 </QuizLayout>

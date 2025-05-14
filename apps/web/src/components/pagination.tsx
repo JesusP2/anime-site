@@ -27,38 +27,6 @@ export {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-function PaginationFirst(
-  props: React.ComponentProps<typeof PaginationLink>,
-) {
-  return (
-    <PaginationLink
-      aria-label="Go to first page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", props.className)}
-      {...props}
-    >
-      <ChevronsLeftIcon className="size-4" />
-      <span className="hidden sm:block">First</span>
-    </PaginationLink>
-  );
-}
-
-function PaginationLast(
-  props: React.ComponentProps<typeof PaginationLink>,
-) {
-  return (
-    <PaginationLink
-      aria-label="Go to last page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", props.className)}
-      {...props}
-    >
-      <span className="hidden sm:block">Last</span>
-      <ChevronsRightIcon className="size-4" />
-    </PaginationLink>
-  );
-}
-
 export function Pagination({
   currentPage,
   url,
@@ -87,15 +55,6 @@ export function Pagination({
   return (
     <BasePagination>
       <PaginationContent>
-        <PaginationItem>
-          <PaginationFirst
-            href={currentPage > 1 ? createLink(url, 1, lastVisiblePage) : undefined}
-            className={cn(
-              { "pointer-events-none opacity-50": currentPage <= 1 },
-            )}
-            onClick={(e) => { if (currentPage <= 1) e.preventDefault(); }}
-          />
-        </PaginationItem>
         <PaginationItem>
           <PaginationPrevious
             href={currentPage > 1 ? createLink(url, currentPage - 1, lastVisiblePage) : undefined}
@@ -149,15 +108,6 @@ export function Pagination({
         <PaginationItem>
           <PaginationNext
             href={currentPage < lastVisiblePage ? createLink(url, currentPage + 1, lastVisiblePage) : undefined}
-            className={cn(
-              {"pointer-events-none opacity-50": currentPage >= lastVisiblePage},
-            )}
-            onClick={(e) => { if (currentPage >= lastVisiblePage) e.preventDefault(); }}
-          />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLast
-            href={currentPage < lastVisiblePage ? createLink(url, lastVisiblePage, lastVisiblePage) : undefined}
             className={cn(
               {"pointer-events-none opacity-50": currentPage >= lastVisiblePage},
             )}
