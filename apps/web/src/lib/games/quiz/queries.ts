@@ -18,7 +18,7 @@ import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 const allowedDifficulties = ["easy", "medium", "hard"];
 const allowedVisibilities = ["public", "private"];
 const allowedSortColumns = ["title", "difficulty", "createdAt"];
-function sanitizeSearchParams(searchParams: URLSearchParams) {
+function sanitizeSearchParams(searchParams: URLSearchParams, recordsPerPage: number) {
   const sanitizedSearchParams = new URLSearchParams();
   const q = searchParams.get("q");
   const difficulty = searchParams.get("difficulty");
@@ -26,7 +26,6 @@ function sanitizeSearchParams(searchParams: URLSearchParams) {
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
   const page = searchParams.get("page");
-  const recordsPerPage = searchParams.get("recordsPerPage");
 
   if (typeof q === "string") {
     sanitizedSearchParams.set("q", q);
@@ -46,11 +45,7 @@ function sanitizeSearchParams(searchParams: URLSearchParams) {
   if (page && parseInt(page, 10) > 0) {
     sanitizedSearchParams.set("page", page);
   }
-  if (recordsPerPage && parseInt(recordsPerPage, 10) > 0) {
-    sanitizedSearchParams.set("recordsPerPage", recordsPerPage);
-  } else {
-    sanitizedSearchParams.set("recordsPerPage", "10");
-  }
+  sanitizedSearchParams.set("recordsPerPage", recordsPerPage.toString());
 
   return sanitizedSearchParams;
 }
@@ -108,8 +103,9 @@ function searchParamsToDrizzleQuery(searchParams: URLSearchParams) {
 export async function getQuizzes(
   userId: string,
   searchParams: URLSearchParams,
+  recordsPerPage: number,
 ) {
-  const sanitizedSearchParams = sanitizeSearchParams(searchParams);
+  const sanitizedSearchParams = sanitizeSearchParams(searchParams, recordsPerPage);
   let { where, orderBy, offset } = searchParamsToDrizzleQuery(
     sanitizedSearchParams,
   );

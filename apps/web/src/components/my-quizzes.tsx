@@ -160,7 +160,8 @@ export function MyQuizzes({
     }
   };
 
-  const lastVisiblePage = Math.ceil(quizzes.count / pageSize) || 1;
+  const lastVisiblePage = Math.ceil((quizzes.count || 1) / pageSize);
+  console.log(quizzes.count, pageSize, quizzes.data)
 
   const renderSortIcon = (columnName: string) => {
     if (currentSortColumn === columnName) {
@@ -240,11 +241,11 @@ export function MyQuizzes({
         </div>
       </form>
 
-      {!quizzes.data.length && totalQuizzes === 0 ? (
+      {!quizzes.data.length && quizzes.count === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-10">
           You haven't created any quizzes yet.
         </p>
-      ) : !quizzes.data.length && totalQuizzes > 0 ? (
+      ) : !quizzes.data.length && quizzes.count > 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-10">
           No quizzes found for the current filters/page.
         </p>

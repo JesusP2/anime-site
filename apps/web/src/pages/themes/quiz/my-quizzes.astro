@@ -17,9 +17,10 @@ const userId = user?.id;
 if (!userId) {
   return Astro.redirect("/auth/signin");
 }
-const recordsPerPage = getRecordsPerPage(Astro.url.searchParams);
+const recordsPerPage =
+  parseInt(Astro.url.searchParams.get("recordsPerPage") as string) || 10;
 const currentPage = getCurrentPage(Astro.url.searchParams);
-let quizzes = await getQuizzes(userId, Astro.url.searchParams);
+let quizzes = await getQuizzes(userId, Astro.url.searchParams, recordsPerPage);
 ---
 
 <QuizLayout title={title}>
