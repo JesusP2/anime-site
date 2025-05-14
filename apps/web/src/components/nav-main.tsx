@@ -122,7 +122,6 @@ export function NavMain() {
   const searchRef = useRef<IconRef>(null);
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton asChild>
