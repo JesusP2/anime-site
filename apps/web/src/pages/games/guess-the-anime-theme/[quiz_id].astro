@@ -4,6 +4,9 @@ import QuizLayout from "@/layout/quiz.astro";
 import { CreateGame } from '@/components/quiz/[quiz_id]'
 const quizId = Astro.params.quiz_id as string;
 const quiz = await getQuizInfo(quizId);
+if (!quiz.title) {
+  return Astro.redirect("/games/guess-the-anime-theme");
+}
 
 const title = "Create Quiz | Guess the Anime Theme";
 const description = "Create your own anime opening guessing quiz!";

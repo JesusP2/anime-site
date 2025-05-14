@@ -12,6 +12,7 @@ import { Clock, UsersThree, Calendar } from "@phosphor-icons/react";
 import { formatDistanceToNow } from "date-fns";
 import { navigate } from "astro:transitions/client";
 import { actions } from "astro:actions";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 
 type QuizInfo = {
   quizId: string;
@@ -33,7 +34,7 @@ export function CreateGame(props: QuizInfo) {
       return;
     }
     const gameId = result.data;
-    navigate(`/themes/games/${gameId}`);
+    safeStartViewTransition(() => navigate(`/games/guess-the-anime-theme/room/${gameId}`));
   };
 
   return (

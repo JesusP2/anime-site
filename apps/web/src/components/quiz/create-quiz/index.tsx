@@ -1,4 +1,5 @@
 import * as React from "react";
+import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
 import { InfoSection } from "./info-section";
 import { SongsSection } from "./songs-section";
 import { ReviewSection } from "./review-section";
@@ -67,7 +68,7 @@ export function CreateQuiz() {
         return;
       }
 
-      navigate(`/themes/quiz/${res.data}`);
+      safeStartViewTransition(() => navigate(`/games/guess-the-anime-theme/${res.data}`));
     } catch (error) {
       console.error("Error creating quiz:", error);
     }

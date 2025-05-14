@@ -38,7 +38,7 @@ type MyQuizzesComponentProps = {
 export function MyQuizzes({
   quizzes,
   pageSize,
-  url = 'http://localhost:4321/themes/quiz/my-quizzes',
+  url,
 }: MyQuizzesComponentProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const currentUrl = new URL(url);
@@ -179,7 +179,7 @@ export function MyQuizzes({
       <div className="flex justify-between items-center mb-6">
         <a
           className={buttonVariants({ variant: "outline" })}
-          href="/themes/quiz/create"
+          href="/games/guess-the-anime-theme/create"
         >
           <PlusCircle className="mr-2 w-5 h-5" />
           Create New Quiz

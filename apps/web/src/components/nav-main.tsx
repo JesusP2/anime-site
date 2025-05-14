@@ -1,4 +1,4 @@
-import { CaretRight } from "@phosphor-icons/react";
+import { CaretRight, GameController } from "@phosphor-icons/react";
 
 import {
   Collapsible,
@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -95,24 +94,14 @@ const nav = [
     ],
   },
   {
-    title: "Anime Quizzes",
+    title: "Mini Games",
     url: "#",
-    Icon: AudioLinesIcon,
+    Icon: GameController,
     items: [
       {
-        title: "Home",
-        url: "/themes/quiz",
+        title: "Guess the song",
+        url: "/games/guess-the-anime-theme",
         Icon: AudioLinesIcon,
-      },
-      {
-        title: "Create Quiz",
-        url: "/themes/quiz/create",
-        Icon: AudioLinesIcon,
-      },
-      {
-        title: "My Quizzes",
-        url: "/themes/quiz/my-quizzes",
-        Icon: CalendarCheckIcon,
       },
     ],
   },

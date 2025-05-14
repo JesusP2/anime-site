@@ -29,14 +29,21 @@ export function QuizHub() {
               Play a Quiz
             </CardTitle>
             <CardDescription>
-              Play an existing quiz or generate a random one
+              Browse quizzes 
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" size="lg">
-              <Shuffle className="mr-2 w-5 h-5" />
-              Random Quiz
-            </Button>
+            <a
+              className={buttonVariants({
+                variant: "default",
+                size: "lg",
+                className: "w-full",
+              })}
+              href="/games/guess-the-anime-theme/my-quizzes"
+            >
+              <Trophy className="mr-2 w-5 h-5" />
+              My Quizzes
+            </a>
             <Button className="w-full" variant="outline" size="lg">
               <Trophy className="mr-2 w-5 h-5" />
               Browse Quizzes
@@ -61,11 +68,15 @@ export function QuizHub() {
                 size: "lg",
                 className: "w-full",
               })}
-              href="/themes/quiz/create"
+              href="/games/guess-the-anime-theme/create"
             >
               <PlusCircle className="mr-2 w-5 h-5" />
               Create New Quiz
             </a>
+            <Button className="w-full" size="lg">
+              <Shuffle className="mr-2 w-5 h-5" />
+              Random Quiz
+            </Button>
           </CardContent>
         </Card>
       </div>
