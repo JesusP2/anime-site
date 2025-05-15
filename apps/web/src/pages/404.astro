@@ -17,12 +17,49 @@
                 min-height: 100vh;
                 background-color: #f0f0f0; /* A light background color */
                 font-family: sans-serif;
-                background-image: url('/alitaaaaa.png');
+                background-image: url('/slam-dunk.jpeg');
                 background-size: cover;
                 background-position: center center;
                 background-repeat: no-repeat;
                 overflow: hidden;
+                position: relative; /* Required for the ::before pseudo-element positioning context if it were 'absolute' */
+                                  /* Also helps if any child elements use z-indexing related to body */
+                /* Initialize CSS variables for mouse position, default to center */
+                --mouse-x: 50vw;
+                --mouse-y: 50vh;
             }
+
+            body::before {
+                content: '';
+                position: fixed; /* Covers the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Dark overlay, makes original bg 95% obscured */
+                pointer-events: none; /* Allows mouse events to pass through to elements below */
+                
+                /* Spotlight effect using mask */
+                /* Where the mask is transparent, body::before is not rendered, revealing body's true background (image) */
+                /* Where the mask is opaque black, body::before *is* rendered, showing its own background-color */
+                mask-image: radial-gradient(
+                    circle at var(--mouse-x) var(--mouse-y),
+                    transparent 0,      /* Center of spotlight: body::before is transparent here */
+                    transparent 120px,  /* Spotlight radius: still transparent - was 150px */
+                    rgba(0, 0, 0, 1) 400px /* Edge of spotlight: body::before becomes opaque (shows its dark bg) - was 400px */
+                );
+                -webkit-mask-image: radial-gradient(
+                    circle at var(--mouse-x) var(--mouse-y),
+                    transparent 0,
+                    transparent 120px, /* was 150px */
+                    rgba(0, 0, 0, 1) 400px /* was 400px */
+                );
+                /* z-index is not strictly needed here if other content doesn't have specific z-indexes,
+                   as ::before renders under the main content of the body by default.
+                   If content had z-index: -1 or similar, this might need adjustment.
+                   Given current structure, this should be fine. */
+            }
+
             .canvas-container {
                 display: flex;
                 justify-content: center; /* Center canvases horizontally */
@@ -37,7 +74,7 @@
                 perspective: 1200px; /* Maintained from previous adjustment for pronounced tilt */
             }
             canvas {
-                width: 400px;
+                width: 450px;
                 display: block; /* Remove extra space below canvas */
                 transition: transform 0.1s ease-out; /* Smooth tilt transition */
             }
@@ -67,9 +104,6 @@
             <canvas id="canvas1"></canvas>
             <canvas id="canvas2"></canvas>
             <canvas id="canvas3"></canvas>
-        </div>
-        <div class="message-container">
-            <p>You can <a href="/">return to the homepage</a>.</p>
         </div>
 
         <script>
@@ -285,7 +319,7 @@
             }
 
             // Interactive tilt effect
-            const MAX_ROTATE = 50;
+            const MAX_ROTATE = 30;
             let currentRotateX = 0;
             let currentRotateY = 0;
             let targetRotateX = 0;
@@ -302,6 +336,10 @@
                 targetRotateY = (deltaX / centerX) * MAX_ROTATE;
                 // Invert deltaY for natural feeling: mouse up -> canvas tilts top towards user (negative rotateX)
                 targetRotateX = -(deltaY / centerY) * MAX_ROTATE;
+
+                // Update CSS variables for spotlight position
+                document.body.style.setProperty('--mouse-x', `${event.clientX}px`);
+                document.body.style.setProperty('--mouse-y', `${event.clientY}px`);
             }
 
             function updateTransforms() {
