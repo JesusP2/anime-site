@@ -1,0 +1,317 @@
+---
+// No server-side Astro logic needed for the basic structure yet
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Center content vertically */
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0; /* A light background color */
+            font-family: sans-serif;
+        }
+        .canvas-container {
+            display: flex;
+            justify-content: center; /* Center canvases horizontally */
+            align-items: center; /* Align canvases vertically */
+            width: 90%; /* Responsive width */
+            max-width: 1200px; /* Max width for larger screens */
+            gap: clamp(10px, 3vw, 40px); /* Responsive gap based on viewport width, 2-4% approx */
+        }
+        canvas {
+            display: block; /* Remove extra space below canvas */
+            background-color: #fff; /* Placeholder background */
+            border: 1px solid #ccc; /* Placeholder border */
+            /* Width and height will be set by JS to maintain aspect ratio and equality */
+        }
+        .message-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #333;
+        }
+        p {
+            font-size: 1rem;
+            color: #555;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <h1>Oops! Page Not Found</h1>
+        <p>We can't seem to find the page you're looking for.</p>
+    </div>
+    <div class="canvas-container">
+        <canvas id="canvas1"></canvas>
+        <canvas id="canvas2"></canvas>
+        <canvas id="canvas3"></canvas>
+    </div>
+     <div class="message-container">
+        <p>You can <a href="/">return to the homepage</a>.</p>
+    </div>
+
+    <script>
+        // Canvas rendering logic will go here
+        const canvases = [
+            document.getElementById('canvas1'),
+            document.getElementById('canvas2'),
+            document.getElementById('canvas3')
+        ];
+
+        const imageSrc = '/kurapika.jpg'; // Placeholder image path
+        const img = new Image();
+        let imageLoaded = false;
+        let imageLoadError = false;
+
+        img.onload = () => {
+            imageLoaded = true;
+            console.log('Image loaded successfully');
+            requestAnimationFrame(drawAllCanvases);
+        };
+        img.onerror = () => {
+            imageLoadError = true;
+            console.error('Error loading image.');
+            // Draw placeholder or error message on canvases if image fails to load
+            requestAnimationFrame(drawAllCanvases); // Still draw, but with error state
+        };
+        img.src = imageSrc;
+
+        // Patterns for 4, 0, 4
+        const patterns = [
+            // Pattern for 4
+            [
+                [true, false, true],  // row 0
+                [true, false, true],  // row 1
+                [true, true,  true],  // row 2
+                [false, false, true]  // row 3
+            ],
+            // Pattern for 0
+            [
+                [true, true,  true],  // row 0
+                [true, false, true],  // row 1
+                [true, false, true],  // row 2
+                [true, true,  true]  // row 3
+            ],
+            // Pattern for 4 (same as first)
+            [
+                [true, false, true],  // row 0
+                [true, false, true],  // row 1
+                [true, true,  true],  // row 2
+                [false, false, true]  // row 3
+            ]
+        ];
+        
+        // Visible cells based on the "404 Pattern Implementation"
+        // Format: array of [row, col] for each digit
+        const visibleCellsPattern = [
+            // 4
+            [[0,0], [0,2], [1,0], [1,2], [2,0], [2,1], [2,2], [3,2]],
+            // 0
+            [[0,0], [0,1], [0,2], [1,0], [1,2], [2,0], [2,2], [3,0], [3,1], [3,2]],
+            // 4
+            [[0,0], [0,2], [1,0], [1,2], [2,0], [2,1], [2,2], [3,2]],
+        ];
+
+
+        const numCols = 3;
+        const numRows = 4;
+        const cellGapPercent = 0.12; // 10-15% of cell width, let's use 12%
+
+        function drawAllCanvases() {
+            canvases.forEach((canvas, index) => {
+                if (!canvas) {
+                    console.error(`Canvas ${index + 1} not found.`);
+                    return;
+                }
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    console.error(`Could not get 2D context for canvas ${index + 1}.`);
+                    // Consider displaying a message on the page itself if canvas is not supported
+                    canvas.parentElement.innerHTML = `<p>Canvas not supported by your browser. Please update or use a different browser.</p>`;
+                    return;
+                }
+                drawCanvas(canvas, ctx, visibleCellsPattern[index]);
+            });
+        }
+
+        function drawCanvas(canvas, ctx, activePattern) {
+            const dpr = window.devicePixelRatio || 1;
+            const container = canvas.parentElement;
+            const containerWidth = container.clientWidth;
+            
+            // Calculate the width for each canvas.
+            // Considering 3 canvases and 2 gaps between them.
+            // The gap is defined in CSS as clamp(10px, 3vw, 40px). For simplicity in JS,
+            // we'll approximate it based on viewport width, or rely on flexbox to size them.
+            // Best approach: let flexbox determine the canvas width, then set height based on aspect ratio.
+            // The CSS rule `width: 90%; max-width: 1200px;` for `.canvas-container` and flex properties
+            // on children will distribute space. We read the computed width of the canvas.
+            
+            let canvasStyleWidth = parseFloat(getComputedStyle(canvas).width);
+            
+            // Fallback if computed width is zero (e.g. display:none initially)
+            if (!canvasStyleWidth && containerWidth) {
+                 // Estimate based on container width and number of canvases.
+                 // This assumes gaps are handled by flexbox distribution.
+                const numCanvases = canvases.length;
+                // Crude approximation: (Container width - total gap estimate) / numCanvases
+                // For robust gap handling, it's better to let CSS do its job.
+                // Here, we assume flexbox has already sized it.
+                // If canvasStyleWidth is still 0, there might be a layout issue.
+                // We can try a third of the container width as a rough estimate if needed.
+                canvasStyleWidth = (containerWidth / numCanvases) * 0.9; // a bit less to be safe
+            }
+
+
+            // Calculate total gaps width based on number of columns and cellGapPercent
+            // Cell width should be (canvasWidth - (numCols + 1) * gap) / numCols
+            // Gap should be cellWidth * cellGapPercent
+            // So, cellWidth = (canvasWidth - (numCols + 1) * cellWidth * cellGapPercent) / numCols
+            // cellWidth * numCols = canvasWidth - (numCols + 1) * cellWidth * cellGapPercent
+            // cellWidth * numCols + (numCols + 1) * cellWidth * cellGapPercent = canvasWidth
+            // cellWidth * (numCols + (numCols + 1) * cellGapPercent) = canvasWidth
+            // cellWidth = canvasWidth / (numCols + (numCols + 1) * cellGapPercent)
+            
+            let cellWidth = canvasStyleWidth / (numCols + (numCols + 1) * cellGapPercent);
+            let gap = cellWidth * cellGapPercent;
+
+            // Ensure cells are perfect squares: cellHeight = cellWidth
+            let cellHeight = cellWidth;
+            
+            // Calculate canvas dimensions based on cells and gaps
+            const canvasActualWidth = numCols * cellWidth + (numCols + 1) * gap;
+            const canvasActualHeight = numRows * cellHeight + (numRows + 1) * gap;
+
+            // Set canvas internal resolution (for drawing) and display size
+            canvas.width = Math.round(canvasActualWidth * dpr);
+            canvas.height = Math.round(canvasActualHeight * dpr);
+            
+            // Set canvas style size for display, maintaining aspect ratio
+            // The actual width is already determined by flexbox. We set height to maintain square cells.
+            canvas.style.width = `${canvasActualWidth}px`;
+            canvas.style.height = `${canvasActualHeight}px`;
+            
+            ctx.scale(dpr, dpr); // Scale context for high DPI displays
+
+            ctx.clearRect(0, 0, canvasActualWidth, canvasActualHeight);
+            ctx.save();
+
+            // Background for the whole canvas (optional, if cells don't cover everything)
+            // ctx.fillStyle = '#eee';
+            // ctx.fillRect(0, 0, canvasActualWidth, canvasActualHeight);
+
+            for (let r = 0; r < numRows; r++) {
+                for (let c = 0; c < numCols; c++) {
+                    const isCellVisible = activePattern.some(p => p[0] === r && p[1] === c);
+                    
+                    const x = gap + c * (cellWidth + gap);
+                    const y = gap + r * (cellHeight + gap);
+
+                    if (isCellVisible) {
+                        if (imageLoaded && img.complete && img.naturalWidth > 0) {
+                            // Calculate source image section for this cell
+                            // This needs to map the 3x4 grid to the image.
+                            // For now, let's map the cell's relative position in the grid to the image.
+                            // Example: if image aspect ratio matches cell aspect ratio (square here)
+                            const imgGridCols = numCols; // Assuming we want to map the image across the same grid structure
+                            const imgGridRows = numRows;
+
+                            const sx = (c / imgGridCols) * img.naturalWidth;
+                            const sy = (r / imgGridRows) * img.naturalHeight;
+                            const sWidth = (1 / imgGridCols) * img.naturalWidth;
+                            const sHeight = (1 / imgGridRows) * img.naturalHeight;
+                            
+                            ctx.save();
+                            // Create a clipping path for the square cell
+                            ctx.beginPath();
+                            ctx.rect(x, y, cellWidth, cellHeight);
+                            ctx.clip();
+                            
+                            // Draw the image portion
+                            // Maintain aspect ratio of the source image piece
+                            // This might mean the image doesn't fill the square cell, or is cropped.
+                            // To fill, we might need to use cover/contain logic.
+                            // For now, just drawImage with destination fitting the cell.
+                            ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, cellWidth, cellHeight);
+                            ctx.restore();
+
+                        } else if (imageLoadError) {
+                            ctx.fillStyle = 'red'; // Placeholder for image load error
+                            ctx.fillRect(x, y, cellWidth, cellHeight);
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.font = `${Math.min(cellWidth, cellHeight) * 0.3}px sans-serif`;
+                            ctx.fillText('!', x + cellWidth / 2, y + cellHeight / 2);
+                        } else {
+                             // Placeholder if image not yet loaded (or failed silently before error flag)
+                            ctx.fillStyle = 'rgba(0,0,0,0.1)'; // Light grey placeholder
+                            ctx.fillRect(x, y, cellWidth, cellHeight);
+                        }
+                    } else {
+                        // Optional: draw something for non-visible cells (e.g., a very light background)
+                        // ctx.fillStyle = 'rgba(200, 200, 200, 0.2)';
+                        // ctx.fillRect(x, y, cellWidth, cellHeight);
+                    }
+                }
+            }
+            ctx.restore();
+        }
+        
+        function onResize() {
+            // Recalculate and redraw all canvases on window resize
+            // Debounce or throttle this for performance if it becomes an issue
+            requestAnimationFrame(drawAllCanvases);
+        }
+
+        // Initial draw
+        // Wait for image to load (or fail) before first draw
+        // img.onload and img.onerror will trigger the first draw.
+        // If image is already cached and loaded, it might fire immediately.
+
+        // Add resize listener
+        window.addEventListener('resize', onResize);
+        
+        // Fallback for browsers that don't support canvas
+        if (!canvases.every(c => c && typeof c.getContext === 'function')) {
+            const container = document.querySelector('.canvas-container');
+            if (container) {
+                 container.innerHTML = '<p style="color: red; text-align: center; width: 100%;">Your browser does not support HTML5 Canvas. Please update your browser or use a different one to see this content.</p>';
+            }
+        } else {
+            // If image is already in cache and loaded
+            if (img.complete && img.naturalWidth > 0) {
+                if (!imageLoaded && !imageLoadError) { // Ensure onload/onerror hasn't already set this
+                    imageLoaded = true;
+                    console.log('Image was already cached and loaded.');
+                }
+                requestAnimationFrame(drawAllCanvases);
+            } else if (img.complete && img.naturalWidth === 0 && !imageLoadError) {
+                // Image is "complete" but has no data, often means error not yet caught by onerror
+                imageLoadError = true;
+                console.error('Image was cached but seems to be invalid (0 dimensions).');
+                requestAnimationFrame(drawAllCanvases);
+            }
+            // else: onload or onerror will handle the initial draw.
+        }
+
+    </script>
+</body>
+</html>
