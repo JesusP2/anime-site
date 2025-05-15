@@ -28,8 +28,8 @@
         }
         canvas {
             display: block; /* Remove extra space below canvas */
-            background-color: #fff; /* Placeholder background */
-            border: 1px solid #ccc; /* Placeholder border */
+            /* background-color: #fff; */ /* Removed for transparency */
+            /* border: 1px solid #ccc; */ /* Border removed for full transparency */
             /* Width and height will be set by JS to maintain aspect ratio and equality */
         }
         .message-container {
@@ -69,10 +69,10 @@
 
     <script>
         // Canvas rendering logic will go here
-        const canvases = [
-            document.getElementById('canvas1'),
-            document.getElementById('canvas2'),
-            document.getElementById('canvas3')
+        const canvases: (HTMLCanvasElement | null)[] = [
+            document.getElementById('canvas1') as HTMLCanvasElement | null,
+            document.getElementById('canvas2') as HTMLCanvasElement | null,
+            document.getElementById('canvas3') as HTMLCanvasElement | null
         ];
 
         const imageSrc = '/kurapika.jpg'; // Placeholder image path
@@ -120,7 +120,7 @@
         
         // Visible cells based on the "404 Pattern Implementation"
         // Format: array of [row, col] for each digit
-        const visibleCellsPattern = [
+        const visibleCellsPattern: [number,number][][] = [
             // 4
             [[0,0], [0,2], [1,0], [1,2], [2,0], [2,1], [2,2], [3,2]],
             // 0
@@ -137,24 +137,40 @@
         function drawAllCanvases() {
             canvases.forEach((canvas, index) => {
                 if (!canvas) {
-                    console.error(`Canvas ${index + 1} not found.`);
+                    console.error(`Canvas element at index ${index + 1} not found.`);
                     return;
                 }
-                const ctx = canvas.getContext('2d');
+                const currentCanvas = canvas as HTMLCanvasElement;
+                const ctx = currentCanvas.getContext('2d');
+                
+                const patternForCanvas = visibleCellsPattern[index];
+                
+                if (!patternForCanvas) {
+                    console.error(`No pattern found for canvas ${currentCanvas.id || `index ${index}`}. Ensure visibleCellsPattern has an entry for each canvas.`);
+                    return;
+                }
+
                 if (!ctx) {
-                    console.error(`Could not get 2D context for canvas ${index + 1}.`);
-                    // Consider displaying a message on the page itself if canvas is not supported
-                    canvas.parentElement.innerHTML = `<p>Canvas not supported by your browser. Please update or use a different browser.</p>`;
+                    console.error(`Could not get 2D context for canvas ${currentCanvas.id || `index ${index}`}.`);
+                    const parent = currentCanvas.parentElement;
+                    if (parent) {
+                        parent.innerHTML = `<p>Canvas not supported by your browser. Please update or use a different browser.</p>`;
+                    }
                     return;
                 }
-                drawCanvas(canvas, ctx, visibleCellsPattern[index]);
+                // Explicitly assert type here after the check, to satisfy the linter.
+                drawCanvas(currentCanvas, ctx, patternForCanvas as [number, number][]);
             });
         }
 
-        function drawCanvas(canvas, ctx, activePattern) {
+        function drawCanvas(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, activePattern: [number, number][]) {
             const dpr = window.devicePixelRatio || 1;
-            const container = canvas.parentElement;
-            const containerWidth = container.clientWidth;
+            const parentContainer = canvas.parentElement;
+            if (!parentContainer) {
+                console.error(`Parent container not found for canvas ${canvas.id}`);
+                return;
+            }
+            const containerWidth = parentContainer.clientWidth;
             
             // Calculate the width for each canvas.
             // Considering 3 canvases and 2 gaps between them.
@@ -219,7 +235,7 @@
 
             for (let r = 0; r < numRows; r++) {
                 for (let c = 0; c < numCols; c++) {
-                    const isCellVisible = activePattern.some(p => p[0] === r && p[1] === c);
+                    const isCellVisible = activePattern.some((p: [number, number]) => p[0] === r && p[1] === c);
                     
                     const x = gap + c * (cellWidth + gap);
                     const y = gap + r * (cellHeight + gap);
@@ -290,7 +306,13 @@
         window.addEventListener('resize', onResize);
         
         // Fallback for browsers that don't support canvas
-        if (!canvases.every(c => c && typeof c.getContext === 'function')) {
+        if (!canvases.every(c => {
+            if (c) {
+                const canvasElement = c as HTMLCanvasElement; // Cast here for the check
+                return typeof canvasElement.getContext === 'function';
+            }
+            return false;
+        })) {
             const container = document.querySelector('.canvas-container');
             if (container) {
                  container.innerHTML = '<p style="color: red; text-align: center; width: 100%;">Your browser does not support HTML5 Canvas. Please update your browser or use a different one to see this content.</p>';
