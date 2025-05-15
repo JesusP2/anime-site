@@ -107,226 +107,312 @@
         </div>
 
         <script>
-            // Canvas rendering logic will go here
-            const canvases = [
-                document.getElementById("canvas1") as HTMLCanvasElement | null,
-                document.getElementById("canvas2") as HTMLCanvasElement | null,
-                document.getElementById("canvas3") as HTMLCanvasElement | null,
-            ];
+            // --- Constants for Grid and JJK Images ---
+            const NUM_JJK_IMAGES = 29;
+            const JJK_IMAGE_BASE_PATH = "/jjk/jjk"; // e.g., /jjk/jjk1.png
 
-            const imageSrc = "/kurapika.jpg"; // Placeholder image path
-            const img = new Image();
-            let imageLoaded = false;
-            let imageLoadError = false;
-
-            img.onload = () => {
-                imageLoaded = true;
-                console.log("Image loaded successfully");
-                requestAnimationFrame(drawAllCanvases);
-            };
-            img.onerror = () => {
-                imageLoadError = true;
-                console.error("Error loading image.");
-                // Draw placeholder or error message on canvases if image fails to load
-                requestAnimationFrame(drawAllCanvases); // Still draw, but with error state
-            };
-            img.src = imageSrc;
+            const NUM_COLS = 3;
+            const NUM_ROWS = 4;
+            const CELL_GAP_PERCENT = 0.1;
 
             // Format: array of [row, col] for each digit
-            const formatFor4Pattern: [number, number][] = [
-                [0, 0],
-                [0, 2],
-                [1, 0],
-                [1, 2],
-                [2, 0],
-                [2, 1],
-                [2, 2],
+            /** @type {[number, number][]} */
+            const formatFor4Pattern = [
+                [0, 0], [0, 2],
+                [1, 0], [1, 2],
+                [2, 0], [2, 1], [2, 2],
                 [3, 2],
             ];
-            const visibleCellsPattern: [number, number][][] = [
-                formatFor4Pattern,
-                [
-                    [0, 0],
-                    [0, 1],
-                    [0, 2],
-                    [1, 0],
-                    [1, 2],
-                    [2, 0],
-                    [2, 2],
-                    [3, 0],
-                    [3, 1],
-                    [3, 2],
+            /** @type {[number, number][][]} */
+            const visibleCellsPattern = [
+                formatFor4Pattern, // For canvas1
+                [ // For canvas2 (0-like pattern)
+                    [0, 0], [0, 1], [0, 2],
+                    [1, 0], [1, 2],
+                    [2, 0], [2, 2],
+                    [3, 0], [3, 1], [3, 2],
                 ],
-                formatFor4Pattern,
+                formatFor4Pattern, // For canvas3
             ];
 
-            const numCols = 3;
-            const numRows = 4;
-            const cellGapPercent = 0.3;
+            // --- Global State for JJK Image Feature ---
+            /** @type {(HTMLImageElement | null)[]} */
+            let allJJKImages = new Array(NUM_JJK_IMAGES).fill(null);
+            let jjkImagesLoadedCount = 0;
+            let jjkImagesSuccessfullyLoaded = 0;
 
-            function drawAllCanvases() {
-                canvases.forEach((canvas, index) => {
-                    const currentCanvas = canvas as HTMLCanvasElement;
-                    const ctx = currentCanvas.getContext("2d");
-                    if (!ctx) {
-                        console.error(`Failed to get 2D context for canvas ${currentCanvas.id}`);
-                        return;
+            /**
+             * @typedef {object} CanvasState
+             * @property {string} id
+             * @property {HTMLCanvasElement} canvasElement
+             * @property {CanvasRenderingContext2D} ctx
+             * @property {number} canvasIndex
+             * @property {[number, number][]} activePattern - Array of [row, col] tuples
+             * @property {HTMLImageElement | null} defaultImage
+             * @property {HTMLImageElement | null} currentImageToDraw
+             * @property {string | null} hoveredCellKey - format: "r-c" for this canvas
+             * @property {number} [canvasActualWidth]
+             * @property {number} [canvasActualHeight]
+             * @property {number} [cellWidth]
+             * @property {number} [gap]
+             * @property {number} [cellHeight]
+             */
+
+            /** @type {CanvasState[]} */
+            let canvasDisplayStates = [];
+
+            /** @type {Map<string, HTMLImageElement>} */
+            const activeCellToImageMap = new Map(); // Key: "canvasIndex-r-c" -> Image
+
+            const canvasElementsRaw = [
+                document.getElementById("canvas1"),
+                document.getElementById("canvas2"),
+                document.getElementById("canvas3"),
+            ];
+
+            // --- JJK Image Loading Function ---
+            function loadJJKImages() {
+                for (let i = 0; i < NUM_JJK_IMAGES; i++) {
+                    const img = new Image();
+                    img.onload = () => {
+                        allJJKImages[i] = img;
+                        jjkImagesSuccessfullyLoaded++;
+                        jjkImagesLoadedCount++;
+                        if (jjkImagesLoadedCount === NUM_JJK_IMAGES) {
+                            console.log(`All ${NUM_JJK_IMAGES} JJK image load attempts complete. ${jjkImagesSuccessfullyLoaded} successful.`);
+                            assignImagesAndSetupCanvases();
+                        }
+                    };
+                    img.onerror = () => {
+                        console.error(`Error loading image: ${JJK_IMAGE_BASE_PATH}${i + 1}.png`);
+                        allJJKImages[i] = null;
+                        jjkImagesLoadedCount++;
+                        if (jjkImagesLoadedCount === NUM_JJK_IMAGES) {
+                            console.log(`All ${NUM_JJK_IMAGES} JJK image load attempts complete. ${jjkImagesSuccessfullyLoaded} successful.`);
+                            assignImagesAndSetupCanvases();
+                        }
+                    };
+                    img.src = `${JJK_IMAGE_BASE_PATH}${i + 1}.png`;
+                }
+            }
+            
+            // --- Mouse Event Handlers (defined before use in assignImagesAndSetupCanvases) ---
+            /** 
+             * @param {MouseEvent} event 
+             * @param {CanvasState} state 
+             */
+            function handleCanvasMouseMove(event, state) {
+                const { canvasElement, activePattern, defaultImage, cellWidth, gap, cellHeight, canvasIndex } = state;
+                if (typeof cellWidth !== 'number' || typeof gap !== 'number' || typeof cellHeight !== 'number') return;
+
+                const rect = canvasElement.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+                
+                let newHoveredCellKey = null;
+                let newImageToDraw = defaultImage;
+
+                for (let r = 0; r < NUM_ROWS; r++) {
+                    for (let c = 0; c < NUM_COLS; c++) {
+                        const cellX = gap + c * (cellWidth + gap);
+                        const cellY = gap + r * (cellHeight + gap);
+
+                        if (mouseX >= cellX && mouseX < cellX + cellWidth &&
+                            mouseY >= cellY && mouseY < cellY + cellHeight) {
+                            
+                            /** @param {[number, number]} p */
+                            if (activePattern.some(p => p[0] === r && p[1] === c)) {
+                                newHoveredCellKey = `${r}-${c}`; // Store cell as "r-c"
+                                const mapKey = `${canvasIndex}-${r}-${c}`;
+                                newImageToDraw = activeCellToImageMap.get(mapKey) || defaultImage;
+                            }
+                            break; 
+                        }
                     }
-                    const patternForCanvas = visibleCellsPattern[index];
-                    drawCanvas(
-                        currentCanvas,
-                        ctx,
-                        patternForCanvas as [number, number][],
-                    );
-                });
+                    if (newHoveredCellKey !== null && newImageToDraw !== defaultImage) break;
+                    if (newHoveredCellKey !== null) break; 
+                }
+
+                if (state.hoveredCellKey !== newHoveredCellKey || state.currentImageToDraw !== newImageToDraw) {
+                    state.hoveredCellKey = newHoveredCellKey;
+                    state.currentImageToDraw = newImageToDraw;
+                    requestAnimationFrame(() => drawCanvas(state)); // drawCanvas expects CanvasState
+                }
             }
 
-            function drawCanvas(
-                canvas: HTMLCanvasElement,
-                ctx: CanvasRenderingContext2D,
-                activePattern: [number, number][],
-            ) {
+            /** @param {CanvasState} state */
+            function handleCanvasMouseOut(state) {
+                if (state.hoveredCellKey !== null || state.currentImageToDraw !== state.defaultImage) {
+                    state.hoveredCellKey = null;
+                    state.currentImageToDraw = state.defaultImage;
+                    requestAnimationFrame(() => drawCanvas(state)); // drawCanvas expects CanvasState
+                }
+            }
+
+            // --- Setup Canvases with Loaded Images ---
+            function assignImagesAndSetupCanvases() {
+                const availableImages = allJJKImages.filter(img => img && img.complete && img.naturalWidth > 0);
+
+                if (availableImages.length === 0) {
+                    console.error("No JJK images loaded successfully. Canvases will show placeholders.");
+                }
+                
+                let imagePoolForAssignment = [...availableImages];
+
+                canvasElementsRaw.forEach((canvasElRaw, index) => {
+                    if (canvasElRaw instanceof HTMLCanvasElement) {
+                        const canvasEl = canvasElRaw;
+                        const ctx = canvasEl.getContext("2d");
+                        if (!ctx) {
+                            console.error(`Failed to get 2D context for canvas ${canvasEl.id}`);
+                            return;
+                        }
+                        
+                        const defaultImg = imagePoolForAssignment.length > 0 ? imagePoolForAssignment.shift() : null;
+
+                        /** @type {CanvasState} */
+                        const state = {
+                            id: canvasEl.id,
+                            canvasElement: canvasEl,
+                            ctx: ctx,
+                            canvasIndex: index,
+                            activePattern: visibleCellsPattern[index],
+                            defaultImage: defaultImg,
+                            currentImageToDraw: defaultImg,
+                            hoveredCellKey: null,
+                        };
+                        canvasDisplayStates.push(state);
+
+                        canvasEl.addEventListener("mousemove", (event) => handleCanvasMouseMove(event, state));
+                        canvasEl.addEventListener("mouseout", () => handleCanvasMouseOut(state));
+                    } else {
+                        console.warn(`Canvas element with id canvas${index+1} not found or not an HTMLCanvasElement.`);
+                    }
+                });
+
+                let hoverImageAssignIndex = 0;
+                for (const state of canvasDisplayStates) {
+                    state.activePattern.forEach(/** @param {[number, number]} cellTuple */ ([r, c]) => { 
+                        const key = `${state.canvasIndex}-${r}-${c}`;
+                        if (hoverImageAssignIndex < imagePoolForAssignment.length) {
+                            activeCellToImageMap.set(key, imagePoolForAssignment[hoverImageAssignIndex]);
+                            hoverImageAssignIndex++;
+                        }
+                    });
+                }
+                console.log(`${activeCellToImageMap.size} active cells mapped to hover images.`);
+                console.log(`${canvasDisplayStates.filter(s => s.defaultImage).length} canvases have default images.`);
+
+                if (canvasDisplayStates.length > 0) {
+                    requestAnimationFrame(drawAllCanvases);
+                } else {
+                    console.error("No canvases were initialized. Skipping initial draw.");
+                }
+            }
+            
+            // --- Drawing Functions ---
+            /** @param {CanvasState} state */
+            function drawCanvas(state) {
+                const { canvasElement, ctx, activePattern, currentImageToDraw } = state;
                 const dpr = window.devicePixelRatio || 1;
-                const parentContainer = canvas.parentElement;
+                const parentContainer = canvasElement.parentElement;
+
                 if (!parentContainer) {
-                    console.error(
-                        `Parent container not found for canvas ${canvas.id}`,
-                    );
+                    console.error(`Parent container not found for canvas ${canvasElement.id}`);
                     return;
                 }
-                const containerWidth = parentContainer.clientWidth;
 
-                let canvasStyleWidth = parseFloat(
-                    getComputedStyle(canvas).width,
-                );
+                const containerWidth = parentContainer.clientWidth;
+                let canvasStyleWidth = parseFloat(getComputedStyle(canvasElement).width);
                 if (!canvasStyleWidth && containerWidth) {
-                    const numCanvases = canvases.length;
-                    canvasStyleWidth = (containerWidth / numCanvases) * 0.9; // a bit less to be safe
+                    const numCanvases = canvasDisplayStates.length > 0 ? canvasDisplayStates.length : 3;
+                    canvasStyleWidth = (containerWidth / numCanvases) * 0.9;
                 }
 
-                let cellWidth =
-                    canvasStyleWidth /
-                    (numCols + (numCols + 1) * cellGapPercent);
-                let gap = cellWidth * cellGapPercent;
+                state.cellWidth = canvasStyleWidth / (NUM_COLS + (NUM_COLS + 1) * CELL_GAP_PERCENT);
+                state.gap = state.cellWidth * CELL_GAP_PERCENT;
+                state.cellHeight = state.cellWidth;
 
-                let cellHeight = cellWidth;
+                state.canvasActualWidth = NUM_COLS * state.cellWidth + (NUM_COLS + 1) * state.gap;
+                state.canvasActualHeight = NUM_ROWS * state.cellHeight + (NUM_ROWS + 1) * state.gap;
 
-                // Calculate canvas dimensions based on cells and gaps
-                const canvasActualWidth =
-                    numCols * cellWidth + (numCols + 1) * gap;
-                const canvasActualHeight =
-                    numRows * cellHeight + (numRows + 1) * gap;
+                canvasElement.width = Math.round(state.canvasActualWidth * dpr);
+                canvasElement.height = Math.round(state.canvasActualHeight * dpr);
+                canvasElement.style.width = `${state.canvasActualWidth}px`;
+                canvasElement.style.height = `${state.canvasActualHeight}px`;
 
-                // Set canvas internal resolution (for drawing) and display size
-                canvas.width = Math.round(canvasActualWidth * dpr);
-                canvas.height = Math.round(canvasActualHeight * dpr);
-
-                // Set canvas style size for display, maintaining aspect ratio
-                // The actual width is already determined by flexbox. We set height to maintain square cells.
-                canvas.style.width = `${canvasActualWidth}px`;
-                canvas.style.height = `${canvasActualHeight}px`;
-
-                ctx.scale(dpr, dpr); // Scale context for high DPI displays
-
-                ctx.clearRect(0, 0, canvasActualWidth, canvasActualHeight);
                 ctx.save();
-                for (let r = 0; r < numRows; r++) {
-                    for (let c = 0; c < numCols; c++) {
-                        const isCellVisible = activePattern.some(
-                            (p: [number, number]) => p[0] === r && p[1] === c,
-                        );
-
-                        const x = gap + c * (cellWidth + gap);
-                        const y = gap + r * (cellHeight + gap);
-
+                ctx.scale(dpr, dpr);
+                ctx.clearRect(0, 0, state.canvasActualWidth, state.canvasActualHeight);
+                
+                for (let r = 0; r < NUM_ROWS; r++) {
+                    for (let c = 0; c < NUM_COLS; c++) {
+                        /** @param {[number, number]} p */
+                        const isCellVisible = activePattern.some(p => p[0] === r && p[1] === c);
                         if (!isCellVisible) continue;
-                        if (
-                            imageLoaded &&
-                            img.complete &&
-                            img.naturalWidth > 0
-                        ) {
-                            const imgGridCols = numCols; // Assuming we want to map the image across the same grid structure
-                            const imgGridRows = numRows;
 
-                            const sx = (c / imgGridCols) * img.naturalWidth;
-                            const sy = (r / imgGridRows) * img.naturalHeight;
-                            const sWidth = (1 / imgGridCols) * img.naturalWidth;
-                            const sHeight =
-                                (1 / imgGridRows) * img.naturalHeight;
+                        const x = (state.gap ?? 0) + c * ((state.cellWidth ?? 0) + (state.gap ?? 0));
+                        const y = (state.gap ?? 0) + r * ((state.cellHeight ?? 0) + (state.gap ?? 0));
+
+                        const imageToRender = currentImageToDraw;
+
+                        if (imageToRender && imageToRender.complete && imageToRender.naturalWidth > 0) {
+                            const imgGridCols = NUM_COLS;
+                            const imgGridRows = NUM_ROWS;
+                            const sx = (c / imgGridCols) * imageToRender.naturalWidth;
+                            const sy = (r / imgGridRows) * imageToRender.naturalHeight;
+                            const sWidth = (1 / imgGridCols) * imageToRender.naturalWidth;
+                            const sHeight = (1 / imgGridRows) * imageToRender.naturalHeight;
 
                             ctx.save();
-                            // Create a clipping path for the square cell
                             ctx.beginPath();
-                            ctx.rect(x, y, cellWidth, cellHeight);
+                            ctx.rect(x, y, state.cellWidth ?? 0, state.cellHeight ?? 0);
                             ctx.clip();
-                            ctx.drawImage(
-                                img,
-                                sx,
-                                sy,
-                                sWidth,
-                                sHeight,
-                                x,
-                                y,
-                                cellWidth,
-                                cellHeight,
-                            );
+                            ctx.drawImage(imageToRender, sx, sy, sWidth, sHeight, x, y, state.cellWidth ?? 0, state.cellHeight ?? 0);
                             ctx.restore();
-                        } else if (imageLoadError) {
-                            ctx.fillStyle = "red"; // Placeholder for image load error
-                            ctx.fillRect(x, y, cellWidth, cellHeight);
-                            ctx.fillStyle = "white";
-                            ctx.textAlign = "center";
-                            ctx.textBaseline = "middle";
-                            ctx.font = `${Math.min(cellWidth, cellHeight) * 0.3}px sans-serif`;
-                            ctx.fillText(
-                                "!",
-                                x + cellWidth / 2,
-                                y + cellHeight / 2,
-                            );
                         } else {
-                            // Placeholder if image not yet loaded (or failed silently before error flag)
-                            ctx.fillStyle = "rgba(0,0,0,0.1)"; // Light grey placeholder
-                            ctx.fillRect(x, y, cellWidth, cellHeight);
+                            ctx.fillStyle = imageToRender === null ? "rgba(0,0,0,0.1)" : "red";
+                            ctx.fillRect(x, y, state.cellWidth ?? 0, state.cellHeight ?? 0);
+                            if (imageToRender !== null) {
+                                ctx.fillStyle = "white";
+                                ctx.textAlign = "center";
+                                ctx.textBaseline = "middle";
+                                ctx.font = `${Math.min(state.cellWidth ?? 20, state.cellHeight ?? 20) * 0.3}px sans-serif`;
+                                ctx.fillText("!", x + (state.cellWidth ?? 0) / 2, y + (state.cellHeight ?? 0) / 2);
+                            }
                         }
                     }
                 }
                 ctx.restore();
             }
 
+            function drawAllCanvases() {
+                canvasDisplayStates.forEach(state => { // state is CanvasState due to canvasDisplayStates typing
+                    if (state.ctx) {
+                         drawCanvas(state);
+                    }
+                });
+            }
+            
             function onResize() {
                 requestAnimationFrame(drawAllCanvases);
             }
             window.addEventListener("resize", onResize);
-            // If image is already in cache and loaded
-            if (img.complete && img.naturalWidth > 0) {
-                if (!imageLoaded && !imageLoadError) {
-                    // Ensure onload/onerror hasn't already set this
-                    imageLoaded = true;
-                    console.log("Image was already cached and loaded.");
-                }
-                requestAnimationFrame(drawAllCanvases);
-            } else if (
-                img.complete &&
-                img.naturalWidth === 0 &&
-                !imageLoadError
-            ) {
-                // Image is "complete" but has no data, often means error not yet caught by onerror
-                imageLoadError = true;
-                console.error(
-                    "Image was cached but seems to be invalid (0 dimensions).",
-                );
-                requestAnimationFrame(drawAllCanvases);
-            }
+            
+            loadJJKImages();
 
-            // Interactive tilt effect
+            // Interactive tilt effect for canvases (original logic)
             const MAX_ROTATE = 30;
             let currentRotateX = 0;
             let currentRotateY = 0;
             let targetRotateX = 0;
             let targetRotateY = 0;
+
+            // Parallax effect for background (original logic)
             const parallaxFactor = 0.5;
 
-            function handleMouseMove(event: MouseEvent) {
+            /** @param {MouseEvent} event */
+            function handleGlobalMouseMove(event) {
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
 
@@ -334,34 +420,31 @@
                 const deltaY = event.clientY - centerY;
 
                 targetRotateY = (deltaX / centerX) * MAX_ROTATE;
-                // Invert deltaY for natural feeling: mouse up -> canvas tilts top towards user (negative rotateX)
                 targetRotateX = -(deltaY / centerY) * MAX_ROTATE;
 
-                // Update CSS variables for spotlight position
                 document.body.style.setProperty('--mouse-x', `${event.clientX}px`);
                 document.body.style.setProperty('--mouse-y', `${event.clientY}px`);
             }
 
             function updateTransforms() {
-                // Lerp for smoother animation
                 currentRotateX += (targetRotateX - currentRotateX) * 0.1;
                 currentRotateY += (targetRotateY - currentRotateY) * 0.1;
 
-                canvases.forEach((canvas) => {
-                    if (canvas) {
-                        canvas.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+                canvasElementsRaw.forEach((canvasEl) => {
+                    if (canvasEl instanceof HTMLCanvasElement) {
+                        canvasEl.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
                     }
                 });
-                const parallaxX = (-currentRotateY / MAX_ROTATE) * (50 * parallaxFactor); // currentRotateY is based on deltaX
-                const parallaxY = (-currentRotateX / MAX_ROTATE) * (50 * parallaxFactor); // currentRotateX is based on deltaY (inverted)
-
-                document.body.style.backgroundPosition = `calc(50% + ${-parallaxX}px) calc(50% + ${parallaxY}px)`;
+                
+                const parallaxXVal = (-currentRotateY / MAX_ROTATE) * (50 * parallaxFactor);
+                const parallaxYVal = (-currentRotateX / MAX_ROTATE) * (50 * parallaxFactor);
+                document.body.style.backgroundPosition = `calc(50% + ${-parallaxXVal}px) calc(50% + ${parallaxYVal}px)`;
 
                 requestAnimationFrame(updateTransforms);
             }
 
-            document.body.addEventListener("mousemove", handleMouseMove);
-            requestAnimationFrame(updateTransforms); // Start the animation loop
+            document.body.addEventListener("mousemove", handleGlobalMouseMove);
+            requestAnimationFrame(updateTransforms);
         </script>
     </body>
 </html>
