@@ -1,4 +1,5 @@
 import { RESEND_API_KEY, EMAIL_FROM } from "astro:env/server";
+import { Resend } from "resend"
 
 export async function sendEmail(email: string, subject: string, html: string) {
   const res = await fetch("https://api.resend.com/emails", {
@@ -19,3 +20,4 @@ export async function sendEmail(email: string, subject: string, html: string) {
     const data = await res.json();
   }
 }
+export const resend = new Resend(RESEND_API_KEY);

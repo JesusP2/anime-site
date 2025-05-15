@@ -1,22 +1,22 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDb } from "./db/pool";
-import { magicLink, emailOTP, username, captcha } from "better-auth/plugins";
+import { magicLink, emailOTP, username } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import {
   BETTER_AUTH_SECRET,
-  CLOUDFLARE_TURNSTILE_SECRET_KEY,
+  EMAIL_FROM,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
 } from "astro:env/server";
-import { sendEmail } from "./email";
-import { magicLinkTemplate } from "./email/templates/magic-link";
-import { forgotPasswordTemplate } from "./email/templates/otp";
+import { resend, sendEmail } from "./email";
 import { BASE_URL } from "astro:env/client";
 import type { APIContext } from "astro";
 import type { ActionAPIContext } from "astro:actions";
 import { redis } from "./db/redis";
+import { magicLinkTemplate } from "./email/templates/magic-link";
+import { forgotPasswordTemplate } from "./email/templates/otp";
 
 export function getAuth(context: APIContext | ActionAPIContext) {
   const db = getDb();
@@ -41,8 +41,6 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       },
       set: async (key, value, ttl) => {
         if (ttl) await redis.set(key, value, { ex: ttl });
-        // or for ioredis:
-        // if (ttl) await redis.set(key, value, 'EX', ttl)
         else await redis.set(key, value);
       },
       delete: async (key) => {
@@ -58,14 +56,20 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       passkey(),
       magicLink({
         sendMagicLink: async ({ email, url }) => {
-          const template = magicLinkTemplate(url);
-          await sendEmail(email, "Magic link", template);
+          await resend.emails.send({
+            from: EMAIL_FROM,
+            to: email,
+            subject: "Magic link",
+            react: magicLinkTemplate(url),
+          });
         },
       }),
       emailOTP({
         async sendVerificationOTP({ email, otp }) {
-          const template = forgotPasswordTemplate(otp);
-          await sendEmail(email, "Reset password", template);
+          // TODO: implement emailOTP
+          console.log('sendVerificationOTP');
+          // const template = forgotPasswordTemplate(otp);
+          // await sendEmail(email, "Reset password", template);
         },
       }),
     ],
@@ -76,11 +80,12 @@ export function getAuth(context: APIContext | ActionAPIContext) {
       enabled: true,
       sendResetPassword: async ({ user, token }) => {
         const url = BASE_URL + "/auth/reset-password/" + token;
-        await sendEmail(
-          user.email,
-          "Reset password",
-          forgotPasswordTemplate(url),
-        );
+        await resend.emails.send({
+          from: EMAIL_FROM,
+          to: user.email,
+          subject: "Reset password",
+          react: forgotPasswordTemplate(url),
+        });
       },
     },
     baseURL: BASE_URL,
