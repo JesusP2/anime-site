@@ -38,9 +38,9 @@ if (Astro.locals.user) {
         <div class="grid gap-2">
           <div class="flex items-center gap-x-1">
             <label class={labelVariants()} for="password">Password</label>
-            <button class="eye-btn" type="button" class="hover:text-gray-600">
-              <Eye className="eye-line" size={17} />
-              <EyeSlash className="eye-off-line hidden" size={17} />
+            <button class="reset-password-eye-btn" type="button" class="hover:text-gray-600">
+              <Eye className="reset-password-eye-line" size={17} />
+              <EyeSlash className="reset-password-eye-off-line hidden" size={17} />
             </button>
           </div>
           <input
@@ -57,9 +57,9 @@ if (Astro.locals.user) {
             <label class={labelVariants()} for="confirmPassword"
               >Confirm Password</label
             >
-            <button class="eye-btn-2" type="button" class="hover:text-gray-600">
-              <Eye className="eye-line-2" size={17} />
-              <EyeSlash className="eye-off-line-2 hidden" size={17} />
+            <button class="reset-password-eye-btn-2" type="button" class="hover:text-gray-600">
+              <Eye className="reset-password-eye-line-2" size={17} />
+              <EyeSlash className="reset-password-eye-off-line-2 hidden" size={17} />
             </button>
           </div>
           <input
@@ -86,8 +86,8 @@ if (Astro.locals.user) {
   import { authClient } from "@/lib/auth-client";
   import { eyeBtnEvent } from "@/lib/auth-events";
   function initializeEvents() {
-    eyeBtnEvent();
-    eyeBtnEvent("2");
+    eyeBtnEvent('reset-password');
+    eyeBtnEvent('reset-password', "2");
     const form = document.getElementById("reset-password-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
     form?.addEventListener("submit", async (e) => {
@@ -113,5 +113,5 @@ if (Astro.locals.user) {
     });
   }
   initializeEvents();
-  document.addEventListener("astro:after-swap", initializeEvents);
+  document.addEventListener("astro:page-load", initializeEvents);
 </script>

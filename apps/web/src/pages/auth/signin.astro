@@ -11,7 +11,7 @@ import { Eye, EyeOff } from "lucide-react";
 if (Astro.locals.user) {
   return Astro.redirect("/");
 }
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=31536000");
 ---
 
 <AuthLayout title="Login">
@@ -37,7 +37,7 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
   <Fragment slot="card-content">
     <section class="mb-4 flex flex-col gap-y-4">
       <button
-        id="google-btn"
+        id="signin-google-btn"
         class={cn(
           buttonVariants({ variant: "outline" }),
           "w-full flex gap-x-2",
@@ -74,10 +74,10 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
           <div class="flex items-center h-[14px]">
             <div class="flex items-center gap-x-1">
               <label class={labelVariants()} for="password">Password</label>
-              <button class="eye-btn p-1 rounded hover:bg-muted" type="button">
-                <Eye className="eye-line" size={17} strokeWidth={1.5} />
+              <button class="signin-eye-btn p-1 rounded hover:bg-muted" type="button">
+                <Eye className="signin-eye-line" size={17} strokeWidth={1.5} />
                 <EyeOff
-                  className="eye-off-line hidden"
+                  className="signin-eye-off-line hidden"
                   size={17}
                   strokeWidth={1.5}
                 />
@@ -98,7 +98,10 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
           />
         </div>
         <Turnstile />
-        <button type="submit" class={cn(buttonVariants({ variant: "default" }), "w-full")}>
+        <button
+          type="submit"
+          class={cn(buttonVariants({ variant: "default" }), "w-full")}
+        >
           Login
         </button>
         <a
@@ -120,8 +123,8 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
   import { authClient } from "@/lib/auth-client";
   import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-events";
   function initializeEvents() {
-    googleBtnEvent();
-    eyeBtnEvent();
+    googleBtnEvent('signin');
+    eyeBtnEvent('signin');
 
     const form = document.getElementById("signin-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
@@ -145,7 +148,5 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
       }
     });
   }
-
-  initializeEvents();
-  document.addEventListener("astro:after-swap", initializeEvents);
+  document.addEventListener("astro:page-load", initializeEvents);
 </script>

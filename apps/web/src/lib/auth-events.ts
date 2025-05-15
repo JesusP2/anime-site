@@ -1,7 +1,7 @@
 import { authClient } from "@/lib/auth-client";
 
-export function googleBtnEvent() {
-  const googleBtn = document.querySelector("#google-btn");
+export function googleBtnEvent(prefix: string) {
+  const googleBtn = document.querySelector(`#${prefix}-google-btn`);
   googleBtn?.addEventListener("click", async () => {
     await authClient.signIn.social({
       provider: "google",
@@ -10,11 +10,11 @@ export function googleBtnEvent() {
   });
 }
 
-export function eyeBtnEvent(btn: "1" | "2" = "1") {
-  const prefix = btn === "1" ? "" : "-2";
-  const eyeBtn = document.querySelector(`.eye-btn${prefix}`);
-  const eyeLineIcon = eyeBtn?.querySelector(`.eye-line${prefix}`);
-  const eyeOffLineIcon = eyeBtn?.querySelector(`.eye-off-line${prefix}`);
+export function eyeBtnEvent(prefix: string, btn: "1" | "2" = "1") {
+  const suffix = btn === "1" ? "" : "-2";
+  const eyeBtn = document.querySelector(`.${prefix}-eye-btn${suffix}`);
+  const eyeLineIcon = eyeBtn?.querySelector(`.${prefix}-eye-line${suffix}`);
+  const eyeOffLineIcon = eyeBtn?.querySelector(`.${prefix}-eye-off-line${suffix}`);
   const frameContainer = document.getElementById(
     "frame-animation",
   ) as HTMLElement | null;

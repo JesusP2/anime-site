@@ -37,7 +37,7 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
   <Fragment slot="card-content">
     <section class="mb-4 flex flex-col gap-y-4">
       <button
-        id="google-btn"
+        id="signup-google-btn"
         class={cn(
           buttonVariants({ variant: "outline" }),
           "w-full flex gap-x-2",
@@ -74,9 +74,9 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
           <div class="flex items-center">
             <div class="flex items-center gap-x-1">
               <label class={labelVariants()} for="password">Password</label>
-              <button class="eye-btn" type="button" class="hover:text-gray-600"
-                ><Eye className="eye-line" size={17} />
-                <EyeSlash className="eye-off-line hidden" size={17} />
+              <button class="signup-eye-btn" type="button" class="hover:text-gray-600"
+                ><Eye className="signup-eye-line" size={17} />
+                <EyeSlash className="signup-eye-off-line hidden" size={17} />
               </button>
             </div>
           </div>
@@ -105,8 +105,8 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
   import { authClient } from "@/lib/auth-client";
   import { googleBtnEvent, eyeBtnEvent } from "@/lib/auth-events";
   function initializeEvents() {
-    googleBtnEvent();
-    eyeBtnEvent();
+    googleBtnEvent('signup');
+    eyeBtnEvent('signup');
     const form = document.getElementById("signup-form");
     const formError = document.querySelector<HTMLSpanElement>("#form-error");
     form?.addEventListener("submit", async (e) => {
@@ -130,6 +130,5 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
       }
     });
   }
-  initializeEvents();
-  document.addEventListener("astro:after-swap", initializeEvents);
+  document.addEventListener('astro:page-load', initializeEvents)
 </script>

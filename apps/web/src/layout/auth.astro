@@ -54,7 +54,14 @@ const isDarkMode = Astro.cookies.get("theme")?.value === "dark";
       class="grid place-items-center bg-[url('/auth/light/bg1.avif')] dark:bg-[url('/auth/night/bg1.avif')] bg-no-repeat bg-cover overflow-hidden absolute top-0 left-0 w-full h-full z-40"
       style="view-transition-name: auth-layer-4"
     >
-      <a id="wood-sign" class="absolute hidden md:block" href="/">
+      <a
+        id="wood-sign"
+        style={{
+          "view-transition-name": "wood-sign",
+        }}
+        class="absolute hidden md:block"
+        href="/"
+      >
         <img src="/auth/wood-sign.avif" />
       </a>
       <div

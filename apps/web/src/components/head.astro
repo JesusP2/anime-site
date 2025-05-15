@@ -51,10 +51,6 @@ const image = Astro.props.image || `${BASE_URL}/favicon.svg`;
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={image} />
   <ClientRouter />
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-    async
-    defer></script>
   <script is:inline>
     function updateTheme() {
       const isDarkMode = document.cookie.includes("theme=dark");
