@@ -2,6 +2,7 @@
 import Head from "@/components/head.astro";
 import QuizLayout from "@/layout/challenge.astro";
 import { MyChallenges as MyChallengesInner } from "@/components/my-challenges";
+import { UnexpectedError } from "@/components/unexpected-error";
 import { getChallenges } from "@/lib/games/challenge/queries";
 import {
   getCurrentPage,
@@ -26,7 +27,7 @@ let challenges = await getChallenges(userId, Astro.url.searchParams, recordsPerP
   <Head title={title} description={description} />
   {
     !challenges.success ? (
-      challenges.error && <p>{challenges.error}</p>
+      challenges.error && <UnexpectedError client:load />
     ) : (
       <MyChallengesInner
         challenges={challenges.value}

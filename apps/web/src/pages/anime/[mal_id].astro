@@ -1,6 +1,6 @@
 ---
 import MainLayout from "@/layout/main.astro";
-
+import { UnexpectedError } from "@/components/unexpected-error";
 import { AnimeDetailsPage } from "@/components/anime.page.tsx";
 import { getAnime } from "@/lib/anime/queries";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
@@ -21,7 +21,7 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
     anime.success ? (
       <AnimeDetailsPage anime={anime.value} client:load />
     ) : (
-      <div>Error</div>
+      <UnexpectedError client:load />
     )
   }
 </MainLayout>

@@ -86,7 +86,7 @@ export function FilterModal({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl overflow-y-auto max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle>Filter Options</DialogTitle>
+          <DialogTitle className="font-geist">Filter Options</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-6">

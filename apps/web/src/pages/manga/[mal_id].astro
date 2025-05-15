@@ -1,6 +1,7 @@
 ---
 import MainLayout from "@/layout/main.astro";
 import { MangaDetailsPage } from "@/components/manga.page.tsx";
+import { UnexpectedError } from "@/components/unexpected-error";
 import { getManga } from "@/lib/manga/queries";
 const mal_id = parseInt(Astro.params.mal_id || "1") || 1;
 const manga = await getManga(mal_id);
@@ -24,7 +25,7 @@ Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
     manga.success ? (
       <MangaDetailsPage manga={manga.value} client:load />
     ) : (
-      <div>Error</div>
+      <UnexpectedError client:load />
     )
   }
 </MainLayout>
