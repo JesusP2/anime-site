@@ -1,5 +1,6 @@
 ---
-// No server-side Astro logic needed for the basic structure yet
+import '@/styles/global.css';
+import { buttonVariants } from "@/components/ui/button";
 ---
 
 <html lang="en">
@@ -82,20 +83,13 @@
                 text-align: center;
                 margin-top: 20px;
             }
-            h1 {
-                font-size: 2rem;
-                color: #333;
-            }
-            p {
-                font-size: 1rem;
-                color: #555;
-            }
-            a {
-                color: #007bff;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
+            .home-button {
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 25px;
+                z-index: 10; /* Ensure it's above the overlay */
             }
         </style>
     </head>
@@ -105,6 +99,7 @@
             <canvas id="canvas2"></canvas>
             <canvas id="canvas3"></canvas>
         </div>
+        <a href="/" class={buttonVariants({ variant: 'link', className: 'home-button' })}>Home</a>
 
         <script>
             // --- Constants for Grid and JJK Images ---
@@ -115,15 +110,12 @@
             const NUM_ROWS = 4;
             const CELL_GAP_PERCENT = 0.1;
 
-            // Format: array of [row, col] for each digit
-            /** @type {[number, number][]} */
             const formatFor4Pattern = [
                 [0, 0], [0, 2],
                 [1, 0], [1, 2],
                 [2, 0], [2, 1], [2, 2],
                 [3, 2],
             ];
-            /** @type {[number, number][][]} */
             const visibleCellsPattern = [
                 formatFor4Pattern, // For canvas1
                 [ // For canvas2 (0-like pattern)
@@ -135,34 +127,11 @@
                 formatFor4Pattern, // For canvas3
             ];
 
-            // --- Global State for JJK Image Feature ---
-            /** @type {(HTMLImageElement | null)[]} */
             let allJJKImages = new Array(NUM_JJK_IMAGES).fill(null);
             let jjkImagesLoadedCount = 0;
             let jjkImagesSuccessfullyLoaded = 0;
-
-            /**
-             * @typedef {object} CanvasState
-             * @property {string} id
-             * @property {HTMLCanvasElement} canvasElement
-             * @property {CanvasRenderingContext2D} ctx
-             * @property {number} canvasIndex
-             * @property {[number, number][]} activePattern - Array of [row, col] tuples
-             * @property {HTMLImageElement | null} defaultImage
-             * @property {HTMLImageElement | null} currentImageToDraw
-             * @property {string | null} hoveredCellKey - format: "r-c" for this canvas
-             * @property {number} [canvasActualWidth]
-             * @property {number} [canvasActualHeight]
-             * @property {number} [cellWidth]
-             * @property {number} [gap]
-             * @property {number} [cellHeight]
-             */
-
-            /** @type {CanvasState[]} */
             let canvasDisplayStates = [];
-
-            /** @type {Map<string, HTMLImageElement>} */
-            const activeCellToImageMap = new Map(); // Key: "canvasIndex-r-c" -> Image
+            const activeCellToImageMap = new Map();
 
             const canvasElementsRaw = [
                 document.getElementById("canvas1"),
@@ -170,7 +139,6 @@
                 document.getElementById("canvas3"),
             ];
 
-            // --- JJK Image Loading Function ---
             function loadJJKImages() {
                 for (let i = 0; i < NUM_JJK_IMAGES; i++) {
                     const img = new Image();
@@ -195,13 +163,7 @@
                     img.src = `${JJK_IMAGE_BASE_PATH}${i + 1}.png`;
                 }
             }
-            
-            // --- Mouse Event Handlers (defined before use in assignImagesAndSetupCanvases) ---
-            /** 
-             * @param {MouseEvent} event 
-             * @param {CanvasState} state 
-             */
-            function handleCanvasMouseMove(event, state) {
+            function handleCanvasMouseMove(event: MouseEvent, state: any) {
                 const { canvasElement, activePattern, defaultImage, cellWidth, gap, cellHeight, canvasIndex } = state;
                 if (typeof cellWidth !== 'number' || typeof gap !== 'number' || typeof cellHeight !== 'number') return;
 
@@ -220,8 +182,7 @@
                         if (mouseX >= cellX && mouseX < cellX + cellWidth &&
                             mouseY >= cellY && mouseY < cellY + cellHeight) {
                             
-                            /** @param {[number, number]} p */
-                            if (activePattern.some(p => p[0] === r && p[1] === c)) {
+                            if (activePattern.some((p: any) => p[0] === r && p[1] === c)) {
                                 newHoveredCellKey = `${r}-${c}`; // Store cell as "r-c"
                                 const mapKey = `${canvasIndex}-${r}-${c}`;
                                 newImageToDraw = activeCellToImageMap.get(mapKey) || defaultImage;
@@ -240,8 +201,7 @@
                 }
             }
 
-            /** @param {CanvasState} state */
-            function handleCanvasMouseOut(state) {
+            function handleCanvasMouseOut(state: any) {
                 if (state.hoveredCellKey !== null || state.currentImageToDraw !== state.defaultImage) {
                     state.hoveredCellKey = null;
                     state.currentImageToDraw = state.defaultImage;
@@ -270,7 +230,6 @@
                         
                         const defaultImg = imagePoolForAssignment.length > 0 ? imagePoolForAssignment.shift() : null;
 
-                        /** @type {CanvasState} */
                         const state = {
                             id: canvasEl.id,
                             canvasElement: canvasEl,
@@ -292,7 +251,7 @@
 
                 let hoverImageAssignIndex = 0;
                 for (const state of canvasDisplayStates) {
-                    state.activePattern.forEach(/** @param {[number, number]} cellTuple */ ([r, c]) => { 
+                    state.activePattern.forEach(([r, c]) => { 
                         const key = `${state.canvasIndex}-${r}-${c}`;
                         if (hoverImageAssignIndex < imagePoolForAssignment.length) {
                             activeCellToImageMap.set(key, imagePoolForAssignment[hoverImageAssignIndex]);
@@ -309,10 +268,7 @@
                     console.error("No canvases were initialized. Skipping initial draw.");
                 }
             }
-            
-            // --- Drawing Functions ---
-            /** @param {CanvasState} state */
-            function drawCanvas(state) {
+            function drawCanvas(state: any) {
                 const { canvasElement, ctx, activePattern, currentImageToDraw } = state;
                 const dpr = window.devicePixelRatio || 1;
                 const parentContainer = canvasElement.parentElement;
@@ -347,8 +303,7 @@
                 
                 for (let r = 0; r < NUM_ROWS; r++) {
                     for (let c = 0; c < NUM_COLS; c++) {
-                        /** @param {[number, number]} p */
-                        const isCellVisible = activePattern.some(p => p[0] === r && p[1] === c);
+                        const isCellVisible = activePattern.some((p: any) => p[0] === r && p[1] === c);
                         if (!isCellVisible) continue;
 
                         const x = (state.gap ?? 0) + c * ((state.cellWidth ?? 0) + (state.gap ?? 0));
@@ -402,17 +357,15 @@
             loadJJKImages();
 
             // Interactive tilt effect for canvases (original logic)
-            const MAX_ROTATE = 30;
+            const MAX_ROTATE = 20;
             let currentRotateX = 0;
             let currentRotateY = 0;
             let targetRotateX = 0;
             let targetRotateY = 0;
 
-            // Parallax effect for background (original logic)
             const parallaxFactor = 0.5;
 
-            /** @param {MouseEvent} event */
-            function handleGlobalMouseMove(event) {
+            function handleGlobalMouseMove(event: MouseEvent) {
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
 
