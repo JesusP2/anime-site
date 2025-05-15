@@ -53,11 +53,11 @@ export function AppSidebar({
         <SidebarHeader className="p-1 pt-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton className="truncate font-semibold" asChild>
+              <SidebarMenuButton className="truncate font-semibold hover:bg-opacity-0 active:bg-opacity-0 group" asChild>
                 <a href="/">
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
-                    <span className="sm:block hidden text-lg font-semibold">
+                    <span className="sm:block hidden text-lg font-semibold text-neutral-200 dark:hover:text-white">
                       NotMyAnimeList
                     </span>
                   </div>
