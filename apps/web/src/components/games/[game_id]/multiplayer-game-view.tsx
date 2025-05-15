@@ -488,7 +488,7 @@ export function MultiPlayerGame({
         </div>
         <div className="mt-4 mx-auto">
           <SongAutocomplete
-            debounce={100}
+            debounce={150}
             ignoreThemes={[]}
             disabled={!isPlaying || !videoReady || !!currentAnswer?.name}
             value={currentAnswer?.name ?? ""}
