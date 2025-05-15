@@ -33,9 +33,9 @@ type CommonProps = {
     SetStateAction<
       {
         [K in keyof AnimeFilters | keyof MangaFilters]:
-          | string[]
-          | string
-          | boolean;
+        | string[]
+        | string
+        | boolean;
       } & { q: string }
     >
   >;
@@ -47,15 +47,24 @@ export function FilterModal({
   setFilters,
   searchType,
   setSearchType,
+  createSearchLink,
 }: {
   children: ReactNode;
   searchType: Entity;
   setSearchType: (searchType: Entity) => void;
+  createSearchLink: (filters?: {
+    [K in keyof AnimeFilters | keyof MangaFilters]:
+    | string[]
+    | string
+    | boolean;
+  } & { q: string }) => string;
 } & CommonProps) {
   const [_filters, _setFilters] = useState(filters);
 
   function onClose() {
-    setFilters(_filters);
+    setFilters(_filters)
+    const link = createSearchLink(_filters);
+    window.location.href = link;
   }
 
   const basicFilters = objectEntries(options).reduce((acc, [key, value]) => {
@@ -208,8 +217,8 @@ function RadioGroupFilters({
   name: string;
   label: string;
   options:
-    | AnimeFilters[keyof AnimeFilters]["options"]
-    | MangaFilters[keyof MangaFilters]["options"];
+  | AnimeFilters[keyof AnimeFilters]["options"]
+  | MangaFilters[keyof MangaFilters]["options"];
   value: string | boolean;
   onChange: (value: string | boolean) => void;
 }) {

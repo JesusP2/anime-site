@@ -97,9 +97,9 @@ export function SearchWithFilters(props: Props) {
       return acc;
     }, 0);
   };
-  function createSearchLink() {
+  function createSearchLink(_filters = filters) {
     const searchParams = new URLSearchParams();
-    objectEntries(filters).forEach(([key, value]) => {
+    objectEntries(_filters).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((v) => searchParams.append(key as string, v));
       } else {
@@ -147,6 +147,7 @@ export function SearchWithFilters(props: Props) {
           setFilters={setFilters}
           searchType={searchType}
           setSearchType={setSearchType}
+          createSearchLink={createSearchLink}
         >
           <Button
             type="button"

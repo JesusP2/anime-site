@@ -1,8 +1,7 @@
 # TODOS:
 
 - [-] add embedding index for local db
-- [-] modify email templates
-- [-] fix google auth
+- [x] fix google auth
 - [-] change console.logs for logger
 - [-] add auth to durable object
 - [x] improve UX of song autocomplete
@@ -23,7 +22,8 @@
 - [-] for random challenges, add at most 1 song from the same anime
 - [-] add passkeys
 - [-] update manga.page
-- [-] update email templates
+- [-] improve fetch time in search page
+- [x] update email templates
 
 landing page:
 
