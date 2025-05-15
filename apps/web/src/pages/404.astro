@@ -17,6 +17,11 @@
                 min-height: 100vh;
                 background-color: #f0f0f0; /* A light background color */
                 font-family: sans-serif;
+                background-image: url('/alitaaaaa.png');
+                background-size: cover;
+                background-position: center center;
+                background-repeat: no-repeat;
+                overflow: hidden;
             }
             .canvas-container {
                 display: flex;
@@ -129,6 +134,10 @@
                 canvases.forEach((canvas, index) => {
                     const currentCanvas = canvas as HTMLCanvasElement;
                     const ctx = currentCanvas.getContext("2d");
+                    if (!ctx) {
+                        console.error(`Failed to get 2D context for canvas ${currentCanvas.id}`);
+                        return;
+                    }
                     const patternForCanvas = visibleCellsPattern[index];
                     drawCanvas(
                         currentCanvas,
@@ -281,6 +290,7 @@
             let currentRotateY = 0;
             let targetRotateX = 0;
             let targetRotateY = 0;
+            const parallaxFactor = 0.5;
 
             function handleMouseMove(event: MouseEvent) {
                 const centerX = window.innerWidth / 2;
@@ -304,6 +314,11 @@
                         canvas.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
                     }
                 });
+                const parallaxX = (-currentRotateY / MAX_ROTATE) * (50 * parallaxFactor); // currentRotateY is based on deltaX
+                const parallaxY = (-currentRotateX / MAX_ROTATE) * (50 * parallaxFactor); // currentRotateX is based on deltaY (inverted)
+
+                document.body.style.backgroundPosition = `calc(50% + ${-parallaxX}px) calc(50% + ${parallaxY}px)`;
+
                 requestAnimationFrame(updateTransforms);
             }
 
