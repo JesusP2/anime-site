@@ -25,12 +25,14 @@
             width: 90%; /* Responsive width */
             max-width: 1200px; /* Max width for larger screens */
             gap: clamp(10px, 3vw, 40px); /* Responsive gap based on viewport width, 2-4% approx */
+            perspective: 1000px; /* Added for 3D effect for children */
         }
         canvas {
             display: block; /* Remove extra space below canvas */
             /* background-color: #fff; */ /* Removed for transparency */
             /* border: 1px solid #ccc; */ /* Border removed for full transparency */
             /* Width and height will be set by JS to maintain aspect ratio and equality */
+            transition: transform 0.1s ease-out; /* Smooth tilt transition */
         }
         .message-container {
             text-align: center;
@@ -333,6 +335,41 @@
             }
             // else: onload or onerror will handle the initial draw.
         }
+
+        // Interactive tilt effect
+        const MAX_ROTATE = 15; // Max rotation in degrees
+        let currentRotateX = 0;
+        let currentRotateY = 0;
+        let targetRotateX = 0;
+        let targetRotateY = 0;
+
+        function handleMouseMove(event: MouseEvent) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            const deltaX = event.clientX - centerX;
+            const deltaY = event.clientY - centerY;
+
+            targetRotateY = (deltaX / centerX) * MAX_ROTATE;
+            // Invert deltaY for natural feeling: mouse up -> canvas tilts top towards user (negative rotateX)
+            targetRotateX = -(deltaY / centerY) * MAX_ROTATE; 
+        }
+
+        function updateTransforms() {
+            // Lerp for smoother animation
+            currentRotateX += (targetRotateX - currentRotateX) * 0.1;
+            currentRotateY += (targetRotateY - currentRotateY) * 0.1;
+
+            canvases.forEach(canvas => {
+                if (canvas) {
+                    canvas.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+                }
+            });
+            requestAnimationFrame(updateTransforms);
+        }
+
+        document.body.addEventListener('mousemove', handleMouseMove);
+        requestAnimationFrame(updateTransforms); // Start the animation loop
 
     </script>
 </body>
