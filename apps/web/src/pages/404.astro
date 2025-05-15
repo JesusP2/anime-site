@@ -1,97 +1,14 @@
 ---
-import '@/styles/global.css';
 import { buttonVariants } from "@/components/ui/button";
+import Head from "@/components/head.astro";
 ---
 
 <html lang="en">
+    <Head title="404 Not Found" />
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>404 Not Found</title>
-        <style>
-            body {
-                margin: 0;
-                display: flex;
-                flex-direction: column; /* Center content vertically */
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                background-color: #f0f0f0; /* A light background color */
-                font-family: sans-serif;
-                background-image: url('/slam-dunk.jpeg');
-                background-size: cover;
-                background-position: center center;
-                background-repeat: no-repeat;
-                overflow: hidden;
-                position: relative; /* Required for the ::before pseudo-element positioning context if it were 'absolute' */
-                                  /* Also helps if any child elements use z-indexing related to body */
-                /* Initialize CSS variables for mouse position, default to center */
-                --mouse-x: 50vw;
-                --mouse-y: 50vh;
-            }
-
-            body::before {
-                content: '';
-                position: fixed; /* Covers the entire viewport */
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgba(0, 0, 0, 0.95); /* Dark overlay, makes original bg 95% obscured */
-                pointer-events: none; /* Allows mouse events to pass through to elements below */
-                
-                /* Spotlight effect using mask */
-                /* Where the mask is transparent, body::before is not rendered, revealing body's true background (image) */
-                /* Where the mask is opaque black, body::before *is* rendered, showing its own background-color */
-                mask-image: radial-gradient(
-                    circle at var(--mouse-x) var(--mouse-y),
-                    transparent 0,      /* Center of spotlight: body::before is transparent here */
-                    transparent 120px,  /* Spotlight radius: still transparent - was 150px */
-                    rgba(0, 0, 0, 1) 400px /* Edge of spotlight: body::before becomes opaque (shows its dark bg) - was 400px */
-                );
-                -webkit-mask-image: radial-gradient(
-                    circle at var(--mouse-x) var(--mouse-y),
-                    transparent 0,
-                    transparent 120px, /* was 150px */
-                    rgba(0, 0, 0, 1) 400px /* was 400px */
-                );
-                /* z-index is not strictly needed here if other content doesn't have specific z-indexes,
-                   as ::before renders under the main content of the body by default.
-                   If content had z-index: -1 or similar, this might need adjustment.
-                   Given current structure, this should be fine. */
-            }
-
-            .canvas-container {
-                display: flex;
-                justify-content: center; /* Center canvases horizontally */
-                align-items: center; /* Align canvases vertically */
-                width: 100%; /* Changed from 95% to allow more growth */
-                max-width: 2100px; /* Increased from 1400px (1400 * 1.5 = 2100) */
-                gap: clamp(
-                    10px,
-                    3vw,
-                    40px
-                ); /* Responsive gap based on viewport width, 2-4% approx */
-                perspective: 1200px; /* Maintained from previous adjustment for pronounced tilt */
-            }
-            canvas {
-                width: 450px;
-                display: block; /* Remove extra space below canvas */
-                transition: transform 0.1s ease-out; /* Smooth tilt transition */
-            }
-            .message-container {
-                text-align: center;
-                margin-top: 20px;
-            }
-            .home-button {
-                position: fixed;
-                bottom: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 12px 25px;
-                z-index: 10; /* Ensure it's above the overlay */
-            }
-        </style>
     </head>
     <body>
         <div class="canvas-container">
@@ -400,4 +317,89 @@ import { buttonVariants } from "@/components/ui/button";
             requestAnimationFrame(updateTransforms);
         </script>
     </body>
+
+        <style>
+            body {
+                margin: 0;
+                display: flex;
+                flex-direction: column; /* Center content vertically */
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background-color: #f0f0f0; /* A light background color */
+                font-family: sans-serif;
+                background-image: url('/slam-dunk.jpeg');
+                background-size: cover;
+                background-position: center center;
+                background-repeat: no-repeat;
+                overflow: hidden;
+                position: relative; /* Required for the ::before pseudo-element positioning context if it were 'absolute' */
+                                  /* Also helps if any child elements use z-indexing related to body */
+                /* Initialize CSS variables for mouse position, default to center */
+                --mouse-x: 50vw;
+                --mouse-y: 50vh;
+            }
+
+            body::before {
+                content: '';
+                position: fixed; /* Covers the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Dark overlay, makes original bg 95% obscured */
+                pointer-events: none; /* Allows mouse events to pass through to elements below */
+                
+                /* Spotlight effect using mask */
+                /* Where the mask is transparent, body::before is not rendered, revealing body's true background (image) */
+                /* Where the mask is opaque black, body::before *is* rendered, showing its own background-color */
+                mask-image: radial-gradient(
+                    circle at var(--mouse-x) var(--mouse-y),
+                    transparent 0,      /* Center of spotlight: body::before is transparent here */
+                    transparent 120px,  /* Spotlight radius: still transparent - was 150px */
+                    rgba(0, 0, 0, 1) 400px /* Edge of spotlight: body::before becomes opaque (shows its dark bg) - was 400px */
+                );
+                -webkit-mask-image: radial-gradient(
+                    circle at var(--mouse-x) var(--mouse-y),
+                    transparent 0,
+                    transparent 120px, /* was 150px */
+                    rgba(0, 0, 0, 1) 400px /* was 400px */
+                );
+                /* z-index is not strictly needed here if other content doesn't have specific z-indexes,
+                   as ::before renders under the main content of the body by default.
+                   If content had z-index: -1 or similar, this might need adjustment.
+                   Given current structure, this should be fine. */
+            }
+
+            .canvas-container {
+                display: flex;
+                justify-content: center; /* Center canvases horizontally */
+                align-items: center; /* Align canvases vertically */
+                width: 100%; /* Changed from 95% to allow more growth */
+                max-width: 2100px; /* Increased from 1400px (1400 * 1.5 = 2100) */
+                gap: clamp(
+                    10px,
+                    3vw,
+                    40px
+                ); /* Responsive gap based on viewport width, 2-4% approx */
+                perspective: 1200px; /* Maintained from previous adjustment for pronounced tilt */
+            }
+            canvas {
+                width: 450px;
+                display: block; /* Remove extra space below canvas */
+                transition: transform 0.1s ease-out; /* Smooth tilt transition */
+            }
+            .message-container {
+                text-align: center;
+                margin-top: 20px;
+            }
+            .home-button {
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 25px;
+                z-index: 10; /* Ensure it's above the overlay */
+            }
+        </style>
 </html>

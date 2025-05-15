@@ -197,7 +197,7 @@ export function AnimeDetailsPage({
                   className="text-4xl font-bold mb-1 text-primary flex items-center gap-2"
                 >
                   {getRecordTitle(anime.titles)}
-                  <StatusSelector data={anime} entityType="ANIME" />
+                  <StatusSelector className="relative bottom-1" data={anime} entityType="ANIME" />
                 </CardTitle>
                 {anime.titles
                   ?.filter(
