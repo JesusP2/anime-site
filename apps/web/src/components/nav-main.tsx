@@ -24,8 +24,6 @@ import { CalendarCheckIcon } from "./ui/calendar-check";
 import { DeleteIcon } from "./ui/delete";
 import { MonitorCheckIcon } from "./ui/monitor-check";
 import { PauseIcon } from "./ui/pause";
-
-import { CalendarCheck, MusicNote } from "@phosphor-icons/react";
 import { AudioLinesIcon } from "./ui/audio-lines";
 
 const nav = [

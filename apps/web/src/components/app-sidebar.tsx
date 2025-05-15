@@ -57,7 +57,7 @@ export function AppSidebar({
                 <a href="/">
                   <div className="flex items-center gap-2">
                     <img src="/favicon.svg" className="aspect-square size-6" />
-                    <span className="sm:block hidden text-lg font-semibold text-neutral-200 dark:hover:text-white">
+                    <span className="sm:block hidden text-lg font-semibold dark:text-neutral-200 dark:hover:text-white">
                       NotMyAnimeList
                     </span>
                   </div>

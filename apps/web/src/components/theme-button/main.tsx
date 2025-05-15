@@ -22,6 +22,16 @@ export function ThemeButton() {
     setIsDarkMode(isDarkMode);
   }, []);
 
+  function handleMouseEnter(e: React.MouseEvent<HTMLLabelElement>) {
+    moonRef.current?.startAnimation();
+    sunRef.current?.startAnimation();
+  }
+
+  function handleMouseLeave(e: React.MouseEvent<HTMLLabelElement>) {
+    moonRef.current?.stopAnimation();
+    sunRef.current?.stopAnimation();
+  }
+
   return (
     <div className="flex flex-col justify-center">
       <input
@@ -36,21 +46,23 @@ export function ThemeButton() {
         ref={ref}
         className={cn(
           buttonVariants({ variant: "outline", size: "sm" }),
-          "size-8 relative right-[1px]",
+          "size-8 relative right-[1px] hover:bg-opacity-0 active:bg-opacity-0 cursor-pointer select-none",
         )}
         htmlFor={themeButtonId}
         suppressHydrationWarning
         aria-label={`Switch to ${isDarkMode ? "dark" : "light"} mode`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <MoonIcon
           size={16}
-          className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark:opacity-100"
+          className="shrink-0 scale-0 opacity-0 transition-all dark:scale-100 dark:opacity-100 hover:bg-opacity-0 active:bg-opacity-0"
           aria-hidden="true"
           ref={moonRef}
         />
         <SunIcon
           size={16}
-          className="absolute shrink-0 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0"
+          className="absolute shrink-0 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0 hover:bg-opacity-0 active:bg-opacity-0"
           aria-hidden="true"
           ref={sunRef}
         />

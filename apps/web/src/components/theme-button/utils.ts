@@ -31,7 +31,7 @@ export async function toggleTheme(
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   const diagonal = Math.sqrt(screenWidth ** 2 + screenHeight ** 2);
-  const duration = diagonal / 3;
+  const duration = diagonal / 2;
 
   const transition = document.startViewTransition(() => {
     setTheme(isDarkMode, cb);
