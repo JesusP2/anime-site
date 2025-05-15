@@ -47,7 +47,10 @@ export async function getGameInfo(gameId: string) {
       challengeToThemeTable,
       eq(challengeToThemeTable.themeId, animeThemeTable.id),
     )
-    .innerJoin(gameTable, eq(challengeToThemeTable.challengeId, gameTable.challengeId))
+    .innerJoin(
+      gameTable,
+      eq(challengeToThemeTable.challengeId, gameTable.challengeId),
+    )
     .innerJoin(themeEntryTable, eq(themeEntryTable.themeId, animeThemeTable.id))
     .innerJoin(
       themeVideoTable,

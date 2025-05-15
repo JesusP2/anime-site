@@ -23,7 +23,9 @@ export function InfoSection({
   onCompleted,
   hide,
 }: {
-  onCompleted: (values: z.infer<typeof createChallengeInfoSectionSchema>) => void;
+  onCompleted: (
+    values: z.infer<typeof createChallengeInfoSectionSchema>,
+  ) => void;
   hide: boolean;
 }) {
   const form = useForm({

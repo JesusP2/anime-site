@@ -68,7 +68,9 @@ export function CreateChallenge() {
         return;
       }
 
-      safeStartViewTransition(() => navigate(`/games/guess-the-anime-theme/${res.data}`));
+      safeStartViewTransition(() =>
+        navigate(`/games/guess-the-anime-theme/${res.data}`),
+      );
     } catch (error) {
       console.error("Error creating challenge:", error);
     }

@@ -59,25 +59,28 @@ export const createChallengeInfoSectionBaseSchema = z.object({
 
 const difficultySchema = z.enum(["easy", "medium", "hard", "impossible"]);
 const themeTypeSchema = z.enum(["OP", "ED", "ALL"]);
-export const createChallengeInfoSectionSchema = z.discriminatedUnion("isRandom", [
-  z
-    .object({
-      isRandom: z.literal(true),
-      themeType: themeTypeSchema,
-      difficulty: difficultySchema,
-      themeCount: z
-        .number()
-        .min(5, "Theme count must be at least 5")
-        .max(100, "Theme count cannot exceeed 100"),
-    })
-    .merge(createChallengeInfoSectionBaseSchema),
-  z
-    .object({
-      isRandom: z.literal(false),
-      difficulty: z.literal("custom"),
-    })
-    .merge(createChallengeInfoSectionBaseSchema),
-]);
+export const createChallengeInfoSectionSchema = z.discriminatedUnion(
+  "isRandom",
+  [
+    z
+      .object({
+        isRandom: z.literal(true),
+        themeType: themeTypeSchema,
+        difficulty: difficultySchema,
+        themeCount: z
+          .number()
+          .min(5, "Theme count must be at least 5")
+          .max(100, "Theme count cannot exceeed 100"),
+      })
+      .merge(createChallengeInfoSectionBaseSchema),
+    z
+      .object({
+        isRandom: z.literal(false),
+        difficulty: z.literal("custom"),
+      })
+      .merge(createChallengeInfoSectionBaseSchema),
+  ],
+);
 
 export const createChallengeSongSelectionSectionSchema = z.object({
   songs: z

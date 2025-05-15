@@ -50,15 +50,15 @@ import { authClient } from "@/lib/auth-client";
 type Props = {
   className?: string;
 } & (
-    | {
+  | {
       entityType: "ANIME";
       data: FullAnimeRecord;
     }
-    | {
+  | {
       entityType: "MANGA";
       data: FullMangaRecord;
     }
-  );
+);
 
 export function StatusSelector({ data, entityType, className }: Props) {
   const [status, setStatus] = useState<EntityStatus | "loading">("loading");
@@ -169,7 +169,11 @@ export function StatusSelector({ data, entityType, className }: Props) {
   );
 
   const triggerButton = (
-    <Button size="sm" variant="ghost" className={cn("rounded-sm mr-2 border", className)}>
+    <Button
+      size="sm"
+      variant="ghost"
+      className={cn("rounded-sm mr-2 border", className)}
+    >
       <RenderButtonStatus status={status} />
     </Button>
   );

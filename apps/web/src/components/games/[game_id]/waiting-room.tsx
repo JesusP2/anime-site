@@ -52,7 +52,9 @@ export function WaitingRoom({
                 className="text-gray-600 dark:text-gray-300 w-6 h-6"
               />
             </div>
-            <CardTitle className="text-3xl font-bold">{challengeTitle}</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {challengeTitle}
+            </CardTitle>
           </div>
           <CardDescription className="text-lg">
             {challengeDescription}

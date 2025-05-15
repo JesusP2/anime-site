@@ -18,7 +18,10 @@ import { PgColumn, type AnyPgColumn } from "drizzle-orm/pg-core";
 const allowedDifficulties = ["easy", "medium", "hard"];
 const allowedVisibilities = ["public", "private"];
 const allowedSortColumns = ["title", "difficulty", "createdAt"];
-function sanitizeSearchParams(searchParams: URLSearchParams, recordsPerPage: number) {
+function sanitizeSearchParams(
+  searchParams: URLSearchParams,
+  recordsPerPage: number,
+) {
   const sanitizedSearchParams = new URLSearchParams();
   const q = searchParams.get("q");
   const difficulty = searchParams.get("difficulty");
@@ -105,7 +108,10 @@ export async function getChallenges(
   searchParams: URLSearchParams,
   recordsPerPage: number,
 ) {
-  const sanitizedSearchParams = sanitizeSearchParams(searchParams, recordsPerPage);
+  const sanitizedSearchParams = sanitizeSearchParams(
+    searchParams,
+    recordsPerPage,
+  );
   let { where, orderBy, offset } = searchParamsToDrizzleQuery(
     sanitizedSearchParams,
   );
@@ -164,7 +170,10 @@ export async function getChallengeInfo(challengeId: string) {
     })
     .from(challengeTable)
     .where(eq(challengeTable.id, challengeId))
-    .leftJoin(challengeToThemeTable, eq(challengeTable.id, challengeToThemeTable.challengeId));
+    .leftJoin(
+      challengeToThemeTable,
+      eq(challengeTable.id, challengeToThemeTable.challengeId),
+    );
   const challengeInfo = {
     title: result[0]?.challengeTitle,
     difficulty: result[0]?.difficulty,

@@ -14,13 +14,16 @@
 - [x] clicking icon triggers a wave animation, remove it.
 - [-] create error page
 - [-] once a game is done, users shouldn't be able to access that route
-- [-] fix times up text  in games
+- [-] fix times up text in games
 - [-] add modal when deleting a challenge
 - [-] move from upstash rate limiting to cloudflare rate limiting
 - [-] move server island to a simple client side fetch
 - [-] figure out why the selects in challenges table are loading slowly
 - [-] filter songs with the same name
 - [-] for random challenges, add at most 1 song from the same anime
+- [-] add passkeys
+- [-] update manga.page
+- [-] update email templates
 
 landing page:
 

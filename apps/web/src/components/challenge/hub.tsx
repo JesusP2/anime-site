@@ -28,9 +28,7 @@ export function ChallengeHub() {
               <GameController className="w-5 h-5" />
               Play a Challenge
             </CardTitle>
-            <CardDescription>
-              Browse challenges 
-            </CardDescription>
+            <CardDescription>Browse challenges</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <a
@@ -108,8 +106,8 @@ export function ChallengeHub() {
                 real-time with friends
               </li>
               <li>
-                <span className="font-medium">Custom Challenges:</span> Create and
-                share your own collections
+                <span className="font-medium">Custom Challenges:</span> Create
+                and share your own collections
               </li>
               <li>
                 <span className="font-medium">Random:</span> Adjust difficulty

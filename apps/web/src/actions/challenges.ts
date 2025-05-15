@@ -25,7 +25,10 @@ async function checkAuth(locals: App.Locals) {
 }
 
 function getThemePoolLimits(
-  difficulty: Omit<z.infer<typeof createChallengeSchema>["difficulty"], "custom">,
+  difficulty: Omit<
+    z.infer<typeof createChallengeSchema>["difficulty"],
+    "custom"
+  >,
 ) {
   switch (difficulty) {
     case "easy":
@@ -43,7 +46,10 @@ function getThemePoolLimits(
 
 async function getThemePool(
   db: PostgresJsDatabase<typeof schema>,
-  difficulty: Omit<z.infer<typeof createChallengeSchema>["difficulty"], "custom">,
+  difficulty: Omit<
+    z.infer<typeof createChallengeSchema>["difficulty"],
+    "custom"
+  >,
   type: "OP" | "ED" | "ALL",
   themeCount: number,
 ) {
@@ -154,7 +160,9 @@ export const challengeActions = {
         });
 
         if (!existingChallenge) {
-          throw new Error("Challenge not found or user does not have permission.");
+          throw new Error(
+            "Challenge not found or user does not have permission.",
+          );
         }
 
         await tx
@@ -182,11 +190,17 @@ export const challengeActions = {
       const existingChallenge = await db
         .select()
         .from(challengeTable)
-        .where(and(eq(challengeTable.id, challengeId), eq(challengeTable.creatorId, userId)));
+        .where(
+          and(
+            eq(challengeTable.id, challengeId),
+            eq(challengeTable.creatorId, userId),
+          ),
+        );
       if (!existingChallenge) {
         throw new ActionError({
           code: "NOT_FOUND",
-          message: "Challenge not found or user does not have permission to delete.",
+          message:
+            "Challenge not found or user does not have permission to delete.",
         });
       }
       await db.delete(challengeTable).where(eq(challengeTable.id, challengeId));

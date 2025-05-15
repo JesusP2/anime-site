@@ -21,7 +21,13 @@ import { useRef } from "react";
 import type { FormEvent } from "react";
 import { PlusCircle, ArrowUp, ArrowDown, XCircle } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { GetReturnType } from "@/lib/types";
 import { navigate } from "astro:transitions/client";
 import { safeStartViewTransition } from "@/lib/safe-start-view-transition";
@@ -43,11 +49,19 @@ export function MyChallenges({
   const formRef = useRef<HTMLFormElement>(null);
   const currentUrl = new URL(url);
   const currentGlobalSearch = currentUrl.searchParams.get("q") || "";
-  const currentDifficultyFilter = currentUrl.searchParams.get("difficulty") || "all";
-  const currentVisibilityFilter = currentUrl.searchParams.get("visibility") || "all";
+  const currentDifficultyFilter =
+    currentUrl.searchParams.get("difficulty") || "all";
+  const currentVisibilityFilter =
+    currentUrl.searchParams.get("visibility") || "all";
   const currentSortColumn = currentUrl.searchParams.get("sort");
-  const currentSortDirection = currentUrl.searchParams.get("order") as "asc" | "desc" | null;
-  const actualCurrentPage = parseInt(currentUrl.searchParams.get("page") || "1", 10);
+  const currentSortDirection = currentUrl.searchParams.get("order") as
+    | "asc"
+    | "desc"
+    | null;
+  const actualCurrentPage = parseInt(
+    currentUrl.searchParams.get("page") || "1",
+    10,
+  );
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -55,16 +69,18 @@ export function MyChallenges({
     const newUrl = new URL(currentUrl.pathname, currentUrl.origin);
 
     const params = new URLSearchParams();
-    const q = formData.get("q") as string || "";
-    const difficulty = formData.get("difficulty") as string || "all";
-    const visibility = formData.get("visibility") as string || "all";
-    const sort = formData.get("sort") as string || "";
-    const order = formData.get("order") as string || "";
-    const page = formData.get("page") as string || "1";
+    const q = (formData.get("q") as string) || "";
+    const difficulty = (formData.get("difficulty") as string) || "all";
+    const visibility = (formData.get("visibility") as string) || "all";
+    const sort = (formData.get("sort") as string) || "";
+    const order = (formData.get("order") as string) || "";
+    const page = (formData.get("page") as string) || "1";
 
     if (q) params.set("q", q);
-    if (difficulty && difficulty !== "all") params.set("difficulty", difficulty);
-    if (visibility && visibility !== "all") params.set("visibility", visibility);
+    if (difficulty && difficulty !== "all")
+      params.set("difficulty", difficulty);
+    if (visibility && visibility !== "all")
+      params.set("visibility", visibility);
     if (sort) {
       params.set("sort", sort);
       if (order) params.set("order", order);
@@ -77,9 +93,15 @@ export function MyChallenges({
 
   const handleSort = (columnName: string) => {
     if (formRef.current) {
-      const sortInput = formRef.current.elements.namedItem("sort") as HTMLInputElement;
-      const orderInput = formRef.current.elements.namedItem("order") as HTMLInputElement;
-      const pageInput = formRef.current.elements.namedItem("page") as HTMLInputElement;
+      const sortInput = formRef.current.elements.namedItem(
+        "sort",
+      ) as HTMLInputElement;
+      const orderInput = formRef.current.elements.namedItem(
+        "order",
+      ) as HTMLInputElement;
+      const pageInput = formRef.current.elements.namedItem(
+        "page",
+      ) as HTMLInputElement;
 
       let newDirection: "asc" | "desc" = "asc";
       if (currentSortColumn === columnName && currentSortDirection === "asc") {
@@ -101,7 +123,9 @@ export function MyChallenges({
   ) {
     e.preventDefault();
     if (!challengeId) return;
-    if (!window.confirm(`Are you sure you want to delete "${challengeName}"?`)) {
+    if (
+      !window.confirm(`Are you sure you want to delete "${challengeName}"?`)
+    ) {
       return;
     }
     try {
@@ -135,7 +159,9 @@ export function MyChallenges({
 
   const handleFilterChange = () => {
     if (formRef.current) {
-      const pageInput = formRef.current.elements.namedItem("page") as HTMLInputElement;
+      const pageInput = formRef.current.elements.namedItem(
+        "page",
+      ) as HTMLInputElement;
       if (pageInput) pageInput.value = "1";
       formRef.current.requestSubmit();
     }
@@ -143,12 +169,24 @@ export function MyChallenges({
 
   const handleClearFilters = () => {
     if (formRef.current) {
-      const qInput = formRef.current.elements.namedItem("q") as HTMLInputElement;
-      const difficultyInput = formRef.current.elements.namedItem("difficulty") as HTMLInputElement;
-      const visibilityInput = formRef.current.elements.namedItem("visibility") as HTMLInputElement;
-      const sortInput = formRef.current.elements.namedItem("sort") as HTMLInputElement;
-      const orderInput = formRef.current.elements.namedItem("order") as HTMLInputElement;
-      const pageInput = formRef.current.elements.namedItem("page") as HTMLInputElement;
+      const qInput = formRef.current.elements.namedItem(
+        "q",
+      ) as HTMLInputElement;
+      const difficultyInput = formRef.current.elements.namedItem(
+        "difficulty",
+      ) as HTMLInputElement;
+      const visibilityInput = formRef.current.elements.namedItem(
+        "visibility",
+      ) as HTMLInputElement;
+      const sortInput = formRef.current.elements.namedItem(
+        "sort",
+      ) as HTMLInputElement;
+      const orderInput = formRef.current.elements.namedItem(
+        "order",
+      ) as HTMLInputElement;
+      const pageInput = formRef.current.elements.namedItem(
+        "page",
+      ) as HTMLInputElement;
 
       if (qInput) qInput.value = "";
       if (difficultyInput) difficultyInput.value = "all";
@@ -161,7 +199,7 @@ export function MyChallenges({
   };
 
   const lastVisiblePage = Math.ceil((challenges.count || 1) / pageSize);
-  console.log(challenges.count, pageSize, challenges.data)
+  console.log(challenges.count, pageSize, challenges.data);
 
   const renderSortIcon = (columnName: string) => {
     if (currentSortColumn === columnName) {
@@ -187,14 +225,31 @@ export function MyChallenges({
       </div>
 
       <form ref={formRef} onSubmit={handleFormSubmit}>
-        <input type="hidden" name="page" defaultValue={String(actualCurrentPage)} />
-        <input type="hidden" name="sort" defaultValue={currentSortColumn || ""} />
-        <input type="hidden" name="order" defaultValue={currentSortDirection || ""} />
+        <input
+          type="hidden"
+          name="page"
+          defaultValue={String(actualCurrentPage)}
+        />
+        <input
+          type="hidden"
+          name="sort"
+          defaultValue={currentSortColumn || ""}
+        />
+        <input
+          type="hidden"
+          name="order"
+          defaultValue={currentSortDirection || ""}
+        />
 
         <div className="mb-6 p-4 border rounded-lg bg-card">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
             <div className="md:col-span-2 lg:col-span-1">
-              <label htmlFor="globalSearch" className="block text-sm font-medium text-muted-foreground mb-1">Search by Name</label>
+              <label
+                htmlFor="globalSearch"
+                className="block text-sm font-medium text-muted-foreground mb-1"
+              >
+                Search by Name
+              </label>
               <Input
                 id="globalSearch"
                 name="q"
@@ -206,8 +261,17 @@ export function MyChallenges({
             </div>
 
             <div>
-              <label htmlFor="difficultyFilter" className="block text-sm font-medium text-muted-foreground mb-1">Difficulty</label>
-              <Select name="difficulty" defaultValue={currentDifficultyFilter} onValueChange={handleFilterChange}>
+              <label
+                htmlFor="difficultyFilter"
+                className="block text-sm font-medium text-muted-foreground mb-1"
+              >
+                Difficulty
+              </label>
+              <Select
+                name="difficulty"
+                defaultValue={currentDifficultyFilter}
+                onValueChange={handleFilterChange}
+              >
                 <SelectTrigger id="difficultyFilter" className="w-full">
                   <SelectValue placeholder="Select difficulty" />
                 </SelectTrigger>
@@ -221,10 +285,22 @@ export function MyChallenges({
             </div>
 
             <div>
-              <label htmlFor="visibilityFilter" className="block text-sm font-medium text-muted-foreground mb-1">Visibility</label>
-              <Select name="visibility" defaultValue={currentVisibilityFilter} onValueChange={handleFilterChange}>
+              <label
+                htmlFor="visibilityFilter"
+                className="block text-sm font-medium text-muted-foreground mb-1"
+              >
+                Visibility
+              </label>
+              <Select
+                name="visibility"
+                defaultValue={currentVisibilityFilter}
+                onValueChange={handleFilterChange}
+              >
                 <SelectTrigger id="visibilityFilter" className="w-full">
-                  <SelectValue defaultValue={currentVisibilityFilter} placeholder="Select visibility" />
+                  <SelectValue
+                    defaultValue={currentVisibilityFilter}
+                    placeholder="Select visibility"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Visibilities</SelectItem>
@@ -234,7 +310,12 @@ export function MyChallenges({
               </Select>
             </div>
 
-            <Button type="button" onClick={handleClearFilters} variant="outline" className="self-end">
+            <Button
+              type="button"
+              onClick={handleClearFilters}
+              variant="outline"
+              className="self-end"
+            >
               <XCircle className="mr-2 h-4 w-4" /> Clear Filters
             </Button>
           </div>
@@ -280,7 +361,11 @@ export function MyChallenges({
               <TableBody>
                 {challenges.data.map((challenge) => (
                   <TableRow key={challenge.id}>
-                    <TableCell style={{ viewTransitionName: `record-name-${challenge.id}` }}>
+                    <TableCell
+                      style={{
+                        viewTransitionName: `record-name-${challenge.id}`,
+                      }}
+                    >
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
@@ -294,20 +379,37 @@ export function MyChallenges({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-difficulty-${challenge.id}` }}>
+                    <TableCell
+                      style={{
+                        viewTransitionName: `record-difficulty-${challenge.id}`,
+                      }}
+                    >
                       <Badge
-                        variant={getDifficultyBadgeVariant(challenge.difficulty)}
+                        variant={getDifficultyBadgeVariant(
+                          challenge.difficulty,
+                        )}
                         className="capitalize w-18"
                       >
                         {challenge.difficulty}
                       </Badge>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-visibility-${challenge.id}` }}>
-                      <Badge variant={challenge.public ? "default" : "outline"} className="w-18">
+                    <TableCell
+                      style={{
+                        viewTransitionName: `record-visibility-${challenge.id}`,
+                      }}
+                    >
+                      <Badge
+                        variant={challenge.public ? "default" : "outline"}
+                        className="w-18"
+                      >
                         {challenge.public ? "Public" : "Private"}
                       </Badge>
                     </TableCell>
-                    <TableCell style={{ viewTransitionName: `record-createdAt-${challenge.id}` }}>
+                    <TableCell
+                      style={{
+                        viewTransitionName: `record-createdAt-${challenge.id}`,
+                      }}
+                    >
                       {challenge.createdAt &&
                         new Date(challenge.createdAt).toLocaleDateString()}
                     </TableCell>

@@ -34,7 +34,9 @@ export function CreateGame(props: QuizInfo) {
       return;
     }
     const gameId = result.data;
-    safeStartViewTransition(() => navigate(`/games/guess-the-anime-theme/room/${gameId}`));
+    safeStartViewTransition(() =>
+      navigate(`/games/guess-the-anime-theme/room/${gameId}`),
+    );
   };
 
   return (

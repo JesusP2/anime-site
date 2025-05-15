@@ -57,13 +57,19 @@ export function Pagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={currentPage > 1 ? createLink(url, currentPage - 1, lastVisiblePage) : undefined}
+            href={
+              currentPage > 1
+                ? createLink(url, currentPage - 1, lastVisiblePage)
+                : undefined
+            }
             className={cn(
-              {"pointer-events-none opacity-50": currentPage <= 1},
+              { "pointer-events-none opacity-50": currentPage <= 1 },
               // Ensure existing classes from PaginationPrevious are preserved if any specific ones are set by default
               // For now, this assumes PaginationPrevious doesn't add critical structural classes beyond buttonVariants
             )}
-            onClick={(e) => { if (currentPage <= 1) e.preventDefault(); }}
+            onClick={(e) => {
+              if (currentPage <= 1) e.preventDefault();
+            }}
           />
         </PaginationItem>
         {tabs.map((tab, idx) => (
@@ -107,11 +113,17 @@ export function Pagination({
         ))}
         <PaginationItem>
           <PaginationNext
-            href={currentPage < lastVisiblePage ? createLink(url, currentPage + 1, lastVisiblePage) : undefined}
-            className={cn(
-              {"pointer-events-none opacity-50": currentPage >= lastVisiblePage},
-            )}
-            onClick={(e) => { if (currentPage >= lastVisiblePage) e.preventDefault(); }}
+            href={
+              currentPage < lastVisiblePage
+                ? createLink(url, currentPage + 1, lastVisiblePage)
+                : undefined
+            }
+            className={cn({
+              "pointer-events-none opacity-50": currentPage >= lastVisiblePage,
+            })}
+            onClick={(e) => {
+              if (currentPage >= lastVisiblePage) e.preventDefault();
+            }}
           />
         </PaginationItem>
       </PaginationContent>
