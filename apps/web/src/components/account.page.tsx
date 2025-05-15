@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import type { User } from "better-auth";
 import { authClient } from "@/lib/auth-client";
 import {
@@ -39,16 +39,7 @@ export function AccountPage({ user }: { user: User }) {
   const [name, setName] = useState(user.name);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Show error toast when error state changes
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      setError(null);
-    }
-  }, [error, toast]);
 
   const handleUpdateName = async () => {
     if (name === user.name) {
@@ -57,7 +48,6 @@ export function AccountPage({ user }: { user: User }) {
     }
 
     setIsUpdating(true);
-    setError(null);
 
     try {
       await authClient.updateUser({
@@ -66,7 +56,7 @@ export function AccountPage({ user }: { user: User }) {
       toast.success("Name updated successfully");
       setIsEditingName(false);
     } catch (err: any) {
-      setError(err.message || "Failed to update name");
+      toast.error(err.message || "Failed to update name");
     } finally {
       setIsUpdating(false);
     }
@@ -107,7 +97,7 @@ export function AccountPage({ user }: { user: User }) {
         throw new Error("Failed to update profile picture");
       }
     } catch (err: any) {
-      setError(err.message || "Failed to update profile picture");
+      toast.error(err.message || "Failed to update profile picture");
     } finally {
       setIsUpdating(false);
     }
@@ -262,7 +252,8 @@ function ChangePasswordDialog() {
     }
 
     if (newPassword.length < 8) {
-      setError("Password must be at least 8 characters");
+      const error = "Password must be at least 8 characters";
+      setError(error);
       return;
     }
 
