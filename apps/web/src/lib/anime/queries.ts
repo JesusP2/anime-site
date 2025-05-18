@@ -193,11 +193,13 @@ export async function getAnimes(
       .select({ count: count() })
       .from(animeTable)
       .where(where);
+    const similarityTime = Date.now();
     const similarity = await getSimilarity(
       animeTable.embedding,
       sanitizedSearchParams.get("q"),
       getEmbedding,
     );
+    console.log("similarity", Date.now() - similarityTime);
     let query: any;
     if (similarity) {
       const sq = db

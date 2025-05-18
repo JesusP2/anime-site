@@ -31,3 +31,10 @@ landing page:
 
 - cloudflare respects cache headers set in the page but you need to create a rule for it.
 - setting cache headers in a page or layout will apply to all pages in that layout.
+
+
+filters button should be at the left
+work more dark mode
+remove background on animated icons
+anime cards have too much info - redesign
+
