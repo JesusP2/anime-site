@@ -77,7 +77,10 @@ export const server = {
     }),
     handler: async ({ q }) => {
       const embedding = await getEmbedding(q);
-      return embedding;
+      if (!embedding.success) {
+        throw embedding.error;
+      }
+      return embedding.value;
     },
   }),
   getEmbeddingFromMalId: defineAction({
