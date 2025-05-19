@@ -31,7 +31,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
   globalThis.connectionString = getConnectionString(context);
   globalThis.waitUntil = context.locals.runtime.ctx.waitUntil;
-  globalThis.aiRun = context.locals.runtime.env.AI.run;
+  globalThis.AI = context.locals.runtime.env.AI;
   const auth = getAuth(context);
   const isAuthed = await auth.api.getSession({
     headers: context.request.headers,

@@ -196,13 +196,14 @@ export async function getAnimes(
     const similarityTime = Date.now();
 
     async function getEmbedding(text: string) {
-      const response = await globalThis.aiRun("@cf/baai/bge-m3", {
+      await logger.info("getting embedding");
+      const response = await globalThis.AI.run("@cf/baai/bge-m3", {
         text: [text],
       });
-      globalThis.waitUntil(logger.info("ai run", {
+      logger.info("ai run", {
         text,
         response,
-      }));
+      });
       return [1];
     }
     const similarity = await getSimilarity(

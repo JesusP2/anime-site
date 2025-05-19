@@ -6,7 +6,7 @@ declare global {
   var db: PostgresJsDatabase<typeof schema>;
   var connectionString: string;
   var waitUntil: (promise: Promise<void>) => void;
-  var aiRun: Ai['run'];
+  var AI: Ai;
 }
 export function getDb() {
   const client = postgres(globalThis.connectionString);
