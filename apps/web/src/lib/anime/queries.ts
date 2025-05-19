@@ -199,7 +199,10 @@ export async function getAnimes(
       const response = await globalThis.aiRun("@cf/baai/bge-m3", {
         text: [text],
       });
-      console.dir(response, { depth: null });
+      globalThis.waitUntil(logger.info("ai run", {
+        text,
+        response,
+      }));
       return [1];
     }
     const similarity = await getSimilarity(
