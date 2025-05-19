@@ -28,7 +28,9 @@ const fn =
         const key = sanitizeSearchParams(searchParams, animeFilters).toString();
         return `anime.v1.${key}`;
       });
+const start = Date.now();
 const records = await fn(searchParams, recordsPerPage);
+console.log("total time", Date.now() - start);
 const searchType = (searchParams.get("searchType") ?? animeEntity) as Entity;
 Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=31536000");
 ---

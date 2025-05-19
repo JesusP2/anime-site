@@ -193,11 +193,13 @@ export async function getAnimes(
       .select({ count: count() })
       .from(animeTable)
       .where(where);
+    const startSimilarity = Date.now();
     const similarity = await getSimilarity(
       animeTable.embedding,
       sanitizedSearchParams.get("q"),
       getEmbedding,
     );
+    console.log("similarity", Date.now() - startSimilarity);
     let query: any;
     if (similarity) {
       const sq = db
@@ -226,10 +228,12 @@ export async function getAnimes(
     if (orderBy) {
       query = query.orderBy(orderBy);
     }
+    const startQuery = Date.now();
     const [animeRecords, animeCount] = await Promise.all([
       query,
       similarity ? [{ count: recordsPerPage }] : queryCount,
     ]);
+    console.log("query", Date.now() - startQuery);
     return ok({
       data: animeRecords,
       count: animeCount[0]?.count ?? 0,
