@@ -14,6 +14,7 @@ declare namespace App {
 }
 
 type Hyperdrive = import("@cloudflare/workers-types").Hyperdrive;
+type AI = import("@cloudflare/workers-types").Ai;
 type DurableObjectNamespace =
   import("@cloudflare/workers-types").DurableObjectNamespace;
 interface Env {
@@ -22,8 +23,8 @@ interface Env {
   EMAIL_FROM: "noreply@notmyanimelist.com";
   GOOGLE_REDIRECT_URI: "https://notmyanimelist.com/api/auth/callback/google";
   BASE_URL: "https://notmyanimelist.com";
-  MY_COUNTER: DurableObjectNamespace /* Counter */;
   HYPERDRIVE: Hyperdrive;
+  AI: AI;
 }
 
 // use a default runtime configuration (advanced mode).

@@ -196,15 +196,19 @@ export async function getAnimes(
     const similarityTime = Date.now();
 
     async function getEmbedding(text: string) {
-      return [1]
+      const response = await globalThis.aiRun("@cf/baai/bge-m3", {
+        text: [text],
+      });
+      console.dir(response, { depth: null });
+      return [1];
     }
     const similarity = await getSimilarity(
       animeTable.embedding,
       sanitizedSearchParams.get("q"),
       getEmbedding,
     );
-    console.log(`similarity took: ${Date.now() - similarityTime}`)
-   // globalThis.waitUntil(logger.info(`similarity took: ${Date.now() - similarityTime}`));
+    console.log(`similarity took: ${Date.now() - similarityTime}`);
+    // globalThis.waitUntil(logger.info(`similarity took: ${Date.now() - similarityTime}`));
     let query: any;
     if (similarity) {
       const sq = db
