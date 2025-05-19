@@ -197,18 +197,16 @@ export async function getAnimes(
 
     async function getEmbedding(text: string) {
       await logger.info("getting embedding");
-      const response = await globalThis.AI.run("@cf/baai/bge-m3", {
+      const response = (await globalThis.AI.run("@cf/baai/bge-small-en-v1.5", {
         text: [text],
-      });
-      await logger.info("got embedding", {
-        text,
-        response: response?.data,
-      });
-      await logger.info("ai run", {
-        text,
-        response: JSON.stringify(response),
-      });
-      return response?.data?.[0] as number[];
+      })) as { data: number[][] };
+      if (!Array.isArray(response?.data?.[0])) {
+        throw new ActionError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Unexpected error",
+        });
+      }
+      return response.data[0];
     }
     const similarity = await getSimilarity(
       animeTable.embedding,
