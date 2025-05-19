@@ -10,6 +10,8 @@ import { navigate } from "astro:transitions/client";
 import type { Entity, EntityStatus, IconRef } from "@/lib/types";
 import { animeEntity, mangaEntity } from "@/lib/constants";
 import { SettingsIcon } from "../ui/settings";
+import { useDebounce } from "@/hooks/use-debounce";
+import { prefetch } from "astro:prefetch";
 
 function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
   const filters = {
@@ -31,9 +33,9 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
     },
     filters as {
       [K in keyof AnimeFilters | keyof MangaFilters]:
-        | string[]
-        | string
-        | boolean;
+      | string[]
+      | string
+      | boolean;
     } & { q: string },
   );
 }
@@ -41,18 +43,18 @@ function setupFilters(options: AnimeFilters | MangaFilters, url: URL) {
 type Props = {
   url: string;
 } & (
-  | {
+    | {
       page: "Search";
       searchType: Entity;
     }
-  | {
+    | {
       page: "mal_id";
     }
-  | {
+    | {
       page: Entity;
       entityStatus: EntityStatus;
     }
-);
+  );
 
 export function SearchWithFilters(props: Props) {
   const buttonRef = useRef<IconRef>(null);
@@ -73,6 +75,7 @@ export function SearchWithFilters(props: Props) {
         : animeEntity
       : animeEntity,
   );
+  const debouncedSearch = useDebounce(filters.q, 100);
   const options = searchType === mangaEntity ? mangaFilters : animeFilters;
   // const workerRef = useRef<Worker | null>(null);
   // const debouncedSearch = useDebounce(filters.q, 200)
@@ -149,6 +152,13 @@ export function SearchWithFilters(props: Props) {
     const link = createSearchLink();
     safeStartViewTransition(async () => navigate(link));
   }
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      const link = createSearchLink();
+      prefetch(link)
+    }
+  }, [debouncedSearch]);
 
   return (
     <form onSubmit={onSearch} className="max-4-xl w-full">
