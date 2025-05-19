@@ -202,8 +202,8 @@ export async function getAnimes(
       });
       await logger.info("got embedding", {
         text,
-        response: response?.data[0],
-      e)
+        response: response?.data,
+      });
       await logger.info("ai run", {
         text,
         response: JSON.stringify(response),
