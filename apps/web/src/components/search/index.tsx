@@ -75,8 +75,8 @@ export function SearchWithFilters(props: Props) {
   );
   const options = searchType === mangaEntity ? mangaFilters : animeFilters;
   // const workerRef = useRef<Worker | null>(null);
-  // const debouncedSearch = useState(filters.q, )
-
+  // const debouncedSearch = useDebounce(filters.q, 200)
+  //
   // useEffect(() => {
   //   // Initialize the worker
   //   workerRef.current = new Worker("/embedding_worker.js", { type: "module" });
@@ -91,6 +91,12 @@ export function SearchWithFilters(props: Props) {
   //     workerRef.current?.terminate();
   //   };
   // }, []);
+  //
+  // useEffect(() => {
+  //   if (workerRef.current) {
+  //     workerRef.current.postMessage({ q: debouncedSearch[0] });
+  //   }
+  // }, [debouncedSearch]);
 
   useEffect(() => {
     setFilters(setupFilters(options, new URL(props.url)));
@@ -157,7 +163,6 @@ export function SearchWithFilters(props: Props) {
           onChange={(e) => {
             const newQuery = e.target.value;
             setFilters((prev) => ({ ...prev, q: newQuery }));
-            // Send message to worker
           }}
         />
         <FilterModal

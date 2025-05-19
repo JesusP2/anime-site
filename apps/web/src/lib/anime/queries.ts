@@ -20,7 +20,6 @@ import { mapScore } from "../utils/map-score";
 import { getSimilarity } from "../db/queries";
 import { getEmbedding } from "../semantic-search";
 import { logger } from "../logger";
-import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
 
 const animeCardKeys = {
   titles: animeTable.titles,
@@ -38,8 +37,6 @@ const animeCardKeys = {
   mal_id: animeTable.mal_id,
   status: animeTable.status,
 } as const;
-
-let extractor: FeatureExtractionPipeline;
 
 export async function getAnime(mal_id: number) {
   try {
@@ -198,24 +195,16 @@ export async function getAnimes(
       .where(where);
     const similarityTime = Date.now();
 
-    if (!extractor) {
-      // @ts-ignore
-      extractor = await pipeline(
-        "feature-extraction",
-        "mixedbread-ai/mxbai-embed-xsmall-v1",
-      );
-    }
     async function getEmbedding(text: string) {
-      return (
-        await extractor([text], { pooling: "cls", quantize: false })
-      ).tolist()[0];
+      return [1]
     }
     const similarity = await getSimilarity(
       animeTable.embedding,
       sanitizedSearchParams.get("q"),
       getEmbedding,
     );
-   globalThis.waitUntil(logger.info(`similarity took: ${Date.now() - similarityTime}`));
+    console.log(`similarity took: ${Date.now() - similarityTime}`)
+   // globalThis.waitUntil(logger.info(`similarity took: ${Date.now() - similarityTime}`));
     let query: any;
     if (similarity) {
       const sq = db

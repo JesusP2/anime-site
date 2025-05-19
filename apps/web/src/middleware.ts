@@ -30,11 +30,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
     currentSeason.ttl = Date.now() + 1000 * 60 * 60 * 24 * 7;
   }
   globalThis.connectionString = getConnectionString(context);
+  globalThis.waitUntil = context.locals.runtime.ctx.waitUntil;
+  globalThis.waitUntil(logger.info(context.locals.runtime.env.AI))
+  globalThis.waitUntil(logger.info(context.locals.runtime.env.AI?.run))
   const auth = getAuth(context);
   const isAuthed = await auth.api.getSession({
     headers: context.request.headers,
   });
-  globalThis.waitUntil = context.locals.runtime.ctx.waitUntil;
 
   if (isAuthed) {
     context.locals.user = isAuthed.user;
