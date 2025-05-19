@@ -11,6 +11,9 @@ GOOGLE_REDIRECT_URI="https://notmyanimelist.com/api/auth/callback/google"
 BASE_URL="https://notmyanimelist.com"
 WS_URL="https://quiz-game.jesusprzprz-e.workers.dev/api/ws"
 
+[ai]
+binding = "AI"
+
 [[hyperdrive]]
 binding = 'HYPERDRIVE'
 id = "02b815ff4b7a4f4085383744491b60bf"
