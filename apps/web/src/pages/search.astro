@@ -13,7 +13,6 @@ import { cache } from "@/lib/redis-cache";
 import { sanitizeSearchParams } from "@/lib/utils/sanitize-searchparams";
 import { mangaFilters } from "@/lib/manga/filters";
 import { animeFilters } from "@/lib/anime/filters";
-import { logger } from "@/lib/logger";
 
 const currentPage = getCurrentPage(Astro.url.searchParams);
 
@@ -29,9 +28,7 @@ const fn =
         const key = sanitizeSearchParams(searchParams, animeFilters).toString();
         return `anime.v1.${key}`;
       });
-const start = Date.now();
 const records = await fn(searchParams, recordsPerPage);
-globalThis.waitUntil(logger.info(`search took: ${Date.now() - start}`));
 const searchType = (searchParams.get("searchType") ?? animeEntity) as Entity;
 Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=31536000");
 ---

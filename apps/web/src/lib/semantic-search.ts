@@ -1,5 +1,5 @@
+import { ActionError } from "astro:actions";
 import { redis } from "./db/redis";
-import { openai } from "./openai";
 
 export async function getEmbedding(q: string) {
   const key = `embedding.${q}`;
@@ -7,13 +7,17 @@ export async function getEmbedding(q: string) {
   if (value) {
     return value as number[];
   }
-  const embeddings = await openai.embeddings.create({
-    model: "text-embedding-3-small",
-    input: [q],
-    encoding_format: "float",
-  });
-  await redis.set(key, JSON.stringify(embeddings.data[0]?.embedding), {
+  const response = (await globalThis.AI.run("@cf/baai/bge-small-en-v1.5", {
+    text: [q],
+  })) as { data: number[][] };
+  if (!Array.isArray(response?.data?.[0])) {
+    throw new ActionError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Unexpected error",
+    });
+  }
+  await redis.set(key, JSON.stringify(response.data[0]), {
     ex: 60 * 60 * 24 * 365,
   });
-  return embeddings.data[0]?.embedding;
+  return response.data[0];
 }

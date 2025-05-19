@@ -193,28 +193,11 @@ export async function getAnimes(
       .select({ count: count() })
       .from(animeTable)
       .where(where);
-    const similarityTime = Date.now();
-
-    async function getEmbedding(text: string) {
-      await logger.info("getting embedding");
-      const response = (await globalThis.AI.run("@cf/baai/bge-small-en-v1.5", {
-        text: [text],
-      })) as { data: number[][] };
-      if (!Array.isArray(response?.data?.[0])) {
-        throw new ActionError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Unexpected error",
-        });
-      }
-      return response.data[0];
-    }
     const similarity = await getSimilarity(
       animeTable.embedding,
       sanitizedSearchParams.get("q"),
       getEmbedding,
     );
-    console.log(`similarity took: ${Date.now() - similarityTime}`);
-    // globalThis.waitUntil(logger.info(`similarity took: ${Date.now() - similarityTime}`));
     let query: any;
     if (similarity) {
       const sq = db
