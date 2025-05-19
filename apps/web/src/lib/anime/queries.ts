@@ -200,11 +200,15 @@ export async function getAnimes(
       const response = await globalThis.AI.run("@cf/baai/bge-m3", {
         text: [text],
       });
-      logger.info("ai run", {
+      await logger.info("got embedding", {
         text,
-        response,
+        response: response?.data[0],
+      e)
+      await logger.info("ai run", {
+        text,
+        response: JSON.stringify(response),
       });
-      return [1];
+      return response?.data?.[0] as number[];
     }
     const similarity = await getSimilarity(
       animeTable.embedding,
