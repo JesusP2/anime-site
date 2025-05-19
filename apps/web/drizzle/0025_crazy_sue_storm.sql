@@ -1,0 +1,1 @@
+ALTER TABLE "anime" ALTER COLUMN "embedding" SET DATA TYPE vector(384);

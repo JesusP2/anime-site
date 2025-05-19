@@ -23,15 +23,15 @@ class Logger {
     });
     return;
   }
-  async info(message: string, log: any) {
+  async info(message: string, log: any = {}) {
     log.message = message;
     return this.log("INFO", log);
   }
-  async error(message: string, log: any) {
+  async error(message: string, log: any = {}) {
     log.message = message;
     return this.log("ERROR", log);
   }
-  async warn(message: string, log: any) {
+  async warn(message: string, log: any = {}) {
     log.message = message;
     return this.log("WARN", log);
   }
