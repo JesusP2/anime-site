@@ -15,4 +15,4 @@ export const mangaEntity = "Manga";
 export const themeButtonId = "theme-button-super-unique-id";
 export const landingThemeButtonId = "landing-theme-button-super-unique-id";
 export const gridClassName =
-  "grid grid-cols-[repeat(auto-fill,_minmax(250px,_10fr))] sm:grid-cols-[repeat(auto-fill,_minmax(450px,_10fr))] gap-6 sm:px-10 w-full mx-auto";
+  "flex flex-wrap gap-6 gap-x-10 w-full mx-auto px-4";

@@ -190,10 +190,10 @@ body {
     box-shadow: 0 2px 0 0 var(--destructive-border);
   }
   .texture {
-    background-image: url(/texture.avif);
+    background-image: url(/main-bg-2.png);
     background-size: 100% 100%;
     background-repeat: repeat;
-    opacity: 0.14;
+    opacity: 0.2;
     mix-blend-mode: multiply;
     z-index: 50;
     isolation: isolate;
