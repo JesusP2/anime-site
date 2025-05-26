@@ -4,11 +4,15 @@ import LandingPage from "@/components/landing/index.astro";
 import PlanesNear from "@/components/planes-near.astro";
 import PlanesFar from "@/components/planes-far.astro";
 import ThemeButton from "@/components/theme-button/landing.astro";
-Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'max-age=31536000');
+Astro.response.headers.set("Cloudflare-CDN-Cache-Control", "max-age=31536000");
 ---
 
 <html lang="en">
-  <Head title="NotMyAnimeList" description="Explore a vast collection of anime, manga, and more." image="/opengraph.avif" />
+  <Head
+    title="NotMyAnimeList"
+    description="Explore a vast collection of anime, manga, and more."
+    image="/opengraph.avif"
+  />
   <body
     class="bg-[url('/landing/light/sky.avif')] dark:bg-[url('/landing/night/sky.avif')] bg-no-repeat bg-cover overflow-hidden h-screen relative"
   >
