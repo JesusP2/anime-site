@@ -54,31 +54,63 @@ async function getThemePool(
   themeCount: number,
 ) {
   const [offset, limit] = getThemePoolLimits(difficulty) as [number, number];
-  let themePositions: number[] = [];
-  for (let i = 0; i < themeCount; i++) {
-    themePositions.push(Math.floor(Math.random() * (limit - offset)) + offset);
+  
+  // Step 1: Get eligible anime within difficulty range (FAST - uses existing index)
+  const eligibleAnime = await db
+    .select({ id: animeTable.id })
+    .from(animeTable)
+    .where(gt(animeTable.popularity, 0))
+    .orderBy(animeTable.popularity)
+    .offset(offset)
+    .limit(limit - offset);
+
+  if (eligibleAnime.length === 0) {
+    return [];
   }
-  let where: SQL | undefined = gt(animeTable.popularity, 0);
+
+  // Step 2: Get themes from eligible anime with type filtering
+  let typeCondition: SQL | undefined = undefined;
   if (type !== "ALL") {
-    where = and(where, eq(animeThemeTable.type, type));
+    typeCondition = eq(animeThemeTable.type, type);
   }
-  const sq = db
+
+  const themes = await db
     .select({
       id: animeThemeTable.id,
-      position:
-        sql<number>`ROW_NUMBER() OVER (ORDER BY ${animeTable.popularity})`.as(
-          "position",
-        ),
+      animeId: animeThemeTable.animeId,
     })
     .from(animeThemeTable)
-    .innerJoin(animeTable, eq(animeThemeTable.animeId, animeTable.id))
-    .where(where)
-    .as("sq");
-  const themes = await db
-    .select()
-    .from(sq)
-    .where(inArray(sq.position, themePositions));
-  return themes;
+    .where(
+      and(
+        inArray(animeThemeTable.animeId, eligibleAnime.map(a => a.id)),
+        typeCondition
+      )
+    )
+    .orderBy(sql`RANDOM()`)
+    .limit(themeCount * 3); // Get extra themes to ensure diversity
+
+  // Step 3: Ensure 1 theme per anime (diversity guarantee)
+  const result = [];
+  const usedAnimes = new Set<string>();
+
+  for (const theme of themes) {
+    if (theme.animeId && !usedAnimes.has(theme.animeId) && result.length < themeCount) {
+      usedAnimes.add(theme.animeId);
+      result.push(theme);
+    }
+  }
+
+  // If we don't have enough unique anime themes, fill with remaining
+  if (result.length < themeCount) {
+    for (const theme of themes) {
+      if (result.length >= themeCount) break;
+      if (theme.id && !result.find(t => t.id === theme.id)) {
+        result.push(theme);
+      }
+    }
+  }
+
+  return result;
 }
 
 export const challengeActions = {

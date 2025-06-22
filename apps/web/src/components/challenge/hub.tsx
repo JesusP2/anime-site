@@ -56,7 +56,7 @@ export function ChallengeHub() {
               Create a Challenge
             </CardTitle>
             <CardDescription>
-              Create your own challenge to share with friends
+              Create your own challenge
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

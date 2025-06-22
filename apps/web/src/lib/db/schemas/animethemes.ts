@@ -5,6 +5,7 @@ import {
   boolean,
   jsonb,
   timestamp,
+  index,
 } from "drizzle-orm/pg-core";
 import { animeTable } from "./anime";
 
@@ -28,7 +29,11 @@ export const animeThemeTable = pgTable("anime_theme", {
   textSearch: text("text_search"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("animeThemeAnimeIdIndex").on(table.animeId),
+  index("animeThemeTypeIndex").on(table.type),
+  index("animeThemeAnimeIdTypeIndex").on(table.animeId, table.type),
+]);
 
 // Artist table
 export const themeArtistTable = pgTable("theme_artist", {
