@@ -55,48 +55,33 @@ async function getThemePool(
 ) {
   const [offset, limit] = getThemePoolLimits(difficulty) as [number, number];
   
-  // Step 1: Get eligible anime within difficulty range (FAST - uses existing index)
-  const eligibleAnime = await db
-    .select({ id: animeTable.id })
-    .from(animeTable)
-    .where(gt(animeTable.popularity, 0))
-    .orderBy(animeTable.popularity)
-    .offset(offset)
-    .limit(limit - offset);
-
-  if (eligibleAnime.length === 0) {
-    return [];
-  }
-
-  // Step 2: Get themes from eligible anime with type filtering
-  let typeCondition: SQL | undefined = undefined;
+  // Use materialized view for super fast theme selection
+  let typeFilter = "";
   if (type !== "ALL") {
-    typeCondition = eq(animeThemeTable.type, type);
+    typeFilter = `AND theme_type = '${type}'`;
   }
 
-  const themes = await db
-    .select({
-      id: animeThemeTable.id,
-      animeId: animeThemeTable.animeId,
-    })
-    .from(animeThemeTable)
-    .where(
-      and(
-        inArray(animeThemeTable.animeId, eligibleAnime.map(a => a.id)),
-        typeCondition
-      )
-    )
-    .orderBy(sql`RANDOM()`)
-    .limit(themeCount * 3); // Get extra themes to ensure diversity
+  const themes = await db.execute(
+    sql`
+      SELECT theme_id as id, anime_id as "animeId"
+      FROM theme_popularity_view 
+      WHERE popularity_rank > ${offset} 
+        AND popularity_rank <= ${limit}
+        ${sql.raw(typeFilter)}
+      ORDER BY RANDOM()
+      LIMIT ${themeCount * 3}
+    `
+  );
 
   // Step 3: Ensure 1 theme per anime (diversity guarantee)
   const result = [];
   const usedAnimes = new Set<string>();
 
   for (const theme of themes) {
-    if (theme.animeId && !usedAnimes.has(theme.animeId) && result.length < themeCount) {
-      usedAnimes.add(theme.animeId);
-      result.push(theme);
+    const themeData = theme as { id: string; animeId: string };
+    if (themeData.animeId && themeData.id && !usedAnimes.has(themeData.animeId) && result.length < themeCount) {
+      usedAnimes.add(themeData.animeId);
+      result.push({ id: themeData.id, animeId: themeData.animeId });
     }
   }
 
@@ -104,8 +89,9 @@ async function getThemePool(
   if (result.length < themeCount) {
     for (const theme of themes) {
       if (result.length >= themeCount) break;
-      if (theme.id && !result.find(t => t.id === theme.id)) {
-        result.push(theme);
+      const themeData = theme as { id: string; animeId: string };
+      if (themeData.id && !result.find(t => t.id === themeData.id)) {
+        result.push({ id: themeData.id, animeId: themeData.animeId });
       }
     }
   }
