@@ -7,7 +7,7 @@ export const getEmbedding = cache(_getEmbedding, (args) => `embedding.${args}`);
 
 async function _getEmbedding(q: string) {
   try {
-    const response = (await globalThis.AI.run("@cf/baai/bge-small-en-v1.5", {
+    const response = (await globalThis.AI.run("@cf/google/embeddinggemma-300m", {
       text: [q],
     })) as { data: number[][] };
     if (!Array.isArray(response?.data?.[0])) {

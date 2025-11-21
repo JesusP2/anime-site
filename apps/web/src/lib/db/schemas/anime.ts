@@ -106,7 +106,7 @@ export const animeTable = pgTable(
     staff: jsonb("staff")
       .notNull()
       .$type<components["schemas"]["anime_staff"]["data"]>(),
-    embedding: vector("embedding", { dimensions: 384 }),
+    embedding: vector("embedding", { dimensions: 768 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },

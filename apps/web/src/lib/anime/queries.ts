@@ -235,6 +235,7 @@ export async function getAnimes(
       count: animeCount[0]?.count ?? 0,
     });
   } catch (error) {
+    console.error('error getting animes', error);
     if (error instanceof Error) {
       globalThis.waitUntil(logger.error("error getting animes", error));
     }

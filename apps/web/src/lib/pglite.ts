@@ -45,7 +45,7 @@ export const pgliteAnimeTable = pgTable("anime", {
     length: 255,
   }).$type<components["schemas"]["anime_full"]["status"]>(),
   popularity: integer("popularity"),
-  embedding: vectorCol("embedding", { dimensions: 384 }),
+  embedding: vectorCol("embedding", { dimensions: 768 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -74,7 +74,7 @@ export const pgliteMangaTable = pgTable("manga", {
     length: 255,
   }).$type<components["schemas"]["manga_full"]["status"]>(),
   popularity: integer("popularity"),
-  embedding: vectorCol("embedding", { dimensions: 384 }),
+  embedding: vectorCol("embedding", { dimensions: 768 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -129,7 +129,7 @@ export async function createLocalDB(client: PGlite) {
         genres JSONB,
         status TEXT,
         popularity INTEGER,
-        embedding vector(384),
+        embedding vector(768),
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );
@@ -147,7 +147,7 @@ export async function createLocalDB(client: PGlite) {
         genres JSONB,
         status TEXT,
         popularity INTEGER,
-        embedding vector(384),
+        embedding vector(768),
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );
